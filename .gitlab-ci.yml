@@ -1,0 +1,8 @@
+include:
+  - project: 'orderlynetwork/orderly-devops/orderly-common/common-ci'
+    ref: main
+    file: '/common-orderly-network-dev-v2.yaml'
+
+variables:
+  SERVICE_NAME: dex-creator
+  IMAGE_NAME: dex-creator
