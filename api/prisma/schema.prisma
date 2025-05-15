@@ -67,6 +67,8 @@ model Dex {
   preferredBrokerId    String?  // User's preferred broker ID after verification
   makerFee             Int?     // Maker fee in basis points (0.01%)
   takerFee             Int?     // Taker fee in basis points (0.01%)
+  telegramInviteLink   String?  // Invite link for the Telegram group
+  graduatedAt          DateTime? // Timestamp when the DEX was graduated
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
   

@@ -1,22 +1,19 @@
-import { useEffect, useState, FormEvent, ChangeEvent } from "react";
-import { Button } from "./Button";
+import { useEffect, useState, ChangeEvent } from "react";
 
-const MIN_MAKER_FEE = 0;
-const MIN_TAKER_FEE = 3;
-const MAX_FEE = 15;
+// Export the fee constants for use in other components
+export const MIN_MAKER_FEE = 0;
+export const MIN_TAKER_FEE = 3;
+export const MAX_FEE = 15;
 
 interface FeeConfigWithCalculatorProps {
   makerFee: number;
   takerFee: number;
   readOnly?: boolean;
-  isSavingFees?: boolean;
-  onSaveFees?: (
-    e: FormEvent,
-    makerFee: number,
-    takerFee: number
-  ) => Promise<void>;
-  feeError?: string | null;
   defaultOpenCalculator?: boolean;
+  onMakerFeeChange?: (value: number) => void;
+  onTakerFeeChange?: (value: number) => void;
+  makerFeeError?: string | null;
+  takerFeeError?: string | null;
 }
 
 export const FeeConfigWithCalculator: React.FC<
@@ -25,94 +22,41 @@ export const FeeConfigWithCalculator: React.FC<
   makerFee: initialMakerFee,
   takerFee: initialTakerFee,
   readOnly = false,
-  isSavingFees = false,
-  onSaveFees,
   defaultOpenCalculator = false,
+  onMakerFeeChange,
+  onTakerFeeChange,
+  makerFeeError,
+  takerFeeError,
 }) => {
   // State for fee configuration
   const [showFeeConfig, setShowFeeConfig] = useState(false);
   const [makerFee, setMakerFee] = useState<number>(initialMakerFee);
   const [takerFee, setTakerFee] = useState<number>(initialTakerFee);
-  const [makerFeeError, setMakerFeeError] = useState<string | null>(null);
-  const [takerFeeError, setTakerFeeError] = useState<string | null>(null);
-  const [feeError, setFeeError] = useState<string | null>(null);
 
   const [showCalculator, setShowCalculator] = useState(defaultOpenCalculator);
   const [tradingVolume, setTradingVolume] = useState(10000000);
 
   useEffect(() => {
     setMakerFee(initialMakerFee);
+  }, [initialMakerFee]);
+
+  useEffect(() => {
     setTakerFee(initialTakerFee);
-  }, [initialMakerFee, initialTakerFee]);
-
-  // Fee validation functions
-  const validateFees = (type: "maker" | "taker", value: number) => {
-    if (isNaN(value)) {
-      if (type === "maker") {
-        setMakerFeeError("Please enter a valid number");
-      } else {
-        setTakerFeeError("Please enter a valid number");
-      }
-      return false;
-    }
-
-    if (type === "maker") {
-      if (value < MIN_MAKER_FEE) {
-        setMakerFeeError(`Maker fee must be at least ${MIN_MAKER_FEE} bps`);
-        return false;
-      } else if (value > MAX_FEE) {
-        setMakerFeeError(`Maker fee cannot exceed ${MAX_FEE} bps`);
-        return false;
-      } else {
-        setMakerFeeError(null);
-        return true;
-      }
-    } else {
-      // taker
-      if (value < MIN_TAKER_FEE) {
-        setTakerFeeError(`Taker fee must be at least ${MIN_TAKER_FEE} bps`);
-        return false;
-      } else if (value > MAX_FEE) {
-        setTakerFeeError(`Taker fee cannot exceed ${MAX_FEE} bps`);
-        return false;
-      } else {
-        setTakerFeeError(null);
-        return true;
-      }
-    }
-  };
+  }, [initialTakerFee]);
 
   const handleMakerFeeChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
     setMakerFee(value);
-    validateFees("maker", value);
+    if (onMakerFeeChange) {
+      onMakerFeeChange(value);
+    }
   };
 
   const handleTakerFeeChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
     setTakerFee(value);
-    validateFees("taker", value);
-  };
-
-  const handleSaveFees = (e: FormEvent) => {
-    e.preventDefault();
-    setFeeError(null);
-
-    if (makerFeeError || takerFeeError) {
-      setFeeError("Please correct the errors before saving");
-      return;
-    }
-
-    const isMakerValid = validateFees("maker", makerFee);
-    const isTakerValid = validateFees("taker", takerFee);
-
-    if (!isMakerValid || !isTakerValid) {
-      setFeeError("Fee values are outside of allowed range");
-      return;
-    }
-
-    if (onSaveFees) {
-      onSaveFees(e, makerFee, takerFee);
+    if (onTakerFeeChange) {
+      onTakerFeeChange(value);
     }
   };
 
@@ -164,6 +108,11 @@ export const FeeConfigWithCalculator: React.FC<
     takerFee
   );
 
+  // Fixed fee note message to display in all cases
+  const feeNoteMessage = readOnly
+    ? "Fees are set during graduation and cannot be changed later without contacting support."
+    : "These fees will be set permanently when you graduate your DEX and can only be changed later by contacting support.";
+
   return (
     <div className="space-y-6">
       {/* Fee Configuration Section */}
@@ -184,36 +133,9 @@ export const FeeConfigWithCalculator: React.FC<
           )}
         </div>
 
-        {!readOnly && showFeeConfig ? (
-          <form onSubmit={handleSaveFees} className="slide-fade-in">
-            <div className="mb-4">
-              <p className="text-sm text-gray-300 mb-4">
-                Configure the trading fees for your DEX. Maker fees apply to
-                limit orders that provide liquidity, while taker fees apply to
-                market orders that take liquidity.
-              </p>
-
-              <div className="bg-warning/10 rounded-lg p-3 mb-4">
-                <p className="text-sm flex items-start gap-2">
-                  <div className="i-mdi:alert-circle text-warning w-5 h-5 flex-shrink-0 mt-0.5"></div>
-                  <span>
-                    <span className="font-medium text-warning">
-                      Important Fee Note:
-                    </span>{" "}
-                    The fees you configure here are{" "}
-                    <span className="underline">in addition to</span> the
-                    Orderly base fee (currently 3.00 bps taker, 0 bps maker for
-                    Public tier).
-                    <br />
-                    The total fee charged to traders will be:{" "}
-                    <span className="font-medium">
-                      Base Fee + Your Custom Fee
-                    </span>
-                    .
-                  </span>
-                </p>
-              </div>
-
+        {showFeeConfig ? (
+          <form>
+            <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                   <label
@@ -278,10 +200,6 @@ export const FeeConfigWithCalculator: React.FC<
                 </div>
               </div>
 
-              {feeError && (
-                <div className="mb-4 text-error text-sm">{feeError}</div>
-              )}
-
               <div className="flex items-center gap-2 text-sm bg-info/10 rounded p-3 mb-4">
                 <div className="i-mdi:information-outline text-info w-5 h-5 flex-shrink-0"></div>
                 <p>
@@ -290,19 +208,6 @@ export const FeeConfigWithCalculator: React.FC<
                   traders pay.
                 </p>
               </div>
-
-              {!readOnly && (
-                <Button
-                  type="submit"
-                  variant="primary"
-                  isLoading={isSavingFees}
-                  loadingText="Saving..."
-                  className="w-full"
-                  disabled={!!makerFeeError || !!takerFeeError}
-                >
-                  Save Fee Configuration
-                </Button>
-              )}
             </div>
           </form>
         ) : (
@@ -333,6 +238,12 @@ export const FeeConfigWithCalculator: React.FC<
                   ({(takerFee * 0.01).toFixed(2)}%)
                 </div>
               </div>
+            </div>
+
+            {/* Fee Note - built into the component now */}
+            <div className="mt-4 bg-info/10 rounded-lg p-3 flex items-start gap-2 text-xs">
+              <div className="i-mdi:information-outline text-info w-4 h-4 flex-shrink-0 mt-0.5"></div>
+              <p className="text-gray-300">{feeNoteMessage}</p>
             </div>
 
             <div className="mt-4 bg-info/10 rounded-lg p-3 flex items-start gap-2 text-xs">
@@ -378,12 +289,7 @@ export const FeeConfigWithCalculator: React.FC<
         </div>
 
         {showCalculator && (
-          <div className="bg-light/5 rounded-lg p-4 mb-4 slide-fade-in">
-            <p className="text-sm text-gray-300 mb-4">
-              Estimate your potential monthly revenue based on trading volume
-              and your current fee configuration.
-            </p>
-
+          <div className="bg-light/5 rounded-lg p-4">
             <div className="mb-4">
               <label
                 htmlFor="tradingVolume"
@@ -392,57 +298,58 @@ export const FeeConfigWithCalculator: React.FC<
                 Monthly Trading Volume (USD)
               </label>
               <div className="flex items-center">
-                <span className="bg-background-dark border-r border-light/10 px-3 py-2 rounded-l-lg text-gray-400">
-                  $
-                </span>
                 <input
                   type="number"
                   id="tradingVolume"
-                  min="0"
+                  min="1000"
                   step="1000"
                   value={tradingVolume}
                   onChange={handleVolumeChange}
-                  className="w-full px-3 py-2 bg-background-dark border border-light/10 rounded-r-lg"
+                  className="w-full px-3 py-2 bg-background-dark border border-light/10 rounded-lg"
                 />
+                <span className="ml-2 text-gray-400 text-sm">USD</span>
               </div>
               <p className="text-xs text-gray-400 mt-1">
-                Enter your expected monthly trading volume to see potential
-                revenue.
+                Enter your expected monthly trading volume
               </p>
             </div>
 
-            <div className="bg-success/5 rounded-lg p-4 mb-4">
-              <h4 className="text-sm font-semibold mb-3 text-gray-200">
-                Estimated Monthly Revenue
+            <div className="bg-background-dark/50 p-4 rounded-lg space-y-4">
+              <h4 className="text-md font-semibold">
+                Monthly Revenue Estimate
               </h4>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-background-dark/50 p-3 rounded">
+                <div className="bg-background-dark/80 p-3 rounded">
                   <div className="text-sm text-gray-400">Maker Revenue</div>
-                  <div className="text-xl font-semibold text-success">
+                  <div className="text-lg font-semibold">
                     {formatCurrency(makerRevenue)}
                   </div>
                   <div className="text-xs text-gray-400">
-                    ({makerFee} bps fee)
+                    from {makerFee} bps fee
                   </div>
                 </div>
 
-                <div className="bg-background-dark/50 p-3 rounded">
+                <div className="bg-background-dark/80 p-3 rounded">
                   <div className="text-sm text-gray-400">Taker Revenue</div>
-                  <div className="text-xl font-semibold text-success">
+                  <div className="text-lg font-semibold">
                     {formatCurrency(takerRevenue)}
                   </div>
                   <div className="text-xs text-gray-400">
-                    ({takerFee} bps fee)
+                    from {takerFee} bps fee
                   </div>
                 </div>
 
-                <div className="bg-success/10 p-3 rounded">
-                  <div className="text-sm text-gray-300">Total Revenue</div>
-                  <div className="text-xl font-semibold text-success">
+                <div className="bg-primary/10 p-3 rounded">
+                  <div className="text-sm text-primary-light">
+                    Total Revenue
+                  </div>
+                  <div className="text-lg font-semibold text-primary">
                     {formatCurrency(totalRevenue)}
                   </div>
-                  <div className="text-xs text-gray-300">per month</div>
+                  <div className="text-xs text-primary-light/80">
+                    on {formatCurrency(tradingVolume)} volume
+                  </div>
                 </div>
               </div>
 

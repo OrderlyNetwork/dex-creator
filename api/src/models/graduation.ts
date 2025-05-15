@@ -1,5 +1,7 @@
 import { prisma } from "../lib/prisma";
 import { ethers } from "ethers";
+import type { Prisma } from "@prisma/client";
+import { handleDexGraduation } from "../lib/telegram";
 
 // Default ORDER token addresses
 const DEFAULT_ETH_ORDER_ADDRESS = "0xABD4C63d2616A5201454168269031355f4764337";
@@ -168,14 +170,45 @@ export async function verifyOrderTransaction(
  */
 export async function updatePreferredBrokerId(
   userId: string,
-  preferredBrokerId: string
-): Promise<{ success: boolean; message: string }> {
+  preferredBrokerId: string,
+  makerFee: number,
+  takerFee: number
+): Promise<{ success: boolean; message: string; telegramGroupLink?: string }> {
   try {
     if (!/^[a-z0-9_-]+$/.test(preferredBrokerId)) {
       return {
         success: false,
         message:
           "Invalid broker ID format. Use only lowercase letters, numbers, hyphens, and underscores.",
+      };
+    }
+
+    // Validate fees
+    if (makerFee < MIN_MAKER_FEE) {
+      return {
+        success: false,
+        message: `Maker fee cannot be less than ${MIN_MAKER_FEE} basis points`,
+      };
+    }
+
+    if (takerFee < MIN_TAKER_FEE) {
+      return {
+        success: false,
+        message: `Taker fee cannot be less than ${MIN_TAKER_FEE} basis points`,
+      };
+    }
+
+    if (makerFee > MAX_FEE) {
+      return {
+        success: false,
+        message: `Maker fee cannot exceed ${MAX_FEE} basis points`,
+      };
+    }
+
+    if (takerFee > MAX_FEE) {
+      return {
+        success: false,
+        message: `Taker fee cannot exceed ${MAX_FEE} basis points`,
       };
     }
 
@@ -193,14 +226,55 @@ export async function updatePreferredBrokerId(
       };
     }
 
+    const dex = await prisma.dex.findUnique({
+      where: { userId },
+      include: {
+        user: true,
+      },
+    });
+
+    if (!dex) {
+      return {
+        success: false,
+        message: "DEX not found",
+      };
+    }
+
+    // Handle Telegram notifications and get community invite link
+    const telegramResult = await handleDexGraduation(
+      dex.brokerName,
+      preferredBrokerId,
+      makerFee,
+      takerFee,
+      dex.user.address
+    );
+
+    // Update the DEX with new broker ID, fees, and Telegram info if available
+    const updateData: Prisma.DexUpdateInput = {
+      preferredBrokerId,
+      makerFee,
+      takerFee,
+      graduatedAt: new Date(),
+    };
+
+    if (telegramResult.inviteLink) {
+      updateData.telegramInviteLink = telegramResult.inviteLink;
+
+      if (!dex.telegramLink) {
+        updateData.telegramLink = telegramResult.inviteLink;
+      }
+    }
+
     await prisma.dex.update({
       where: { userId },
-      data: { preferredBrokerId },
+      data: updateData,
     });
 
     return {
       success: true,
-      message: "Preferred broker ID updated successfully",
+      message:
+        "Preferred broker ID updated successfully. Telegram notifications sent.",
+      telegramGroupLink: telegramResult.inviteLink,
     };
   } catch (error) {
     console.error("Error updating preferred broker ID:", error);
@@ -300,7 +374,7 @@ export async function updateDexFees(
 export async function getDexFees(
   userId: string
 ): Promise<
-  | { success: true; makerFee: number; takerFee: number; canUpdate: boolean }
+  | { success: true; makerFee: number; takerFee: number }
   | { success: false; message: string }
 > {
   try {
@@ -315,14 +389,10 @@ export async function getDexFees(
       };
     }
 
-    const canUpdate = !!dex.preferredBrokerId;
-    const dexWithFees = dex;
-
     return {
       success: true,
-      makerFee: dexWithFees.makerFee ?? DEFAULT_MAKER_FEE,
-      takerFee: dexWithFees.takerFee ?? DEFAULT_TAKER_FEE,
-      canUpdate,
+      makerFee: dex.makerFee ?? DEFAULT_MAKER_FEE,
+      takerFee: dex.takerFee ?? DEFAULT_TAKER_FEE,
     };
   } catch (error) {
     console.error("Error getting DEX fees:", error);

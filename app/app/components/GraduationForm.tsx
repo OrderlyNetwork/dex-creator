@@ -21,7 +21,12 @@ import {
 } from "wagmi";
 import { parseEther } from "viem";
 import clsx from "clsx";
-import { FeeConfigWithCalculator } from "./FeeConfigWithCalculator";
+import {
+  FeeConfigWithCalculator,
+  MIN_MAKER_FEE,
+  MIN_TAKER_FEE,
+  MAX_FEE,
+} from "./FeeConfigWithCalculator";
 import { BaseFeeExplanation } from "./BaseFeeExplanation";
 
 const ERC20_ABI = [
@@ -85,6 +90,9 @@ interface VerifyTxResponse {
   message: string;
   amount?: string;
   preferredBrokerId?: string;
+  telegramGroupLink?: string;
+  makerFee?: number;
+  takerFee?: number;
 }
 
 interface GraduationStatusResponse {
@@ -92,6 +100,7 @@ interface GraduationStatusResponse {
   preferredBrokerId: string | null;
   currentBrokerId: string;
   approved: boolean;
+  telegramGroupLink?: string;
 }
 
 interface FeeConfigResponse {
@@ -158,7 +167,8 @@ export function GraduationForm({ onNoDexSetup }: GraduationFormProps) {
 
   const [makerFee, setMakerFee] = useState<number>(3);
   const [takerFee, setTakerFee] = useState<number>(6);
-  const [isSavingFees, setIsSavingFees] = useState(false);
+  const [makerFeeError, setMakerFeeError] = useState<string | null>(null);
+  const [takerFeeError, setTakerFeeError] = useState<string | null>(null);
 
   const currentReceiverAddress = ORDER_RECEIVER_ADDRESSES[chain];
   const currentTokenAddress = ORDER_TOKEN_ADDRESSES[chain];
@@ -333,40 +343,70 @@ export function GraduationForm({ onNoDexSetup }: GraduationFormProps) {
     loadStatus();
   }, [token, hasSubmitted, loadFeeConfiguration, onNoDexSetup]);
 
-  const handleSaveFees = async (
-    e: FormEvent,
-    newMakerFee: number,
-    newTakerFee: number
-  ) => {
-    e.preventDefault();
+  // Handle fee changes
+  const handleMakerFeeChange = (value: number) => {
+    setMakerFee(value);
+    validateMakerFee(value);
+  };
 
-    setIsSavingFees(true);
+  const handleTakerFeeChange = (value: number) => {
+    setTakerFee(value);
+    validateTakerFee(value);
+  };
 
-    try {
-      const response = await post<FeeConfigResponse>(
-        "api/graduation/fees",
-        { makerFee: newMakerFee, takerFee: newTakerFee },
-        token
-      );
-
-      if (response.success) {
-        setMakerFee(newMakerFee);
-        setTakerFee(newTakerFee);
-        toast.success("Fee configuration updated successfully");
-      } else {
-        toast.error(response.message || "Failed to update fees");
-      }
-    } catch (error) {
-      console.error("Error updating fees:", error);
-      toast.error("Failed to update fee configuration");
-    } finally {
-      setIsSavingFees(false);
+  // Validate maker fee
+  const validateMakerFee = (value: number): boolean => {
+    if (isNaN(value)) {
+      setMakerFeeError("Please enter a valid number");
+      return false;
     }
+
+    if (value < MIN_MAKER_FEE) {
+      setMakerFeeError(`Maker fee must be at least ${MIN_MAKER_FEE} bps`);
+      return false;
+    }
+
+    if (value > MAX_FEE) {
+      setMakerFeeError(`Maker fee cannot exceed ${MAX_FEE} bps`);
+      return false;
+    }
+
+    setMakerFeeError(null);
+    return true;
+  };
+
+  // Validate taker fee
+  const validateTakerFee = (value: number): boolean => {
+    if (isNaN(value)) {
+      setTakerFeeError("Please enter a valid number");
+      return false;
+    }
+
+    if (value < MIN_TAKER_FEE) {
+      setTakerFeeError(`Taker fee must be at least ${MIN_TAKER_FEE} bps`);
+      return false;
+    }
+
+    if (value > MAX_FEE) {
+      setTakerFeeError(`Taker fee cannot exceed ${MAX_FEE} bps`);
+      return false;
+    }
+
+    setTakerFeeError(null);
+    return true;
+  };
+
+  // Check if the fee configuration is valid
+  const isValidFeeConfiguration = (): boolean => {
+    const isMakerValid = validateMakerFee(makerFee);
+    const isTakerValid = validateTakerFee(takerFee);
+
+    return isMakerValid && isTakerValid;
   };
 
   const handleTransferOrder = async () => {
-    if (!address) {
-      toast.error("Please connect your wallet first");
+    if (!isCorrectChain) {
+      await switchChain({ chainId: currentChainId });
       return;
     }
 
@@ -376,7 +416,11 @@ export function GraduationForm({ onNoDexSetup }: GraduationFormProps) {
     }
 
     if (!preferredBrokerId) {
-      toast.error("Please enter your preferred broker ID");
+      toast.error("Please enter a preferred broker ID");
+      return;
+    }
+
+    if (!isValidFeeConfiguration()) {
       return;
     }
 
@@ -400,17 +444,6 @@ export function GraduationForm({ onNoDexSetup }: GraduationFormProps) {
       if (!validateAddress(currentReceiverAddress)) {
         console.log(`Invalid receiver address format for ${chain}`);
         toast.error("Invalid receiver address configuration");
-        return;
-      }
-
-      try {
-        // This will prompt the user to switch chains if needed
-        await switchChain({ chainId: currentChainId });
-      } catch (error) {
-        console.error("Failed to switch chain:", error);
-        toast.error(
-          "Please make sure your wallet is on the correct network before continuing"
-        );
         return;
       }
 
@@ -447,12 +480,19 @@ export function GraduationForm({ onNoDexSetup }: GraduationFormProps) {
     setIsLoading(true);
 
     try {
+      if (!isValidFeeConfiguration()) {
+        setIsLoading(false);
+        return;
+      }
+
       const response = await post<VerifyTxResponse>(
         "api/graduation/verify-tx",
         {
           txHash: transactionHash,
           chain,
           preferredBrokerId,
+          makerFee,
+          takerFee,
         },
         token,
         { showToastOnError: false }
@@ -463,7 +503,13 @@ export function GraduationForm({ onNoDexSetup }: GraduationFormProps) {
 
       if (response.success) {
         toast.success("Transaction verified successfully!");
-        loadFeeConfiguration();
+        // Update local state with the returned fee values if they exist
+        if (response.makerFee !== undefined) {
+          setMakerFee(response.makerFee);
+        }
+        if (response.takerFee !== undefined) {
+          setTakerFee(response.takerFee);
+        }
       } else {
         toast.error(response.message || "Verification failed");
       }
@@ -485,6 +531,7 @@ export function GraduationForm({ onNoDexSetup }: GraduationFormProps) {
     }
   };
 
+  // Add the handleSubmit function back
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -513,6 +560,28 @@ export function GraduationForm({ onNoDexSetup }: GraduationFormProps) {
             </span>{" "}
             has been approved.
           </p>
+
+          {status.telegramGroupLink && (
+            <div className="mt-6 mb-6 border border-info/20 rounded-lg p-4 bg-info/5">
+              <h4 className="text-md font-medium mb-2 flex items-center">
+                <div className="i-mdi:telegram text-info w-5 h-5 mr-2"></div>
+                Join the Orderly Community
+              </h4>
+              <p className="text-gray-300 text-sm mb-3 text-left">
+                Connect with other DEX builders and get support from the Orderly
+                team in our community Telegram group.
+              </p>
+              <a
+                href={status.telegramGroupLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 bg-info/20 hover:bg-info/30 transition-colors text-info rounded-lg py-3 px-4 w-full"
+              >
+                <div className="i-mdi:telegram w-5 h-5"></div>
+                Join Telegram Community
+              </a>
+            </div>
+          )}
 
           <div className="bg-light/5 rounded-lg p-5 mb-6 text-left">
             <h3 className="text-lg font-semibold mb-3 flex items-center">
@@ -670,6 +739,29 @@ export function GraduationForm({ onNoDexSetup }: GraduationFormProps) {
               </p>
             </div>
           </div>
+
+          {status.telegramGroupLink && (
+            <div className="mt-6 mb-6 border border-info/20 rounded-lg p-4 bg-info/5">
+              <h4 className="text-md font-medium mb-2 flex items-center">
+                <div className="i-mdi:telegram text-info w-5 h-5 mr-2"></div>
+                Join the Orderly Community
+              </h4>
+              <p className="text-gray-300 text-sm mb-3 text-left">
+                You've been invited to join the Orderly Network community on
+                Telegram. Connect with other DEX builders and get support from
+                the Orderly team.
+              </p>
+              <a
+                href={status.telegramGroupLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 bg-info/20 hover:bg-info/30 transition-colors text-info rounded-lg py-3 px-4 w-full"
+              >
+                <div className="i-mdi:telegram w-5 h-5"></div>
+                Join Telegram Community
+              </a>
+            </div>
+          )}
         </div>
 
         {/* Base Fee Explanation */}
@@ -679,9 +771,7 @@ export function GraduationForm({ onNoDexSetup }: GraduationFormProps) {
         <FeeConfigWithCalculator
           makerFee={makerFee}
           takerFee={takerFee}
-          readOnly={false}
-          isSavingFees={isSavingFees}
-          onSaveFees={handleSaveFees}
+          readOnly={true}
           defaultOpenCalculator={true}
         />
       </Card>
@@ -748,268 +838,289 @@ export function GraduationForm({ onNoDexSetup }: GraduationFormProps) {
       <BaseFeeExplanation />
 
       <div className="mb-6">
-        <div className="mb-4">
-          <label htmlFor="chain" className="block text-sm font-medium mb-1">
-            Blockchain
-          </label>
-          <div className="text-xs text-gray-400 mb-2">
-            Select which blockchain you'll use to send ORDER tokens. This
-            doesn't affect where your DEX will operate, as Orderly is an
-            omnichain infrastructure. The ORDER token requirement is simply a
-            commitment fee.
-          </div>
-          <select
-            id="chain"
-            value={chain}
-            onChange={handleChainChange}
-            className="w-full px-3 py-2 bg-background-card border border-light/10 rounded-lg"
-            required
-          >
-            {SUPPORTED_CHAINS.map(c => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+        <h3 className="text-xl font-semibold mb-4">1. Configure Fees</h3>
+        <div className="rounded-lg overflow-hidden">
+          <FeeConfigWithCalculator
+            makerFee={makerFee}
+            takerFee={takerFee}
+            readOnly={false}
+            defaultOpenCalculator={false}
+            onMakerFeeChange={handleMakerFeeChange}
+            onTakerFeeChange={handleTakerFeeChange}
+            makerFeeError={makerFeeError}
+            takerFeeError={takerFeeError}
+          />
         </div>
+      </div>
 
-        <FormInput
-          id="preferredBrokerId"
-          label="Preferred Broker ID"
-          type="text"
-          value={preferredBrokerId}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            setPreferredBrokerId(e.target.value)
-          }
-          placeholder="my-broker-id"
-          required
-          helpText={
-            <>
-              <div className="text-gray-400 mb-1">
-                Your preferred unique broker ID (lowercase letters, numbers,
-                hyphens, and underscores only)
-              </div>
-              <div className="text-gray-400 mt-1">
-                This ID uniquely identifies your DEX in the Orderly ecosystem
-                and will be used for revenue tracking and user rewards.
-              </div>
-            </>
-          }
-          validator={value => {
-            if (!new RegExp("^[a-z0-9_-]+$").test(value)) {
-              return "Broker ID must contain only lowercase letters, numbers, hyphens, and underscores";
-            }
-            if (existingBrokerIds.includes(value)) {
-              return "This broker ID is already taken. Please choose another one.";
-            }
-            return null;
-          }}
-          onError={error => setBrokerIdError(error)}
-        />
-        {!brokerIdError && preferredBrokerId && (
-          <div className="mt-1 text-xs text-success flex items-center">
-            <span className="i-mdi:check-circle mr-1"></span>
-            Broker ID is available
+      <div className="mb-6">
+        <h3 className="text-xl font-semibold mb-4">2. Transfer ORDER Tokens</h3>
+        <div className="bg-light/5 rounded-lg p-4">
+          <div className="mb-4">
+            <label htmlFor="chain" className="block text-sm font-medium mb-1">
+              Blockchain
+            </label>
+            <div className="text-xs text-gray-400 mb-2">
+              Select which blockchain you'll use to send ORDER tokens. This
+              doesn't affect where your DEX will operate, as Orderly is an
+              omnichain infrastructure. The ORDER token requirement is simply a
+              commitment fee.
+            </div>
+            <select
+              id="chain"
+              value={chain}
+              onChange={handleChainChange}
+              className="w-full px-3 py-2 bg-background-card border border-light/10 rounded-lg"
+              required
+            >
+              {SUPPORTED_CHAINS.map(c => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
           </div>
-        )}
 
-        <div className="space-y-4 mt-6">
-          {/* Direct transfer button */}
-          <div className="bg-primary/10 border border-primary/20 rounded-xl p-4">
-            <h3 className="text-md font-medium mb-2 flex items-center">
-              <div className="i-mdi:rocket-launch text-primary w-5 h-5 mr-2"></div>
-              Option 1: One-Click Transfer
-            </h3>
-            <p className="text-sm text-gray-300 mb-4">
-              Send ORDER tokens and verify in one step directly from your
-              wallet.
-            </p>
+          <FormInput
+            id="preferredBrokerId"
+            label="Preferred Broker ID"
+            type="text"
+            value={preferredBrokerId}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setPreferredBrokerId(e.target.value)
+            }
+            placeholder="my-broker-id"
+            required
+            helpText={
+              <>
+                <div className="text-gray-400 mb-1">
+                  Your preferred unique broker ID (lowercase letters, numbers,
+                  hyphens, and underscores only)
+                </div>
+                <div className="text-gray-400 mt-1">
+                  This ID uniquely identifies your DEX in the Orderly ecosystem
+                  and will be used for revenue tracking and user rewards.
+                </div>
+              </>
+            }
+            validator={value => {
+              if (!new RegExp("^[a-z0-9_-]+$").test(value)) {
+                return "Broker ID must contain only lowercase letters, numbers, hyphens, and underscores";
+              }
+              if (existingBrokerIds.includes(value)) {
+                return "This broker ID is already taken. Please choose another one.";
+              }
+              return null;
+            }}
+            onError={error => setBrokerIdError(error)}
+          />
+          {!brokerIdError && preferredBrokerId && (
+            <div className="mt-1 text-xs text-success flex items-center">
+              <span className="i-mdi:check-circle mr-1"></span>
+              Broker ID is available
+            </div>
+          )}
 
-            <div className="mb-4">
-              <div className="flex justify-between items-center mb-2">
-                <div className="text-xs text-gray-400">Using token:</div>
-                <div className="text-xs bg-info/20 text-info px-2 py-1 rounded-full flex items-center">
-                  <div className="i-mdi:information-outline mr-1 w-3.5 h-3.5"></div>
-                  <span>
-                    {chain === "ethereum" ? "Ethereum" : "Arbitrum"} ORDER
-                  </span>
+          <div className="space-y-4 mt-6">
+            {/* Direct transfer button */}
+            <div className="bg-primary/10 border border-primary/20 rounded-xl p-4">
+              <h3 className="text-md font-medium mb-2 flex items-center">
+                <div className="i-mdi:rocket-launch text-primary w-5 h-5 mr-2"></div>
+                Option 1: One-Click Transfer
+              </h3>
+              <p className="text-sm text-gray-300 mb-4">
+                Send ORDER tokens and verify in one step directly from your
+                wallet.
+              </p>
+
+              <div className="mb-4">
+                <div className="flex justify-between items-center mb-2">
+                  <div className="text-xs text-gray-400">Using token:</div>
+                  <div className="text-xs bg-info/20 text-info px-2 py-1 rounded-full flex items-center">
+                    <div className="i-mdi:information-outline mr-1 w-3.5 h-3.5"></div>
+                    <span>
+                      {chain === "ethereum" ? "Ethereum" : "Arbitrum"} ORDER
+                    </span>
+                  </div>
+                </div>
+
+                {tokenBalance && (
+                  <div className="text-xs mb-3 flex items-center">
+                    <span className="text-info">Your balance:</span>{" "}
+                    <span className="font-medium ml-1">
+                      {parseFloat(tokenBalance?.formatted || "0").toFixed(2)}{" "}
+                      ORDER
+                    </span>
+                    {parseFloat(tokenBalance?.formatted || "0") <
+                      REQUIRED_ORDER_AMOUNT && (
+                      <div className="ml-2 text-warning flex items-center">
+                        (Insufficient for graduation)
+                        <a
+                          href={getSwapUrl(chain)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="ml-2 text-primary-light hover:underline inline-flex items-center"
+                        >
+                          Buy ORDER
+                          <div className="i-mdi:open-in-new w-3 h-3 ml-0.5"></div>
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2 mb-4">
+                <div className="text-sm">Amount:</div>
+                <div className="font-medium">
+                  {REQUIRED_ORDER_AMOUNT.toLocaleString()} ORDER
                 </div>
               </div>
 
-              {tokenBalance && (
-                <div className="text-xs mb-3 flex items-center">
-                  <span className="text-info">Your balance:</span>{" "}
-                  <span className="font-medium ml-1">
-                    {parseFloat(tokenBalance?.formatted || "0").toFixed(2)}{" "}
-                    ORDER
-                  </span>
-                  {parseFloat(tokenBalance?.formatted || "0") <
-                    REQUIRED_ORDER_AMOUNT && (
-                    <div className="ml-2 text-warning flex items-center">
-                      (Insufficient for graduation)
-                      <a
-                        href={getSwapUrl(chain)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="ml-2 text-primary-light hover:underline inline-flex items-center"
-                      >
-                        Buy ORDER
-                        <div className="i-mdi:open-in-new w-3 h-3 ml-0.5"></div>
-                      </a>
-                    </div>
-                  )}
+              <Button
+                onClick={handleTransferOrder}
+                isLoading={isPending || isConfirming}
+                loadingText={
+                  isPending ? "Confirm in wallet..." : "Confirming..."
+                }
+                disabled={
+                  !!brokerIdError ||
+                  !preferredBrokerId ||
+                  (tokenBalance
+                    ? parseFloat(tokenBalance?.formatted || "0") <
+                      REQUIRED_ORDER_AMOUNT
+                    : false)
+                }
+                variant="primary"
+                className="w-full"
+              >
+                {isPending || isConfirming
+                  ? isPending
+                    ? "Confirm in wallet..."
+                    : "Confirming..."
+                  : isCorrectChain
+                    ? "Transfer ORDER Tokens"
+                    : "Switch Chain"}
+              </Button>
+
+              {isConfirmed && hash && (
+                <div className="mt-3 bg-success/10 text-success text-sm p-2 rounded">
+                  Transfer successful! Verifying transaction...
                 </div>
               )}
             </div>
 
-            <div className="flex items-center gap-2 mb-4">
-              <div className="text-sm">Amount:</div>
-              <div className="font-medium">
-                {REQUIRED_ORDER_AMOUNT.toLocaleString()} ORDER
-              </div>
+            {/* Toggle for manual hash input */}
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => setShowManualInput(!showManualInput)}
+                className="text-sm text-primary-light hover:text-primary flex items-center gap-1 mx-auto"
+              >
+                <div
+                  className={clsx(
+                    "transition-transform",
+                    showManualInput ? "rotate-90" : ""
+                  )}
+                >
+                  <div className="i-mdi:chevron-right w-4 h-4"></div>
+                </div>
+                {showManualInput
+                  ? "Hide manual option"
+                  : "I already sent ORDER tokens"}
+              </button>
             </div>
 
-            <Button
-              onClick={handleTransferOrder}
-              isLoading={isPending || isConfirming}
-              loadingText={isPending ? "Confirm in wallet..." : "Confirming..."}
-              disabled={
-                !!brokerIdError ||
-                !preferredBrokerId ||
-                (tokenBalance
-                  ? parseFloat(tokenBalance?.formatted || "0") <
-                    REQUIRED_ORDER_AMOUNT
-                  : false)
-              }
-              variant="primary"
-              className="w-full"
-            >
-              {isPending || isConfirming
-                ? isPending
-                  ? "Confirm in wallet..."
-                  : "Confirming..."
-                : isCorrectChain
-                  ? "Transfer ORDER Tokens"
-                  : "Switch Chain"}
-            </Button>
+            {/* Manual hash form - only show when toggled */}
+            {showManualInput && (
+              <div className="bg-light/5 border border-light/10 rounded-xl p-4 slide-fade-in">
+                <h3 className="text-md font-medium mb-2 flex items-center">
+                  <div className="i-mdi:file-document-outline text-gray-300 w-5 h-5 mr-2"></div>
+                  Option 2: Enter Transaction Hash
+                </h3>
+                <p className="text-sm text-gray-300 mb-4">
+                  If you've already sent ORDER tokens, enter the transaction
+                  hash below.
+                </p>
 
-            {isConfirmed && hash && (
-              <div className="mt-3 bg-success/10 text-success text-sm p-2 rounded">
-                Transfer successful! Verifying transaction...
+                <div className="bg-background-dark/50 rounded p-3 mb-4">
+                  {/* Receiver address section */}
+                  <div className="mb-2">
+                    <div className="flex justify-between items-center mb-1">
+                      <p className="text-xs text-gray-400">
+                        Send ORDER tokens to:
+                      </p>
+                      <button
+                        type="button"
+                        className="text-primary-light hover:text-primary text-xs flex items-center"
+                        onClick={() => {
+                          navigator.clipboard.writeText(currentReceiverAddress);
+                          toast.success("Address copied to clipboard");
+                        }}
+                      >
+                        <div className="i-mdi:clipboard-outline w-3 h-3 mr-1"></div>
+                        Copy
+                      </button>
+                    </div>
+                    <div className="bg-background-dark/70 p-2 rounded overflow-hidden">
+                      <code className="text-xs font-mono break-all w-full block">
+                        {currentReceiverAddress}
+                      </code>
+                    </div>
+                  </div>
+
+                  {/* ORDER token address section */}
+                  <div className="mt-3">
+                    <div className="flex justify-between items-center mb-1">
+                      <p className="text-xs text-gray-400">
+                        ORDER Token Address:
+                      </p>
+                      <a
+                        href={getSwapUrl(chain)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary-light hover:text-primary text-xs flex items-center"
+                      >
+                        <div className="i-mdi:cart w-3 h-3 mr-1"></div>
+                        Buy ORDER
+                      </a>
+                    </div>
+                    <div className="bg-background-dark/70 p-2 rounded overflow-hidden">
+                      <code className="text-xs font-mono break-all w-full block">
+                        {currentTokenAddress}
+                      </code>
+                    </div>
+                  </div>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <FormInput
+                    id="txHash"
+                    label="Transaction Hash"
+                    type="text"
+                    value={txHash}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      setTxHash(e.target.value)
+                    }
+                    placeholder="0x..."
+                    required
+                    helpText="The transaction hash of your ORDER token transfer"
+                  />
+
+                  <Button
+                    type="submit"
+                    variant="secondary"
+                    isLoading={isLoading}
+                    loadingText="Verifying..."
+                    className="w-full"
+                    disabled={!txHash || !!brokerIdError || !preferredBrokerId}
+                  >
+                    Verify Transaction
+                  </Button>
+                </form>
               </div>
             )}
           </div>
-
-          {/* Toggle for manual hash input */}
-          <div className="text-center">
-            <button
-              type="button"
-              onClick={() => setShowManualInput(!showManualInput)}
-              className="text-sm text-primary-light hover:text-primary flex items-center gap-1 mx-auto"
-            >
-              <div
-                className={clsx(
-                  "transition-transform",
-                  showManualInput ? "rotate-90" : ""
-                )}
-              >
-                <div className="i-mdi:chevron-right w-4 h-4"></div>
-              </div>
-              {showManualInput
-                ? "Hide manual option"
-                : "I already sent ORDER tokens"}
-            </button>
-          </div>
-
-          {/* Manual hash form - only show when toggled */}
-          {showManualInput && (
-            <div className="bg-light/5 border border-light/10 rounded-xl p-4 slide-fade-in">
-              <h3 className="text-md font-medium mb-2 flex items-center">
-                <div className="i-mdi:file-document-outline text-gray-300 w-5 h-5 mr-2"></div>
-                Option 2: Enter Transaction Hash
-              </h3>
-              <p className="text-sm text-gray-300 mb-4">
-                If you've already sent ORDER tokens, enter the transaction hash
-                below.
-              </p>
-
-              <div className="bg-background-dark/50 rounded p-3 mb-4">
-                {/* Receiver address section */}
-                <div className="mb-2">
-                  <div className="flex justify-between items-center mb-1">
-                    <p className="text-xs text-gray-400">
-                      Send ORDER tokens to:
-                    </p>
-                    <button
-                      type="button"
-                      className="text-primary-light hover:text-primary text-xs flex items-center"
-                      onClick={() => {
-                        navigator.clipboard.writeText(currentReceiverAddress);
-                        toast.success("Address copied to clipboard");
-                      }}
-                    >
-                      <div className="i-mdi:clipboard-outline w-3 h-3 mr-1"></div>
-                      Copy
-                    </button>
-                  </div>
-                  <div className="bg-background-dark/70 p-2 rounded overflow-hidden">
-                    <code className="text-xs font-mono break-all w-full block">
-                      {currentReceiverAddress}
-                    </code>
-                  </div>
-                </div>
-
-                {/* ORDER token address section */}
-                <div className="mt-3">
-                  <div className="flex justify-between items-center mb-1">
-                    <p className="text-xs text-gray-400">
-                      ORDER Token Address:
-                    </p>
-                    <a
-                      href={getSwapUrl(chain)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary-light hover:text-primary text-xs flex items-center"
-                    >
-                      <div className="i-mdi:cart w-3 h-3 mr-1"></div>
-                      Buy ORDER
-                    </a>
-                  </div>
-                  <div className="bg-background-dark/70 p-2 rounded overflow-hidden">
-                    <code className="text-xs font-mono break-all w-full block">
-                      {currentTokenAddress}
-                    </code>
-                  </div>
-                </div>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <FormInput
-                  id="txHash"
-                  label="Transaction Hash"
-                  type="text"
-                  value={txHash}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setTxHash(e.target.value)
-                  }
-                  placeholder="0x..."
-                  required
-                  helpText="The transaction hash of your ORDER token transfer"
-                />
-
-                <Button
-                  type="submit"
-                  variant="secondary"
-                  isLoading={isLoading}
-                  loadingText="Verifying..."
-                  className="w-full"
-                  disabled={!txHash || !!brokerIdError || !preferredBrokerId}
-                >
-                  Verify Transaction
-                </Button>
-              </form>
-            </div>
-          )}
         </div>
       </div>
 
@@ -1027,16 +1138,6 @@ export function GraduationForm({ onNoDexSetup }: GraduationFormProps) {
           )}
         </div>
       )}
-
-      {/* Show the calculator regardless of verification status */}
-      <FeeConfigWithCalculator
-        makerFee={makerFee}
-        takerFee={takerFee}
-        readOnly={!result?.success}
-        isSavingFees={isSavingFees}
-        onSaveFees={handleSaveFees}
-        defaultOpenCalculator={true}
-      />
     </Card>
   );
 }

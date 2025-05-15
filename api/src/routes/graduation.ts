@@ -4,7 +4,6 @@ import { z } from "zod";
 import {
   verifyOrderTransaction,
   updatePreferredBrokerId,
-  updateDexFees,
   getDexFees,
 } from "../models/graduation";
 import { getUserDex } from "../models/dex";
@@ -14,16 +13,12 @@ const verifyTxSchema = z.object({
   txHash: z.string().min(10).max(100),
   chain: z.string().min(1).max(50),
   preferredBrokerId: z.string().min(3).max(50),
-});
-
-const updateFeesSchema = z.object({
   makerFee: z.number().int().min(0),
   takerFee: z.number().int().min(3),
 });
 
 const graduationRoutes = new Hono();
 
-// Verify transaction and update preferred broker ID
 graduationRoutes.post(
   "/verify-tx",
   zValidator("json", verifyTxSchema),
@@ -31,7 +26,8 @@ graduationRoutes.post(
     try {
       const userId = c.get("userId");
 
-      const { txHash, chain, preferredBrokerId } = c.req.valid("json");
+      const { txHash, chain, preferredBrokerId, makerFee, takerFee } =
+        c.req.valid("json");
 
       const dex = await getUserDex(userId);
       if (!dex) {
@@ -76,7 +72,9 @@ graduationRoutes.post(
 
       const updateResult = await updatePreferredBrokerId(
         userId,
-        preferredBrokerId
+        preferredBrokerId,
+        makerFee,
+        takerFee
       );
 
       if (!updateResult.success) {
@@ -89,6 +87,9 @@ graduationRoutes.post(
           "Transaction verified and preferred broker ID updated successfully",
         amount: verificationResult.amount,
         preferredBrokerId,
+        telegramGroupLink: updateResult.telegramGroupLink,
+        makerFee,
+        takerFee,
       });
     } catch (error) {
       console.error("Error in graduation verification:", error);
@@ -122,6 +123,10 @@ graduationRoutes.get("/status", async c => {
       currentBrokerId: dex.brokerId,
       approved:
         dex.brokerId !== "demo" && dex.brokerId === dex.preferredBrokerId,
+      telegramGroupLink: dex.telegramInviteLink,
+      graduatedAt: dex.graduatedAt,
+      makerFee: dex.makerFee,
+      takerFee: dex.takerFee,
     });
   } catch (error) {
     console.error("Error getting graduation status:", error);
@@ -164,35 +169,5 @@ graduationRoutes.get("/fees", async c => {
     );
   }
 });
-
-// Update DEX fees
-graduationRoutes.post(
-  "/fees",
-  zValidator("json", updateFeesSchema),
-  async c => {
-    try {
-      const userId = c.get("userId");
-
-      const { makerFee, takerFee } = c.req.valid("json");
-
-      const result = await updateDexFees(userId, makerFee, takerFee);
-
-      if (result.success) {
-        return c.json(result);
-      } else {
-        return c.json(result, { status: 400 });
-      }
-    } catch (error) {
-      console.error("Error updating DEX fees:", error);
-      return c.json(
-        {
-          success: false,
-          message: `Error updating DEX fees: ${error instanceof Error ? error.message : String(error)}`,
-        },
-        { status: 500 }
-      );
-    }
-  }
-);
 
 export default graduationRoutes;
