@@ -10,10 +10,13 @@ import { Card } from "../components/Card";
 import Form from "../components/Form";
 import { useNavigate, Link } from "@remix-run/react";
 import DexSectionRenderer, {
+  DEX_SECTION_KEYS,
   DEX_SECTIONS,
 } from "../components/DexSectionRenderer";
 import { useDexForm } from "../hooks/useDexForm";
 import { DexData, ThemeTabType, defaultTheme } from "../types/dex";
+import { useBindDistrubutorCode } from "../hooks/useBindDistrubutorCode";
+import { verifyDistributorCodeMessage } from "../service/distrubutorCode";
 
 export const meta: MetaFunction = () => [
   { title: "Configure Your DEX - Orderly One" },
@@ -97,7 +100,7 @@ export default function DexConfigRoute() {
     form.setViewCssCode(false);
   };
 
-  const validateAllSections = () => {
+  const validateAllSections = async () => {
     const sectionProps = form.getSectionProps({
       handleGenerateTheme,
       handleResetTheme,
@@ -108,20 +111,28 @@ export default function DexConfigRoute() {
     const validationErrors: string[] = [];
 
     for (const section of DEX_SECTIONS) {
+      const code = form.distributorCode.trim();
+      if (section.key === DEX_SECTION_KEYS.DistributorCode && code) {
+        const error =
+          form.distributorCodeValidator(code) ||
+          (await verifyDistributorCodeMessage(code));
+        error && validationErrors.push(error);
+      }
+
       if (section.getValidationTest) {
         const isValid = section.getValidationTest(sectionProps);
+        // validate error
         if (!isValid) {
-          if (section.key === "brokerDetails") {
+          const commonErrorMessage = `${section.title}: validation failed`;
+          if (section.key === DEX_SECTION_KEYS.BrokerDetails) {
             const error = form.brokerNameValidator(form.brokerName.trim());
-            validationErrors.push(
-              error || `${section.title}: validation failed`
-            );
-          } else if (section.key === "privyConfiguration") {
+            validationErrors.push(error || commonErrorMessage);
+          } else if (section.key === DEX_SECTION_KEYS.PrivyConfiguration) {
             validationErrors.push(
               `${section.title}: Please enter a valid Terms of Use URL`
             );
           } else {
-            validationErrors.push(`${section.title}: validation failed`);
+            validationErrors.push(commonErrorMessage);
           }
         }
       }
@@ -137,12 +148,33 @@ export default function DexConfigRoute() {
     return validationErrors;
   };
 
+  const { bindDistributorCode } = useBindDistrubutorCode();
+
+  const checkAndBindDistributorCode = async () => {
+    // add distributor code
+    const isAdd = !form.dexData?.distributorCode && form.distributorCode.trim();
+    if (isAdd) {
+      const isBound = await bindDistributorCode(form.distributorCode.trim());
+      if (!isBound) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
-    const validationErrors = validateAllSections();
+    const validationErrors = await validateAllSections();
     if (validationErrors.length > 0) {
       toast.error(validationErrors[0]);
+      return;
+    }
+
+    const isValid = await checkAndBindDistributorCode();
+
+    if (!isValid) {
       return;
     }
 

@@ -5,9 +5,14 @@ import { postFormData, createDexFormData } from "../utils/apiClient";
 import { buildDexDataToSend } from "../utils/dexDataBuilder";
 import { Button } from "./Button";
 import Form from "./Form";
-import DexSectionRenderer, { DEX_SECTIONS } from "./DexSectionRenderer";
+import DexSectionRenderer, {
+  DEX_SECTION_KEYS,
+  DEX_SECTIONS,
+} from "./DexSectionRenderer";
 import { useDexForm } from "../hooks/useDexForm";
 import { DexData, ThemeTabType } from "../types/dex";
+import { useBindDistrubutorCode } from "../hooks/useBindDistrubutorCode";
+import { verifyDistributorCodeMessage } from "../service/distrubutorCode";
 
 const TOTAL_STEPS = DEX_SECTIONS.length;
 
@@ -24,6 +29,7 @@ export default function DexSetupAssistant({
 }: DexSetupAssistantProps) {
   const form = useDexForm();
   const { openModal } = useModal();
+  const { bindDistributorCode } = useBindDistrubutorCode();
 
   const [isSaving, setIsSaving] = useState(false);
   const [isForking] = useState(false);
@@ -89,7 +95,7 @@ export default function DexSetupAssistant({
   const allRequiredPreviousStepsCompleted = (stepNumber: number) => {
     if (stepNumber === 1) return true;
     for (let i = 1; i < stepNumber; i++) {
-      const stepConfig = DEX_SECTIONS.find(s => s.id === i);
+      const stepConfig = DEX_SECTIONS.find((s) => s.id === i);
       if (stepConfig && !stepConfig.isOptional && !completedSteps[i]) {
         return false;
       }
@@ -97,18 +103,32 @@ export default function DexSetupAssistant({
     return true;
   };
 
-  const handleNextStep = (step: number) => {
-    const currentStepConfig = DEX_SECTIONS.find(s => s.id === step);
-    if (currentStepConfig && !currentStepConfig.isOptional) {
-      if (step === 1) {
-        const validationError = form.brokerNameValidator(
-          form.brokerName.trim()
-        );
+  const handleNextStep = async (step: number, skip?: boolean) => {
+    const currentStepConfig = DEX_SECTIONS.find((s) => s.id === step);
+
+    if (
+      currentStepConfig &&
+      currentStepConfig.key === DEX_SECTION_KEYS.DistributorCode
+    ) {
+      if (skip) {
+        form.setDistributorCode("");
+      } else {
+        // only validate distributor code if it is filled
+        const distributorCode = form.distributorCode.trim();
+
+        if (!distributorCode) {
+          toast.error("Please input distributor code.");
+          return;
+        }
+
+        const validationError =
+          form.distributorCodeValidator(distributorCode) ||
+          (await verifyDistributorCodeMessage(distributorCode));
         if (validationError !== null) {
           toast.error(
             typeof validationError === "string"
               ? validationError
-              : "Broker name is invalid. It must be between 3 and 50 characters."
+              : "Distributor code is invalid. It must be between 4 and 10 characters."
           );
           return;
         }
@@ -116,7 +136,24 @@ export default function DexSetupAssistant({
     }
 
     if (
-      step === DEX_SECTIONS.find(s => s.title === "Privy Configuration")?.id
+      currentStepConfig &&
+      !currentStepConfig.isOptional &&
+      !skip &&
+      currentStepConfig.key === DEX_SECTION_KEYS.BrokerDetails
+    ) {
+      const validationError = form.brokerNameValidator(form.brokerName.trim());
+      if (validationError !== null) {
+        toast.error(
+          typeof validationError === "string"
+            ? validationError
+            : "Broker name is invalid. It must be between 3 and 50 characters."
+        );
+        return;
+      }
+    }
+
+    if (
+      step === DEX_SECTIONS.find((s) => s.title === "Privy Configuration")?.id
     ) {
       const privyTermsOfUseFilled =
         form.privyTermsOfUse && form.privyTermsOfUse.trim() !== "";
@@ -130,17 +167,22 @@ export default function DexSetupAssistant({
       }
     }
 
-    setCompletedSteps(prev => ({ ...prev, [step]: true }));
+    setCompletedSteps((prev) => ({ ...prev, [step]: true }));
     if (step < TOTAL_STEPS) {
       setCurrentStep(step + 1);
 
       setTimeout(() => {
-        const nextStepElement = document.getElementById(`step-${step + 1}`);
+        const id =
+          currentStepConfig?.key === DEX_SECTION_KEYS.BrokerDetails
+            ? `step-${step}`
+            : `step-${step + 1}`;
+
+        const nextStepElement = document.getElementById(id);
         if (nextStepElement) {
           nextStepElement.scrollIntoView({
             behavior: "smooth",
             block: "start",
-            inline: "nearest",
+            inline: "start",
           });
         }
       }, 100);
@@ -150,7 +192,7 @@ export default function DexSetupAssistant({
     }
   };
 
-  const validateAllSections = () => {
+  const validateAllSections = async () => {
     const sectionProps = form.getSectionProps({
       handleGenerateTheme,
       handleResetTheme,
@@ -161,20 +203,27 @@ export default function DexSetupAssistant({
     const validationErrors: string[] = [];
 
     for (const section of DEX_SECTIONS) {
+      const code = form.distributorCode.trim();
+      if (section.key === DEX_SECTION_KEYS.DistributorCode && code) {
+        const error =
+          form.distributorCodeValidator(code) ||
+          (await verifyDistributorCodeMessage(code));
+        error && validationErrors.push(error);
+      }
+
       if (section.getValidationTest) {
         const isValid = section.getValidationTest(sectionProps);
         if (!isValid) {
-          if (section.key === "brokerDetails") {
+          const commonErrorMessage = `${section.title}: validation failed`;
+          if (section.key === DEX_SECTION_KEYS.BrokerDetails) {
             const error = form.brokerNameValidator(form.brokerName.trim());
-            validationErrors.push(
-              error || `${section.title}: validation failed`
-            );
-          } else if (section.key === "privyConfiguration") {
+            validationErrors.push(error || commonErrorMessage);
+          } else if (section.key === DEX_SECTION_KEYS.PrivyConfiguration) {
             validationErrors.push(
               `${section.title}: Please enter a valid Terms of Use URL`
             );
           } else {
-            validationErrors.push(`${section.title}: validation failed`);
+            validationErrors.push(commonErrorMessage);
           }
         }
       }
@@ -190,17 +239,27 @@ export default function DexSetupAssistant({
     return validationErrors;
   };
 
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault();
-
-    const validationErrors = validateAllSections();
+  const createDex = async (options: {
+    forkingStatus: string;
+    successMessageWithRepo: string;
+    successMessageWithoutRepo: string;
+    onSuccess?: (savedData: DexData) => void | Promise<void>;
+  }) => {
+    const validationErrors = await validateAllSections();
     if (validationErrors.length > 0) {
       toast.error(validationErrors[0]);
       return;
     }
 
+    if (form.distributorCode.trim()) {
+      const binded = await bindDistributorCode(form.distributorCode.trim());
+      if (!binded) {
+        return;
+      }
+    }
+
     setIsSaving(true);
-    setForkingStatus("Creating DEX and forking repository...");
+    setForkingStatus(options.forkingStatus);
 
     try {
       const { formData: formValues } = await form.getFormDataWithBase64Images();
@@ -213,7 +272,6 @@ export default function DexSetupAssistant({
       };
 
       const dexDataToSend = buildDexDataToSend(formValues);
-
       const formData = createDexFormData(dexDataToSend, imageBlobs);
 
       const savedData = await postFormData<DexData>(
@@ -226,70 +284,46 @@ export default function DexSetupAssistant({
       );
 
       if (savedData.repoUrl) {
-        toast.success("DEX created and repository forked successfully!");
+        toast.success(options.successMessageWithRepo);
       } else {
-        toast.success("DEX information saved successfully!");
+        toast.success(options.successMessageWithoutRepo);
         toast.warning("Repository could not be forked. You can retry later.");
       }
 
+      if (options.onSuccess) {
+        await options.onSuccess(savedData);
+      }
+
       await refreshDexData();
-    } catch (error) {
-      console.error("Error in component:", error);
+    } catch (error: any) {
+      console.error("Error creating DEX:", error);
+      toast.error(error?.message || "Failed to create DEX. Please try again.");
     } finally {
       setIsSaving(false);
       setForkingStatus("");
     }
   };
 
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
+    await createDex({
+      forkingStatus: "Creating DEX and forking repository...",
+      successMessageWithRepo: "DEX created and repository forked successfully!",
+      successMessageWithoutRepo: "DEX information saved successfully!",
+    });
+  };
+
   const handleQuickSetup = async () => {
-    const validationErrors = validateAllSections();
-    if (validationErrors.length > 0) {
-      toast.error(validationErrors[0]);
-      return;
-    }
-
-    setIsSaving(true);
-    setForkingStatus("Creating DEX with current settings...");
-
-    try {
-      const { formData: formValues } = await form.getFormDataWithBase64Images();
-
-      const imageBlobs = {
-        primaryLogo: form.primaryLogo,
-        secondaryLogo: form.secondaryLogo,
-        favicon: form.favicon,
-        pnlPosters: form.pnlPosters,
-      };
-
-      const dexDataToSend = buildDexDataToSend(formValues);
-
-      const formData = createDexFormData(dexDataToSend, imageBlobs);
-      const savedData = await postFormData<DexData>(
-        "api/dex",
-        formData,
-        token,
-        { showToastOnError: false }
-      );
-
-      if (savedData.repoUrl) {
-        toast.success(
-          "DEX created with current settings! Repository is being set up."
-        );
-      } else {
-        toast.success("DEX created with current settings!");
-        toast.warning("Repository could not be forked. You can retry later.");
-      }
-      updateDexData(savedData);
-      await refreshDexData();
-    } catch (error) {
-      console.error("Error in quick setup:", error);
-      toast.error(
-        "Failed to create DEX with default settings. Please try again."
-      );
-    } finally {
-      setIsSaving(false);
-      setForkingStatus("");
-    }
+    await createDex({
+      forkingStatus: "Creating DEX with current settings...",
+      successMessageWithRepo:
+        "DEX created with current settings! Repository is being set up.",
+      successMessageWithoutRepo: "DEX created with current settings!",
+      onSuccess: (savedData) => {
+        updateDexData(savedData);
+      },
+    });
   };
 
   if ((isSaving || isForking) && forkingStatus) {
@@ -308,6 +342,40 @@ export default function DexSetupAssistant({
       </div>
     );
   }
+
+  const quickSetup = form.brokerName.trim() &&
+    !(currentStep > TOTAL_STEPS && completedSteps[TOTAL_STEPS]) && (
+      <div
+        id="quick-setup"
+        className="mb-4 p-6 bg-primary/5 border border-primary/20 rounded-lg slide-fade-in flex flex-col items-center justify-center"
+      >
+        <h3 className="text-lg font-semibold text-primary-light mb-2 flex items-center justify-center">
+          <div className="i-mdi:lightning-bolt h-5 w-5 mr-2"></div>
+          Quick Setup
+        </h3>
+        <p className="text-gray-300 mb-4">
+          Create your DEX with current settings. You can customize it later.
+        </p>
+        <Button
+          variant="primary"
+          onClick={handleQuickSetup}
+          disabled={isSaving || isForking}
+          className="shadow-lg hover:shadow-xl transition-all duration-200"
+        >
+          {isSaving || isForking ? (
+            <>
+              <div className="i-svg-spinners:pulse-rings-multiple h-4 w-4 mr-2"></div>
+              Creating DEX...
+            </>
+          ) : (
+            <>
+              <div className="i-mdi:rocket-launch h-4 w-4 mr-2"></div>
+              Create DEX Now
+            </>
+          )}
+        </Button>
+      </div>
+    );
 
   return (
     <div className="container mx-auto p-4 max-w-3xl mt-26 pb-52">
@@ -348,6 +416,17 @@ export default function DexSetupAssistant({
           setCurrentStep={setCurrentStep}
           handleNextStep={handleNextStep}
           allRequiredPreviousStepsCompleted={allRequiredPreviousStepsCompleted}
+          customRender={(children, section) => {
+            if (section.key === DEX_SECTION_KEYS.Branding) {
+              return (
+                <div>
+                  {quickSetup}
+                  {children}
+                </div>
+              );
+            }
+            return children;
+          }}
         />
       </Form>
 
@@ -362,37 +441,6 @@ export default function DexSetupAssistant({
               You're ready to create your DEX. Click the "Create Your DEX"
               button above to proceed.
             </p>
-          </div>
-        )}
-
-      {form.brokerName.trim() &&
-        !(currentStep > TOTAL_STEPS && completedSteps[TOTAL_STEPS]) && (
-          <div className="mt-8 p-6 bg-primary/5 border border-primary/20 rounded-lg text-center slide-fade-in">
-            <h3 className="text-lg font-semibold text-primary-light mb-2 flex items-center justify-center">
-              <div className="i-mdi:lightning-bolt h-5 w-5 mr-2"></div>
-              Quick Setup
-            </h3>
-            <p className="text-gray-300 mb-4">
-              Create your DEX with current settings. You can customize it later.
-            </p>
-            <Button
-              variant="primary"
-              onClick={handleQuickSetup}
-              disabled={isSaving || isForking}
-              className="shadow-lg hover:shadow-xl transition-all duration-200"
-            >
-              {isSaving || isForking ? (
-                <>
-                  <div className="i-svg-spinners:pulse-rings-multiple h-4 w-4 mr-2"></div>
-                  Creating DEX...
-                </>
-              ) : (
-                <>
-                  <div className="i-mdi:rocket-launch h-4 w-4 mr-2"></div>
-                  Create DEX Now
-                </>
-              )}
-            </Button>
           </div>
         )}
     </div>

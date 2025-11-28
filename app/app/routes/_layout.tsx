@@ -12,6 +12,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import Footer from "../components/Footer";
 import { useInitAmplitude } from "../hooks/useInitAmplitude";
+import { ChainsSelect } from "../components/ChainsSelect";
 
 /**
  * This is a minimal layout route for preview content.
@@ -64,6 +65,7 @@ export default function Layout() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
+                      <ChainsSelect />
                       <WalletConnect />
                       {isMobile && (
                         <MobileNavigation

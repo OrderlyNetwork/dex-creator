@@ -26,6 +26,7 @@ export interface FormInputProps {
   showValidation?: boolean;
   pattern?: string;
   disabled?: boolean;
+  suffix?: ReactNode;
 }
 
 export default function FormInput({
@@ -45,6 +46,7 @@ export default function FormInput({
   showValidation = true,
   pattern,
   disabled = false,
+  suffix,
 }: FormInputProps) {
   const generatedId = useId();
   const id = providedId || generatedId;
@@ -66,12 +68,16 @@ export default function FormInput({
 
     // Check min length
     if (minLength && value.trim().length < minLength) {
-      return `${typeof label === "string" ? label : "Field"} must be at least ${minLength} characters`;
+      return `${
+        typeof label === "string" ? label : "Field"
+      } must be at least ${minLength} characters`;
     }
 
     // Check max length
     if (maxLength && value.trim().length > maxLength) {
-      return `${typeof label === "string" ? label : "Field"} cannot exceed ${maxLength} characters`;
+      return `${
+        typeof label === "string" ? label : "Field"
+      } cannot exceed ${maxLength} characters`;
     }
 
     // Run custom validator if provided
@@ -115,22 +121,25 @@ export default function FormInput({
         {label}
       </label>
 
-      <input
-        id={id}
-        type={type}
-        value={value}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        placeholder={placeholder}
-        className={`w-full px-3 md:px-4 py-2 bg-dark/50 border ${
-          error ? "border-error/50" : "border-light/10"
-        } rounded-lg focus:ring-1 focus:ring-primary focus:border-primary text-sm md:text-base`}
-        minLength={minLength}
-        maxLength={maxLength}
-        required={required}
-        pattern={pattern}
-        disabled={disabled}
-      />
+      <div className="flex items-center relative">
+        <input
+          id={id}
+          type={type}
+          value={value}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          placeholder={placeholder}
+          className={`w-full px-3 md:px-4 py-2 bg-dark/50 border ${
+            error ? "border-error/50" : "border-light/10"
+          } rounded-lg focus:ring-1 focus:ring-primary focus:border-primary text-sm md:text-base`}
+          minLength={minLength}
+          maxLength={maxLength}
+          required={required}
+          pattern={pattern}
+          disabled={disabled}
+        />
+        {suffix}
+      </div>
 
       {error && <p className="mt-1 text-xs text-error">{error}</p>}
 

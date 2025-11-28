@@ -6,6 +6,7 @@ import {
   AbiCoder,
   JsonRpcSigner,
 } from "ethers";
+import { Address } from "viem";
 
 export type BrokerInfo = {
   broker_id: string;
@@ -52,7 +53,7 @@ export type AutoReferralInfo = {
 
 const ORDERLY_KEY_LOCAL_STORAGE = "orderly-key";
 
-const MESSAGE_TYPES = {
+export const MESSAGE_TYPES = {
   EIP712Domain: [
     { name: "name", type: "string" },
     { name: "version", type: "string" },
@@ -107,6 +108,16 @@ const MESSAGE_TYPES = {
     { name: "settleNonce", type: "uint64" },
     { name: "timestamp", type: "uint64" },
   ],
+  BindDistributorCode: [
+    {
+      name: "inviteeAddress",
+      type: "address",
+    },
+    {
+      name: "distributorCode",
+      type: "string",
+    },
+  ],
 };
 
 export async function checkAccountRegistration(
@@ -149,14 +160,14 @@ export async function pollAccountRegistration(
 
       if (attempt < maxAttempts) {
         const delay = initialDelay * attempt;
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
     } catch (error) {
       console.warn(`Registration check attempt ${attempt} failed:`, error);
 
       if (attempt < maxAttempts) {
         const delay = initialDelay * attempt;
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
   }
@@ -224,7 +235,9 @@ export async function addOrderlyKey(
   accountId: string
 ): Promise<Uint8Array> {
   const privateKey = utils.randomPrivateKey();
-  const orderlyKey = `ed25519:${encodeBase58(await getPublicKeyAsync(privateKey))}`;
+  const orderlyKey = `ed25519:${encodeBase58(
+    await getPublicKeyAsync(privateKey)
+  )}`;
   const timestamp = Date.now();
   const addKeyMessage = {
     brokerId,
@@ -271,7 +284,9 @@ export async function addDelegateOrderlyKey(
   accountId: string
 ): Promise<Uint8Array> {
   const privateKey = utils.randomPrivateKey();
-  const orderlyKey = `ed25519:${encodeBase58(await getPublicKeyAsync(privateKey))}`;
+  const orderlyKey = `ed25519:${encodeBase58(
+    await getPublicKeyAsync(privateKey)
+  )}`;
   const timestamp = Date.now();
   const addKeyMessage = {
     delegateContract,
@@ -385,6 +400,34 @@ export async function getClientHolding(
   return data.data?.holding || [];
 }
 
+export async function privateFetch(
+  input: URL | string,
+  init?: RequestInit | undefined
+): Promise<any> {
+  const timestamp = Date.now();
+  const encoder = new TextEncoder();
+
+  const url = new URL(input);
+  let message = `${String(timestamp)}${init?.method ?? "GET"}${url.pathname}`;
+  if (init?.body) {
+    message += init.body;
+  }
+
+  // const response = await fetch(`${getBaseUrl()}${input}`,{
+  //   headers: {
+  //     "Content-Type":
+  //       init?.method !== "GET" && init?.method !== "DELETE"
+  //         ? "application/json"
+  //         : "application/x-www-form-urlencoded",
+  //     "orderly-timestamp": String(timestamp),
+  //     "orderly-signature": base64EncodeURL(orderlySignature),
+  //     ...(init?.headers ?? {}),
+  //   },
+  //   ...(init ?? {}),);
+  // const data = await response.json();
+  // return data.data;
+}
+
 async function signAndSendRequest(
   accountId: string,
   orderlyKey: Uint8Array | string,
@@ -409,7 +452,9 @@ async function signAndSendRequest(
           : "application/x-www-form-urlencoded",
       "orderly-timestamp": String(timestamp),
       "orderly-account-id": accountId,
-      "orderly-key": `ed25519:${encodeBase58(await getPublicKeyAsync(orderlyKey))}`,
+      "orderly-key": `ed25519:${encodeBase58(
+        await getPublicKeyAsync(orderlyKey)
+      )}`,
       "orderly-signature": base64EncodeURL(orderlySignature),
       ...(init?.headers ?? {}),
     },
@@ -530,7 +575,7 @@ export function saveOrderlyKey(
 function base64EncodeURL(byteArray: Uint8Array) {
   return btoa(
     Array.from(new Uint8Array(byteArray))
-      .map(val => {
+      .map((val) => {
         return String.fromCharCode(val);
       })
       .join("")
@@ -544,7 +589,7 @@ function base64DecodeURL(b64urlstring: string): Uint8Array {
   return new Uint8Array(
     atob(b64urlstring.replace(/-/g, "+").replace(/_/g, "/"))
       .split("")
-      .map(val => {
+      .map((val) => {
         return val.charCodeAt(0);
       })
   );
@@ -554,7 +599,7 @@ export type EIP712Domain = {
   name: string;
   version: string;
   chainId: number;
-  verifyingContract: string;
+  verifyingContract: Address;
 };
 
 export function getOffChainDomain(chainId: number | string): EIP712Domain {
@@ -584,14 +629,14 @@ export function getBaseUrl(): string {
     case "staging":
       return "https://testnet-api.orderly.org";
     case "qa":
-      return "https://qa-api-aliyun.orderly.network";
+      return "https://qa-api-aliyun.orderly.org";
     case "dev":
     default:
-      return "https://dev-api-aliyun.orderly.network";
+      return "https://dev-api-aliyun.orderly.org";
   }
 }
 
-function getVerifyingAddress(): string {
+function getVerifyingAddress(): Address {
   const deploymentEnv = import.meta.env.VITE_DEPLOYMENT_ENV;
 
   switch (deploymentEnv) {

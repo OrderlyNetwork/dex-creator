@@ -8,13 +8,15 @@ export interface AccordionItemProps {
   children: React.ReactNode;
   stepNumber: number;
   isOptional: boolean;
-  onNextInternal: () => void;
+  showSkip?: boolean;
+  onNextInternal: (skip?: boolean) => void;
   isStepContentValidTest: boolean;
   isActive: boolean;
   isCompleted: boolean;
   canOpen: boolean;
   setCurrentStep: (step: number) => void;
   allRequiredPreviousStepsCompleted: (stepNumber: number) => boolean;
+  value?: string;
 }
 
 const AccordionItem: React.FC<AccordionItemProps> = ({
@@ -22,6 +24,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
   children,
   stepNumber,
   isOptional,
+  showSkip,
   onNextInternal,
   isStepContentValidTest,
   isActive,
@@ -29,14 +32,19 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
   canOpen,
   setCurrentStep,
   allRequiredPreviousStepsCompleted,
+  value,
 }) => {
   return (
     <Card
       id={`step-${stepNumber}`}
-      className={`overflow-visible transition-all duration-300 ease-in-out ${isActive ? "border-primary shadow-lg" : "border-light/10"}`}
+      className={`overflow-visible transition-all duration-300 ease-in-out ${
+        isActive ? "border-primary shadow-lg" : "border-light/10"
+      }`}
     >
       <div
-        className={`flex justify-between items-center p-4 cursor-pointer hover:bg-base-7/80 ${isCompleted && !isActive ? "bg-base-7/30" : ""}`}
+        className={`flex justify-between items-center p-4 cursor-pointer hover:bg-base-7/80 ${
+          isCompleted && !isActive ? "bg-base-7/30" : ""
+        }`}
         onClick={() => {
           if (canOpen) {
             setCurrentStep(stepNumber);
@@ -53,25 +61,44 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
             <div className="i-mdi:check-circle text-success h-5 w-5 mr-3"></div>
           )}
           <h3
-            className={`text-lg font-bold ${isCompleted && !isActive ? "text-gray-400" : "text-white"}`}
+            className={`text-lg font-bold ${
+              isCompleted && !isActive ? "text-gray-400" : "text-white"
+            }`}
           >
-            {title}{" "}
+            {title}
             {isOptional && (
               <span className="text-sm text-gray-500">(Optional)</span>
             )}
           </h3>
         </div>
-        <div
-          className={`i-mdi:chevron-down h-6 w-6 transition-transform ${isActive ? "rotate-180" : ""}`}
-        ></div>
+
+        <div className="flex items-center gap-5">
+          {!isActive && <span className="text-sm">{value}</span>}
+
+          <div
+            className={`i-mdi:chevron-down h-6 w-6 transition-transform ${
+              isActive ? "rotate-180" : ""
+            }`}
+          />
+        </div>
       </div>
       {isActive && (
         <div className="p-3 md:p-6 border-t border-light/10 slide-fade-in bg-base-8/30">
           {children}
           <div className="mt-6 flex justify-end space-x-3">
+            {showSkip && (
+              <Button
+                variant="secondary"
+                onClick={() => onNextInternal(true)}
+                type="button"
+                size="sm"
+              >
+                Skip
+              </Button>
+            )}
             <Button
               variant="primary"
-              onClick={onNextInternal}
+              onClick={() => onNextInternal(false)}
               type="button"
               size="sm"
               disabled={!isOptional && !isStepContentValidTest}

@@ -106,6 +106,7 @@ export interface DexConfig {
   seoKeywords: string | null;
   analyticsScript: string | null;
   symbolList: string | null;
+  distributorCode: string | null;
 }
 
 /**

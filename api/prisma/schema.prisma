@@ -95,8 +95,9 @@ model Dex {
   graduationTxHash              String?  @unique // Transaction hash used for graduation (prevents reuse)
   multisigChainId               Int? // Chain ID where the multisig delegate signer link was established
   swapFeeBps                    Int? // Swap fee in basis points for WooFi integration (e.g., 100 = 1%)
-  symbolList                    String? // Comma-separated list of trading symbols to filter/reorder (e.g., "PERP_SOL_USDC,PERP_BTC_USDC")
-  
+  symbolList                    String? // Comma-separated list of trading symbols to filter/reorder (e.g., "PERP_SOL_USDC,PERP_BTC_USDC")  
+  distributorCode               String? // Distributor code for the DEX
+
   // Social Card Fields
   description  String? // DEX description for social cards
   banner       String? // Banner image for social cards (defaults to primaryLogo for migration)

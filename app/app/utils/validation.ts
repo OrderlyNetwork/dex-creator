@@ -159,3 +159,32 @@ export const composeValidators =
     }
     return null;
   };
+
+/**
+ * Creates an optional minimum length validator
+ * @param length Minimum required length
+ * @param fieldName Name of the field to use in error message
+ * @returns A validation function
+ */
+export const optionalMinLength =
+  (length: number, fieldName: string): ValidationFunction =>
+  (value: string) => {
+    if (value && value.trim().length < length) {
+      return `${fieldName} must be at least ${length} characters`;
+    }
+    return null;
+  };
+
+/**
+ * only letters or digits
+ * @param fieldName Name of the field to use in error message
+ * @returns A validation function
+ */
+export const alphanumeric =
+  (fieldName: string): ValidationFunction =>
+  (value: string) => {
+    const regex = /^[a-zA-Z0-9]*$/;
+    return !regex.test(value.trim())
+      ? `${fieldName} can only contain letters, numbers`
+      : null;
+  };

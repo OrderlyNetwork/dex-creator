@@ -22,6 +22,7 @@ function decodeBase64(str: string): string {
 
 export function convertDexToDexConfig(dex: Dex): DexConfig {
   return {
+    distributorCode: dex.distributorCode,
     brokerId: dex.brokerId,
     brokerName: dex.brokerName,
     chainIds: dex.chainIds.length > 0 ? dex.chainIds : null,
@@ -101,6 +102,7 @@ function convertValidatedDataToDexConfig(
     seoKeywords: validatedData.seoKeywords ?? null,
     analyticsScript: decodedAnalyticsScript,
     symbolList: validatedData.symbolList ?? null,
+    distributorCode: validatedData.distributorCode ?? null,
   };
 }
 
@@ -196,7 +198,7 @@ export const dexSchema = z.object({
   themeCSS: z
     .string()
     .refine(
-      value => {
+      (value) => {
         if (!value || value.trim() === "") return true;
         const validation = validateCSS(value);
         return validation.isValid;
@@ -231,15 +233,15 @@ export const dexSchema = z.object({
   customMenus: z
     .string()
     .refine(
-      value => {
+      (value) => {
         if (!value || value.trim() === "") return true;
 
         const menuItems = value.split(";");
-        return menuItems.every(item => {
+        return menuItems.every((item) => {
           if (!item.trim()) return false;
           const parts = item.split(",");
           if (parts.length !== 2) return false;
-          const [name, url] = parts.map(p => p.trim());
+          const [name, url] = parts.map((p) => p.trim());
           if (!name || !url) return false;
 
           try {
@@ -321,15 +323,27 @@ export const dexSchema = z.object({
   symbolList: z
     .string()
     .refine(
-      value => {
+      (value) => {
         if (!value || value.trim() === "") return true;
-        const symbols = value.split(",").map(s => s.trim());
-        return symbols.every(s => s.length > 0);
+        const symbols = value.split(",").map((s) => s.trim());
+        return symbols.every((s) => s.length > 0);
       },
       {
         message:
           "Symbol list must be comma-separated symbols (e.g., PERP_SOL_USDC,PERP_BTC_USDC)",
       }
+    )
+    .nullish(),
+  distributorCode: z
+    .string()
+    .max(10, "Distributor code cannot exceed 10 characters")
+    .regex(
+      /^[a-zA-Z0-9]*$/,
+      "Distributor code can only contain letters, numbers"
+    )
+    .refine(
+      (val) => !val || val.length >= 4,
+      "Distributor code must be at least 4 characters"
     )
     .nullish(),
 });
@@ -343,7 +357,7 @@ export const dexFormSchema = dexSchema
     chainIds: z
       .union([
         z.array(z.number().positive().int()),
-        z.string().transform(val => {
+        z.string().transform((val) => {
           if (!val || val.trim() === "") return [];
           try {
             return JSON.parse(val);
@@ -356,7 +370,7 @@ export const dexFormSchema = dexSchema
     defaultChain: z
       .union([
         z.number().positive().int(),
-        z.string().transform(val => {
+        z.string().transform((val) => {
           if (!val || val.trim() === "") return undefined;
           const parsed = parseInt(val, 10);
           return isNaN(parsed) ? undefined : parsed;
@@ -364,30 +378,30 @@ export const dexFormSchema = dexSchema
       ])
       .optional(),
     enableAbstractWallet: z
-      .union([z.boolean(), z.string().transform(val => val === "true")])
+      .union([z.boolean(), z.string().transform((val) => val === "true")])
       .optional(),
     disableMainnet: z
-      .union([z.boolean(), z.string().transform(val => val === "true")])
+      .union([z.boolean(), z.string().transform((val) => val === "true")])
       .optional(),
     disableTestnet: z
-      .union([z.boolean(), z.string().transform(val => val === "true")])
+      .union([z.boolean(), z.string().transform((val) => val === "true")])
       .optional(),
     disableEvmWallets: z
-      .union([z.boolean(), z.string().transform(val => val === "true")])
+      .union([z.boolean(), z.string().transform((val) => val === "true")])
       .optional(),
     disableSolanaWallets: z
-      .union([z.boolean(), z.string().transform(val => val === "true")])
+      .union([z.boolean(), z.string().transform((val) => val === "true")])
       .optional(),
     enableServiceDisclaimerDialog: z
-      .union([z.boolean(), z.string().transform(val => val === "true")])
+      .union([z.boolean(), z.string().transform((val) => val === "true")])
       .optional(),
     enableCampaigns: z
-      .union([z.boolean(), z.string().transform(val => val === "true")])
+      .union([z.boolean(), z.string().transform((val) => val === "true")])
       .optional(),
     availableLanguages: z
       .union([
         z.array(z.nativeEnum(LocaleEnum)),
-        z.string().transform(val => {
+        z.string().transform((val) => {
           if (!val || val.trim() === "") return ["en"];
           try {
             return JSON.parse(val);
@@ -400,7 +414,7 @@ export const dexFormSchema = dexSchema
     swapFeeBps: z
       .union([
         z.number().int().min(0).max(100),
-        z.string().transform(val => {
+        z.string().transform((val) => {
           if (!val || val.trim() === "") return null;
           const parsed = parseInt(val, 10);
           if (isNaN(parsed)) return null;
@@ -612,6 +626,7 @@ export async function createDex(
             id: userId,
           },
         },
+        distributorCode: validatedData.distributorCode,
       },
     });
 
@@ -773,6 +788,11 @@ export async function updateDex(
   }
   if ("symbolList" in validatedData)
     updateData.symbolList = validatedData.symbolList;
+
+  // only update distributor code if it is not already set
+  if ("distributorCode" in validatedData && !dex?.distributorCode) {
+    updateData.distributorCode = validatedData.distributorCode ?? undefined;
+  }
 
   try {
     const prismaClient = await getPrisma();
@@ -1001,7 +1021,7 @@ export async function getAllDexes(
     : {};
 
   const prismaClient = await getPrisma();
-  return prismaClient.$transaction(async tx => {
+  return prismaClient.$transaction(async (tx) => {
     const total = await tx.dex.count({
       where: whereClause,
     });
@@ -1192,7 +1212,7 @@ export async function convertFormDataToInternal(
     data.pnlPosters = pnlPosters;
   }
 
-  Object.keys(data).forEach(key => {
+  Object.keys(data).forEach((key) => {
     if (key.startsWith("pnlPoster") && /^pnlPoster\d+$/.test(key)) {
       delete data[key];
     }

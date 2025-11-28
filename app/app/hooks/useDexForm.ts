@@ -9,9 +9,12 @@ import {
   maxLength,
   composeValidators,
   alphanumericWithSpecialChars,
+  alphanumeric,
+  optionalMinLength,
 } from "../utils/validation";
 import { useThemeCSS } from "./useThemeCSS";
 import { ModalType } from "../context/ModalContext";
+import { useDistrubutorCode } from "./useDistrubutorInfo";
 
 const base64ToBlob = async (base64: string): Promise<Blob> => {
   const response = await fetch(base64);
@@ -19,7 +22,7 @@ const base64ToBlob = async (base64: string): Promise<Blob> => {
 };
 
 const blobToBase64 = (blob: Blob): Promise<string> => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onloadend = () => resolve(reader.result as string);
     reader.readAsDataURL(blob);
@@ -104,6 +107,8 @@ export interface DexSectionProps {
   setSwapFeeBps: (value: number | null) => void;
   symbolList: string;
   setSymbolList: (value: string) => void;
+  distributorCode: string;
+  distributorCodeValidator: (value: string) => string | null;
 }
 
 export interface DexFormData {
@@ -144,6 +149,7 @@ export interface DexFormData {
   seoKeywords: string;
   analyticsScript: string;
   symbolList: string;
+  distributorCode: string;
 }
 
 export interface UseDexFormReturn extends DexFormData {
@@ -155,6 +161,7 @@ export interface UseDexFormReturn extends DexFormData {
     token: string | null,
     dexId?: string
   ) => Promise<DexData | null>;
+  setDistributorCode: (value: string) => void;
   setBrokerName: (value: string) => void;
   setTelegramLink: (value: string) => void;
   setDiscordLink: (value: string) => void;
@@ -252,6 +259,7 @@ export interface UseDexFormReturn extends DexFormData {
       label: string;
     }>;
   }) => DexSectionProps;
+  distributorCodeValidator: (value: string) => string | null;
 }
 
 const initialFormState: DexFormData = {
@@ -292,6 +300,7 @@ const initialFormState: DexFormData = {
   seoKeywords: "",
   analyticsScript: "",
   symbolList: "",
+  distributorCode: "",
 };
 
 export function useDexForm(): UseDexFormReturn {
@@ -310,8 +319,19 @@ export function useDexForm(): UseDexFormReturn {
     alphanumericWithSpecialChars("Broker name")
   );
 
+  const distributorCodeValidator = composeValidators(
+    optionalMinLength(4, "Distributor code"),
+    maxLength(10, "Distributor code"),
+    alphanumeric("Distributor code")
+  );
+
   const urlValidator = validateUrl();
 
+  const urlDistributorCode = useDistrubutorCode();
+
+  const [distributorCode, setDistributorCode] = useState(
+    urlDistributorCode?.toLocaleUpperCase() || initialFormState.distributorCode
+  );
   const [brokerName, setBrokerName] = useState(initialFormState.brokerName);
   const [telegramLink, setTelegramLink] = useState(
     initialFormState.telegramLink
@@ -451,6 +471,9 @@ export function useDexForm(): UseDexFormReturn {
         case "symbolList":
           setSymbolList(value);
           break;
+        case "distributorCode":
+          setDistributorCode(value?.toLocaleUpperCase());
+          break;
       }
     };
 
@@ -546,6 +569,9 @@ export function useDexForm(): UseDexFormReturn {
       if (dexData.themeCSS !== undefined) {
         setCurrentTheme(dexData.themeCSS);
       }
+      if (dexData.distributorCode !== undefined) {
+        setDistributorCode(dexData.distributorCode);
+      }
     },
     []
   );
@@ -568,7 +594,7 @@ export function useDexForm(): UseDexFormReturn {
       }
       if (images.pnlPosters) {
         const posterBlobs = await Promise.all(
-          images.pnlPosters.map(poster =>
+          images.pnlPosters.map((poster) =>
             poster ? base64ToBlob(poster) : Promise.resolve(null)
           )
         );
@@ -589,7 +615,7 @@ export function useDexForm(): UseDexFormReturn {
       secondaryLogo ? blobToBase64(secondaryLogo) : Promise.resolve(null),
       favicon ? blobToBase64(favicon) : Promise.resolve(null),
       Promise.all(
-        pnlPosters.map(poster =>
+        pnlPosters.map((poster) =>
           poster ? blobToBase64(poster) : Promise.resolve(null)
         )
       ),
@@ -597,6 +623,7 @@ export function useDexForm(): UseDexFormReturn {
 
     return {
       formData: {
+        distributorCode,
         brokerName,
         telegramLink,
         discordLink,
@@ -676,6 +703,7 @@ export function useDexForm(): UseDexFormReturn {
     seoKeywords,
     analyticsScript,
     symbolList,
+    distributorCode,
   ]);
 
   const resetForm = () => {
@@ -718,6 +746,7 @@ export function useDexForm(): UseDexFormReturn {
     setSeoKeywords(initialFormState.seoKeywords);
     setAnalyticsScript(initialFormState.analyticsScript);
     setSymbolList(initialFormState.symbolList);
+    setDistributorCode(initialFormState.distributorCode);
   };
 
   const generateTheme = useCallback(
@@ -790,7 +819,7 @@ export function useDexForm(): UseDexFormReturn {
   }, []);
 
   const toggleThemeEditor = useCallback(() => {
-    setShowThemeEditor(prev => !prev);
+    setShowThemeEditor((prev) => !prev);
   }, []);
 
   const handleThemeEditorChange = useCallback((value: string) => {
@@ -856,6 +885,7 @@ export function useDexForm(): UseDexFormReturn {
             analyticsScript: response.analyticsScript || "",
             symbolList: response.symbolList || "",
             themeCSS: response.themeCSS,
+            distributorCode: response.distributorCode || "",
           });
 
           setViewCssCode(false);
@@ -965,6 +995,8 @@ export function useDexForm(): UseDexFormReturn {
       setSwapFeeBps,
       symbolList,
       setSymbolList,
+      distributorCode,
+      distributorCodeValidator,
     }),
     [
       brokerName,
@@ -993,6 +1025,7 @@ export function useDexForm(): UseDexFormReturn {
       seoKeywords,
       analyticsScript,
       symbolList,
+      distributorCode,
       walletConnectProjectId,
       privyAppId,
       privyTermsOfUse,
@@ -1030,6 +1063,7 @@ export function useDexForm(): UseDexFormReturn {
       handleThemeEditorChange,
       handleUpdateCssValue,
       handleUpdateCssColor,
+      distributorCodeValidator,
     ]
   );
 
@@ -1076,6 +1110,7 @@ export function useDexForm(): UseDexFormReturn {
     seoKeywords,
     analyticsScript,
     symbolList,
+    distributorCode,
     setBrokerName,
     setTelegramLink,
     setDiscordLink,
@@ -1113,6 +1148,7 @@ export function useDexForm(): UseDexFormReturn {
     setSeoKeywords,
     setAnalyticsScript,
     setSymbolList,
+    setDistributorCode,
     handleInputChange,
     handleImageChange,
     handlePnLPosterChange,
@@ -1136,5 +1172,6 @@ export function useDexForm(): UseDexFormReturn {
     handleUpdateCssColor,
     getSectionProps,
     resetForm,
+    distributorCodeValidator,
   };
 }

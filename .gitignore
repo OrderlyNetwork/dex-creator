@@ -66,3 +66,4 @@ next-env.d.ts
 .turbo 
 # SpecStory explanation file
 .specstory/.what-is-this.md
+.vscode

@@ -8,13 +8,16 @@ import { post, del } from "../utils/apiClient";
 import WalletConnect from "../components/WalletConnect";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
-import { useNavigate } from "@remix-run/react";
+import { useNavigate, useSearchParams } from "@remix-run/react";
 import DexCreationStatus from "../components/DexCreationStatus";
 import CustomDomainSection from "../components/CustomDomainSection";
 import DexSetupAssistant from "../components/DexSetupAssistant";
 import DexUpgrade from "../components/DexUpgrade";
 import { useDexForm } from "../hooks/useDexForm";
 import { DexData, defaultTheme } from "../types/dex";
+import { useDistrubutorInfo } from "../hooks/useDistrubutorInfo";
+import { MainnetChains } from "../components/ChainsSelect";
+import clsx from "clsx";
 
 export const meta: MetaFunction = () => [
   { title: "Create Your DEX - Orderly One" },
@@ -52,6 +55,7 @@ export default function DexRoute() {
   const loadedImagesForDexId = useRef<string | null>(null);
   const populatedFormForDexId = useRef<string | null>(null);
   const initializedThemeForDexId = useRef<string | null>(null);
+  const distributorInfo = useDistrubutorInfo();
 
   useEffect(() => {
     if (dexData && populatedFormForDexId.current !== dexData.id) {
@@ -88,6 +92,7 @@ export default function DexRoute() {
         seoKeywords: dexData.seoKeywords || "",
         analyticsScript: dexData.analyticsScript || "",
         themeCSS: dexData.themeCSS,
+        distributorCode: dexData.distributorCode || "",
       });
 
       form.setViewCssCode(false);
@@ -216,7 +221,9 @@ export default function DexRoute() {
           toast.success("Repository forked successfully!");
 
           setLocalDeploymentUrl(
-            `https://dex.orderly.network/${result.dex.repoUrl.split("/").pop()}/`
+            `https://dex.orderly.network/${result.dex.repoUrl
+              .split("/")
+              .pop()}/`
           );
         } else {
           toast.error("Repository creation failed. Please try again later.");
@@ -293,7 +300,7 @@ export default function DexRoute() {
             });
             toast.success("Custom domain removed successfully");
           })
-          .catch(error => {
+          .catch((error) => {
             console.error("Error removing custom domain:", error);
             toast.error("Failed to remove custom domain");
           })
@@ -328,6 +335,42 @@ export default function DexRoute() {
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">
             Create Your DEX
           </h1>
+          <div className="flex items-center justify-center mb-4">
+            <p className="text-gray-400 mr-3">Available on</p>
+            {MainnetChains.map((chain, index) => (
+              <div
+                style={{
+                  zIndex: MainnetChains.length - index,
+                }}
+                className={clsx(
+                  "flex items-center justify-center",
+                  "w-[24px] h-[24px] ml-[-6px] bg-black rounded-full"
+                )}
+              >
+                <img
+                  key={chain.chain_id}
+                  className="w-5 h-5 rounded-full"
+                  src={`https://oss.orderly.network/static/network_logo/${chain.chain_id}.png`}
+                  alt={chain.name}
+                />
+              </div>
+            ))}
+          </div>
+          <h2 className="text-lg md:text-xl">
+            Join{" "}
+            {distributorInfo.distributor_broker_name
+              ? `${distributorInfo.distributor_broker_name} and other`
+              : ""}
+            100+ Orderly builders to launch your no-code DEX
+          </h2>
+          <div className="text-gray-400 mt-4 mb-15">
+            <p>Create your own omnichain perpetuals exchange in minutes.</p>
+            <p>
+              Deep liquidity, 140+ assets, and support for 17+ major chains in
+              minutes.
+            </p>
+          </div>
+
           <Card>
             <h2 className="text-lg md:text-xl font-medium mb-3 md:mb-4">
               Authentication Required

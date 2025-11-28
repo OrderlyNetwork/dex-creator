@@ -34,7 +34,11 @@ function ChainWatcher({ children }: { children: ReactNode }) {
       chainId !== prevChainIdRef.current
     ) {
       const chainName = getChainName(chainId);
+      const toastId = `chain-switched-success`;
       toast.info(`Switched to ${chainName}`, {
+        toastId,
+        // avoid show multiple toast notifications
+        updateId: toastId,
         autoClose: 2000,
       });
     }
@@ -49,7 +53,7 @@ export function AppKitProvider({ children }: AppKitProviderProps) {
   useEffect(() => {
     const intervalId = setInterval(
       () => {
-        queryClient.invalidateQueries();
+      queryClient.invalidateQueries();
       },
       15 * 60 * 1000
     );
