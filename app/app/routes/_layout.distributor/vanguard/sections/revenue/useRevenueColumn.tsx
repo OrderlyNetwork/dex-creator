@@ -1,11 +1,18 @@
-import { useMemo } from "react";
+import { useMemo, ReactNode } from "react";
 import { TableTitleWithTooltip } from "../../components";
 import { formatCurrency, getUserTimezone, formatTier } from "../../utils";
 
+export interface Column {
+  title: ReactNode;
+  dataIndex: string;
+  render?: (value: any, record: any, index?: number) => ReactNode;
+}
+
 export const useRevenueColumn = (props: {
   onViewDetails: (record: any) => void;
-}) => {
-  const { onViewDetails } = props;
+  currentPage: number;
+}): Column[] => {
+  const { onViewDetails, currentPage } = props;
 
   const columns = useMemo(() => {
     return [
@@ -49,17 +56,32 @@ export const useRevenueColumn = (props: {
       {
         title: "Action",
         dataIndex: "action",
-        render: (_: any, record: any) => (
-          <button
-            className="text-purple-light hover:opacity-80 transition-opacity"
-            onClick={() => onViewDetails(record)}
-          >
-            View
-          </button>
-        ),
+        render: (_: any, record: any, index?: number) => {
+          // Only the first 7 items on page 1 can be clicked
+          const isDisabled =
+            currentPage !== 1 || (index !== undefined && index >= 7);
+
+          return (
+            <button
+              className={
+                isDisabled
+                  ? "text-base-contrast-36 cursor-not-allowed"
+                  : "text-[#9c75ff] hover:text-[#b58fff] transition-colors"
+              }
+              onClick={() => {
+                if (!isDisabled) {
+                  onViewDetails(record);
+                }
+              }}
+              disabled={isDisabled}
+            >
+              View
+            </button>
+          );
+        },
       },
-    ];
-  }, [onViewDetails]);
+    ] as Column[];
+  }, [onViewDetails, currentPage]);
 
   return columns;
 };

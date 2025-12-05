@@ -4,7 +4,10 @@ import { usePrivateQuery, useMutation } from "../../../../net";
 
 export const useVanguardSummary = () => {
   const { data, isLoading, error, mutate } = usePrivateQuery<any>(
-    "/v1/vanguard/summary"
+    "/v1/vanguard/summary",
+    {
+      refreshInterval: 600000,
+    }
   );
   return {
     data: data,
@@ -19,6 +22,7 @@ export const useVanguardInvitees = (page: number, size: number) => {
     `/v1/vanguard/invitees?page=${page}&size=${size}`,
     {
       formatter: data => data,
+      refreshInterval: 600000,
     }
   );
   return {
@@ -32,7 +36,10 @@ export const useVanguardInvitees = (page: number, size: number) => {
 
 export const useVanguardMinTierList = () => {
   const { data, isLoading, error } = usePrivateQuery<any>(
-    "/v1/vanguard/invitees/min_broker_tier_list"
+    "/v1/vanguard/invitees/min_broker_tier_list",
+    {
+      refreshInterval: 600000,
+    }
   );
   return {
     data: data || [],
@@ -46,6 +53,7 @@ export const useVanguardRevenueShareHistory = (page: number, size: number) => {
     `/v1/vanguard/revenue_share_history?page=${page}&size=${size}`,
     {
       formatter: data => data,
+      refreshInterval: 600000,
     }
   );
   return {
@@ -68,6 +76,7 @@ export const useVanguardRevenueShareDetails = (
       : null,
     {
       formatter: data => data,
+      refreshInterval: 600000,
     }
   );
   return {

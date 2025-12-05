@@ -28,6 +28,7 @@ export const useConfigureMinTierModalScript = (
   const initialTier = currentMinTier || currentEffectiveTier;
 
   const [selectedTier, setSelectedTier] = useState(initialTier);
+  const [isSaving, setIsSaving] = useState(false);
   const { data: tierList } = useVanguardMinTierList();
 
   useEffect(() => {
@@ -51,9 +52,19 @@ export const useConfigureMinTierModalScript = (
   }, [inviteeAddress]);
 
   const handleConfirm = useCallback(async () => {
-    await onSave(selectedTier);
-    onClose();
-  }, [onClose, onSave, selectedTier]);
+    if (isSaving) {
+      return;
+    }
+    try {
+      setIsSaving(true);
+      await onSave(selectedTier);
+      onClose();
+    } catch (error) {
+      console.error("Failed to save minimum tier:", error);
+    } finally {
+      setIsSaving(false);
+    }
+  }, [isSaving, onClose, onSave, selectedTier]);
 
   const handleSelectedTierChange = useCallback((tier: string) => {
     setSelectedTier(tier);
@@ -73,5 +84,6 @@ export const useConfigureMinTierModalScript = (
     selectedTierData,
     isChanged,
     onCopyInviteeAddress: handleCopyInviteeAddress,
+    isSaving,
   };
 };

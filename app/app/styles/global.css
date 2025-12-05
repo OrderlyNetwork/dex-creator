@@ -458,3 +458,49 @@ appkit-modal {
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
+
+/* Button loading animations */
+@keyframes loading-circle-1 {
+  0% {
+    transform: scale(1);
+    background-color: rgb(176, 132, 233);
+  }
+  33%, 66% { 
+    transform: scale(0.8);
+    background-color: rgb(93, 83, 123);
+  }
+}
+
+@keyframes loading-circle-2 {  
+  0%, 66%, 100% { 
+    transform: scale(0.8);
+    background-color: rgb(93, 83, 123);
+  }
+  33% {
+    transform: scale(1);
+    background-color: rgb(176, 132, 233);
+  }   
+}
+
+@keyframes loading-circle-3 {
+  0%, 33%, 100% { 
+    transform: scale(0.8);
+    background-color: rgb(93, 83, 123);
+  } 
+  66% { 
+    transform: scale(1);
+    background-color: rgb(176, 132, 233);
+  }
+}
+
+.button-loading-circle-1 {
+  animation: loading-circle-1 1200ms linear infinite;
+}
+
+.button-loading-circle-2 {
+  animation: loading-circle-2 1200ms linear infinite;
+}
+
+.button-loading-circle-3 {
+  animation: loading-circle-3 1200ms linear infinite;
+}

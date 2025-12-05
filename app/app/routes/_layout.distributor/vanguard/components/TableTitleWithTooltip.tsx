@@ -16,9 +16,9 @@ export const TableTitleWithTooltip: React.FC<TableTitleWithTooltipProps> = ({
       align="center"
       sideOffset={4}
       arrow={{
-        className: "!fill-purple-light",
+        className: "!fill-[#0f1123]",
       }}
-      className="max-w-[276px] px-3 !bg-purple-light py-2 rounded-lg whitespace-pre-line break-words leading-[17.5px] text-xs text-white"
+      className="max-w-[276px] px-3 !bg-[#0f1123] border border-primary-light/30 shadow-lg py-2 rounded-lg whitespace-pre-line break-words leading-[17.5px] text-xs text-white"
       content={tooltip}
     >
       <span className="border-b border-dashed border-base-contrast-54 cursor-pointer">

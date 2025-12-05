@@ -27,6 +27,7 @@ export interface MinTierModalUIProps {
   selectedTierData?: any;
   isChanged: boolean;
   onCopyInviteeAddress: () => void;
+  isSaving: boolean;
 }
 
 const MinTierModalUI: React.FC<MinTierModalUIProps> = ({
@@ -41,6 +42,7 @@ const MinTierModalUI: React.FC<MinTierModalUIProps> = ({
   selectedTierData,
   isChanged,
   onCopyInviteeAddress,
+  isSaving,
 }) => {
   return (
     <ConfirmDialog
@@ -57,6 +59,7 @@ const MinTierModalUI: React.FC<MinTierModalUIProps> = ({
       cancelText="Cancel"
       contentClassName="max-w-[480px]"
       confirmDisable={!isChanged}
+      loading={isSaving}
     >
       <div className="flex flex-col gap-5 pb-0">
         <div className="flex gap-5">
@@ -120,17 +123,41 @@ const MinTierModalUI: React.FC<MinTierModalUIProps> = ({
           </Select>
         </div>
 
-        <div className="flex flex-col gap-5">
-          <div className="flex flex-col gap-1">
-            <div className="text-base-contrast-54 text-xs">Base taker fee</div>
-            <div className="text-base-contrast text-base font-normal">
-              {formatPercentage(selectedTierData?.base_taker_fee_rate, 3)}
+        <div className="flex flex-row gap-5">
+          <div className="flex-1 flex flex-col gap-5">
+            <div className="flex flex-col gap-1">
+              <div className="text-base-contrast-54 text-xs">
+                Base taker fee
+              </div>
+              <div className="text-base-contrast text-base font-normal">
+                {formatPercentage(selectedTierData?.base_taker_fee_rate, 2)}
+              </div>
+            </div>
+            <div className="flex flex-col gap-1">
+              <div className="text-base-contrast-54 text-xs">
+                Base maker fee
+              </div>
+              <div className="text-base-contrast text-base font-normal">
+                {formatPercentage(selectedTierData?.base_maker_fee_rate, 2)}
+              </div>
             </div>
           </div>
-          <div className="flex flex-col gap-1">
-            <div className="text-base-contrast-54 text-xs">Base maker fee</div>
-            <div className="text-base-contrast text-base font-normal">
-              {formatPercentage(selectedTierData?.base_maker_fee_rate, 3)}
+          <div className="flex-1 flex flex-col gap-5">
+            <div className="flex flex-col gap-1">
+              <div className="text-base-contrast-54 text-xs">
+                Base taker fee (RWA)
+              </div>
+              <div className="text-base-contrast text-base font-normal">
+                {formatPercentage(selectedTierData?.base_rwa_taker_fee_rate, 2)}
+              </div>
+            </div>
+            <div className="flex flex-col gap-1">
+              <div className="text-base-contrast-54 text-xs">
+                Base maker fee (RWA)
+              </div>
+              <div className="text-base-contrast text-base font-normal">
+                {formatPercentage(selectedTierData?.base_rwa_maker_fee_rate, 2)}
+              </div>
             </div>
           </div>
         </div>

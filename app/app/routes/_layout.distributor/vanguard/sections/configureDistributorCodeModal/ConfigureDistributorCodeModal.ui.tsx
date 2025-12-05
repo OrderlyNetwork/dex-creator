@@ -11,6 +11,7 @@ export interface ConfigureDistributorCodeModalUIProps {
   code: string;
   onCodeChange: (value: string) => void;
   onCodeBlur: () => void;
+  onCodeKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   hasError: boolean;
   errorMessage: string | null;
   isLoading: boolean;
@@ -18,6 +19,7 @@ export interface ConfigureDistributorCodeModalUIProps {
   urlPreviewText: string;
   isUrlInvalid: boolean;
   isValid: boolean;
+  isSaving: boolean;
 }
 
 const ConfigureDistributorCodeModalUI: React.FC<
@@ -29,12 +31,14 @@ const ConfigureDistributorCodeModalUI: React.FC<
   code,
   onCodeChange,
   onCodeBlur,
+  onCodeKeyDown,
   hasError,
   errorMessage,
   isLoading,
   showChecking,
   urlPreviewText,
   isValid,
+  isSaving,
 }) => {
   return (
     <ConfirmDialog
@@ -51,6 +55,7 @@ const ConfigureDistributorCodeModalUI: React.FC<
       cancelText="Cancel"
       contentClassName="max-w-[480px]"
       confirmDisable={!isValid}
+      loading={isLoading || isSaving}
     >
       <div className="flex flex-col gap-5 pb-0">
         <div className="flex flex-col gap-2.5">
@@ -79,6 +84,7 @@ const ConfigureDistributorCodeModalUI: React.FC<
                 value={code}
                 onChange={event => onCodeChange(event.target.value)}
                 onBlur={onCodeBlur}
+                onKeyDown={onCodeKeyDown}
                 className="flex-1 bg-transparent text-base-contrast text-sm font-medium leading-[1.2em] outline-none border-none text-right placeholder:text-base-contrast-36"
               />
               {isValid && <ApprovedIcon className="w-4 h-4 shrink-0" />}

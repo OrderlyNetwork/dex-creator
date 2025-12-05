@@ -34,6 +34,9 @@ export const useInviteesScript = () => {
         effectiveTier: item.tier,
         takerFee: item.base_taker_fee_rate,
         makerFee: item.base_maker_fee_rate,
+        rwaTakerFee: item.base_rwa_taker_fee_rate,
+        rwaMakerFee: item.base_rwa_maker_fee_rate,
+        status: item.status,
       })),
     [inviteesData]
   );

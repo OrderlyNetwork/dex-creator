@@ -2,7 +2,8 @@ import React from "react";
 import { useRevenueColumn } from "./useRevenueColumn";
 import { RevenueShareDetailsModalUI } from "../revenueShareDetailsModal";
 import type { RevenueShareDetailsModalUIProps } from "../revenueShareDetailsModal";
-import { Pagination } from "../../components";
+import { Pagination, Spinner } from "../../components";
+import { SearchDocumentIcon } from "../../icons";
 
 interface RevenueShareListUIProps {
   dataSource: any[];
@@ -15,7 +16,28 @@ interface RevenueShareListUIProps {
   isLoading: boolean;
   onViewDetails: (record: any) => void;
   revenueShareDetailsModalUiProps: RevenueShareDetailsModalUIProps;
+  currentPage: number;
 }
+
+const EmptyState = () => {
+  return (
+    <div className="flex flex-col items-center justify-center py-20 px-4">
+      <SearchDocumentIcon className="w-16 h-16" />
+      <p
+        className="mt-6 text-center"
+        style={{
+          fontFamily: "Atyp BL Text",
+          fontWeight: 500,
+          fontSize: "14px",
+          lineHeight: "150%",
+          color: "#FFFFFF8A",
+        }}
+      >
+        No revenue share yet.
+      </p>
+    </div>
+  );
+};
 
 const RevenueShareListUI: React.FC<RevenueShareListUIProps> = ({
   dataSource,
@@ -23,23 +45,34 @@ const RevenueShareListUI: React.FC<RevenueShareListUIProps> = ({
   isLoading,
   onViewDetails,
   revenueShareDetailsModalUiProps,
+  currentPage,
 }) => {
-  const columns = useRevenueColumn({ onViewDetails });
+  const columns = useRevenueColumn({ onViewDetails, currentPage });
 
   if (isLoading) {
     return (
-      <div className="bg-purple-dark rounded-lg p-6">
-        <div className="animate-pulse space-y-4">
-          <div className="h-10 bg-base-700 rounded" />
-          <div className="h-10 bg-base-700 rounded" />
-          <div className="h-10 bg-base-700 rounded" />
+      <div className="bg-[#0f1123] rounded-lg p-6">
+        <div className="flex items-center justify-center py-12">
+          <Spinner size="lg" />
         </div>
       </div>
     );
   }
 
+  if (dataSource.length === 0) {
+    return (
+      <div className="bg-[#0f1123] rounded-lg">
+        <EmptyState />
+        <RevenueShareDetailsModalUI {...revenueShareDetailsModalUiProps} />
+      </div>
+    );
+  }
+
+  const pageSize = pagination.pageSize;
+  const emptyRowCount = Math.max(pageSize - dataSource.length, 0);
+
   return (
-    <div className="bg-purple-dark rounded-lg p-6 overflow-x-auto">
+    <div className="bg-[#0f1123] rounded-lg p-6 overflow-x-auto">
       <table className="w-full min-w-[700px]">
         <thead>
           <tr className="border-b border-base-contrast-12">
@@ -54,34 +87,40 @@ const RevenueShareListUI: React.FC<RevenueShareListUIProps> = ({
           </tr>
         </thead>
         <tbody>
-          {dataSource.length === 0 ? (
-            <tr>
-              <td
-                colSpan={columns.length}
-                className="text-center py-8 text-base-contrast-54"
-              >
-                No revenue share history yet
-              </td>
+          {dataSource.map((row, rowIdx) => (
+            <tr
+              key={row.id || rowIdx}
+              className="border-b border-base-contrast-12 hover:bg-base-700/50"
+            >
+              {columns.map((col, colIdx) => (
+                <td
+                  key={colIdx}
+                  className="py-3 px-3 text-sm text-base-contrast"
+                >
+                  {col.render
+                    ? col.render(row[col.dataIndex], row, rowIdx)
+                    : row[col.dataIndex]}
+                </td>
+              ))}
             </tr>
-          ) : (
-            dataSource.map((row, rowIdx) => (
+          ))}
+          {emptyRowCount > 0 &&
+            Array.from({ length: emptyRowCount }).map((_, idx) => (
               <tr
-                key={row.id || rowIdx}
-                className="border-b border-base-contrast-12 hover:bg-base-700/50"
+                key={`placeholder-${idx}`}
+                className="border-b border-transparent"
+                aria-hidden="true"
               >
-                {columns.map((col, colIdx) => (
+                {columns.map((_, colIdx) => (
                   <td
                     key={colIdx}
-                    className="py-3 px-3 text-sm text-base-contrast"
+                    className="py-3 px-3 text-sm text-transparent select-none"
                   >
-                    {col.render
-                      ? col.render(row[col.dataIndex], row)
-                      : row[col.dataIndex]}
+                    &nbsp;
                   </td>
                 ))}
               </tr>
-            ))
-          )}
+            ))}
         </tbody>
       </table>
 

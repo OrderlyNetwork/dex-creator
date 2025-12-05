@@ -49,7 +49,7 @@ const ToggleTab: React.FC<ToggleTabProps> = ({
                 "pb-2 text-sm font-medium tracking-wide transition-colors border-b-2",
                 "hover:text-base-contrast focus-visible:outline-none focus-visible:text-base-contrast",
                 isActive
-                  ? "border-purple-light text-base-contrast"
+                  ? "border-[#9c75ff] text-base-contrast"
                   : "border-transparent text-base-contrast-54"
               )}
             >

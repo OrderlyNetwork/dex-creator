@@ -21,7 +21,7 @@ const Card: React.FC<CardProps> = ({
   return (
     <div
       className={cn(
-        "w-full rounded-lg bg-purple-dark p-4",
+        "w-full rounded-lg bg-background-light/30 border border-primary-light/30 shadow-lg p-4",
         "flex flex-col gap-2",
         className
       )}
@@ -34,9 +34,9 @@ const Card: React.FC<CardProps> = ({
             align="center"
             sideOffset={4}
             arrow={{
-              className: "!fill-purple-light",
+              className: "!fill-[#0f1123]",
             }}
-            className="max-w-[276px] px-3 !bg-purple-light py-2 rounded-lg whitespace-pre-line break-words leading-[17.5px] text-xs text-white"
+            className="max-w-[276px] px-3 !bg-[#0f1123] border border-primary-light/30 shadow-lg py-2 rounded-lg whitespace-pre-line break-words leading-[17.5px] text-xs text-white"
             content={infoTooltip}
           >
             <span
@@ -51,7 +51,7 @@ const Card: React.FC<CardProps> = ({
         )}
       </div>
 
-      <div className="text-base font-medium text-purple-light">{content}</div>
+      <div className="text-base font-medium text-[#9c75ff]">{content}</div>
     </div>
   );
 };

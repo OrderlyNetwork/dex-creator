@@ -1,6 +1,7 @@
 import React from "react";
 import { cn } from "../utils";
 import { CloseIcon } from "../icons";
+import { Button } from "../../../../components/Button";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -12,6 +13,7 @@ interface ConfirmDialogProps {
   okText?: string;
   cancelText?: string;
   confirmDisable?: boolean;
+  loading?: boolean;
   footer?: React.ReactNode;
   contentClassName?: string;
 }
@@ -26,25 +28,17 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   okText = "Confirm",
   cancelText = "Cancel",
   confirmDisable = false,
+  loading = false,
   footer,
   contentClassName,
 }) => {
   if (!open) return null;
 
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onOpenChange(false);
-    }
-  };
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-      onClick={handleBackdropClick}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
       <div
         className={cn(
-          "bg-purple-darker rounded-xl shadow-xl max-h-[90vh] overflow-auto mx-4",
+          "bg-[#0f1123] border border-primary-light/30 rounded-xl shadow-xl max-h-[90vh] overflow-auto mx-4",
           contentClassName || "w-full max-w-md"
         )}
       >
@@ -77,18 +71,17 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
                   </button>
                 )}
                 {onOk && (
-                  <button
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    withGlow
                     onClick={onOk}
                     disabled={confirmDisable}
-                    className={cn(
-                      "flex-1 h-[40px] px-[20px] rounded-full text-xs font-semibold inline-flex items-center justify-center transition-colors",
-                      confirmDisable
-                        ? "bg-purple-light/20 text-base-contrast-36 cursor-not-allowed pointer-events-none"
-                        : "bg-purple-light text-white hover:bg-purple-light/90"
-                    )}
+                    isLoading={loading}
+                    className="flex-1 h-[40px] justify-center"
                   >
                     {okText}
-                  </button>
+                  </Button>
                 )}
               </>
             )}

@@ -38,7 +38,10 @@ export const formatPercentage = (
   if (rate == null || isNaN(rate)) {
     return "--";
   }
-  return `${(rate * 100).toFixed(precision)}%`;
+  const percentage = rate * 100;
+  const multiplier = Math.pow(10, precision);
+  const rounded = Math.round(percentage * multiplier) / multiplier;
+  return `${rounded.toFixed(precision)}%`;
 };
 
 // Format address to shortened form

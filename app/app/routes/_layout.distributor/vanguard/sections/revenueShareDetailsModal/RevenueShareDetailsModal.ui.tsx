@@ -6,6 +6,7 @@ import {
 } from "./useRevenueShareDetailsColumn";
 import { formatCurrency, getUserTimezone } from "../../utils";
 import { Pagination } from "../../components";
+import { SearchDocumentIcon } from "../../icons";
 
 export interface RevenueShareDetailsModalUIProps {
   open: boolean;
@@ -20,6 +21,26 @@ export interface RevenueShareDetailsModalUIProps {
     onPageChange: (page: number) => void;
   };
 }
+
+const EmptyState = () => {
+  return (
+    <div className="flex flex-col items-center justify-center py-12 px-4">
+      <SearchDocumentIcon className="w-16 h-16" />
+      <p
+        className="mt-6 text-center"
+        style={{
+          fontFamily: "Atyp BL Text",
+          fontWeight: 500,
+          fontSize: "14px",
+          lineHeight: "150%",
+          color: "#FFFFFF8A",
+        }}
+      >
+        No Detail Datas Available.
+      </p>
+    </div>
+  );
+};
 
 const RevenueShareDetailsModalUI: React.FC<RevenueShareDetailsModalUIProps> = ({
   open,
@@ -98,6 +119,8 @@ const RevenueShareDetailsModalUI: React.FC<RevenueShareDetailsModalUIProps> = ({
               <div className="h-8 bg-base-700 rounded" />
               <div className="h-8 bg-base-700 rounded" />
             </div>
+          ) : dataSource.length === 0 ? (
+            <EmptyState />
           ) : (
             <table className="w-full min-w-[600px]">
               <thead>
@@ -113,34 +136,20 @@ const RevenueShareDetailsModalUI: React.FC<RevenueShareDetailsModalUIProps> = ({
                 </tr>
               </thead>
               <tbody>
-                {dataSource.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={columns.length}
-                      className="text-center py-8 text-base-contrast-54"
-                    >
-                      No data
-                    </td>
+                {dataSource.map((row, rowIdx) => (
+                  <tr key={rowIdx} className="border-b border-base-contrast-12">
+                    {columns.map((col, colIdx) => (
+                      <td
+                        key={colIdx}
+                        className="py-3 px-3 text-sm text-base-contrast"
+                      >
+                        {col.render
+                          ? col.render(row[col.dataIndex], row)
+                          : row[col.dataIndex]}
+                      </td>
+                    ))}
                   </tr>
-                ) : (
-                  dataSource.map((row, rowIdx) => (
-                    <tr
-                      key={rowIdx}
-                      className="border-b border-base-contrast-12"
-                    >
-                      {columns.map((col, colIdx) => (
-                        <td
-                          key={colIdx}
-                          className="py-3 px-3 text-sm text-base-contrast"
-                        >
-                          {col.render
-                            ? col.render(row[col.dataIndex], row)
-                            : row[col.dataIndex]}
-                        </td>
-                      ))}
-                    </tr>
-                  ))
-                )}
+                ))}
               </tbody>
             </table>
           )}

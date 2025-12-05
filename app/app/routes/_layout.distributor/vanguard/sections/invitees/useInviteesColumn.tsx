@@ -9,7 +9,7 @@ import {
   formatUTCTimeToLocal,
   formatTier,
 } from "../../utils";
-import { CopyIcon, EditIcon } from "../../icons";
+import { CopyIcon, EditIcon, ClockIcon } from "../../icons";
 
 export interface Column {
   title: ReactNode;
@@ -30,7 +30,7 @@ export const useInviteesColumn = (props: UseInviteesColumnProps): Column[] => {
       {
         title: "Invitee address",
         dataIndex: "address",
-        render: (value: string) => (
+        render: (value: string, record: any) => (
           <div className="flex items-center">
             <span>{formatAddress(value)}</span>
             <button
@@ -43,6 +43,9 @@ export const useInviteesColumn = (props: UseInviteesColumnProps): Column[] => {
             >
               <CopyIcon className="w-4 h-4" />
             </button>
+            {record.status === "UNGRADUATED" && (
+              <ClockIcon className="ml-2 w-4 h-4 text-base-contrast-54" />
+            )}
           </div>
         ),
       },
@@ -117,12 +120,22 @@ export const useInviteesColumn = (props: UseInviteesColumnProps): Column[] => {
       {
         title: "Base taker fee",
         dataIndex: "takerFee",
-        render: (value: number) => formatPercentage(value),
+        render: (value: number) => formatPercentage(value, 2),
       },
       {
         title: "Base maker fee",
         dataIndex: "makerFee",
-        render: (value: number) => formatPercentage(value),
+        render: (value: number) => formatPercentage(value, 2),
+      },
+      {
+        title: "Base taker fee (RWA)",
+        dataIndex: "rwaTakerFee",
+        render: (value: number) => formatPercentage(value, 2),
+      },
+      {
+        title: "Base maker fee (RWA)",
+        dataIndex: "rwaMakerFee",
+        render: (value: number) => formatPercentage(value, 2),
       },
     ] as Column[];
   }, [onEditTier, canEditTier]);

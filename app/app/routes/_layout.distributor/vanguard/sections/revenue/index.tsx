@@ -8,6 +8,7 @@ export default function RevenueShareList() {
     isLoading,
     onViewDetails,
     revenueShareDetailsModalUiProps,
+    currentPage,
   } = useRevenueShareScript();
 
   return (
@@ -17,6 +18,7 @@ export default function RevenueShareList() {
       isLoading={isLoading}
       onViewDetails={onViewDetails}
       revenueShareDetailsModalUiProps={revenueShareDetailsModalUiProps}
+      currentPage={currentPage}
     />
   );
 }

@@ -37,6 +37,7 @@ export const useRevenueShareScript = () => {
     pageSize,
     total: meta?.total || 0,
     onPageChange: setPage,
+    currentPage: meta?.current_page || page,
   };
 
   const onViewDetails = (record: any) => {
@@ -61,5 +62,6 @@ export const useRevenueShareScript = () => {
     isLoading,
     onViewDetails,
     revenueShareDetailsModalUiProps,
+    currentPage: meta?.current_page || page,
   };
 };
