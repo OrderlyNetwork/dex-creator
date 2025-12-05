@@ -1,7 +1,7 @@
 import SystemStatus from "./SystemStatus";
 import { useState } from "react";
 
-// TODO: define others section links here instead of hardcoding them
+// TODO: define others section links here instead of hardcoding them11
 const URLS = {
   legal: [
     {
