@@ -18,6 +18,8 @@ export interface SecretConfig {
   orderReceiverAddress: string;
   brokerCreationPrivateKey: string;
   brokerCreationPrivateKeySol: string;
+  creatorBrokerApiAccountId: string;
+  creatorBrokerApiSecretKey: string;
 }
 
 function getSecretNames(deploymentEnv: string): Record<string, string> {
@@ -33,6 +35,8 @@ function getSecretNames(deploymentEnv: string): Record<string, string> {
         orderReceiverAddress: `projects/964694002890/secrets/dex-creator-order-receiver-address-prod-evm/versions/latest`,
         brokerCreationPrivateKey: `projects/100655379011/secrets/dex-creator-broker-creation-private-key-prod-evm/versions/latest`,
         brokerCreationPrivateKeySol: `projects/964694002890/secrets/dex-creator-broker-creation-private-key-sol-prod-evm/versions/latest`,
+        creatorBrokerApiAccountId: `projects/964694002890/secrets/dex-creator-creator-broker-api-account-id-prod-evm/versions/latest`,
+        creatorBrokerApiSecretKey: `projects/964694002890/secrets/dex-creator-creator-broker-api-secret-key-prod-evm/versions/latest`,
       };
     case "staging":
       return {
@@ -45,6 +49,8 @@ function getSecretNames(deploymentEnv: string): Record<string, string> {
         orderReceiverAddress: `projects/964694002890/secrets/dex-creator-order-receiver-address-staging-evm/versions/latest`,
         brokerCreationPrivateKey: `projects/964694002890/secrets/dex-creator-broker-creation-private-key-staging-evm/versions/latest`,
         brokerCreationPrivateKeySol: `projects/964694002890/secrets/dex-creator-broker-creation-private-key-sol-staging-evm/versions/latest`,
+        creatorBrokerApiAccountId: `projects/964694002890/secrets/dex-creator-creator-broker-api-account-id-staging-evm/versions/latest`,
+        creatorBrokerApiSecretKey: `projects/964694002890/secrets/dex-creator-creator-broker-api-secret-key-staging-evm/versions/latest`,
       };
     default:
       return {};
@@ -125,6 +131,8 @@ async function initializeSecretsInternal(): Promise<SecretConfig> {
       "ORDER_RECEIVER_ADDRESS",
       "BROKER_CREATION_PRIVATE_KEY",
       "BROKER_CREATION_PRIVATE_KEY_SOL",
+      "CREATOR_BROKER_API_ACCOUNT_ID",
+      "CREATOR_BROKER_API_SECRET_KEY",
     ];
 
     const missingEnvVars = requiredEnvVars.filter(
@@ -147,6 +155,8 @@ async function initializeSecretsInternal(): Promise<SecretConfig> {
       orderReceiverAddress: process.env.ORDER_RECEIVER_ADDRESS!,
       brokerCreationPrivateKey: process.env.BROKER_CREATION_PRIVATE_KEY!,
       brokerCreationPrivateKeySol: process.env.BROKER_CREATION_PRIVATE_KEY_SOL!,
+      creatorBrokerApiAccountId: process.env.CREATOR_BROKER_API_ACCOUNT_ID!,
+      creatorBrokerApiSecretKey: process.env.CREATOR_BROKER_API_SECRET_KEY!,
     };
     isInitialized = true;
     return getSecretConfig();
@@ -172,6 +182,8 @@ async function initializeSecretsInternal(): Promise<SecretConfig> {
     orderReceiverAddress,
     brokerCreationPrivateKey,
     brokerCreationPrivateKeySol,
+    creatorBrokerApiAccountId,
+    creatorBrokerApiSecretKey,
   ] = await Promise.all([
     fetchSecret(client, secretNames.databaseUrl, "DATABASE_URL"),
     fetchSecret(client, secretNames.orderlyDatabaseUrl, "ORDERLY_DATABASE_URL"),
@@ -198,6 +210,16 @@ async function initializeSecretsInternal(): Promise<SecretConfig> {
       secretNames.brokerCreationPrivateKeySol,
       "BROKER_CREATION_PRIVATE_KEY_SOL"
     ),
+    fetchSecret(
+      client,
+      secretNames.creatorBrokerApiAccountId,
+      "CREATOR_BROKER_API_ACCOUNT_ID"
+    ),
+    fetchSecret(
+      client,
+      secretNames.creatorBrokerApiSecretKey,
+      "CREATOR_BROKER_API_SECRET_KEY"
+    ),
   ]);
 
   secretCache = {
@@ -210,6 +232,8 @@ async function initializeSecretsInternal(): Promise<SecretConfig> {
     orderReceiverAddress,
     brokerCreationPrivateKey,
     brokerCreationPrivateKeySol,
+    creatorBrokerApiAccountId,
+    creatorBrokerApiSecretKey,
   };
 
   isInitialized = true;
@@ -233,6 +257,8 @@ export function getSecretConfig(): SecretConfig {
     orderReceiverAddress: secretCache.orderReceiverAddress,
     brokerCreationPrivateKey: secretCache.brokerCreationPrivateKey,
     brokerCreationPrivateKeySol: secretCache.brokerCreationPrivateKeySol,
+    creatorBrokerApiAccountId: secretCache.creatorBrokerApiAccountId,
+    creatorBrokerApiSecretKey: secretCache.creatorBrokerApiSecretKey,
   };
 }
 

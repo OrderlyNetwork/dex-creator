@@ -1,8 +1,8 @@
 import { SWRHook, Middleware } from "swr";
-import { MessageFactor } from "@orderly.network/core";
 import { useOrderlyKey } from "../context/OrderlyKeyContext";
 import { getBaseUrl } from "../utils/orderly";
 import { getSignHeader } from "./sign";
+import { MessageFactor } from "./type";
 
 export const signatureMiddleware: Middleware = (useSWRNext: SWRHook) => {
   const { accountId, orderlyKey } = useOrderlyKey();

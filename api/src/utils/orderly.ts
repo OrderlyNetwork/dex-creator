@@ -13,10 +13,10 @@ export function getOrderlyApiBaseUrl(): string {
     case "staging":
       return "https://testnet-api.orderly.org";
     case "qa":
-      return "https://qa-api-aliyun.orderly.network";
+      return "https://qa-api-aliyun.orderly.org";
     case "dev":
     default:
-      return "https://dev-api-aliyun.orderly.network";
+      return "https://dev-api-aliyun.orderly.org";
   }
 }
 

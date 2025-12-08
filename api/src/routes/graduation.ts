@@ -7,11 +7,7 @@ import {
   getDexBrokerTier,
   invalidateDexFeesCache,
 } from "../models/graduation";
-import {
-  getUserDex,
-  getCurrentEnvironment,
-  convertDexToDexConfig,
-} from "../models/dex";
+import { getUserDex, convertDexToDexConfig } from "../models/dex";
 import { getPrisma } from "../lib/prisma";
 import { setupRepositoryWithSingleCommit } from "../lib/github.js";
 import {
@@ -19,9 +15,9 @@ import {
   getAdminAccountIdFromOrderlyDb,
 } from "../lib/orderlyDb.js";
 import { getOrderlyApiBaseUrl, getAccountId } from "../utils/orderly.js";
-import { createAutomatedBrokerId } from "../lib/brokerCreation.js";
 import { getSecret } from "../lib/secretManager.js";
 import { ALL_CHAINS, ChainName } from "../../../config";
+import { createBroker } from "../lib/createBroker";
 
 let orderPriceCache: { price: number; timestamp: number } | null = null;
 const CACHE_TTL = 60 * 1000;
@@ -29,6 +25,8 @@ const CACHE_TTL = 60 * 1000;
 const verifyTxSchema = z.object({
   txHash: z.string().min(10).max(100),
   chain: z.string().min(1).max(50),
+  chainId: z.number().int(),
+  chain_type: z.enum(["EVM", "SOL"]).default("EVM"),
   brokerId: z
     .string()
     .min(5, "Broker ID must be at least 5 characters")
@@ -43,6 +41,8 @@ const verifyTxSchema = z.object({
     ),
   makerFee: z.number().min(0).max(150), // 0-15 bps in 0.1 bps units
   takerFee: z.number().min(30).max(150), // 3-15 bps in 0.1 bps units
+  rwaMakerFee: z.number().min(0).max(150), // 0-15 bps in 0.1 bps units
+  rwaTakerFee: z.number().min(0).max(150), // 3-15 bps in 0.1 bps units
   paymentType: z.enum(["usdc", "order"]).default("order"),
 });
 
@@ -58,10 +58,20 @@ graduationRoutes.post(
   zValidator("json", verifyTxSchema),
   async c => {
     try {
-      const userId = c.get("userId");
+      const {
+        txHash,
+        chain,
+        chainId,
+        chain_type,
+        brokerId,
+        makerFee,
+        takerFee,
+        rwaMakerFee,
+        rwaTakerFee,
+        paymentType,
+      } = c.req.valid("json");
 
-      const { txHash, chain, brokerId, makerFee, takerFee, paymentType } =
-        c.req.valid("json");
+      const userId = c.get("userId");
 
       const dex = await getUserDex(userId);
       if (!dex || !dex.repoUrl) {
@@ -122,15 +132,17 @@ graduationRoutes.post(
         );
       }
 
-      const brokerCreationResult = await createAutomatedBrokerId(
-        brokerId,
-        getCurrentEnvironment(),
-        {
-          brokerName: dex.brokerName,
-          makerFee: makerFee,
-          takerFee: takerFee,
-        }
-      );
+      const brokerCreationResult = await createBroker({
+        broker_id: brokerId,
+        broker_name: dex.brokerName,
+        chain_id: chainId,
+        chain_type,
+        address: user.address,
+        default_maker_fee_rate: makerFee,
+        default_taker_fee_rate: takerFee,
+        default_rwa_maker_fee_rate: rwaMakerFee,
+        default_rwa_taker_fee_rate: rwaTakerFee,
+      });
 
       if (!brokerCreationResult.success) {
         return c.json(brokerCreationResult, { status: 400 });

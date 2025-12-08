@@ -790,11 +790,16 @@ export function GraduationForm({
       const response = await post<VerifyTxResponse>(
         "api/graduation/verify-tx",
         {
-          txHash: transactionHash,
-          chain: preferredChain,
           brokerId,
+          chainId: currentChainId,
+          // currently only EVM is supported
+          chain_type: "EVM",
+          chain: preferredChain,
+          txHash: transactionHash,
           makerFee,
           takerFee,
+          rwaMakerFee,
+          rwaTakerFee,
           paymentType,
         },
         token,

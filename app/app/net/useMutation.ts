@@ -1,12 +1,9 @@
 import useSWRMutation, { type SWRMutationConfiguration } from "swr/mutation";
-import {
-  type MessageFactor,
-  type SignedMessagePayload,
-} from "@orderly.network/core";
 import { getBaseUrl } from "../utils/orderly";
 import { useOrderlyKey } from "../context/OrderlyKeyContext";
 import { getSignHeader } from "./sign";
 import { request } from "./fetch";
+import { MessageFactor, SignedMessagePayload } from "./type";
 
 type HTTP_METHOD = "POST" | "PUT" | "DELETE" | "GET";
 
