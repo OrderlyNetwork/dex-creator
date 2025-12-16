@@ -1,5 +1,5 @@
 import React from "react";
-import { clsx } from "clsx";
+import { cn } from "../utils/css";
 
 interface CardProps {
   children: React.ReactNode;
@@ -23,7 +23,7 @@ export function Card({
     warning: "bg-yellow-500/10 border border-yellow-500/20",
   };
 
-  const classes = clsx(baseClasses, variantClasses[variant], className);
+  const classes = cn(baseClasses, variantClasses[variant], className);
 
   return (
     <div id={id} className={classes}>

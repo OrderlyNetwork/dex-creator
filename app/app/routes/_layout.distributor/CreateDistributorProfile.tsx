@@ -63,7 +63,7 @@ export function CreateDistributorProfile(props: CreateDistributorProfileProps) {
 
         {/* Main Content */}
         <div className="flex flex-col gap-5 items-start w-full">
-          <Card className="!border-none w-full !p-6 md:!p-6 flex flex-col gap-5">
+          <Card className="!border-none w-full p-6 md:p-6 flex flex-col gap-5">
             {/* Question Section */}
             <p className="text-lg text-base-contrast">
               What describes you best?
