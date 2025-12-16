@@ -12,11 +12,12 @@ import PrivyConfigSection from "./PrivyConfigSection";
 import BlockchainConfigSection from "./BlockchainConfigSection";
 import LanguageSupportSection from "./LanguageSupportSection";
 import NavigationMenuSection from "./NavigationMenuSection";
-import ServiceDisclaimerSection from "./ServiceDisclaimerSection";
+import ServiceRestrictionsSection from "./ServiceRestrictionsSection";
 import AssetFilterSection from "./AssetFilterSection";
 import ProgressTracker from "./ProgressTracker";
 import { DexSectionProps } from "../hooks/useDexForm";
 import DistributorCodeSection from "./DistributorCodeSection";
+import ServiceDisclaimerSection from "./ServiceDisclaimerSection";
 
 export interface DexSectionConfig {
   id: number;
@@ -47,9 +48,10 @@ export enum DEX_SECTION_KEYS {
   PrivyConfiguration = "privyConfiguration",
   BlockchainConfiguration = "blockchainConfiguration",
   LanguageSupport = "languageSupport",
+  AssetFilter = "assetFilter",
   NavigationMenus = "navigationMenus",
   ServiceDisclaimer = "serviceDisclaimer",
-  AssetFilter = "assetFilter",
+  ServiceRestrictions = "serviceRestrictions",
 }
 
 export const DEX_SECTIONS: DexSectionConfig[] = [
@@ -260,7 +262,7 @@ export const DEX_SECTIONS: DexSectionConfig[] = [
     }),
   },
   {
-    id: 11,
+    id: 12,
     key: DEX_SECTION_KEYS.AssetFilter,
     title: "Asset Filtering",
     description:
@@ -273,7 +275,7 @@ export const DEX_SECTIONS: DexSectionConfig[] = [
     }),
   },
   {
-    id: 12,
+    id: 13,
     key: DEX_SECTION_KEYS.LanguageSupport,
     title: "Language Support",
     description:
@@ -286,7 +288,7 @@ export const DEX_SECTIONS: DexSectionConfig[] = [
     }),
   },
   {
-    id: 13,
+    id: 14,
     key: DEX_SECTION_KEYS.NavigationMenus,
     title: "Navigation Menus",
     description:
@@ -305,7 +307,7 @@ export const DEX_SECTIONS: DexSectionConfig[] = [
     }),
   },
   {
-    id: 14,
+    id: 15,
     key: DEX_SECTION_KEYS.ServiceDisclaimer,
     title: "Service Disclaimer",
     description:
@@ -316,6 +318,17 @@ export const DEX_SECTIONS: DexSectionConfig[] = [
       enableServiceDisclaimerDialog: props.enableServiceDisclaimerDialog,
       onEnableServiceDisclaimerDialogChange:
         props.onEnableServiceDisclaimerDialogChange,
+    }),
+  },
+  {
+    id: 16,
+    key: DEX_SECTION_KEYS.ServiceRestrictions,
+    title: "Service Restrictions",
+    description:
+      "Configure geo-restrictions to limit access to your DEX by region.",
+    isOptional: true,
+    component: ServiceRestrictionsSection,
+    getProps: props => ({
       restrictedRegions: props.restrictedRegions,
       onRestrictedRegionsChange: props.onRestrictedRegionsChange,
       whitelistedIps: props.whitelistedIps,

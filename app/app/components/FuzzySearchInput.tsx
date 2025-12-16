@@ -85,13 +85,13 @@ export default function FuzzySearchInput({
 
   return (
     <div className={`relative w-full ${className}`}>
-      <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+      <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-1">
         <div className="i-mdi:magnify h-5 w-5 text-gray-400"></div>
       </div>
       <input
         ref={inputRef}
         type="text"
-        className="border-light/10 bg-dark/20 backdrop-blur-sm text-white placeholder-gray-400 text-sm rounded-lg block w-full pl-10 pr-10 p-2.5 focus:ring-primary-light focus:border-primary-light focus:outline-none"
+        className="border-light/10 bg-dark/20 backdrop-blur-sm text-white placeholder-gray-400 text-sm rounded-lg block w-full pl-10 pr-10 p-2.5 focus:ring-primary-light focus:border-primary-light focus:outline-none border"
         placeholder={placeholder}
         value={currentValue}
         onChange={handleChange}
