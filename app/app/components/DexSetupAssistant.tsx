@@ -263,18 +263,19 @@ export default function DexSetupAssistant({
       return;
     }
 
-    // only if it is not bound yet
-    if (!distributorInfo?.exist && form.distributorCode.trim()) {
-      const binded = await bindDistributorCode(form.distributorCode.trim());
-      if (!binded) {
-        return;
-      }
-    }
-
-    setIsSaving(true);
-    setForkingStatus(options.forkingStatus);
-
     try {
+      setIsSaving(true);
+
+      // only if it is not bound yet
+      if (!distributorInfo?.exist && form.distributorCode.trim()) {
+        const binded = await bindDistributorCode(form.distributorCode.trim());
+        if (!binded) {
+          setIsSaving(false);
+          return;
+        }
+      }
+
+      setForkingStatus(options.forkingStatus);
       const { formData: formValues } = await form.getFormDataWithBase64Images();
 
       const imageBlobs = {
