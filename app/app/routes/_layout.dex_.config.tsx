@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, FormEvent, useMemo } from "react";
 import type { MetaFunction } from "@remix-run/node";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/useAuth";
@@ -39,6 +39,19 @@ export default function DexConfigRoute() {
   const [isLoadingDexData, setIsLoadingDexData] = useState(false);
   const { isGraduated } = useDex();
   const { distributorInfo } = useDistributor();
+
+  // when the DEX is graduated and the distributor code is not bound, we need to hide the distributor code section because it is not allowed to change the distributor code after the DEX is graduated
+  const filteredSections = useMemo(() => {
+    return isGraduated && !distributorInfo?.exist
+      ? DEX_SECTIONS.filter(
+          section => section.key !== DEX_SECTION_KEYS.DistributorCode
+        ).map((section, index) => ({
+          ...section,
+          // reset the id to the index + 1, others the progress tracker percentage will calculate incorrectly
+          id: index + 1,
+        }))
+      : DEX_SECTIONS;
+  }, [isGraduated, distributorInfo?.exist]);
 
   useEffect(() => {
     if (!isAuthenticated || !token) return;
@@ -296,14 +309,6 @@ export default function DexConfigRoute() {
       </div>
     );
   }
-
-  // when the DEX is graduated and the distributor code is not bound, we need to hide the distributor code section because it is not allowed to change the distributor code after the DEX is graduated
-  const filteredSections =
-    isGraduated && !distributorInfo?.exist
-      ? DEX_SECTIONS.filter(
-          section => section.key !== DEX_SECTION_KEYS.DistributorCode
-        )
-      : DEX_SECTIONS;
 
   return (
     <div className="container mx-auto p-4 max-w-7xl mt-26 pb-52">
