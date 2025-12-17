@@ -150,10 +150,10 @@ export default function AdminRoute() {
   const [manualDexId, setManualDexId] = useState("");
   const [selectedDexName, setSelectedDexName] = useState("");
   const [manualBrokerId, setManualBrokerId] = useState("");
-  const [manualMakerFee, setManualMakerFee] = useState(30);
-  const [manualTakerFee, setManualTakerFee] = useState(60);
+  const [manualMakerFee, setManualMakerFee] = useState(3);
+  const [manualTakerFee, setManualTakerFee] = useState(6);
   const [manualRwaMakerFee, setManualRwaMakerFee] = useState(0);
-  const [manualRwaTakerFee, setManualRwaTakerFee] = useState(50);
+  const [manualRwaTakerFee, setManualRwaTakerFee] = useState(5);
   const [manualTxHash, setManualTxHash] = useState("");
   const [manualChainId, setManualChainId] = useState<number | undefined>(
     undefined
@@ -1348,8 +1348,7 @@ export default function AdminRoute() {
                 Trading Fee Configuration
               </h3>
               <p className="text-sm text-gray-300 mb-4">
-                Configure the trading fees for this DEX. Values are in 0.1 basis
-                point units (e.g., 30 = 3 basis points).
+                Configure the trading fees for this DEX.
               </p>
 
               <div className="mb-4">
@@ -1359,27 +1358,27 @@ export default function AdminRoute() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormInput
                     id="manualMakerFee"
-                    label="Maker Fee"
+                    label="Maker Fee (bps)"
                     type="number"
                     value={manualMakerFee.toString()}
                     onChange={e =>
                       setManualMakerFee(parseInt(e.target.value) || 0)
                     }
-                    placeholder="30"
-                    helpText="0-150 (0-15 basis points)"
+                    placeholder="3"
+                    helpText="0-15 bps"
                     required
                   />
 
                   <FormInput
                     id="manualTakerFee"
-                    label="Taker Fee"
+                    label="Taker Fee (bps)"
                     type="number"
                     value={manualTakerFee.toString()}
                     onChange={e =>
                       setManualTakerFee(parseInt(e.target.value) || 0)
                     }
-                    placeholder="60"
-                    helpText="30-150 (3-15 basis points)"
+                    placeholder="6"
+                    helpText="3-15 bps"
                     required
                   />
                 </div>
@@ -1395,26 +1394,26 @@ export default function AdminRoute() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormInput
                     id="manualRwaMakerFee"
-                    label="RWA Maker Fee"
+                    label="RWA Maker Fee (bps)"
                     type="number"
                     value={manualRwaMakerFee.toString()}
                     onChange={e =>
                       setManualRwaMakerFee(parseInt(e.target.value) || 0)
                     }
                     placeholder="0"
-                    helpText="0-150 (0-15 basis points)"
+                    helpText="0-15 bps"
                   />
 
                   <FormInput
                     id="manualRwaTakerFee"
-                    label="RWA Taker Fee"
+                    label="RWA Taker Fee (bps)"
                     type="number"
                     value={manualRwaTakerFee.toString()}
                     onChange={e =>
                       setManualRwaTakerFee(parseInt(e.target.value) || 0)
                     }
-                    placeholder="50"
-                    helpText="0-150 (0-15 basis points)"
+                    placeholder="5"
+                    helpText="0-15 bps"
                   />
                 </div>
               </div>
@@ -1430,21 +1429,21 @@ export default function AdminRoute() {
                       Standard:
                     </p>
                     <p>
-                      • Maker Fee: {manualMakerFee / 10} basis points (
-                      {(manualMakerFee / 10) * 0.01}%)
+                      • Maker Fee: {manualMakerFee} bps ({manualMakerFee * 0.01}
+                      %)
                     </p>
                     <p>
-                      • Taker Fee: {manualTakerFee / 10} basis points (
-                      {(manualTakerFee / 10) * 0.01}%)
+                      • Taker Fee: {manualTakerFee} bps ({manualTakerFee * 0.01}
+                      %)
                     </p>
                     <p className="font-medium text-gray-200 mt-2 mb-1">RWA:</p>
                     <p>
-                      • RWA Maker Fee: {manualRwaMakerFee / 10} basis points (
-                      {(manualRwaMakerFee / 10) * 0.01}%)
+                      • RWA Maker Fee: {manualRwaMakerFee} bps (
+                      {manualRwaMakerFee * 0.01}%)
                     </p>
                     <p>
-                      • RWA Taker Fee: {manualRwaTakerFee / 10} basis points (
-                      {(manualRwaTakerFee / 10) * 0.01}%)
+                      • RWA Taker Fee: {manualRwaTakerFee} bps (
+                      {manualRwaTakerFee * 0.01}%)
                     </p>
                   </div>
                 </div>
@@ -1463,9 +1462,9 @@ export default function AdminRoute() {
                 !manualTxHash ||
                 !!manualBrokerIdError ||
                 manualMakerFee < 0 ||
-                manualMakerFee > 150 ||
-                manualTakerFee < 30 ||
-                manualTakerFee > 150
+                manualMakerFee > 15 ||
+                manualTakerFee < 3 ||
+                manualTakerFee > 15
               }
             >
               Create Broker ID Manually

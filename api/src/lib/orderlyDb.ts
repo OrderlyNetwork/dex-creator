@@ -214,8 +214,9 @@ function generateBrokerHash(brokerId: string): string {
 }
 
 function convertBasisPointsToDecimal(basisPoints: number): Decimal {
-  const actualBasisPoints = basisPoints / 10;
-  return new Decimal(actualBasisPoints.toFixed(8));
+  // basisPoints is now in bps (basis points), convert to decimal
+  const decimalValue = basisPoints / 10000;
+  return new Decimal(decimalValue.toFixed(8));
 }
 
 export async function addBrokerToOrderlyDb(
@@ -233,7 +234,7 @@ export async function addBrokerToOrderlyDb(
       data.rwaMakerFee ?? 0
     );
     const rwaDefaultTakerFee = convertBasisPointsToDecimal(
-      data.rwaTakerFee ?? 50
+      data.rwaTakerFee ?? 5
     );
 
     await orderlyPrisma.orderlyBroker.create({
@@ -484,7 +485,7 @@ export async function addBrokerToNexusDb(
       data.rwaMakerFee ?? 0
     );
     const rwaDefaultTakerFee = convertBasisPointsToDecimal(
-      data.rwaTakerFee ?? 50
+      data.rwaTakerFee ?? 5
     );
 
     await nexusPrisma.nexusBroker.create({
@@ -686,10 +687,10 @@ export async function addBrokerToAllDatabases(data: OrderlyBrokerData): Promise<
   };
 }
 
-function convertDecimalToFeeUnits(decimalFee: Decimal): number {
-  const basisPoints = parseFloat(decimalFee.toString());
-  return Math.round(basisPoints * 10);
-}
+// function convertDecimalToFeeUnits(decimalFee: Decimal): number {
+//   const basisPoints = parseFloat(decimalFee.toString());
+//   return Math.round(basisPoints * 10);
+// }
 
 export async function getBrokerFeesFromOrderlyDb(
   brokerId: string

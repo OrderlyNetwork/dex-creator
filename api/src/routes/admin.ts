@@ -7,18 +7,17 @@ import {
   updateBrokerId,
   updateDexRepoUrl,
   getAllDexes,
-  getCurrentEnvironment,
   updateDexCustomDomainOverride,
   convertDexToDexConfig,
 } from "../models/dex";
 import { getPrisma } from "../lib/prisma";
-import { createAutomatedBrokerId } from "../lib/brokerCreation";
 import {
   setupRepositoryWithSingleCommit,
   renameRepository,
   deleteRepository,
   triggerRedeployment,
 } from "../lib/github";
+import { createBroker } from "../lib/createBroker";
 
 type AdminContext = Context<{
   Variables: {
@@ -111,13 +110,14 @@ const manualBrokerCreationSchema = z.object({
     ),
   makerFee: z.number().min(0).max(15),
   takerFee: z.number().min(3).max(15),
-  rwaMakerFee: z.number().min(0).max(15).optional(),
-  rwaTakerFee: z.number().min(0).max(15).optional(),
+  rwaMakerFee: z.number().min(0).max(15),
+  rwaTakerFee: z.number().min(0).max(15),
   txHash: z
     .string()
     .min(10)
     .max(100, "Transaction hash must be between 10-100 characters"),
   chainId: z.number().int().optional(),
+  chain_type: z.enum(["EVM", "SOL"]).default("EVM"),
 });
 
 const customDomainOverrideSchema = z.object({
@@ -401,6 +401,7 @@ adminRoutes.post(
         rwaTakerFee,
         txHash,
         chainId,
+        chain_type,
       } = c.req.valid("json");
       const dexId = c.req.param("dexId");
 
@@ -410,6 +411,7 @@ adminRoutes.post(
         where: { id: dexId },
         include: { user: true },
       });
+
       if (!dex || !dex.repoUrl) {
         return c.json(
           {
@@ -448,6 +450,17 @@ adminRoutes.post(
         );
       }
 
+      const user = await prismaClient.user.findUnique({
+        where: { id: dex.userId },
+      });
+
+      if (!user) {
+        return c.json(
+          { success: false, message: "User not found" },
+          { status: 404 }
+        );
+      }
+
       const existingUsedTx = await prismaClient.usedTransactionHash.findUnique({
         where: {
           txHash: txHash,
@@ -465,17 +478,29 @@ adminRoutes.post(
         );
       }
 
-      const brokerCreationResult = await createAutomatedBrokerId(
-        brokerId,
-        getCurrentEnvironment(),
-        {
-          brokerName: dex.brokerName,
-          makerFee: makerFee,
-          takerFee: takerFee,
-          rwaMakerFee: rwaMakerFee,
-          rwaTakerFee: rwaTakerFee,
-        }
-      );
+      // const brokerCreationResult = await createAutomatedBrokerId(
+      //   brokerId,
+      //   getCurrentEnvironment(),
+      //   {
+      //     brokerName: dex.brokerName,
+      //     makerFee: makerFee,
+      //     takerFee: takerFee,
+      //     rwaMakerFee: rwaMakerFee,
+      //     rwaTakerFee: rwaTakerFee,
+      //   }
+      // );
+
+      const brokerCreationResult = await createBroker({
+        broker_id: brokerId,
+        broker_name: dex.brokerName,
+        chain_id: chainId!,
+        chain_type,
+        address: user.address,
+        default_maker_fee_rate: makerFee,
+        default_taker_fee_rate: takerFee,
+        default_rwa_maker_fee_rate: rwaMakerFee,
+        default_rwa_taker_fee_rate: rwaTakerFee,
+      });
 
       if (!brokerCreationResult.success) {
         return c.json(brokerCreationResult, { status: 400 });
