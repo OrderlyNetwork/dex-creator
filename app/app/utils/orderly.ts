@@ -6,7 +6,7 @@ import {
   AbiCoder,
   JsonRpcSigner,
 } from "ethers";
-import { Address } from "viem";
+import { Address, parseUnits } from "viem";
 
 export type BrokerInfo = {
   broker_id: string;
@@ -380,6 +380,90 @@ export async function delegateWithdraw(
   const withdrawJson = await delegateWithdrawRes.json();
   if (!withdrawJson.success) {
     throw new Error(withdrawJson.message);
+  }
+}
+
+export async function withdraw(
+  signer: JsonRpcSigner,
+  userAddress: string,
+  accountId: string,
+  orderlyKey: Uint8Array,
+  chainId: number,
+  token: string,
+  amount: string,
+  receiver: string,
+  brokerId: string,
+  allowCrossChainWithdraw: boolean,
+  decimals: number = 6
+): Promise<void> {
+  const nonceRes = await signAndSendRequest(
+    accountId,
+    orderlyKey,
+    `${getBaseUrl()}/v1/withdraw_nonce`
+  );
+  const nonceJson = await nonceRes.json();
+  const withdrawNonce = nonceJson.data.withdraw_nonce as string;
+
+  const timestamp = Date.now();
+
+  const amountInSmallestUnit = parseUnits(amount, decimals).toString();
+
+  const withdrawMessage = {
+    brokerId,
+    chainId: Number(chainId),
+    receiver,
+    token,
+    amount: amountInSmallestUnit,
+    withdrawNonce: Number(withdrawNonce),
+    timestamp,
+  };
+
+  const domain = getOnChainDomain(chainId);
+  const signature = await signer.signTypedData(
+    domain,
+    {
+      Withdraw: MESSAGE_TYPES.Withdraw,
+    },
+    withdrawMessage
+  );
+
+  const finalMessage: {
+    brokerId: string;
+    chainId: number;
+    receiver: string;
+    token: string;
+    amount: string;
+    withdrawNonce: number;
+    timestamp: number;
+    chainType: string;
+    allowCrossChainWithdraw?: boolean;
+  } = {
+    ...withdrawMessage,
+    chainType: "EVM",
+  };
+
+  if (allowCrossChainWithdraw) {
+    finalMessage.allowCrossChainWithdraw = true;
+  }
+
+  const response = await signAndSendRequest(
+    accountId,
+    orderlyKey,
+    `${getBaseUrl()}/v1/withdraw_request`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        message: finalMessage,
+        signature,
+        userAddress,
+        verifyingContract: domain.verifyingContract,
+      }),
+    }
+  );
+
+  const json = await response.json();
+  if (!json.success) {
+    throw new Error(json.message || "Withdraw request failed");
   }
 }
 

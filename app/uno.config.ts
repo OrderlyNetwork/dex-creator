@@ -99,6 +99,7 @@ export default defineConfig({
         select: "rgb(40, 27, 62)", // #281B3E - Select dropdown background
         light: "rgb(188, 135, 255)", // #BC87FF - Highlight/Accent color
         surface: "rgb(15, 17, 35)",
+        fallback: "rgb(81, 72, 107)", // #51486B - Fallback background color for icons
       },
       // Status colors
       success: "rgb(48, 208, 88)",
