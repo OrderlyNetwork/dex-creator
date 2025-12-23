@@ -1,22 +1,22 @@
 import { FC, useEffect, useState } from "react";
 import { WalletConnectorProvider } from "@orderly.network/wallet-connector";
 import { OrderlyAppProvider, AppLogos } from "@orderly.network/react-app";
-import { Scaffold } from "@orderly.network/ui-scaffold";
-import { TradingPage } from "@orderly.network/trading";
+import {
+  Scaffold,
+  type MainNavWidgetProps,
+  type FooterProps,
+} from "@orderly.network/ui-scaffold";
+import { TradingPage, type TradingPageProps } from "@orderly.network/trading";
 import { NetworkId } from "@orderly.network/types";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { API } from "@orderly.network/types";
-import type { RouteOption } from "@orderly.network/ui-scaffold";
-import type {
-  MainNavWidgetProps,
-  FooterProps,
-} from "@orderly.network/ui-scaffold";
-import type { TradingPageProps } from "@orderly.network/trading";
+import type { RouteOption } from "@orderly.network/types";
+import PreviewErrorBoundary from "./PreviewErrorBoundary";
 
 export interface DexPreviewProps {
   brokerId: string;
   brokerName: string;
-  networkId: NetworkId;
+  networkId?: NetworkId;
 
   mainNavProps?: MainNavWidgetProps;
   footerProps?: FooterProps;
@@ -39,7 +39,7 @@ export interface DexPreviewProps {
 const DexPreview: FC<DexPreviewProps> = ({
   brokerId,
   brokerName,
-  networkId = "testnet",
+  networkId,
   mainNavProps = {
     initialMenu: "/",
     mainMenus: [{ name: "Trading", href: "/" }],
@@ -74,7 +74,14 @@ const DexPreview: FC<DexPreviewProps> = ({
   className = "",
   onLoad,
 }) => {
-  const [currentSymbol, setCurrentSymbol] = useState(initialSymbol);
+  const resolvedNetworkId: NetworkId =
+    networkId ||
+    (import.meta.env.VITE_DEPLOYMENT_ENV === "mainnet" ? "mainnet" : "testnet");
+
+  const DEFAULT_SYMBOL = "PERP_BTC_USDC";
+  const [currentSymbol, setCurrentSymbol] = useState(
+    initialSymbol || DEFAULT_SYMBOL
+  );
 
   const onChainChanged = (
     _chainId: number,
@@ -89,35 +96,147 @@ const DexPreview: FC<DexPreviewProps> = ({
 
   const handleSymbolChange = (data: API.Symbol) => {
     console.log("Symbol changed in preview mode:", data.symbol);
-    setCurrentSymbol(data.symbol);
+    setCurrentSymbol(data.symbol || DEFAULT_SYMBOL);
   };
 
   useEffect(() => {
-    setCurrentSymbol(initialSymbol);
+    setCurrentSymbol(initialSymbol || DEFAULT_SYMBOL);
   }, [initialSymbol]);
 
   useEffect(() => {
+    const oldOverrideStyles = document.querySelectorAll(
+      'style[id^="ai-override-"]'
+    );
+    oldOverrideStyles.forEach(style => style.remove());
+
+    if (!customStyles) return;
+
+    const fontFamilyMatch = customStyles.match(/--oui-font-family:\s*([^;]+);/);
+    if (!fontFamilyMatch) return;
+
+    const fontFamily = fontFamilyMatch[1].trim();
+    const styleId = "dex-preview-font-override";
+
+    const existingStyle = document.getElementById(styleId);
+    if (existingStyle) {
+      existingStyle.remove();
+    }
+
+    const style = document.createElement("style");
+    style.id = styleId;
+    style.textContent = `
+      .orderly-app-container,
+      .orderly-app-container *,
+      .orderly-app-container *::before,
+      .orderly-app-container *::after {
+        font-family: ${fontFamily} !important;
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      const styleToRemove = document.getElementById(styleId);
+      if (styleToRemove) {
+        styleToRemove.remove();
+      }
+    };
+  }, [customStyles]);
+
+  useEffect(() => {
+    const originalError = console.error;
+    const originalWarn = console.warn;
+
+    const errorHandler = (...args: unknown[]) => {
+      const errorMessage = args.join(" ");
+      if (
+        errorMessage.includes("DecimalError") ||
+        errorMessage.includes("Invalid argument: Infinity")
+      ) {
+        console.warn("Suppressed Decimal error in preview:", errorMessage);
+        return;
+      }
+      originalError(...args);
+    };
+
+    const warnHandler = (...args: unknown[]) => {
+      const warnMessage = args.join(" ");
+      if (
+        warnMessage.includes("DecimalError") ||
+        warnMessage.includes("Invalid argument: Infinity")
+      ) {
+        return;
+      }
+      originalWarn(...args);
+    };
+
+    console.error = errorHandler;
+    console.warn = warnHandler;
+
     const timer = setTimeout(() => {
       if (onLoad) {
         onLoad();
       }
     }, 1000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      console.error = originalError;
+      console.warn = originalWarn;
+    };
   }, [onLoad]);
+
+  useEffect(() => {
+    const handleError = (event: ErrorEvent) => {
+      if (
+        event.message.includes("DecimalError") ||
+        event.message.includes("Invalid argument: Infinity")
+      ) {
+        event.preventDefault();
+        console.warn("Suppressed Decimal error in preview:", event.message);
+        return false;
+      }
+    };
+
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      const reason = event.reason?.message || String(event.reason || "");
+      if (
+        reason.includes("DecimalError") ||
+        reason.includes("Invalid argument: Infinity")
+      ) {
+        event.preventDefault();
+        console.warn(
+          "Suppressed Decimal error promise rejection in preview:",
+          reason
+        );
+        return false;
+      }
+    };
+
+    window.addEventListener("error", handleError);
+    window.addEventListener("unhandledrejection", handleUnhandledRejection);
+
+    return () => {
+      window.removeEventListener("error", handleError);
+      window.removeEventListener(
+        "unhandledrejection",
+        handleUnhandledRejection
+      );
+    };
+  }, []);
 
   return (
     <div
       className={`relative h-full w-full orderly-app-container orderly-scrollbar bg-[rgb(var(--oui-color-base-7))] text-[rgb(var(--oui-color-base-foreground))] ${className}`}
     >
-      {customStyles && (
-        <style dangerouslySetInnerHTML={{ __html: customStyles }} />
-      )}
+      <style
+        key={`theme-${customStyles || "empty"}`}
+        dangerouslySetInnerHTML={{ __html: customStyles || "" }}
+      />
 
       <WalletConnectorProvider
         solanaInitial={{
           network:
-            networkId === "mainnet"
+            resolvedNetworkId === "mainnet"
               ? WalletAdapterNetwork.Mainnet
               : WalletAdapterNetwork.Devnet,
         }}
@@ -125,7 +244,7 @@ const DexPreview: FC<DexPreviewProps> = ({
         <OrderlyAppProvider
           brokerId={brokerId}
           brokerName={brokerName}
-          networkId={networkId}
+          networkId={resolvedNetworkId}
           onChainChanged={onChainChanged}
           appIcons={appIcons}
         >
@@ -137,12 +256,14 @@ const DexPreview: FC<DexPreviewProps> = ({
               currentPath: "/",
             }}
           >
-            <TradingPage
-              symbol={currentSymbol}
-              onSymbolChange={handleSymbolChange}
-              tradingViewConfig={tradingViewConfig}
-              sharePnLConfig={sharePnLConfig}
-            />
+            <PreviewErrorBoundary>
+              <TradingPage
+                symbol={currentSymbol || DEFAULT_SYMBOL}
+                onSymbolChange={handleSymbolChange}
+                tradingViewConfig={tradingViewConfig}
+                sharePnLConfig={sharePnLConfig}
+              />
+            </PreviewErrorBoundary>
           </Scaffold>
         </OrderlyAppProvider>
       </WalletConnectorProvider>

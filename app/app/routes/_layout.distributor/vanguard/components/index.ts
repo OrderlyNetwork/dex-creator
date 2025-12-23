@@ -14,3 +14,6 @@ export {
   SelectItem,
   SelectSeparator,
 } from "./Select";
+export { WalletIcon } from "./WalletIcon";
+export { TokenIcon } from "./TokenIcon";
+export { ChainIcon } from "./ChainIcon";

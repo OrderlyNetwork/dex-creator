@@ -14,11 +14,12 @@ import DexSectionRenderer, {
   DEX_SECTIONS,
 } from "../components/DexSectionRenderer";
 import { useDexForm } from "../hooks/useDexForm";
-import { DexData, ThemeTabType, defaultTheme } from "../types/dex";
+import { DexData, defaultTheme } from "../types/dex";
 import { useBindDistrubutorCode } from "../hooks/useBindDistrubutorCode";
 import { verifyDistributorCodeMessage } from "../service/distrubutorCode";
 import { useDistributor } from "../context/DistributorContext";
 import { useDex } from "../context/DexContext";
+import { DexPreviewProps } from "../components/DexPreview";
 
 export const meta: MetaFunction = () => [
   { title: "Configure Your DEX - Orderly One" },
@@ -88,8 +89,16 @@ export default function DexConfigRoute() {
 
   const handleCancelGeneratedTheme = () => {};
 
-  const handleGenerateTheme = async () => {
+  const handleGenerateTheme = async (
+    prompt?: string,
+    previewProps?: DexPreviewProps,
+    viewMode?: "desktop" | "mobile"
+  ) => {
     if (!token) return;
+
+    if (prompt !== undefined) {
+      form.setThemePrompt(prompt);
+    }
 
     form.setIsGeneratingTheme(true);
     await form.generateTheme(
@@ -97,7 +106,10 @@ export default function DexConfigRoute() {
       form.dexData?.themeCSS,
       handleApplyGeneratedTheme,
       handleCancelGeneratedTheme,
-      openModal
+      openModal,
+      prompt,
+      previewProps,
+      viewMode
     );
     form.setIsGeneratingTheme(false);
   };
@@ -119,7 +131,6 @@ export default function DexConfigRoute() {
 
   const validateAllSections = async () => {
     const sectionProps = form.getSectionProps({
-      handleGenerateTheme,
       handleResetTheme,
       handleResetToDefault,
       ThemeTabButton,
@@ -226,21 +237,11 @@ export default function DexConfigRoute() {
     }
   };
 
-  const ThemeTabButton = ({
-    tab,
-    label,
-  }: {
-    tab: ThemeTabType;
-    label: string;
-  }) => (
+  const ThemeTabButton = ({ label }: { label: string }) => (
     <button
-      className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
-        form.activeThemeTab === tab
-          ? "bg-background-dark/50 text-white border-t border-l border-r border-light/10"
-          : "bg-transparent text-gray-400 hover:text-white"
-      }`}
-      onClick={() => form.setActiveThemeTab(tab)}
+      className="px-4 py-2 text-sm font-medium rounded-t-lg bg-transparent text-gray-400"
       type="button"
+      disabled
     >
       {label}
     </button>
@@ -341,11 +342,11 @@ export default function DexConfigRoute() {
           sections={filteredSections}
           showProgressTracker={true}
           sectionProps={form.getSectionProps({
-            handleGenerateTheme,
             handleResetTheme,
             handleResetToDefault,
             ThemeTabButton,
           })}
+          handleGenerateTheme={handleGenerateTheme}
           idPrefix="config-"
           customDescription={section => {
             if (section.key === DEX_SECTION_KEYS.DistributorCode) {

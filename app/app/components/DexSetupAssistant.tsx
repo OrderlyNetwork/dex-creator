@@ -60,7 +60,10 @@ export default function DexSetupAssistant({
       null,
       handleApplyGeneratedTheme,
       handleCancelGeneratedTheme,
-      openModal
+      openModal,
+      undefined,
+      undefined,
+      "desktop"
     );
     form.setIsGeneratingTheme(false);
   };
@@ -79,20 +82,16 @@ export default function DexSetupAssistant({
   };
 
   const ThemeTabButton = ({
-    tab,
+    tab: _tab,
     label,
   }: {
     tab: ThemeTabType;
     label: string;
   }) => (
     <button
-      className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
-        form.activeThemeTab === tab
-          ? "bg-background-dark/50 text-white border-t border-l border-r border-light/10"
-          : "bg-transparent text-gray-400 hover:text-white"
-      }`}
-      onClick={() => form.setActiveThemeTab(tab)}
+      className="px-4 py-2 text-sm font-medium rounded-t-lg bg-transparent text-gray-400 hover:text-white"
       type="button"
+      disabled
     >
       {label}
     </button>
@@ -206,7 +205,6 @@ export default function DexSetupAssistant({
 
   const validateAllSections = async () => {
     const sectionProps = form.getSectionProps({
-      handleGenerateTheme,
       handleResetTheme,
       handleResetToDefault,
       ThemeTabButton,
@@ -309,9 +307,11 @@ export default function DexSetupAssistant({
       }
 
       await refreshDexData();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
       console.error("Error creating DEX:", error);
-      toast.error(error?.message || "Failed to create DEX. Please try again.");
+      toast.error(errorMessage || "Failed to create DEX. Please try again.");
     } finally {
       setIsSaving(false);
       setForkingStatus("");
@@ -420,11 +420,11 @@ export default function DexSetupAssistant({
           mode="accordion"
           sections={DEX_SECTIONS}
           sectionProps={form.getSectionProps({
-            handleGenerateTheme,
             handleResetTheme,
             handleResetToDefault,
             ThemeTabButton,
           })}
+          handleGenerateTheme={handleGenerateTheme}
           currentStep={currentStep}
           completedSteps={completedSteps}
           setCurrentStep={setCurrentStep}

@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { post, get } from "../utils/apiClient";
 import { toast } from "react-toastify";
-import { defaultTheme, ThemeTabType, DexData } from "../types/dex";
+import { defaultTheme, DexData } from "../types/dex";
 import {
   validateUrl,
   required,
@@ -16,6 +16,7 @@ import { useThemeCSS } from "./useThemeCSS";
 import { ModalType } from "../context/ModalContext";
 import { useDistributorCode } from "./useDistrubutorInfo";
 import { useDistributor } from "../context/DistributorContext";
+import { DexPreviewProps } from "../components/DexPreview";
 
 const base64ToBlob = async (base64: string): Promise<Blob> => {
   const response = await fetch(base64);
@@ -42,9 +43,9 @@ export interface DexSectionProps {
   handleImageChange: (field: string) => (blob: Blob | null) => void;
   currentTheme: string | null;
   defaultTheme: string;
+  savedTheme: string | null;
   showThemeEditor: boolean;
   viewCssCode: boolean;
-  activeThemeTab: "colors" | "fonts" | "rounded" | "spacing" | "tradingview";
   themePrompt: string;
   isGeneratingTheme: boolean;
   tradingViewColorConfig: string | null;
@@ -59,7 +60,6 @@ export interface DexSectionProps {
   }>;
   updateCssColor: (variableName: string, newColorHex: string) => void;
   updateCssValue: (variableName: string, newValue: string) => void;
-  handleGenerateTheme: () => void;
   setTradingViewColorConfig: (config: string | null) => void;
   pnlPosters: (Blob | null)[];
   handlePnLPosterChange: (posters: (Blob | null)[]) => void;
@@ -242,7 +242,10 @@ export interface UseDexFormReturn extends DexFormData {
     originalThemeCSS: string | null | undefined,
     onApply: (theme: string) => void,
     onCancel: () => void,
-    openModal: (type: ModalType, props?: Record<string, unknown>) => void
+    openModal: (type: ModalType, props?: Record<string, unknown>) => void,
+    prompt?: string,
+    previewProps?: DexPreviewProps,
+    viewMode?: "desktop" | "mobile"
   ) => Promise<void>;
   resetTheme: (originalThemeCSS: string | null | undefined) => void;
   resetThemeToDefault: () => void;
@@ -251,8 +254,6 @@ export interface UseDexFormReturn extends DexFormData {
   setShowThemeEditor: (value: boolean) => void;
   viewCssCode: boolean;
   setViewCssCode: (value: boolean) => void;
-  activeThemeTab: ThemeTabType;
-  setActiveThemeTab: (tab: ThemeTabType) => void;
   isGeneratingTheme: boolean;
   setIsGeneratingTheme: (value: boolean) => void;
   toggleThemeEditor: () => void;
@@ -260,7 +261,6 @@ export interface UseDexFormReturn extends DexFormData {
   handleUpdateCssValue: (variableName: string, newValue: string) => void;
   handleUpdateCssColor: (variableName: string, newColorHex: string) => void;
   getSectionProps: (additionalProps: {
-    handleGenerateTheme: () => void;
     handleResetTheme: () => void;
     handleResetToDefault: () => void;
     ThemeTabButton: React.FC<{
@@ -318,7 +318,6 @@ export function useDexForm(): UseDexFormReturn {
   const [dexData, setDexData] = useState<DexData | null>(null);
   const [showThemeEditor, setShowThemeEditor] = useState(false);
   const [viewCssCode, setViewCssCode] = useState(false);
-  const [activeThemeTab, setActiveThemeTab] = useState<ThemeTabType>("colors");
   const [isGeneratingTheme, setIsGeneratingTheme] = useState(false);
 
   const { updateCssValue, updateCssColor } = useThemeCSS(defaultTheme);
@@ -788,28 +787,40 @@ export function useDexForm(): UseDexFormReturn {
       originalThemeCSS: string | null | undefined,
       onApply: (theme: string) => void,
       onCancel: () => void,
-      openModal: (type: ModalType, props?: Record<string, unknown>) => void
+      openModal: (type: ModalType, props?: Record<string, unknown>) => void,
+      prompt?: string,
+      previewProps?: DexPreviewProps,
+      viewMode: "desktop" | "mobile" = "desktop"
     ) => {
-      if (!themePrompt.trim()) {
+      const effectivePrompt = prompt?.trim() || themePrompt.trim();
+      if (!effectivePrompt) {
         toast.error("Please enter a theme description");
         return;
       }
 
       try {
-        const response = await post<{ theme: string }>(
+        const response = await post<{ themes: string[] }>(
           "api/theme/modify",
           {
-            prompt: themePrompt.trim(),
+            prompt: effectivePrompt,
             currentTheme: currentTheme || originalThemeCSS,
           },
           token
         );
 
-        if (response && response.theme) {
+        if (
+          response &&
+          response.themes &&
+          Array.isArray(response.themes) &&
+          response.themes.length === 3
+        ) {
           openModal("themePreview", {
-            theme: response.theme,
+            oldTheme: currentTheme || originalThemeCSS || "",
+            themes: response.themes,
             onApply,
             onCancel,
+            previewProps,
+            viewMode,
           });
           toast.success("Theme generated successfully!");
         } else {
@@ -926,7 +937,6 @@ export function useDexForm(): UseDexFormReturn {
           if (!response.themeCSS) {
             setCurrentTheme(defaultTheme);
           }
-          setActiveThemeTab("colors");
 
           await loadImagesFromBase64({
             primaryLogo: response.primaryLogo,
@@ -949,7 +959,6 @@ export function useDexForm(): UseDexFormReturn {
 
   const getSectionProps = useCallback(
     (additionalProps: {
-      handleGenerateTheme: () => void;
       handleResetTheme: () => void;
       handleResetToDefault: () => void;
       ThemeTabButton: React.FC<{
@@ -966,9 +975,9 @@ export function useDexForm(): UseDexFormReturn {
       handleImageChange,
       currentTheme,
       defaultTheme,
+      savedTheme: dexData?.themeCSS || null,
       showThemeEditor,
       viewCssCode,
-      activeThemeTab,
       themePrompt,
       isGeneratingTheme,
       tradingViewColorConfig,
@@ -980,7 +989,6 @@ export function useDexForm(): UseDexFormReturn {
       ThemeTabButton: additionalProps.ThemeTabButton,
       updateCssColor: handleUpdateCssColor,
       updateCssValue: handleUpdateCssValue,
-      handleGenerateTheme: additionalProps.handleGenerateTheme,
       setTradingViewColorConfig,
       pnlPosters,
       handlePnLPosterChange,
@@ -1097,7 +1105,6 @@ export function useDexForm(): UseDexFormReturn {
       setEnableCampaigns,
       showThemeEditor,
       viewCssCode,
-      activeThemeTab,
       isGeneratingTheme,
       toggleThemeEditor,
       handleThemeEditorChange,
@@ -1206,8 +1213,6 @@ export function useDexForm(): UseDexFormReturn {
     setShowThemeEditor,
     viewCssCode,
     setViewCssCode,
-    activeThemeTab,
-    setActiveThemeTab,
     isGeneratingTheme,
     setIsGeneratingTheme,
     toggleThemeEditor,

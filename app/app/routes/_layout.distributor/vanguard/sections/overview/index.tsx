@@ -2,8 +2,17 @@ import { useOverviewScript } from "./Overview.script";
 import OverviewUI from "./Overview.ui";
 
 export default function Overview() {
-  const { data, onEditCode, configureDistributorCodeModalUiProps, isLoading } =
-    useOverviewScript();
+  const {
+    data,
+    onEditCode,
+    configureDistributorCodeModalUiProps,
+    onWithdrawClick,
+    revenueWithdrawModalUiProps,
+    isLoading,
+    availableBalance,
+    isLoadingBalance,
+    isAmbassador,
+  } = useOverviewScript();
 
   return (
     <OverviewUI
@@ -12,7 +21,12 @@ export default function Overview() {
       configureDistributorCodeModalUiProps={
         configureDistributorCodeModalUiProps
       }
+      onWithdrawClick={onWithdrawClick}
+      revenueWithdrawModalUiProps={revenueWithdrawModalUiProps}
       isLoading={isLoading}
+      availableBalance={availableBalance}
+      isLoadingBalance={isLoadingBalance}
+      isAmbassador={isAmbassador}
     />
   );
 }

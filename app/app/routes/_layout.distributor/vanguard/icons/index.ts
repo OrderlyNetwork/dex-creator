@@ -10,3 +10,4 @@ export { ChevronDownIcon } from "./ChevronDownIcon";
 export { CloseIcon } from "./CloseIcon";
 export { CheckIcon } from "./CheckIcon";
 export { SearchDocumentIcon } from "./SearchDocumentIcon";
+export { SwapIcon } from "./SwapIcon";

@@ -54,9 +54,20 @@ export default function Form({
 
   const handleSubmit = useCallback(
     (e: FormEvent) => {
+      const submitEvent = e.nativeEvent as SubmitEvent;
+      const submitter = submitEvent.submitter as HTMLElement | null;
+
+      if (submitter) {
+        const previewContainer = submitter.closest("[data-preview-container]");
+        if (previewContainer) {
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+      }
+
       e.preventDefault();
 
-      // @ts-ignore - isTrusted exists on native events but might not be in the FormEvent type
       if (
         process.env.NODE_ENV === "development" &&
         (!e.nativeEvent || !e.nativeEvent.isTrusted)
@@ -111,7 +122,7 @@ export default function Form({
                 <span className="text-warning font-medium">Please Wait</span>
               </div>
               <p className="text-sm text-gray-300 mb-2">
-                You can only update your DEX once every 5 minutes.
+                You can only update your DEX once every 2 minutes.
               </p>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-gray-400">Time remaining:</span>

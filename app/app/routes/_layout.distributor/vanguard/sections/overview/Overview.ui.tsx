@@ -5,6 +5,9 @@ import { ConfigureDistributorCodeModalUI } from "../configureDistributorCodeModa
 import type { ConfigureDistributorCodeModalUIProps } from "../configureDistributorCodeModal";
 import { copyText, formatCurrency, formatTier } from "../../utils";
 import { CopyIcon, EditIcon, LinkIcon } from "../../icons";
+import { Button } from "../../../../../components/Button";
+import RevenueWithdrawModal from "../withdraw";
+import type { RevenueWithdrawModalProps } from "../withdraw";
 
 interface OverviewUIProps {
   data: {
@@ -15,7 +18,12 @@ interface OverviewUIProps {
   };
   onEditCode: () => void;
   configureDistributorCodeModalUiProps: ConfigureDistributorCodeModalUIProps;
+  revenueWithdrawModalUiProps: RevenueWithdrawModalProps;
+  onWithdrawClick: () => void;
   isLoading?: boolean;
+  availableBalance: number;
+  isLoadingBalance: boolean;
+  isAmbassador: boolean;
 }
 
 const ActionList = ({
@@ -67,7 +75,12 @@ const OverviewUI: React.FC<OverviewUIProps> = ({
   data,
   onEditCode,
   configureDistributorCodeModalUiProps,
+  revenueWithdrawModalUiProps,
+  onWithdrawClick,
   isLoading,
+  availableBalance,
+  isLoadingBalance,
+  isAmbassador,
 }) => {
   if (isLoading) {
     return <div className="h-[140px] bg-base-800 rounded-lg animate-pulse" />;
@@ -104,10 +117,39 @@ const OverviewUI: React.FC<OverviewUIProps> = ({
           showInfoIcon={true}
           infoTooltip="Your latest broker tier."
         />
+        {/* Available balance card - Only show for Ambassador */}
+        {isAmbassador && (
+          <div className="w-full rounded-lg bg-background-light/30 border border-primary-light/30 shadow-lg p-4 flex items-center gap-3">
+            <div className="flex flex-col gap-2 flex-1 min-w-0">
+              <div className="text-sm text-base-contrast-54 leading-tight whitespace-nowrap">
+                Available balance
+              </div>
+              <div className="text-base font-medium text-[#9c75ff] break-words">
+                {isLoadingBalance
+                  ? "Loading..."
+                  : formatCurrency(availableBalance, {
+                      floor: true,
+                      precison: 2,
+                    })}
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="xs"
+              className="!bg-purple-dark !border !border-purple-light text-white px-3 py-1.5 shrink-0 whitespace-nowrap text-sm"
+              onClick={onWithdrawClick}
+              aria-label="Withdraw"
+              disabled={availableBalance === 0 || isLoadingBalance}
+            >
+              Withdraw
+            </Button>
+          </div>
+        )}
       </div>
       <ConfigureDistributorCodeModalUI
         {...configureDistributorCodeModalUiProps}
       />
+      <RevenueWithdrawModal {...revenueWithdrawModalUiProps} />
     </div>
   );
 };

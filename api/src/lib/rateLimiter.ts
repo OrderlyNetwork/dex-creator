@@ -112,8 +112,9 @@ class RateLimiter {
   }
 }
 
-export const deploymentRateLimiter = new RateLimiter(5);
+export const deploymentRateLimiter = new RateLimiter(2);
 export const themeRateLimiter = new RateLimiter(0.5);
+export const fineTuneRateLimiter = new RateLimiter(10 / 60);
 
 export function createDeploymentRateLimit(rateLimiter: RateLimiter) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -145,9 +146,11 @@ export function createDeploymentRateLimit(rateLimiter: RateLimiter) {
 process.on("SIGTERM", () => {
   deploymentRateLimiter.destroy();
   themeRateLimiter.destroy();
+  fineTuneRateLimiter.destroy();
 });
 
 process.on("SIGINT", () => {
   deploymentRateLimiter.destroy();
   themeRateLimiter.destroy();
+  fineTuneRateLimiter.destroy();
 });

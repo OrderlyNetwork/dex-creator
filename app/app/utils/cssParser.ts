@@ -127,5 +127,13 @@ export function generateThemeCSS(variables: CSSVariables): string {
 html, body {
   font-family: ${variables["oui-font-family"] || "'Manrope', sans-serif"} !important;
   font-size: ${variables["oui-font-size-base"] || "16px"} !important;
-}`;
+}
+
+.orderly-app-container,
+.orderly-app-container *,
+.orderly-app-container *::before,
+.orderly-app-container *::after {
+  font-family: ${variables["oui-font-family"] || "'Manrope', sans-serif"} !important;
+}
+`;
 }

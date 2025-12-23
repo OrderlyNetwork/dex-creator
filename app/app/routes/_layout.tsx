@@ -47,7 +47,7 @@ export default function Layout() {
             <DistributorProvider>
               <ModalProvider>
                 <div className="flex flex-col h-full">
-                  <header className="fixed top-0 left-0 right-0 z-100 bg-gradient-to-b from-purple-900/80 to-transparent backdrop-blur-[1px]">
+                  <header className="fixed top-0 left-0 right-0 z-49 bg-gradient-to-b from-purple-900/80 to-transparent backdrop-blur-[1px]">
                     <div className="flex justify-between items-center py-4 px-4 md:py-6 md:px-8">
                       <div className="flex items-center justify-between w-full mr-8">
                         <Link to="/">

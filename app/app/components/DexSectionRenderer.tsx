@@ -18,6 +18,7 @@ import ProgressTracker from "./ProgressTracker";
 import { DexSectionProps } from "../hooks/useDexForm";
 import DistributorCodeSection from "./DistributorCodeSection";
 import ServiceDisclaimerSection from "./ServiceDisclaimerSection";
+import { DexPreviewProps } from "./DexPreview";
 
 export interface DexSectionConfig {
   id: number;
@@ -31,7 +32,7 @@ export interface DexSectionConfig {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getProps: (sectionProps: DexSectionProps) => any;
   getValidationTest?: (sectionProps: DexSectionProps) => boolean;
-  /** get the value of the section */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getValue?: (sectionProps: DexSectionProps) => any;
 }
 
@@ -120,7 +121,6 @@ export const DEX_SECTIONS: DexSectionConfig[] = [
       defaultTheme: props.defaultTheme,
       showThemeEditor: props.showThemeEditor,
       viewCssCode: props.viewCssCode,
-      activeThemeTab: props.activeThemeTab,
       themePrompt: props.themePrompt,
       isGeneratingTheme: props.isGeneratingTheme,
       brokerName: props.brokerName,
@@ -136,7 +136,6 @@ export const DEX_SECTIONS: DexSectionConfig[] = [
       updateCssColor: props.updateCssColor,
       updateCssValue: props.updateCssValue,
       handleInputChange: props.handleInputChange,
-      handleGenerateTheme: props.handleGenerateTheme,
       setTradingViewColorConfig: props.setTradingViewColorConfig,
     }),
   },
@@ -341,6 +340,11 @@ interface DexSectionRendererProps {
   mode: "accordion" | "direct";
   sections: DexSectionConfig[];
   sectionProps: DexSectionProps;
+  handleGenerateTheme?: (
+    prompt?: string,
+    previewProps?: DexPreviewProps,
+    viewMode?: "desktop" | "mobile"
+  ) => void;
   currentStep?: number;
   completedSteps?: Record<number, boolean>;
   setCurrentStep?: (step: number) => void;
@@ -359,6 +363,7 @@ const DexSectionRenderer: React.FC<DexSectionRendererProps> = ({
   mode,
   sections,
   sectionProps,
+  handleGenerateTheme,
   currentStep,
   completedSteps,
   setCurrentStep,
@@ -414,8 +419,15 @@ const DexSectionRenderer: React.FC<DexSectionRendererProps> = ({
   };
   const renderSection = (section: DexSectionConfig, index: number) => {
     const Component = section.component;
+    const baseProps = section.getProps(sectionProps);
+    if (
+      section.key === DEX_SECTION_KEYS.ThemeCustomization &&
+      handleGenerateTheme
+    ) {
+      baseProps.handleGenerateTheme = handleGenerateTheme;
+    }
     const componentProps = {
-      ...section.getProps(sectionProps),
+      ...baseProps,
       idPrefix: mode === "accordion" ? "" : idPrefix,
     };
 

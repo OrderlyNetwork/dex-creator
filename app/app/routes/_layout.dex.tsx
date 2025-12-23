@@ -103,7 +103,6 @@ export default function DexRoute() {
         form.setCurrentTheme(defaultTheme);
       }
 
-      form.setActiveThemeTab("colors");
       setLocalDeploymentUrl(
         dexData.repoUrl
           ? `https://dex.orderly.network/${dexData.repoUrl.split("/").pop()}/`
@@ -115,7 +114,6 @@ export default function DexRoute() {
     form.populateFromDexData,
     form.setViewCssCode,
     form.setCurrentTheme,
-    form.setActiveThemeTab,
   ]);
 
   useEffect(() => {

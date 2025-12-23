@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, ReactNode, useMemo } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useMemo,
+  useCallback,
+} from "react";
 import LoginModal from "../components/LoginModal";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import ConfirmationModal from "../components/ConfirmationModal";
@@ -15,6 +22,12 @@ import SafeInstructionsModal from "../components/SafeInstructions";
 import { FeeWithdrawalModal } from "../components/FeeWithdrawalModal";
 import SwapFeeConfigModal from "../components/SwapFeeConfigModal";
 import { SwapFeeWithdrawalModal } from "../components/SwapFeeWithdrawalModal";
+import ThemeEditorModal from "../components/ThemeEditorModal";
+import AIThemeGeneratorModal from "../components/AIThemeGeneratorModal";
+import CurrentThemeModal from "../components/CurrentThemeModal";
+import AIFineTuneModal from "../components/AIFineTuneModal";
+import AIFineTunePreviewModal from "../components/AIFineTunePreviewModal";
+import ThemePresetPreviewModal from "../components/ThemePresetPreviewModal";
 
 export type ModalType =
   | "login"
@@ -33,6 +46,12 @@ export type ModalType =
   | "feeWithdrawal"
   | "swapFeeConfig"
   | "swapFeeWithdrawal"
+  | "themeEditor"
+  | "aiThemeGenerator"
+  | "currentTheme"
+  | "aiFineTune"
+  | "aiFineTunePreview"
+  | "themePresetPreview"
   | null;
 
 interface ModalContextType {
@@ -69,20 +88,23 @@ export function ModalProvider({ children }: ModalProviderProps) {
     Record<string, any>
   >({});
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const openModal = (type: ModalType, props: Record<string, any> = {}) => {
-    setIsModalOpen(true);
-    setCurrentModalType(type);
-    setCurrentModalProps(props);
-  };
+  const openModal = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (type: ModalType, props: Record<string, any> = {}) => {
+      setIsModalOpen(true);
+      setCurrentModalType(type);
+      setCurrentModalProps(props);
+    },
+    []
+  );
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setIsModalOpen(false);
     setTimeout(() => {
       setCurrentModalType(null);
       setCurrentModalProps({});
     }, 300);
-  };
+  }, []);
 
   const contextValue = useMemo(
     () => ({
@@ -92,7 +114,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
       currentModalType,
       currentModalProps,
     }),
-    [isModalOpen, currentModalType, currentModalProps]
+    [openModal, closeModal, isModalOpen, currentModalType, currentModalProps]
   );
 
   return (
@@ -172,7 +194,10 @@ function ModalManager() {
             closeModal();
           }}
           onCancel={currentModalProps.onCancel}
-          css={currentModalProps.theme}
+          oldTheme={currentModalProps.oldTheme}
+          themes={currentModalProps.themes}
+          previewProps={currentModalProps.previewProps}
+          viewMode={currentModalProps.viewMode}
         />
       );
     case "tradingViewLicense":
@@ -264,6 +289,78 @@ function ModalManager() {
           isOpen={isModalOpen}
           onClose={closeModal}
           address={currentModalProps.address}
+        />
+      );
+    case "themeEditor":
+      return (
+        <ThemeEditorModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          currentTheme={currentModalProps.currentTheme}
+          defaultTheme={currentModalProps.defaultTheme}
+          savedTheme={currentModalProps.savedTheme}
+          onThemeChange={currentModalProps.onThemeChange}
+        />
+      );
+    case "aiThemeGenerator":
+      return (
+        <AIThemeGeneratorModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          isGeneratingTheme={currentModalProps.isGeneratingTheme}
+          onGenerateTheme={currentModalProps.onGenerateTheme}
+        />
+      );
+    case "currentTheme":
+      return (
+        <CurrentThemeModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          currentTheme={currentModalProps.currentTheme}
+          defaultTheme={currentModalProps.defaultTheme}
+          updateCssColor={currentModalProps.updateCssColor}
+          updateCssValue={currentModalProps.updateCssValue}
+          tradingViewColorConfig={currentModalProps.tradingViewColorConfig}
+          setTradingViewColorConfig={
+            currentModalProps.setTradingViewColorConfig
+          }
+        />
+      );
+    case "aiFineTune":
+      return (
+        <AIFineTuneModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          element={currentModalProps.element}
+          currentTheme={currentModalProps.currentTheme}
+          onApplyOverrides={currentModalProps.onApplyOverrides}
+          previewProps={currentModalProps.previewProps}
+          viewMode={currentModalProps.viewMode}
+        />
+      );
+    case "aiFineTunePreview":
+      return (
+        <AIFineTunePreviewModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          oldTheme={currentModalProps.oldTheme}
+          newOverrides={currentModalProps.newOverrides}
+          previewProps={currentModalProps.previewProps}
+          viewMode={currentModalProps.viewMode}
+          onApply={currentModalProps.onApply}
+          onReject={currentModalProps.onReject}
+        />
+      );
+    case "themePresetPreview":
+      return (
+        <ThemePresetPreviewModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          previewProps={currentModalProps.previewProps}
+          viewMode={currentModalProps.viewMode}
+          currentTheme={currentModalProps.currentTheme}
+          onApply={currentModalProps.onApply}
+          onPreviewChange={currentModalProps.onPreviewChange}
         />
       );
     default:
