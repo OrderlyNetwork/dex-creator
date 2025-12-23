@@ -115,11 +115,18 @@ export const useRevenueWithdrawModalScript = (
   const tokenDecimals = selectedChain?.decimals ?? 6;
 
   const [quantity, setQuantity] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const parsedAmount = useMemo(() => parseFloat(quantity), [quantity]);
 
   useEffect(() => {
     if (open) {
       setQuantity("");
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) {
+      setIsSubmitting(false);
     }
   }, [open]);
 
@@ -198,6 +205,10 @@ export const useRevenueWithdrawModalScript = (
     !!minAmountWarningMessage;
 
   const submitWithdraw = useCallback(async () => {
+    if (isSubmitting) {
+      return;
+    }
+
     if (
       !address ||
       !accountId ||
@@ -215,6 +226,7 @@ export const useRevenueWithdrawModalScript = (
       return;
     }
 
+    setIsSubmitting(true);
     try {
       const provider = new BrowserProvider(walletClient);
       const signer = await provider.getSigner();
@@ -239,11 +251,14 @@ export const useRevenueWithdrawModalScript = (
     } catch (error: unknown) {
       const message = parseWalletError(error) || "Failed to submit withdrawal";
       toast.error(message);
+    } finally {
+      setIsSubmitting(false);
     }
   }, [
     accountId,
     address,
     brokerId,
+    isSubmitting,
     onClose,
     onWithdrawSuccess,
     selectedChainId,
@@ -279,5 +294,6 @@ export const useRevenueWithdrawModalScript = (
     walletAddress: address || "",
     walletName,
     isLoadingBalance,
+    isSubmitting,
   };
 };

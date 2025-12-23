@@ -18,6 +18,7 @@ export interface RevenueWithdrawModalUIProps {
   onConfirm: () => void;
   availableBalance: number;
   fee: number;
+  isSubmitting: boolean;
   selectedChainId: number | null;
   chains: Array<{
     chain_id: number;
@@ -42,6 +43,7 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
   onConfirm,
   availableBalance,
   fee,
+  isSubmitting,
   selectedChainId,
   chains,
   onChainChange,
@@ -69,26 +71,38 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
     <ConfirmDialog
       open={open}
       onOpenChange={isOpen => {
-        if (!isOpen) {
+        if (!isOpen && !isSubmitting) {
           onClose();
         }
       }}
       title="Withdraw: distributor's balance"
       onOk={() => {
-        if (!confirmDisabled) {
+        if (!confirmDisabled && !isSubmitting) {
           onConfirm();
         }
       }}
-      onCancel={onClose}
+      onCancel={() => {
+        if (!isSubmitting) {
+          onClose();
+        }
+      }}
       okText="Withdraw"
       cancelText="Cancel"
       contentClassName="max-w-[480px]"
-      confirmDisable={confirmDisabled}
+      confirmDisable={confirmDisabled || isSubmitting}
       footer={
         <div className="flex gap-2.5 w-full">
           <button
-            onClick={onClose}
-            className="flex-1 h-10 px-5 rounded-full text-sm font-medium border border-base-contrast-12 text-base-contrast-54 hover:text-base-contrast hover:border-base-contrast transition-colors inline-flex items-center justify-center"
+            onClick={() => {
+              if (!isSubmitting) {
+                onClose();
+              }
+            }}
+            disabled={isSubmitting}
+            className={cn(
+              "flex-1 h-10 px-5 rounded-full text-sm font-medium border border-base-contrast-12 text-base-contrast-54 hover:text-base-contrast hover:border-base-contrast transition-colors inline-flex items-center justify-center",
+              isSubmitting && "opacity-60 cursor-not-allowed"
+            )}
           >
             Cancel
           </button>
@@ -96,11 +110,12 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
             variant="primary"
             size="sm"
             onClick={() => {
-              if (!confirmDisabled) {
+              if (!confirmDisabled && !isSubmitting) {
                 onConfirm();
               }
             }}
-            disabled={confirmDisabled}
+            disabled={confirmDisabled || isSubmitting}
+            isLoading={isSubmitting}
             className="flex-1 h-10 justify-center"
           >
             Withdraw
