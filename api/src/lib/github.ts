@@ -406,6 +406,182 @@ export async function forkTemplateRepository(
 }
 
 /**
+ * Creates an empty repository for a landing page
+ * @param repoIdentifier The identifier for the new repository
+ * @returns The URL of the created repository
+ */
+export async function createLandingPageRepository(
+  repoIdentifier: string
+): Promise<GitHubResult<string>> {
+  try {
+    if (!repoIdentifier || repoIdentifier.trim() === "") {
+      return {
+        success: false,
+        error: {
+          type: GitHubErrorType.REPOSITORY_NAME_EMPTY,
+          message: "Repository identifier cannot be empty",
+        },
+      };
+    }
+
+    if (!/^[a-z0-9-]+$/i.test(repoIdentifier)) {
+      return {
+        success: false,
+        error: {
+          type: GitHubErrorType.REPOSITORY_NAME_INVALID,
+          message:
+            "Repository identifier can only contain alphanumeric characters and hyphens",
+        },
+      };
+    }
+
+    if (repoIdentifier.length > 100) {
+      return {
+        success: false,
+        error: {
+          type: GitHubErrorType.REPOSITORY_NAME_TOO_LONG,
+          message:
+            "Repository identifier exceeds GitHub's maximum length of 100 characters",
+        },
+      };
+    }
+
+    const repoName = `landing-page-${repoIdentifier}`;
+    const orgName = "OrderlyNetworkDexCreator";
+
+    console.log(`Creating landing page repository ${orgName}/${repoName}...`);
+
+    const octokit = await getOctokit();
+    const response = await octokit.rest.repos.createInOrg({
+      org: orgName,
+      name: repoName,
+      private: false,
+      auto_init: false,
+    });
+
+    const repoUrl = response.data.html_url;
+    console.log(`Successfully created repository: ${repoUrl}`);
+
+    await enableRepositoryActions(orgName, repoName);
+
+    const deploymentToken = await getSecret("templatePat");
+    try {
+      await addSecretToRepository(
+        orgName,
+        repoName,
+        "TEMPLATE_PAT",
+        deploymentToken
+      );
+      console.log(`Added TEMPLATE_PAT secret to ${orgName}/${repoName}`);
+    } catch (secretError) {
+      console.error(
+        "Error adding GitHub Pages deployment token secret:",
+        secretError
+      );
+    }
+
+    try {
+      await enableGitHubPages(orgName, repoName);
+      console.log(`Enabled GitHub Pages for ${orgName}/${repoName}`);
+    } catch (pagesError) {
+      console.error("Error enabling GitHub Pages:", pagesError);
+    }
+
+    return {
+      success: true,
+      data: repoUrl,
+    };
+  } catch (error: unknown) {
+    console.error("Error creating landing page repository:", error);
+    return {
+      success: false,
+      error: handleGitHubError(error, "create landing page repository"),
+    };
+  }
+}
+
+/**
+ * Setup landing page repository with HTML content and GitHub Pages workflow
+ */
+export async function setupLandingPageRepository(
+  owner: string,
+  repo: string,
+  htmlContent: string,
+  customDomain: string | null
+): Promise<void> {
+  console.log(`Setting up landing page repository ${owner}/${repo}...`);
+
+  try {
+    const landingPageWorkflow = `name: Deploy Landing Page to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: \${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: \${{ secrets.TEMPLATE_PAT }}
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        with:
+          token: \${{ secrets.TEMPLATE_PAT }}
+          enablement: true
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "."
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4`;
+
+    const fileContents = new Map<string, string>();
+    fileContents.set("index.html", htmlContent);
+    fileContents.set(".github/workflows/deploy.yml", landingPageWorkflow);
+
+    if (customDomain) {
+      fileContents.set("CNAME", customDomain);
+    }
+
+    await createSingleCommit(
+      owner,
+      repo,
+      fileContents,
+      new Map(),
+      [],
+      "Setup landing page with HTML content"
+    );
+  } catch (error) {
+    console.error(
+      `Error setting up landing page repository ${owner}/${repo}:`,
+      error
+    );
+    throw error;
+  }
+}
+
+/**
  * Enables GitHub Actions on a repository
  * This is necessary because GitHub disables Actions by default on forked repositories
  * that contain workflows

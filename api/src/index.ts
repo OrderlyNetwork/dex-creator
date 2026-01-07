@@ -7,6 +7,7 @@ import authRoutes from "./routes/auth";
 import adminRoutes from "./routes/admin";
 import themeRoutes from "./routes/theme";
 import graduationRoutes from "./routes/graduation";
+import landingPageRoutes from "./routes/landingPage";
 import { leaderboard } from "./routes/leaderboard";
 import { stats } from "./routes/stats";
 import { leaderboardService } from "./services/leaderboardService";
@@ -39,6 +40,7 @@ app.use("*", errorLoggerMiddleware);
 app.use("/api/dex/*", authMiddleware);
 app.use("/api/theme/*", authMiddleware);
 app.use("/api/graduation/*", authMiddleware);
+app.use("/api/landing-page/*", authMiddleware);
 
 app.use("/api/admin/*", async (c, next) => {
   if (c.req.path === "/api/admin/check") {
@@ -54,6 +56,7 @@ app.route("/api/auth", authRoutes);
 app.route("/api/admin", adminRoutes);
 app.route("/api/theme", themeRoutes);
 app.route("/api/graduation", graduationRoutes);
+app.route("/api/landing-page", landingPageRoutes);
 app.route("/api/leaderboard", leaderboard);
 app.route("/api/stats", stats);
 

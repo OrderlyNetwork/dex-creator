@@ -43,6 +43,19 @@ export enum DexErrorType {
 }
 
 /**
+ * Error types for Landing Page operations
+ */
+export enum LandingPageErrorType {
+  USER_ALREADY_HAS_LANDING_PAGE = "USER_ALREADY_HAS_LANDING_PAGE",
+  USER_NOT_FOUND = "USER_NOT_FOUND",
+  LANDING_PAGE_NOT_FOUND = "LANDING_PAGE_NOT_FOUND",
+  USER_NOT_AUTHORIZED = "USER_NOT_AUTHORIZED",
+  REPOSITORY_CREATION_FAILED = "REPOSITORY_CREATION_FAILED",
+  DATABASE_ERROR = "DATABASE_ERROR",
+  VALIDATION_ERROR = "VALIDATION_ERROR",
+}
+
+/**
  * Structured error for GitHub operations
  */
 export interface GitHubError {
@@ -61,6 +74,15 @@ export interface DexError {
 }
 
 /**
+ * Structured error for Landing Page operations
+ */
+export interface LandingPageError {
+  type: LandingPageErrorType;
+  message: string;
+  details?: unknown;
+}
+
+/**
  * Result type specifically for GitHub operations
  */
 export type GitHubResult<T> = Result<T, GitHubError>;
@@ -69,6 +91,11 @@ export type GitHubResult<T> = Result<T, GitHubError>;
  * Result type specifically for DEX operations
  */
 export type DexResult<T> = Result<T, DexError>;
+
+/**
+ * Result type specifically for Landing Page operations
+ */
+export type LandingPageResult<T> = Result<T, LandingPageError>;
 
 /**
  * DEX configuration shared across all GitHub operations

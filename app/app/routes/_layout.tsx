@@ -3,6 +3,7 @@ import WalletConnect from "../components/WalletConnect";
 import { ModalProvider } from "../context/ModalContext";
 import { AuthProvider } from "../context/AuthContext";
 import { DexProvider } from "../context/DexContext";
+import { LandingPageProvider } from "../context/LandingPageContext";
 import { OrderlyKeyProvider } from "../context/OrderlyKeyContext";
 import { AppKitProvider } from "../components/AppKitProvider";
 import Navigation from "../components/Navigation";
@@ -43,9 +44,10 @@ export default function Layout() {
     <AppKitProvider>
       <AuthProvider>
         <DexProvider>
-          <OrderlyKeyProvider>
-            <DistributorProvider>
-              <ModalProvider>
+          <LandingPageProvider>
+            <OrderlyKeyProvider>
+              <DistributorProvider>
+                <ModalProvider>
                 <div className="flex flex-col h-full">
                   <header className="fixed top-0 left-0 right-0 z-49 bg-gradient-to-b from-purple-900/80 to-transparent backdrop-blur-[1px]">
                     <div className="flex justify-between items-center py-4 px-4 md:py-6 md:px-8">
@@ -110,8 +112,9 @@ export default function Layout() {
                   theme="dark"
                 />
               </ModalProvider>
-            </DistributorProvider>
-          </OrderlyKeyProvider>
+              </DistributorProvider>
+            </OrderlyKeyProvider>
+          </LandingPageProvider>
         </DexProvider>
       </AuthProvider>
     </AppKitProvider>
