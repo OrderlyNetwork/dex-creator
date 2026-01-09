@@ -20,13 +20,17 @@ interface LandingPageContextType {
   clearLandingPageData: () => void;
 }
 
-const LandingPageContext = createContext<LandingPageContextType | undefined>(undefined);
+const LandingPageContext = createContext<LandingPageContextType | undefined>(
+  undefined
+);
 
 export { LandingPageContext };
 
 export function LandingPageProvider({ children }: { children: ReactNode }) {
   const { isAuthenticated, token } = useAuth();
-  const [landingPageData, setLandingPageData] = useState<LandingPage | null>(null);
+  const [landingPageData, setLandingPageData] = useState<LandingPage | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,7 +44,10 @@ export function LandingPageProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     try {
-      const response = await get<LandingPage | { exists: false }>("api/landing-page", token);
+      const response = await get<LandingPage | { exists: false }>(
+        "api/landing-page",
+        token
+      );
 
       if (response && "exists" in response && response.exists === false) {
         setLandingPageData(null);
@@ -51,7 +58,9 @@ export function LandingPageProvider({ children }: { children: ReactNode }) {
       }
     } catch (err) {
       console.error("Failed to fetch landing page data", err);
-      setError(err instanceof Error ? err.message : "Failed to fetch landing page data");
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch landing page data"
+      );
       setLandingPageData(null);
     } finally {
       setIsLoading(false);

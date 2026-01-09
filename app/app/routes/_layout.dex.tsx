@@ -513,6 +513,33 @@ export default function DexRoute() {
             </Card>
           )}
 
+          {dexData && (
+            <Card className="my-6 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 bg-blue-500/20 p-2 rounded-full">
+                    <div className="i-mdi:web text-blue-400 w-6 h-6"></div>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-1">Landing Page</h3>
+                    <p className="text-gray-300">
+                      Create and customize a beautiful landing page for your
+                      DEX. Use AI to generate content and fine-tune it to
+                      attract traders.
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  as="a"
+                  href="/dex/page"
+                  className="whitespace-nowrap flex-shrink-0"
+                >
+                  Manage Landing Page
+                </Button>
+              </div>
+            </Card>
+          )}
+
           {dexData && dexData.brokerId !== "demo" && (
             <Card
               className={`my-6 ${

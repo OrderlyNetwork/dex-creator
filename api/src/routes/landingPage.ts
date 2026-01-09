@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 import { getPrisma } from "../lib/prisma";
 import {
   getUserLandingPage,
@@ -42,7 +43,7 @@ const landingPageConfigSchema = z.object({
     .array(
       z.object({
         type: z.enum(["hero", "features", "about", "contact", "custom"]),
-        content: z.record(z.any()),
+        content: z.record(z.string(), z.any()),
         order: z.number().min(0),
       })
     )
@@ -115,7 +116,6 @@ const updateLandingPageSchema = z.object({
   config: landingPageConfigSchema.optional(),
 });
 
-// Get the current user's landing page
 landingPageRoutes.get("/", async c => {
   try {
     const userId = c.get("userId");
@@ -164,7 +164,6 @@ landingPageRoutes.get("/:id", async c => {
   }
 });
 
-// Create a new landing page
 landingPageRoutes.post(
   "/",
   zValidator("json", landingPageConfigSchema),
@@ -173,7 +172,10 @@ landingPageRoutes.post(
       const userId = c.get("userId");
       const config = c.req.valid("json");
 
-      const result = await createLandingPage(userId, config);
+      const result = await createLandingPage(
+        userId,
+        config as Prisma.InputJsonValue
+      );
 
       if (!result.success) {
         switch (result.error.type) {
@@ -197,7 +199,6 @@ landingPageRoutes.post(
   }
 );
 
-// Update an existing landing page
 landingPageRoutes.put(
   "/:id",
   zValidator("json", updateLandingPageSchema),
@@ -207,7 +208,21 @@ landingPageRoutes.put(
     const updateData = c.req.valid("json");
 
     try {
-      const result = await updateLandingPage(id, userId, updateData);
+      const updatePayload: {
+        htmlContent?: string;
+        config?: Prisma.InputJsonValue;
+        repoUrl?: string;
+        customDomain?: string;
+      } = {};
+
+      if (updateData.htmlContent !== undefined) {
+        updatePayload.htmlContent = updateData.htmlContent;
+      }
+      if (updateData.config !== undefined) {
+        updatePayload.config = updateData.config as Prisma.InputJsonValue;
+      }
+
+      const result = await updateLandingPage(id, userId, updatePayload);
 
       if (!result.success) {
         switch (result.error.type) {
@@ -233,7 +248,6 @@ landingPageRoutes.put(
   }
 );
 
-// Delete a landing page
 landingPageRoutes.delete("/:id", async c => {
   const id = c.req.param("id");
   const userId = c.get("userId");
@@ -279,7 +293,6 @@ landingPageRoutes.delete("/:id", async c => {
   }
 });
 
-// Generate landing page HTML using Mastra agent
 landingPageRoutes.post(
   "/:id/generate",
   zValidator("json", generatePromptSchema),
@@ -347,7 +360,6 @@ landingPageRoutes.post(
   }
 );
 
-// Set a custom domain for a landing page
 landingPageRoutes.post(
   "/:id/custom-domain",
   zValidator("json", customDomainSchema),
@@ -380,7 +392,6 @@ landingPageRoutes.post(
   }
 );
 
-// Remove custom domain from a landing page
 landingPageRoutes.delete("/:id/custom-domain", async c => {
   const id = c.req.param("id");
   const userId = c.get("userId");

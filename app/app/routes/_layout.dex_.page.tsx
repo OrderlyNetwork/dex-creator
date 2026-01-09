@@ -50,7 +50,11 @@ export default function LandingPageRoute() {
     setIsDeleting(true);
 
     try {
-      await del<{ message: string }>(`api/landing-page/${landingPageData.id}`, null, token);
+      await del<{ message: string }>(
+        `api/landing-page/${landingPageData.id}`,
+        null,
+        token
+      );
       toast.success("Landing page deleted successfully!");
 
       clearLandingPageData();
@@ -70,13 +74,14 @@ export default function LandingPageRoute() {
     });
   };
 
-
   if (isLoading || isLandingPageLoading) {
     return (
       <div className="w-full h-[calc(100vh-64px)] flex items-center justify-center px-4 mt-26 pb-52">
         <div className="text-center">
           <div className="i-svg-spinners:pulse-rings-multiple h-12 w-12 mx-auto text-primary-light mb-4"></div>
-          <div className="text-base md:text-lg mb-2">Loading your landing page</div>
+          <div className="text-base md:text-lg mb-2">
+            Loading your landing page
+          </div>
           <div className="text-xs md:text-sm text-gray-400">
             Please wait while we fetch your configuration
           </div>
@@ -123,11 +128,10 @@ export default function LandingPageRoute() {
         <Card className="bg-warning/10 border border-warning/30">
           <div className="text-center">
             <div className="i-mdi:warning text-warning h-12 w-12 mx-auto mb-4"></div>
-            <h2 className="text-xl md:text-2xl font-bold mb-4">
-              DEX Required
-            </h2>
+            <h2 className="text-xl md:text-2xl font-bold mb-4">DEX Required</h2>
             <p className="text-gray-300 mb-6">
-              You need to create a DEX first before you can set up a landing page.
+              You need to create a DEX first before you can set up a landing
+              page.
             </p>
             <Button as="a" href="/dex" className="whitespace-nowrap">
               Create Your DEX
@@ -161,7 +165,11 @@ export default function LandingPageRoute() {
               Create your landing page to start attracting traders to your DEX
             </p>
             <div className="flex justify-center">
-              <Button as="a" href="/dex/page/config" className="whitespace-nowrap">
+              <Button
+                as="a"
+                href="/dex/page/config"
+                className="whitespace-nowrap"
+              >
                 Create Landing Page
               </Button>
             </div>
@@ -192,7 +200,8 @@ export default function LandingPageRoute() {
                     Configure Your Landing Page
                   </h3>
                   <p className="text-gray-300">
-                    Customize branding, content, sections, and advanced settings for your landing page.
+                    Customize branding, content, sections, and advanced settings
+                    for your landing page.
                   </p>
                 </div>
               </div>
@@ -222,7 +231,10 @@ export default function LandingPageRoute() {
                     Your landing page is live and accessible to visitors.
                   </p>
                   <a
-                    href={landingPageData.customDomain || `https://${landingPageData.repoUrl.split('/').pop()}.github.io`}
+                    href={
+                      landingPageData.customDomain ||
+                      `https://${landingPageData.repoUrl.split("/").pop()}.github.io`
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-primary-light hover:underline text-sm mt-1 inline-block"
@@ -233,7 +245,10 @@ export default function LandingPageRoute() {
               </div>
               <Button
                 as="a"
-                href={landingPageData.customDomain || `https://${landingPageData.repoUrl.split('/').pop()}.github.io`}
+                href={
+                  landingPageData.customDomain ||
+                  `https://${landingPageData.repoUrl.split("/").pop()}.github.io`
+                }
                 target="_blank"
                 rel="noopener noreferrer"
                 variant="success"
@@ -246,9 +261,7 @@ export default function LandingPageRoute() {
         )}
 
         <Card>
-          <h3 className="text-lg font-bold mb-4 text-red-400">
-            Danger Zone
-          </h3>
+          <h3 className="text-lg font-bold mb-4 text-red-400">Danger Zone</h3>
           <div className="border border-red-500/20 rounded-lg p-4 bg-red-500/5">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>
@@ -256,7 +269,8 @@ export default function LandingPageRoute() {
                   Delete Landing Page
                 </h4>
                 <p className="text-sm text-gray-400">
-                  Permanently delete your landing page configuration. This action cannot be undone.
+                  Permanently delete your landing page configuration. This
+                  action cannot be undone.
                 </p>
               </div>
               <Button
