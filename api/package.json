@@ -31,7 +31,7 @@
     "@coral-xyz/anchor": "0.29.0",
     "@google-cloud/secret-manager": "^6.1.0",
     "@hono/node-server": "^1.8.1",
-    "@hono/zod-validator": "^0.4.3",
+    "@hono/zod-validator": "^0.7.6",
     "@mastra/core": "beta",
     "@mastra/hono": "beta",
     "@mastra/pg": "beta",
@@ -48,7 +48,7 @@
     "libsodium-wrappers": "^0.7.15",
     "octokit": "^4.1.2",
     "openai": "^4.96.0",
-    "zod": "^3.22.4"
+    "zod": "^4.3.5"
   },
   "devDependencies": {
     "@testcontainers/mysql": "^11.5.1",
