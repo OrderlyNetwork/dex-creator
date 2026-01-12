@@ -216,9 +216,11 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
             defaultTheme={defaultTheme}
             savedTheme={savedTheme}
             onThemeChange={handleThemeChange}
-            isGeneratingTheme={isGeneratingTheme}
-            onGenerateTheme={(prompt: string) => {
-              handleGenerateTheme(prompt, previewProps, "desktop");
+            onGenerateTheme={(
+              prompt: string,
+              viewMode: "desktop" | "mobile"
+            ) => {
+              handleGenerateTheme(prompt, previewProps, viewMode);
             }}
             updateCssColor={updateCssColor}
             updateCssValue={updateCssValue}
@@ -384,7 +386,7 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
           <div className="mt-1">
             <Button
               onClick={() =>
-                handleGenerateTheme(undefined, undefined, "mobile")
+                handleGenerateTheme(themePrompt, undefined, "mobile")
               }
               isLoading={isGeneratingTheme}
               loadingText="Generating..."

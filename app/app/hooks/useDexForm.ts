@@ -805,7 +805,10 @@ export function useDexForm(): UseDexFormReturn {
             prompt: effectivePrompt,
             currentTheme: currentTheme || originalThemeCSS,
           },
-          token
+          token,
+          {
+            showToastOnError: false,
+          }
         );
 
         if (
@@ -838,7 +841,11 @@ export function useDexForm(): UseDexFormReturn {
             "Rate limit exceeded. Please wait 30 seconds before generating another theme."
           );
         } else {
-          toast.error("Error generating theme. Please try again.");
+          toast.error(
+            error instanceof Error
+              ? error.message
+              : "Error generating theme. Please try again."
+          );
         }
       }
     },

@@ -2,7 +2,6 @@ import { useState, useEffect, FormEvent, useMemo } from "react";
 import type { MetaFunction } from "@remix-run/node";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/useAuth";
-import { useModal } from "../context/ModalContext";
 import { putFormData, createDexFormData } from "../utils/apiClient";
 import { buildDexDataToSend } from "../utils/dexDataBuilder";
 import WalletConnect from "../components/WalletConnect";
@@ -19,7 +18,7 @@ import { useBindDistrubutorCode } from "../hooks/useBindDistrubutorCode";
 import { verifyDistributorCodeMessage } from "../service/distrubutorCode";
 import { useDistributor } from "../context/DistributorContext";
 import { useDex } from "../context/DexContext";
-import { DexPreviewProps } from "../components/DexPreview";
+import { useThemeHandlers } from "../hooks/useThemeHandlers";
 
 export const meta: MetaFunction = () => [
   { title: "Configure Your DEX - Orderly One" },
@@ -32,7 +31,6 @@ export const meta: MetaFunction = () => [
 
 export default function DexConfigRoute() {
   const { isAuthenticated, token, isLoading } = useAuth();
-  const { openModal } = useModal();
   const navigate = useNavigate();
   const form = useDexForm();
 
@@ -83,55 +81,17 @@ export default function DexConfigRoute() {
     }
   }, [form]);
 
-  const handleApplyGeneratedTheme = (modifiedCss: string) => {
-    form.setCurrentTheme(modifiedCss);
-  };
-
-  const handleCancelGeneratedTheme = () => {};
-
-  const handleGenerateTheme = async (
-    prompt?: string,
-    previewProps?: DexPreviewProps,
-    viewMode?: "desktop" | "mobile"
-  ) => {
-    if (!token) return;
-
-    if (prompt !== undefined) {
-      form.setThemePrompt(prompt);
-    }
-
-    form.setIsGeneratingTheme(true);
-    await form.generateTheme(
+  const { handleGenerateTheme, handleResetTheme, handleResetToDefault } =
+    useThemeHandlers({
       token,
-      form.dexData?.themeCSS,
-      handleApplyGeneratedTheme,
-      handleCancelGeneratedTheme,
-      openModal,
-      prompt,
-      previewProps,
-      viewMode
-    );
-    form.setIsGeneratingTheme(false);
-  };
-
-  const handleResetTheme = () => {
-    form.resetTheme(form.dexData?.themeCSS);
-    form.setTradingViewColorConfig(
-      form.dexData?.tradingViewColorConfig ?? null
-    );
-    form.setShowThemeEditor(false);
-    form.setViewCssCode(false);
-  };
-
-  const handleResetToDefault = () => {
-    form.resetThemeToDefault();
-    form.setShowThemeEditor(false);
-    form.setViewCssCode(false);
-  };
+      form,
+      originalThemeCSS: form.dexData?.themeCSS,
+      tradingViewColorConfig: form.dexData?.tradingViewColorConfig,
+    });
 
   const validateAllSections = async () => {
     const sectionProps = form.getSectionProps({
-      handleResetTheme,
+      handleResetTheme: () => handleResetTheme(true),
       handleResetToDefault,
       ThemeTabButton,
     });

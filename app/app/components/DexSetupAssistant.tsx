@@ -1,6 +1,5 @@
 import { useState, FormEvent } from "react";
 import { toast } from "react-toastify";
-import { useModal } from "../context/ModalContext";
 import { postFormData, createDexFormData } from "../utils/apiClient";
 import { buildDexDataToSend } from "../utils/dexDataBuilder";
 import { Button } from "./Button";
@@ -16,6 +15,7 @@ import { verifyDistributorCodeMessage } from "../service/distrubutorCode";
 import { useDistributorCode } from "../hooks/useDistrubutorInfo";
 import { useDistributor } from "../context/DistributorContext";
 import { trackEvent } from "~/analytics/tracking";
+import { useThemeHandlers } from "../hooks/useThemeHandlers";
 
 const TOTAL_STEPS = DEX_SECTIONS.length;
 
@@ -31,7 +31,6 @@ export default function DexSetupAssistant({
   refreshDexData,
 }: DexSetupAssistantProps) {
   const form = useDexForm();
-  const { openModal } = useModal();
   const { bindDistributorCode } = useBindDistrubutorCode();
 
   const [isSaving, setIsSaving] = useState(false);
@@ -46,41 +45,12 @@ export default function DexSetupAssistant({
   const { distributorInfo } = useDistributor();
   const urlDistributorCode = useDistributorCode();
 
-  const handleApplyGeneratedTheme = (modifiedCss: string) => {
-    form.setCurrentTheme(modifiedCss);
-  };
-
-  const handleCancelGeneratedTheme = () => {};
-
-  const handleGenerateTheme = async () => {
-    if (!token) return;
-
-    form.setIsGeneratingTheme(true);
-    await form.generateTheme(
+  const { handleGenerateTheme, handleResetTheme, handleResetToDefault } =
+    useThemeHandlers({
       token,
-      null,
-      handleApplyGeneratedTheme,
-      handleCancelGeneratedTheme,
-      openModal,
-      undefined,
-      undefined,
-      "desktop"
-    );
-    form.setIsGeneratingTheme(false);
-  };
-
-  const handleResetTheme = () => {
-    form.resetTheme(null);
-    form.setTradingViewColorConfig(null);
-    form.setShowThemeEditor(false);
-    form.setViewCssCode(false);
-  };
-
-  const handleResetToDefault = () => {
-    form.resetThemeToDefault();
-    form.setShowThemeEditor(false);
-    form.setViewCssCode(false);
-  };
+      form,
+      originalThemeCSS: null,
+    });
 
   const ThemeTabButton = ({
     tab: _tab,
@@ -424,7 +394,7 @@ export default function DexSetupAssistant({
           mode="accordion"
           sections={DEX_SECTIONS}
           sectionProps={form.getSectionProps({
-            handleResetTheme,
+            handleResetTheme: () => handleResetTheme(false),
             handleResetToDefault,
             ThemeTabButton,
           })}

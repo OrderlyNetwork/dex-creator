@@ -7,6 +7,7 @@ import {
   fineTuneRateLimiter,
   createDeploymentRateLimit,
 } from "../lib/rateLimiter";
+import { validateCSS } from "../lib/cssValidator";
 
 const themeRoutes = new Hono();
 
@@ -225,6 +226,22 @@ COLOR GUIDELINES:
           modifiedTheme = modifiedTheme.replace(/\s*```$/i, "");
           modifiedTheme = modifiedTheme.trim();
 
+          // Validate generated CSS
+          const validation = validateCSS(modifiedTheme);
+          if (!validation.isValid) {
+            console.error(
+              `Theme variant ${index + 1} validation errors:`,
+              validation.errors
+            );
+
+            return c.json(
+              {
+                message: `CSS validation failed: ${validation.errors.join("; ")}, please try again with a different prompt`,
+              },
+              { status: 500 }
+            );
+          }
+
           themesArray.push(modifiedTheme);
         } catch (error) {
           console.error(`Error generating theme variant ${index + 1}:`, error);
@@ -424,6 +441,22 @@ IMPORTANT: Return ONLY the pure CSS code. Do NOT wrap it in markdown code blocks
           cssOverrides = cssOverrides.replace(/^```(?:css)?\s*/i, "");
           cssOverrides = cssOverrides.replace(/\s*```$/i, "");
           cssOverrides = cssOverrides.trim();
+
+          // Validate generated CSS
+          const validation = validateCSS(cssOverrides);
+          if (!validation.isValid) {
+            console.error(
+              `CSS override variant ${index + 1} validation errors:`,
+              validation.errors
+            );
+
+            return c.json(
+              {
+                message: `CSS validation failed: ${validation.errors.join("; ")}, please try again with a different prompt`,
+              },
+              { status: 500 }
+            );
+          }
 
           overridesArray.push(cssOverrides);
         } catch (error) {

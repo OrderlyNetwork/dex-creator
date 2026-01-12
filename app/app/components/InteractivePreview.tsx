@@ -10,8 +10,7 @@ export interface InteractivePreviewProps {
   defaultTheme: string;
   savedTheme: string | null;
   onThemeChange: (newTheme: string) => void;
-  isGeneratingTheme?: boolean;
-  onGenerateTheme: (prompt: string) => void;
+  onGenerateTheme: (prompt: string, viewMode: "desktop" | "mobile") => void;
   updateCssColor?: (variableName: string, newColorHex: string) => void;
   updateCssValue?: (variableName: string, newValue: string) => void;
   tradingViewColorConfig?: string | null;
@@ -24,7 +23,6 @@ const InteractivePreview: FC<InteractivePreviewProps> = ({
   defaultTheme,
   savedTheme,
   onThemeChange,
-  isGeneratingTheme,
   onGenerateTheme,
   updateCssColor,
   updateCssValue,
@@ -133,8 +131,13 @@ const InteractivePreview: FC<InteractivePreviewProps> = ({
             savedTheme={savedTheme}
             onThemeChange={onThemeChange}
             viewMode={editMode}
-            isGeneratingTheme={isGeneratingTheme}
-            onGenerateTheme={onGenerateTheme}
+            onGenerateTheme={
+              editMode
+                ? (prompt: string, vm: "desktop" | "mobile") => {
+                    onGenerateTheme(prompt, vm);
+                  }
+                : undefined
+            }
             updateCssColor={updateCssColor}
             updateCssValue={updateCssValue}
             tradingViewColorConfig={tradingViewColorConfig}

@@ -4,6 +4,7 @@ import { Card } from "./Card";
 import DexPreview, { DexPreviewProps } from "./DexPreview";
 import ThemeEditingTabs from "./ThemeEditingTabs";
 import { useThemeEditor } from "../hooks/useThemeEditor";
+import { extractFontValues } from "../utils/cssParser";
 
 interface ThemePreviewModalProps {
   isOpen: boolean;
@@ -128,6 +129,21 @@ export default function ThemePreviewModal({
     (!isActualMobileDevice || viewMode === "desktop")
   ) {
     const currentTheme = getCurrentTheme();
+    const { fontFamily, fontSize } = useMemo(
+      () => extractFontValues(currentTheme),
+      [currentTheme]
+    );
+
+    const cleanPreviewProps = useMemo(() => {
+      if (!previewProps) return undefined;
+      const {
+        customStyles: _customStyles,
+        fontFamily: _fontFamily,
+        fontSize: _fontSize,
+        ...rest
+      } = previewProps;
+      return rest;
+    }, [previewProps]);
 
     return (
       <div
@@ -202,12 +218,25 @@ export default function ThemePreviewModal({
             className={`${
               viewMode === "mobile" ? "max-w-md mx-auto py-4" : "h-full"
             } w-full`}
+            style={
+              viewMode === "mobile"
+                ? {
+                    maxWidth: "450px",
+                    margin: "0 auto",
+                  }
+                : undefined
+            }
           >
-            <DexPreview
-              {...previewProps}
-              customStyles={currentTheme}
-              className={viewMode === "mobile" ? "w-full" : "h-full w-full"}
-            />
+            {cleanPreviewProps && (
+              <DexPreview
+                {...cleanPreviewProps}
+                customStyles={currentTheme}
+                fontFamily={fontFamily}
+                fontSize={fontSize}
+                className={viewMode === "mobile" ? "w-full" : "h-full w-full"}
+                key={`theme-preview-${selectedVariant}-${currentTheme?.substring(0, 50)}`}
+              />
+            )}
           </div>
         </div>
       </div>

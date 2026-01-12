@@ -2,35 +2,29 @@ import { FC, useState, useEffect } from "react";
 import { Button } from "./Button";
 import FormInput from "./FormInput";
 import { Card } from "./Card";
+import { useThemeGeneration } from "../context/ThemeGenerationContext";
 
 export interface AIThemeGeneratorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  isGeneratingTheme: boolean;
-  onGenerateTheme: (prompt: string) => void;
+  viewMode?: "desktop" | "mobile";
+  onGenerateTheme: (prompt: string, viewMode: "desktop" | "mobile") => void;
 }
 
 const AIThemeGeneratorModal: FC<AIThemeGeneratorModalProps> = ({
   isOpen,
   onClose,
-  isGeneratingTheme: externalIsGeneratingTheme,
+  viewMode = "desktop",
   onGenerateTheme,
 }) => {
   const [themePrompt, setThemePrompt] = useState("");
-  const [localIsGenerating, setLocalIsGenerating] = useState(false);
-
-  const isGeneratingTheme = localIsGenerating || externalIsGeneratingTheme;
+  const { isGeneratingTheme } = useThemeGeneration();
 
   useEffect(() => {
     if (!isOpen) {
       setThemePrompt("");
-      setLocalIsGenerating(false);
     }
   }, [isOpen]);
-
-  useEffect(() => {
-    setLocalIsGenerating(externalIsGeneratingTheme);
-  }, [externalIsGeneratingTheme]);
 
   if (!isOpen) return null;
 
@@ -94,8 +88,7 @@ const AIThemeGeneratorModal: FC<AIThemeGeneratorModalProps> = ({
               if (!themePrompt.trim() || isGeneratingTheme) {
                 return;
               }
-              setLocalIsGenerating(true);
-              onGenerateTheme(themePrompt);
+              onGenerateTheme(themePrompt, viewMode);
             }}
             isLoading={isGeneratingTheme}
             loadingText="Generating..."

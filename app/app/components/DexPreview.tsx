@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, useRef } from "react";
+import { FC, useEffect, useState, useRef, useMemo } from "react";
 import { WalletConnectorProvider } from "@orderly.network/wallet-connector";
 import { OrderlyAppProvider, AppLogos } from "@orderly.network/react-app";
 import {
@@ -104,6 +104,12 @@ const DexPreview: FC<DexPreviewProps> = ({
   const styleIdRef = useRef<string | null>(null);
   const containerIdRef = useRef<string | null>(null);
 
+  const fontFamily = useMemo(() => {
+    if (!customStyles) return null;
+    const fontFamilyMatch = customStyles.match(/--oui-font-family:\s*([^;]+);/);
+    return fontFamilyMatch ? fontFamilyMatch[1].trim() : null;
+  }, [customStyles]);
+
   useEffect(() => {
     const oldOverrideStyles = document.querySelectorAll(
       'style[id^="ai-override-"]'
@@ -117,11 +123,15 @@ const DexPreview: FC<DexPreviewProps> = ({
     }
     const containerId = containerIdRef.current;
 
-    if (previewContainerRef.current) {
+    if (
+      previewContainerRef.current &&
+      previewContainerRef.current.getAttribute("data-preview-id") !==
+        containerId
+    ) {
       previewContainerRef.current.setAttribute("data-preview-id", containerId);
     }
 
-    if (!customStyles) {
+    if (!fontFamily) {
       if (styleIdRef.current) {
         const styleToRemove = document.getElementById(styleIdRef.current);
         if (styleToRemove) {
@@ -131,20 +141,6 @@ const DexPreview: FC<DexPreviewProps> = ({
       }
       return;
     }
-
-    const fontFamilyMatch = customStyles.match(/--oui-font-family:\s*([^;]+);/);
-    if (!fontFamilyMatch) {
-      if (styleIdRef.current) {
-        const styleToRemove = document.getElementById(styleIdRef.current);
-        if (styleToRemove) {
-          styleToRemove.remove();
-        }
-        styleIdRef.current = null;
-      }
-      return;
-    }
-
-    const fontFamily = fontFamilyMatch[1].trim();
 
     if (!styleIdRef.current) {
       styleIdRef.current = `dex-preview-font-override-${Math.random()
@@ -183,7 +179,7 @@ const DexPreview: FC<DexPreviewProps> = ({
         styleIdRef.current = null;
       }
     };
-  }, [customStyles]);
+  }, [customStyles, fontFamily]);
 
   useEffect(() => {
     const originalError = console.error;
