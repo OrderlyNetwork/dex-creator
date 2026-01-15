@@ -28,6 +28,7 @@ import CurrentThemeModal from "../components/CurrentThemeModal";
 import AIFineTuneModal from "../components/AIFineTuneModal";
 import AIFineTunePreviewModal from "../components/AIFineTunePreviewModal";
 import ThemePresetPreviewModal from "../components/ThemePresetPreviewModal";
+import SectionConfigModal from "../components/SectionConfigModal";
 
 export type ModalType =
   | "login"
@@ -52,6 +53,7 @@ export type ModalType =
   | "aiFineTune"
   | "aiFineTunePreview"
   | "themePresetPreview"
+  | "sectionConfig"
   | null;
 
 interface ModalContextType {
@@ -362,6 +364,16 @@ function ModalManager() {
           currentTheme={currentModalProps.currentTheme}
           onApply={currentModalProps.onApply}
           onPreviewChange={currentModalProps.onPreviewChange}
+        />
+      );
+    case "sectionConfig":
+      return (
+        <SectionConfigModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          sectionType={currentModalProps.sectionType}
+          formData={currentModalProps.formData}
+          onUpdate={currentModalProps.onUpdate}
         />
       );
     default:

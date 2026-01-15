@@ -9,7 +9,7 @@ import { del } from "../utils/apiClient";
 import WalletConnect from "../components/WalletConnect";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
-import { useNavigate } from "@remix-run/react";
+import { useNavigate, Link } from "@remix-run/react";
 
 export const meta: MetaFunction = () => [
   { title: "Landing Page - Orderly One" },
@@ -93,6 +93,15 @@ export default function LandingPageRoute() {
   if (!isAuthenticated) {
     return (
       <div className="w-full max-w-3xl mx-auto px-4 py-6 md:py-10 mt-26 pb-52">
+        <div className="mb-8">
+          <Link
+            to="/dex"
+            className="text-sm text-gray-400 hover:text-primary-light mb-2 inline-flex items-center"
+          >
+            <div className="i-mdi:arrow-left h-4 w-4 mr-1"></div>
+            Back to DEX Dashboard
+          </Link>
+        </div>
         <div className="text-center">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">
             Create Your Landing Page
@@ -145,6 +154,15 @@ export default function LandingPageRoute() {
   if (!hasLandingPage) {
     return (
       <div className="w-full max-w-3xl mx-auto px-4 py-6 md:py-10 mt-26 pb-52">
+        <div className="mb-8">
+          <Link
+            to="/dex"
+            className="text-sm text-gray-400 hover:text-primary-light mb-2 inline-flex items-center"
+          >
+            <div className="i-mdi:arrow-left h-4 w-4 mr-1"></div>
+            Back to DEX Dashboard
+          </Link>
+        </div>
         <div className="text-center">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">
             Create Your Landing Page
@@ -182,9 +200,18 @@ export default function LandingPageRoute() {
   return (
     <div className="container mx-auto p-4 max-w-3xl mt-26 pb-52">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold gradient-text">
-          Manage Your Landing Page
-        </h1>
+        <div>
+          <Link
+            to="/dex"
+            className="text-sm text-gray-400 hover:text-primary-light mb-2 inline-flex items-center"
+          >
+            <div className="i-mdi:arrow-left h-4 w-4 mr-1"></div>
+            Back to DEX Dashboard
+          </Link>
+          <h1 className="text-2xl md:text-3xl font-bold gradient-text">
+            Manage Your Landing Page
+          </h1>
+        </div>
       </div>
 
       <div className="space-y-8">
