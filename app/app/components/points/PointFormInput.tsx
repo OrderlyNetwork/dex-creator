@@ -1,6 +1,6 @@
 import { ChangeEvent, ReactNode } from "react";
 import { FormLabel } from "./FormLabel";
-import { cn } from "../../../utils/css";
+import { cn } from "~/utils/css";
 
 interface PointFormInputProps {
   label?: string;

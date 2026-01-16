@@ -1,14 +1,14 @@
 import { useMemo } from "react";
-import { Card } from "../../../../components/Card";
-import { Button } from "../../../../components/Button";
+import { Card } from "../../Card";
+import { Button } from "../../Button";
 import {
   PointCampaign,
   PointCampaignFormType,
   PointCampaignStatus,
 } from "~/types/points";
-import { usePointsDetail } from "../../hooks/usePointsService";
-import { usePointsForm } from "../../hooks/usePointsForm";
-import { useOperatePoints } from "../../hooks/useOperatePoints";
+import { usePointsDetail } from "~/hooks/points/usePointsService";
+import { usePointsForm } from "~/hooks/points/usePointsForm";
+import { useOperatePoints } from "~/hooks/points/useOperatePoints";
 import { CoefficientInput } from "./CoefficientInput";
 import { PointsBasicInput } from "./PointsBasicInput";
 import { add } from "date-fns";

@@ -1,15 +1,18 @@
 import { useMemo, useState } from "react";
 import type { MetaFunction } from "@remix-run/node";
-import { BackDexDashboard } from "../../components/BackDexDashboard";
-import { PointCampaignForm } from "./components/form";
-import { PointCampaignList } from "./components/PointCampaignList";
-import { EnablePointsCard, PointsMenuId } from "./components/EnablePointsCard";
+import { BackDexDashboard } from "../components/BackDexDashboard";
+import { PointCampaignForm } from "~/components/points/form";
+import { PointCampaignList } from "~/components/points/PointCampaignList";
+import {
+  EnablePointsCard,
+  PointsMenuId,
+} from "~/components/points/EnablePointsCard";
 import { OrderlyKeyAuthGrard } from "~/components/authGrard/OrderlyKeyAuthGuard";
 import { GraduationAuthGuard } from "~/components/authGrard/GraduationAuthGuard";
 import { PointCampaign, PointCampaignFormType } from "~/types/points";
-import { usePointsStages } from "./hooks/usePointsService";
+import { usePointsStages } from "../hooks/points/usePointsService";
 import { useDex } from "~/context/DexContext";
-import { useDeleteStages } from "./hooks/useDeleteStages";
+import { useDeleteStages } from "../hooks/points/useDeleteStages";
 
 export const meta: MetaFunction = () => [
   { title: "Create point system - Orderly one" },

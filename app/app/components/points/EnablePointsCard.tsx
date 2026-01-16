@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { PointSystemIcon } from "~/icons/PointSystemIcon";
-import { Switch } from "../../../components/switch";
+import { Switch } from "../switch";
 import { DexData } from "~/types/dex";
 import { createDexFormData, putFormData } from "~/utils/apiClient";
 import { useAuth } from "~/context/useAuth";
 import { useDex } from "~/context/DexContext";
-import { Card } from "../../../components/Card";
+import { Card } from "../Card";
 import { toast } from "react-toastify";
 import { AVAILABLE_MENUS } from "~/components/NavigationMenuEditor";
 import { Spinner } from "@orderly.network/ui";
