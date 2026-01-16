@@ -3,9 +3,9 @@ import {
   Button as OrderlyButton,
   usePagination,
 } from "@orderly.network/ui";
-import { Button } from "../Button";
+import { Button } from "../../../components/Button";
 import { useMemo } from "react";
-import { formatUTCDate } from "~/utils/date";
+import { formatUTCDate } from "../../../utils/date";
 import { cn } from "~/utils/css";
 import { PointCampaign, PointCampaignStatus } from "~/types/points";
 import { Tooltip } from "~/components/tooltip";

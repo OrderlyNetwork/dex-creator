@@ -1,6 +1,6 @@
-import { TooltipIcon } from "~/icons/TooltipIcon";
-import { cn } from "~/utils/css";
-import { Tooltip } from "../tooltip";
+import { TooltipIcon } from "../../../icons/TooltipIcon";
+import { cn } from "../../../utils/css";
+import { Tooltip } from "../../../components/tooltip";
 
 interface FormLabelProps {
   label: string;
