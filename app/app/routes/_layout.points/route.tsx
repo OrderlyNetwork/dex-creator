@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import type { MetaFunction } from "@remix-run/node";
 import { BackDexDashboard } from "../../components/BackDexDashboard";
 import { PointCampaignForm } from "./components/form";
 import { PointCampaignList } from "./components/PointCampaignList";
@@ -9,6 +10,15 @@ import { PointCampaign, PointCampaignFormType } from "~/types/points";
 import { usePointsStages } from "./hooks/usePointsService";
 import { useDex } from "~/context/DexContext";
 import { useDeleteStages } from "./hooks/useDeleteStages";
+
+export const meta: MetaFunction = () => [
+  { title: "Create point system - Orderly one" },
+  {
+    name: "description",
+    content:
+      "Configure and manage point campaigns for your DEX. Set up trading volume, PNL, and referral coefficients",
+  },
+];
 
 export default function PointsRoute() {
   const [type, setType] = useState<PointCampaignFormType | null>(null);
