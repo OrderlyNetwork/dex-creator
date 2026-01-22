@@ -128,7 +128,9 @@ dexRoutes.post(
 
       const data = await convertFormDataToInternal(formData);
 
-      const result = await createDex(data, userId);
+      // Ignore analyticsScript parameter in POST requests
+      const { analyticsScript, ...rest } = data;
+      const result = await createDex(rest, userId);
 
       if (!result.success) {
         switch (result.error.type) {
@@ -283,6 +285,21 @@ dexRoutes.put(
       const formData = c.req.valid("form");
 
       const data = await convertFormDataToInternal(formData);
+
+      const existingDex = await getDexById(id);
+
+      if (
+        existingDex &&
+        !(existingDex.customDomain || existingDex.customDomainOverride)
+      ) {
+        return c.json(
+          {
+            error:
+              "Analytics script cannot be enabled: custom domain is not configured. Please set a custom domain first.",
+          },
+          { status: 500 }
+        );
+      }
 
       const result = await updateDex(id, userId, data);
 

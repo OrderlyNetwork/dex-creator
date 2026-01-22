@@ -24,6 +24,7 @@ export interface DexData {
   defaultChain?: number | null;
   repoUrl?: string | null;
   customDomain?: string | null;
+  customDomainOverride?: string | null;
   disableMainnet?: boolean;
   disableTestnet?: boolean;
   disableEvmWallets?: boolean;

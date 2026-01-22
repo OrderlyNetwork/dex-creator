@@ -40,18 +40,32 @@ export default function DexConfigRoute() {
   const { isGraduated } = useDex();
   const { distributorInfo } = useDistributor();
 
-  // when the DEX is graduated and the distributor code is not bound, we need to hide the distributor code section because it is not allowed to change the distributor code after the DEX is graduated
-  const filteredSections = useMemo(() => {
-    return isGraduated && !distributorInfo?.exist
-      ? DEX_SECTIONS.filter(
-          section => section.key !== DEX_SECTION_KEYS.DistributorCode
-        ).map((section, index) => ({
-          ...section,
-          // reset the id to the index + 1, others the progress tracker percentage will calculate incorrectly
-          id: index + 1,
-        }))
-      : DEX_SECTIONS;
-  }, [isGraduated, distributorInfo?.exist]);
+  const dexSections = useMemo(() => {
+    return DEX_SECTIONS.filter(section => {
+      // when the DEX is graduated and the distributor code is not bound, we need to hide the distributor code section because it is not allowed to change the distributor code after the DEX is graduated
+      if (
+        section.key === DEX_SECTION_KEYS.DistributorCode &&
+        isGraduated &&
+        !distributorInfo?.exist
+      ) {
+        return false;
+      }
+
+      // when the DEX is not configured with a custom domain, we need to hide the analytics configuration section
+      if (
+        section.key === DEX_SECTION_KEYS.AnalyticsConfiguration &&
+        !(form.dexData?.customDomain || form.dexData?.customDomainOverride)
+      ) {
+        return false;
+      }
+
+      return true;
+    }).map((section, index) => ({
+      ...section,
+      // reset the id to the index + 1, others the progress tracker percentage will calculate incorrectly
+      id: index + 1,
+    }));
+  }, [isGraduated, distributorInfo?.exist, form.dexData]);
 
   useEffect(() => {
     if (!isAuthenticated || !token) return;
@@ -99,7 +113,7 @@ export default function DexConfigRoute() {
 
     const validationErrors: string[] = [];
 
-    for (const section of DEX_SECTIONS) {
+    for (const section of dexSections) {
       if (section.key === DEX_SECTION_KEYS.DistributorCode) {
         const code = form.distributorCode.trim();
         if (code && !distributorInfo?.exist) {
@@ -294,7 +308,7 @@ export default function DexConfigRoute() {
       >
         <DexSectionRenderer
           mode="direct"
-          sections={filteredSections}
+          sections={dexSections}
           showProgressTracker={true}
           sectionProps={form.getSectionProps({
             handleResetTheme,

@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useMemo } from "react";
 import { toast } from "react-toastify";
 import { postFormData, createDexFormData } from "../utils/apiClient";
 import { buildDexDataToSend } from "../utils/dexDataBuilder";
@@ -16,8 +16,6 @@ import { useDistributorCode } from "../hooks/useDistrubutorInfo";
 import { useDistributor } from "../context/DistributorContext";
 import { trackEvent } from "~/analytics/tracking";
 import { useThemeHandlers } from "../hooks/useThemeHandlers";
-
-const TOTAL_STEPS = DEX_SECTIONS.length;
 
 interface DexSetupAssistantProps {
   token: string;
@@ -45,6 +43,20 @@ export default function DexSetupAssistant({
   const { distributorInfo } = useDistributor();
   const urlDistributorCode = useDistributorCode();
 
+  const dexSections = useMemo(() => {
+    return DEX_SECTIONS.filter(section => {
+      return section.key !== DEX_SECTION_KEYS.AnalyticsConfiguration;
+    }).map((section, index) => ({
+      ...section,
+      // reset the id to the index + 1, otherwise the progress tracker percentage will calculate incorrectly
+      id: index + 1,
+    }));
+  }, []);
+
+  const totalSteps = useMemo(() => {
+    return dexSections.length;
+  }, [dexSections]);
+
   const { handleGenerateTheme, handleResetTheme, handleResetToDefault } =
     useThemeHandlers({
       token,
@@ -71,7 +83,7 @@ export default function DexSetupAssistant({
   const allRequiredPreviousStepsCompleted = (stepNumber: number) => {
     if (stepNumber === 1) return true;
     for (let i = 1; i < stepNumber; i++) {
-      const stepConfig = DEX_SECTIONS.find(s => s.id === i);
+      const stepConfig = dexSections.find(s => s.id === i);
       if (stepConfig && !stepConfig.isOptional && !completedSteps[i]) {
         return false;
       }
@@ -80,7 +92,9 @@ export default function DexSetupAssistant({
   };
 
   const handleNextStep = async (step: number, skip?: boolean) => {
-    const currentStepConfig = DEX_SECTIONS.find(s => s.id === step);
+    const currentStepConfig = dexSections.find(s => s.id === step);
+
+    console.log("handleNextStep", currentStepConfig);
 
     if (
       currentStepConfig &&
@@ -134,9 +148,7 @@ export default function DexSetupAssistant({
       }
     }
 
-    if (
-      step === DEX_SECTIONS.find(s => s.title === "Privy Configuration")?.id
-    ) {
+    if (step === dexSections.find(s => s.title === "Privy Configuration")?.id) {
       const privyTermsOfUseFilled =
         form.privyTermsOfUse && form.privyTermsOfUse.trim() !== "";
 
@@ -150,7 +162,7 @@ export default function DexSetupAssistant({
     }
 
     setCompletedSteps(prev => ({ ...prev, [step]: true }));
-    if (step < TOTAL_STEPS) {
+    if (step < totalSteps) {
       setCurrentStep(step + 1);
 
       setTimeout(() => {
@@ -169,7 +181,7 @@ export default function DexSetupAssistant({
         }
       }, 100);
     } else {
-      setCurrentStep(TOTAL_STEPS + 1);
+      setCurrentStep(totalSteps + 1);
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     }
   };
@@ -183,7 +195,7 @@ export default function DexSetupAssistant({
 
     const validationErrors: string[] = [];
 
-    for (const section of DEX_SECTIONS) {
+    for (const section of dexSections) {
       if (section.key === DEX_SECTION_KEYS.DistributorCode) {
         const code = form.distributorCode.trim();
         if (code && !distributorInfo?.exist) {
@@ -332,7 +344,7 @@ export default function DexSetupAssistant({
   }
 
   const quickSetup = form.brokerName.trim() &&
-    !(currentStep > TOTAL_STEPS && completedSteps[TOTAL_STEPS]) && (
+    !(currentStep > totalSteps && completedSteps[totalSteps]) && (
       <div
         id="quick-setup"
         className="mb-4 p-6 bg-primary/5 border border-primary/20 rounded-lg slide-fade-in flex flex-col items-center justify-center"
@@ -377,7 +389,7 @@ export default function DexSetupAssistant({
         onSubmit={handleSubmit}
         className="flex flex-col gap-4"
         submitText={
-          currentStep > TOTAL_STEPS && completedSteps[TOTAL_STEPS]
+          currentStep > totalSteps && completedSteps[totalSteps]
             ? "Create Your DEX"
             : ""
         }
@@ -386,13 +398,13 @@ export default function DexSetupAssistant({
         disabled={
           isForking ||
           isSaving ||
-          !(currentStep > TOTAL_STEPS && completedSteps[TOTAL_STEPS])
+          !(currentStep > totalSteps && completedSteps[totalSteps])
         }
         enableRateLimit={false}
       >
         <DexSectionRenderer
           mode="accordion"
-          sections={DEX_SECTIONS}
+          sections={dexSections}
           sectionProps={form.getSectionProps({
             handleResetTheme: () => handleResetTheme(false),
             handleResetToDefault,
@@ -439,19 +451,17 @@ export default function DexSetupAssistant({
         />
       </Form>
 
-      {currentStep > TOTAL_STEPS &&
-        completedSteps[TOTAL_STEPS] &&
-        !isSaving && (
-          <div className="mt-8 p-6 bg-success/10 border border-success/20 rounded-lg text-center slide-fade-in">
-            <h3 className="text-lg font-semibold text-success mb-2">
-              All steps completed!
-            </h3>
-            <p className="text-gray-300 mb-4">
-              You're ready to create your DEX. Click the "Create Your DEX"
-              button above to proceed.
-            </p>
-          </div>
-        )}
+      {currentStep > totalSteps && completedSteps[totalSteps] && !isSaving && (
+        <div className="mt-8 p-6 bg-success/10 border border-success/20 rounded-lg text-center slide-fade-in">
+          <h3 className="text-lg font-semibold text-success mb-2">
+            All steps completed!
+          </h3>
+          <p className="text-gray-300 mb-4">
+            You're ready to create your DEX. Click the "Create Your DEX" button
+            above to proceed.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

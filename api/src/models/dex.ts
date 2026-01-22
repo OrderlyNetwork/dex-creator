@@ -14,7 +14,6 @@ import type { DexConfig } from "../lib/types";
 import { generateRepositoryName } from "../lib/nameGenerator";
 import { validateTradingViewColorConfig } from "./tradingViewConfig.js";
 import { validateCSS } from "../lib/cssValidator.js";
-import { xssValidator } from "../lib/xssValidator.js";
 
 function decodeBase64(str: string): string {
   const decoded = Buffer.from(str, "base64").toString("utf-8");
@@ -322,19 +321,6 @@ export const dexSchema = z.object({
   analyticsScript: z
     .string()
     .max(2000, "Analytics script must be 2000 characters or less")
-    .refine(
-      value => {
-        if (!value || value.trim() === "") return true;
-        console.log("value", value);
-        const originalValue = decodeBase64(value);
-        console.log("originalValue", originalValue);
-        const validation = xssValidator(originalValue);
-        return validation === null;
-      },
-      {
-        message: "Analytics script contains potentially dangerous content",
-      }
-    )
     .nullish(),
   symbolList: z
     .string()
