@@ -29,6 +29,34 @@ interface DexCardProps {
   timePeriod?: TimePeriod;
 }
 
+const sanitizeHref = (rawUrl: string | null | undefined): string => {
+  if (!rawUrl) return "#";
+
+  try {
+    let url: URL;
+
+    // Try parsing as absolute URL first
+    try {
+      url = new URL(rawUrl);
+    } catch {
+      // Fallback: treat as relative URL in browser environments
+      if (typeof window === "undefined") {
+        return "#";
+      }
+      url = new URL(rawUrl, window.location.origin);
+    }
+
+    const allowedProtocols = new Set(["http:", "https:"]);
+    if (!allowedProtocols.has(url.protocol)) {
+      return "#";
+    }
+
+    return url.toString();
+  } catch {
+    return "#";
+  }
+};
+
 const formatVolume = (num: number) => {
   if (num >= 1e9) return `${(num / 1e9).toFixed(2)}B`;
   if (num >= 1e6) return `${(num / 1e6).toFixed(2)}M`;
@@ -172,7 +200,7 @@ export default function DexCard({ broker, rank, timePeriod }: DexCardProps) {
           <div className="flex gap-2">
             {/* DEX Link CTA Button */}
             <a
-              href={broker.dexUrl || "#"}
+              href={sanitizeHref(broker.dexUrl)}
               target="_blank"
               rel="noopener noreferrer"
               onClick={e => e.stopPropagation()}
@@ -185,7 +213,7 @@ export default function DexCard({ broker, rank, timePeriod }: DexCardProps) {
             {/* Website Link CTA Button */}
             {broker.websiteUrl && (
               <a
-                href={broker.websiteUrl}
+                href={sanitizeHref(broker.websiteUrl)}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={e => e.stopPropagation()}
