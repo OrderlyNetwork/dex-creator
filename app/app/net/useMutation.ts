@@ -1,3 +1,4 @@
+import { useRef, useEffect } from "react";
 import useSWRMutation, { type SWRMutationConfiguration } from "swr/mutation";
 import { getBaseUrl } from "../utils/orderly";
 import { useOrderlyKey } from "../context/OrderlyKeyContext";
@@ -65,6 +66,16 @@ export const useMutation = <T, E>(
 
   const { accountId, orderlyKey } = useOrderlyKey();
 
+  // Use ref to store the latest url and method to avoid closure issues
+  const urlRef = useRef(url);
+  const methodRef = useRef(method);
+
+  // Update refs when url or method changes
+  useEffect(() => {
+    urlRef.current = url;
+    methodRef.current = method;
+  }, [url, method]);
+
   let fullUrl = url;
   if (!url.startsWith("http")) {
     fullUrl = `${apiBaseUrl}${url}`;
@@ -88,15 +99,19 @@ export const useMutation = <T, E>(
     params?: Record<string, any>,
     options?: SWRMutationConfiguration<T, E>
   ): Promise<any> => {
-    let newUrl = url;
+    // Use ref to get the latest url and method values
+    const currentUrl = urlRef.current;
+    const currentMethod = methodRef.current;
+
+    let newUrl = currentUrl;
 
     if (typeof params === "object" && Object.keys(params).length) {
       const search = new URLSearchParams(params);
-      newUrl = `${url}?${search.toString()}`;
+      newUrl = `${currentUrl}?${search.toString()}`;
     }
 
     const payload: MessageFactor = {
-      method,
+      method: currentMethod,
       url: newUrl,
       data,
     };
@@ -111,7 +126,7 @@ export const useMutation = <T, E>(
       {
         data,
         params,
-        method,
+        method: currentMethod,
         signature,
       },
       options

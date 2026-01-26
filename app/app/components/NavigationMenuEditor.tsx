@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { cn } from "~/utils/css";
 
 interface NavigationMenuEditorProps {
   value: string;
@@ -8,7 +9,7 @@ interface NavigationMenuEditorProps {
   onOpenSwapFeeConfig: () => void;
 }
 
-const AVAILABLE_MENUS = [
+export const AVAILABLE_MENUS = [
   {
     id: "Trading",
     label: "Trading",
@@ -51,6 +52,13 @@ const AVAILABLE_MENUS = [
     icon: "i-mdi:shield-outline",
     isDefault: false,
   },
+  {
+    id: "Points",
+    label: "Points",
+    icon: "i-mdi:trophy",
+    isDefault: false,
+    editable: false,
+  },
 ];
 
 const MENU_INFO: Record<
@@ -92,8 +100,11 @@ const NavigationMenuEditor: React.FC<NavigationMenuEditorProps> = ({
       .filter(Boolean);
   }, []);
 
-  const [enabledMenus, setEnabledMenus] = useState<string[]>(() =>
-    parseMenus(value)
+  // save initial menus, used to prevent editing disabled menus, don't add "value" to the dependency array
+  const initialMenus = useMemo(() => parseMenus(value), [parseMenus]);
+
+  const [enabledMenus, setEnabledMenus] = useState<string[]>(
+    () => initialMenus
   );
 
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
@@ -119,6 +130,12 @@ const NavigationMenuEditor: React.FC<NavigationMenuEditorProps> = ({
   }, [value, parseMenus]);
 
   const toggleMenu = (menuId: string) => {
+    const menu = AVAILABLE_MENUS.find(m => m.id === menuId);
+    // If the menu item is not editable and is in the initial value, editing is prohibited
+    if (menu?.editable === false && initialMenus.includes(menuId)) {
+      return;
+    }
+
     setIsInternalUpdate(true);
     setEnabledMenus(current => {
       if (current.includes(menuId)) {
@@ -193,19 +210,40 @@ const NavigationMenuEditor: React.FC<NavigationMenuEditorProps> = ({
         {AVAILABLE_MENUS.map(menu => {
           const hasInfo = menu.id in MENU_INFO;
           const isInfoExpanded = expandedInfo === menu.id;
+          const isEnabled = enabledMenus.includes(menu.id);
+          // If the menu item is not editable and is in the initial value, editing is prohibited
+          const isDisabled =
+            menu.editable === false && initialMenus.includes(menu.id);
 
           return (
-            <div key={menu.id} className="flex items-center gap-2">
+            <div
+              key={menu.id}
+              className={cn(
+                "flex items-center gap-2",
+                isDisabled
+                  ? "cursor-not-allowed"
+                  : menu.editable !== false
+                    ? "cursor-pointer"
+                    : "cursor-not-allowed"
+              )}
+            >
               <label
-                className={`flex items-center space-x-2 cursor-pointer p-2 rounded flex-1
-                  ${enabledMenus.includes(menu.id) ? "bg-primary/20 border-primary/30" : "bg-dark/50 border-light/10"} 
-                  border transition-colors hover:bg-dark/70`}
+                className={cn(
+                  "flex items-center space-x-2 p-2 rounded flex-1 border transition-colors",
+                  isDisabled
+                    ? "cursor-not-allowed opacity-60"
+                    : "cursor-pointer hover:bg-dark/70",
+                  isEnabled
+                    ? "bg-primary/20 border-primary/30"
+                    : "bg-dark/50 border-light/10"
+                )}
               >
                 <input
                   type="checkbox"
-                  checked={enabledMenus.includes(menu.id)}
+                  checked={isEnabled}
                   onChange={() => toggleMenu(menu.id)}
-                  className="form-checkbox rounded bg-dark border-gray-500 text-primary focus:ring-primary"
+                  disabled={isDisabled}
+                  className="form-checkbox rounded bg-dark border-gray-500 text-primary focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <div className="flex items-center space-x-2">
                   <div className={`${menu.icon} h-5 w-5`}></div>
@@ -295,10 +333,14 @@ const NavigationMenuEditor: React.FC<NavigationMenuEditorProps> = ({
                     onDragLeave={handleDragLeave}
                     onDrop={e => handleDrop(e, menuId)}
                     onDragEnd={handleDragEnd}
-                    className={`flex items-center justify-between p-2 rounded border
-                      ${draggedItem === menuId ? "opacity-50" : "opacity-100"}
-                      ${draggedOverItem === menuId ? "border-primary border-dashed bg-primary/10" : "border-light/10 bg-dark/50"} 
-                      cursor-move hover:bg-dark/70 transition-colors`}
+                    className={cn(
+                      "flex items-center justify-between p-2 rounded border transition-colors",
+                      draggedItem === menuId ? "opacity-50" : "opacity-100",
+                      draggedOverItem === menuId
+                        ? "border-primary border-dashed bg-primary/10"
+                        : "border-light/10 bg-dark/50",
+                      "cursor-move hover:bg-dark/70"
+                    )}
                   >
                     <div className="flex items-center gap-2">
                       <div className="i-mdi:drag h-5 w-5 text-gray-400"></div>

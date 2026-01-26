@@ -1,11 +1,6 @@
 import React from "react";
 import ConfirmDialog from "../../components/ConfirmDialog";
-import {
-  cn,
-  formatPercentage,
-  formatUTCTimeToLocal,
-  formatTier,
-} from "../../utils";
+import { cn, formatBps, formatUTCTimeToLocal, formatTier } from "../../utils";
 import { CopyIcon, InfoIcon } from "../../icons";
 import {
   Select,
@@ -130,7 +125,7 @@ const MinTierModalUI: React.FC<MinTierModalUIProps> = ({
                 Base taker fee
               </div>
               <div className="text-base-contrast text-base font-normal">
-                {formatPercentage(selectedTierData?.base_taker_fee_rate, 2)}
+                {formatBps(selectedTierData?.base_taker_fee_rate, 2)}
               </div>
             </div>
             <div className="flex flex-col gap-1">
@@ -138,7 +133,7 @@ const MinTierModalUI: React.FC<MinTierModalUIProps> = ({
                 Base maker fee
               </div>
               <div className="text-base-contrast text-base font-normal">
-                {formatPercentage(selectedTierData?.base_maker_fee_rate, 2)}
+                {formatBps(selectedTierData?.base_maker_fee_rate, 2)}
               </div>
             </div>
           </div>
@@ -148,7 +143,7 @@ const MinTierModalUI: React.FC<MinTierModalUIProps> = ({
                 Base taker fee (RWA)
               </div>
               <div className="text-base-contrast text-base font-normal">
-                {formatPercentage(selectedTierData?.base_rwa_taker_fee_rate, 2)}
+                {formatBps(selectedTierData?.base_rwa_taker_fee_rate, 2)}
               </div>
             </div>
             <div className="flex flex-col gap-1">
@@ -156,7 +151,7 @@ const MinTierModalUI: React.FC<MinTierModalUIProps> = ({
                 Base maker fee (RWA)
               </div>
               <div className="text-base-contrast text-base font-normal">
-                {formatPercentage(selectedTierData?.base_rwa_maker_fee_rate, 2)}
+                {formatBps(selectedTierData?.base_rwa_maker_fee_rate, 2)}
               </div>
             </div>
           </div>

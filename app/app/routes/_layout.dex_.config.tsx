@@ -18,6 +18,7 @@ import { useBindDistrubutorCode } from "../hooks/useBindDistrubutorCode";
 import { verifyDistributorCodeMessage } from "../service/distrubutorCode";
 import { useDistributor } from "../context/DistributorContext";
 import { useDex } from "../context/DexContext";
+import { BackDexDashboard } from "../components/BackDexDashboard";
 import { useThemeHandlers } from "../hooks/useThemeHandlers";
 
 export const meta: MetaFunction = () => [
@@ -275,13 +276,7 @@ export default function DexConfigRoute() {
     <div className="container mx-auto p-4 max-w-7xl mt-26 pb-52">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
-          <Link
-            to="/dex"
-            className="text-sm text-gray-400 hover:text-primary-light mb-2 inline-flex items-center"
-          >
-            <div className="i-mdi:arrow-left h-4 w-4 mr-1"></div>
-            Back to DEX Dashboard
-          </Link>
+          <BackDexDashboard />
           <h1 className="text-2xl md:text-3xl font-bold gradient-text">
             DEX Configuration
           </h1>

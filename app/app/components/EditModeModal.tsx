@@ -158,6 +158,7 @@ const EditModeModal: FC<EditModeModalProps> = ({
 
   const prevModalTypeRef = useRef<string | null>(null);
   const prevThemeRef = useRef<string | null>(null);
+  const hasInitializedFontRef = useRef(false);
 
   useEffect(() => {
     if (
@@ -194,7 +195,11 @@ const EditModeModal: FC<EditModeModalProps> = ({
   }, [isOpen, currentModalType, currentTheme]);
 
   useEffect(() => {
-    if (isOpen && currentTheme !== prevThemeRef.current) {
+    const isFirstMount = !hasInitializedFontRef.current;
+    const themeChanged = currentTheme !== prevThemeRef.current;
+
+    if (isOpen && (isFirstMount || themeChanged)) {
+      hasInitializedFontRef.current = true;
       requestAnimationFrame(() => {
         const themeToUse = currentTheme || defaultTheme;
         const fontFamilyMatch = themeToUse.match(
@@ -583,7 +588,7 @@ const EditModeModal: FC<EditModeModalProps> = ({
               fontSize: ___,
               ...rest
             }) => rest)(previewProps)}
-            customStyles={currentTheme ?? ""}
+            customStyles={currentTheme || defaultTheme}
             className="h-full w-full"
           />
         </div>

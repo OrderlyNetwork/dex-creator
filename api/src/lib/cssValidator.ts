@@ -159,3 +159,93 @@ export function sanitizeCSS(cssString: string): string {
 
   return sanitized.trim();
 }
+
+/**
+ * Sanitizes invalid Tailwind-style selectors in CSS by converting them to valid CSS selectors.
+ * Examples:
+ * - `.class-name/10` → `.class-name-10`
+ * - `.class-name-[10px]` → `.class-name-10px`
+ * - `.xl\:class-name` → `.xl-class-name`
+ */
+export function sanitizeInvalidSelectors(cssString: string): string {
+  if (!cssString) return "";
+
+  let sanitized = cssString;
+
+  // Remove % and ! characters from selectors only (invalid CSS in selectors, but valid in property values like !important)
+  // Also fix escaped backslashes and escape sequences in selectors
+  // Process each CSS rule: selector { properties }
+  sanitized = sanitized.replace(
+    /([^{]+)\{([^}]*)\}/g,
+    (_match, selector, properties) => {
+      let cleanSelector = selector;
+      // Remove % and ! from selectors
+      cleanSelector = cleanSelector.replace(/[%!]/g, "");
+      // Fix escaped sequences in selectors
+      // Handle double backslashes (\\\\ becomes empty)
+      cleanSelector = cleanSelector.replace(/\\\\+/g, "");
+      // Handle escaped special characters: \-, \[, \], \/, \:, \= etc. (replace with -)
+      cleanSelector = cleanSelector.replace(/\\([\[\]\/:=\-])/g, "-");
+      // Remove any remaining single backslashes (invalid in CSS selectors)
+      cleanSelector = cleanSelector.replace(/\\/g, "");
+      return `${cleanSelector}{${properties}}`;
+    }
+  );
+
+  // Fix incomplete selectors that end with a dot (e.g., ".selector. {" → ".selector {")
+  // Remove trailing dots before opening braces
+  sanitized = sanitized.replace(/\.(\s*\{)/g, "$1");
+
+  // Remove rules with empty or invalid selectors (just "." or ". " before {)
+  sanitized = sanitized.replace(/^\s*\.\s*\{[^}]*\}/gm, "");
+
+  // Fix escaped colons in class selectors: .xl\:class-name → .xl-class-name
+  // This handles patterns like .xl\:oui-space-y-3 by replacing \: with -
+  // Handles multiple escaped colons by replacing all \: with - in class selectors
+  sanitized = sanitized.replace(/\.([\w\-\\:]+)/g, match => {
+    // Replace all \: sequences with - in the class name
+    return match.replace(/\\:/g, "-");
+  });
+
+  // Fix selectors with slashes: .class-name/10 → .class-name-10
+  sanitized = sanitized.replace(
+    /\.([\w\-]+)\/([\w\-/]+)/g,
+    (_match, prefix, suffix) => {
+      // Replace all slashes in the suffix with hyphens
+      const cleanSuffix = suffix.replace(/\//g, "-");
+      return `.${prefix}-${cleanSuffix}`;
+    }
+  );
+
+  // Fix selectors with square brackets: .class-name-[10px] → .class-name-10px
+  sanitized = sanitized.replace(
+    /\.([\w\-]+)\[([^\]]+)\]/g,
+    (_match, prefix, content) => {
+      // Remove brackets and replace any special chars with hyphens
+      const cleanContent = content.replace(/[^\w\-]/g, "-");
+      return `.${prefix}-${cleanContent}`;
+    }
+  );
+
+  // Remove incomplete CSS rules (selectors without opening braces)
+  // Remove lines that look like selectors but don't have { or } or :
+  sanitized = sanitized.replace(/^[^\n{]*[.#][^\n{}:]*$/gm, match => {
+    const trimmed = match.trim();
+    // If it looks like a selector (has . or #) but no {, }, or :, remove it
+    if (
+      trimmed &&
+      (trimmed.includes(".") || trimmed.includes("#")) &&
+      !trimmed.includes("{") &&
+      !trimmed.includes("}") &&
+      !trimmed.includes(":")
+    ) {
+      return "";
+    }
+    return match;
+  });
+
+  // Clean up multiple consecutive newlines
+  sanitized = sanitized.replace(/\n{3,}/g, "\n\n");
+
+  return sanitized;
+}

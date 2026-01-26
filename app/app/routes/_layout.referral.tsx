@@ -16,6 +16,7 @@ import {
   type AutoReferralSettings,
   type AutoReferralInfo,
 } from "../utils/orderly";
+import { BackDexDashboard } from "../components/BackDexDashboard";
 
 export const meta: MetaFunction = () => [
   { title: "Referral Program - Orderly One" },
@@ -232,13 +233,7 @@ export default function ReferralRoute() {
     return (
       <div className="w-full max-w-3xl mx-auto px-4 py-6 md:py-10 mt-26 pb-52">
         <div className="text-center">
-          <Link
-            to="/dex"
-            className="text-sm text-gray-400 hover:text-primary-light mb-2 inline-flex items-center"
-          >
-            <div className="i-mdi:arrow-left h-4 w-4 mr-1"></div>
-            Back to DEX Dashboard
-          </Link>
+          <BackDexDashboard />
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">
             Referral Settings
           </h1>
@@ -265,13 +260,7 @@ export default function ReferralRoute() {
       <div className="container mx-auto p-4 max-w-3xl mt-26 pb-52">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
-            <Link
-              to="/dex"
-              className="text-sm text-gray-400 hover:text-primary-light mb-2 inline-flex items-center"
-            >
-              <div className="i-mdi:arrow-left h-4 w-4 mr-1"></div>
-              Back to DEX Dashboard
-            </Link>
+            <BackDexDashboard />
             <h1 className="text-2xl md:text-3xl font-bold gradient-text">
               Referral Settings
             </h1>
@@ -416,13 +405,7 @@ export default function ReferralRoute() {
     <div className="container mx-auto p-4 max-w-3xl mt-26 pb-52">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
-          <Link
-            to="/dex"
-            className="text-sm text-gray-400 hover:text-primary-light mb-2 inline-flex items-center"
-          >
-            <div className="i-mdi:arrow-left h-4 w-4 mr-1"></div>
-            Back to DEX Dashboard
-          </Link>
+          <BackDexDashboard />
           <h1 className="text-2xl md:text-3xl font-bold gradient-text">
             Referral Settings
           </h1>

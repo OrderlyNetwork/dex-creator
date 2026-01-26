@@ -7,7 +7,7 @@ import WalletConnect from "../components/WalletConnect";
 import { useState } from "react";
 import { FeeConfigWithCalculator } from "../components/FeeConfigWithCalculator";
 import { BaseFeeExplanation } from "../components/BaseFeeExplanation";
-import { Link } from "@remix-run/react";
+import { BackDexDashboard } from "../components/BackDexDashboard";
 
 export const meta: MetaFunction = () => [
   { title: "Graduate Your DEX - Orderly One" },
@@ -35,13 +35,7 @@ export default function GraduationRoute() {
     <div className="container mx-auto p-4 max-w-3xl mt-26 pb-52">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
-          <Link
-            to="/dex"
-            className="text-sm text-gray-400 hover:text-primary-light mb-2 inline-flex items-center"
-          >
-            <div className="i-mdi:arrow-left h-4 w-4 mr-1"></div>
-            Back to DEX Dashboard
-          </Link>
+          <BackDexDashboard />
           <div className="text-center md:text-left">
             <h1 className="text-3xl font-bold mb-4">Graduate Your DEX</h1>
             <p className="text-gray-300 max-w-2xl">

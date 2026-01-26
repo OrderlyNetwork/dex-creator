@@ -52,6 +52,19 @@ export const formatPercentage = (
   return `${rounded.toFixed(precision)}%`;
 };
 
+// Format basis points (bps) with null safety
+export const formatBps = (
+  rate: number | null | undefined,
+  precision: number = 2
+): string => {
+  if (rate == null || isNaN(rate)) {
+    return "--";
+  }
+  const multiplier = Math.pow(10, precision);
+  const rounded = Math.round(rate * multiplier) / multiplier;
+  return `${rounded.toFixed(precision)} bps`;
+};
+
 // Format address to shortened form
 export const formatAddress = (address: string): string => {
   if (!address) return "--";

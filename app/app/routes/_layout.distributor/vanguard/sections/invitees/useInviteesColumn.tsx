@@ -4,7 +4,7 @@ import { TableTitleWithTooltip } from "../../components";
 import {
   formatAddress,
   formatCurrency,
-  formatPercentage,
+  formatBps,
   copyText,
   formatUTCTimeToLocal,
   formatTier,
@@ -120,22 +120,22 @@ export const useInviteesColumn = (props: UseInviteesColumnProps): Column[] => {
       {
         title: "Base taker fee",
         dataIndex: "takerFee",
-        render: (value: number) => formatPercentage(value, 2),
+        render: (value: number) => formatBps(value, 2),
       },
       {
         title: "Base maker fee",
         dataIndex: "makerFee",
-        render: (value: number) => formatPercentage(value, 2),
+        render: (value: number) => formatBps(value, 2),
       },
       {
         title: "Base taker fee (RWA)",
         dataIndex: "rwaTakerFee",
-        render: (value: number) => formatPercentage(value, 2),
+        render: (value: number) => formatBps(value, 2),
       },
       {
         title: "Base maker fee (RWA)",
         dataIndex: "rwaMakerFee",
-        render: (value: number) => formatPercentage(value, 2),
+        render: (value: number) => formatBps(value, 2),
       },
     ] as Column[];
   }, [onEditTier, canEditTier]);

@@ -9,6 +9,16 @@ import { DistributorHeader } from "./components/DistributorHeader";
 import { useDistributor } from "../../context/DistributorContext";
 import { useDex } from "../../context/DexContext";
 import VanguardDashboard from "./vanguard/VanguardDashboard";
+import { MetaFunction } from "@remix-run/node";
+
+export const meta: MetaFunction = () => [
+  { title: "Vanguard Distributor Program - Orderly One" },
+  {
+    name: "description",
+    content:
+      "Orderly empowers distributors to onboard projects to Orderly One and earn a share of the fees.",
+  },
+];
 
 export const AMBASSADOR_BROKER_ID = "ambassador";
 

@@ -69,6 +69,7 @@ const DexPreview: FC<DexPreviewProps> = ({
   },
   appIcons,
   customStyles,
+  fontFamily: fontFamilyProp,
   className = "",
   onLoad,
 }) => {
@@ -105,10 +106,17 @@ const DexPreview: FC<DexPreviewProps> = ({
   const containerIdRef = useRef<string | null>(null);
 
   const fontFamily = useMemo(() => {
-    if (!customStyles) return null;
-    const fontFamilyMatch = customStyles.match(/--oui-font-family:\s*([^;]+);/);
-    return fontFamilyMatch ? fontFamilyMatch[1].trim() : null;
-  }, [customStyles]);
+    if (customStyles) {
+      const fontFamilyMatch = customStyles.match(
+        /--oui-font-family:\s*([^;]+);/
+      );
+      if (fontFamilyMatch) {
+        return fontFamilyMatch[1].trim();
+      }
+    }
+    // Fall back to prop if customStyles doesn't have font-family
+    return fontFamilyProp || null;
+  }, [customStyles, fontFamilyProp]);
 
   useEffect(() => {
     const oldOverrideStyles = document.querySelectorAll(
@@ -158,10 +166,16 @@ const DexPreview: FC<DexPreviewProps> = ({
 
         const style = document.createElement("style");
         style.id = styleId;
+        // Target the container itself (which has both data-preview-id and orderly-app-container)
+        // AND any descendant orderly-app-container elements, plus all their descendants
         style.textContent = `
+          [data-preview-id="${containerId}"].orderly-app-container,
           [data-preview-id="${containerId}"] .orderly-app-container,
+          [data-preview-id="${containerId}"].orderly-app-container *,
           [data-preview-id="${containerId}"] .orderly-app-container *,
+          [data-preview-id="${containerId}"].orderly-app-container *::before,
           [data-preview-id="${containerId}"] .orderly-app-container *::before,
+          [data-preview-id="${containerId}"].orderly-app-container *::after,
           [data-preview-id="${containerId}"] .orderly-app-container *::after {
             font-family: ${fontFamily} !important;
           }

@@ -19,6 +19,7 @@ import { useDistributorInfoByUrl } from "../hooks/useDistrubutorInfo";
 import { MainnetChains } from "../components/ChainsSelect";
 import clsx from "clsx";
 import { useDistributor } from "../context/DistributorContext";
+import { PointSystemIcon } from "../icons/PointSystemIcon";
 
 export const meta: MetaFunction = () => [
   { title: "Create Your DEX - Orderly One" },
@@ -405,6 +406,253 @@ export default function DexRoute() {
     );
   }
 
+  const dexConfigureCard = dexData && dexData.repoUrl && (
+    <Card className="my-6 bg-gradient-to-r from-secondary/20 to-primary/20 border border-secondary/30">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="flex-shrink-0 bg-secondary/20 p-2 rounded-full">
+            <div className="i-mdi:cog text-secondary w-6 h-6"></div>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold mb-1">Configure Your DEX</h3>
+            <p className="text-gray-300">
+              Customize branding, themes, social links, wallets, and advanced
+              settings for your DEX.
+            </p>
+          </div>
+        </div>
+        <Button
+          as="a"
+          href="/dex/config"
+          className="whitespace-nowrap flex-shrink-0"
+        >
+          Open Settings
+        </Button>
+      </div>
+    </Card>
+  );
+
+  const graduationCard = isGraduationEligible && !isGraduated && dexData && (
+    <Card className="my-6 bg-gradient-to-r from-primary/20 to-secondary/20 border border-primary/30">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="flex-shrink-0 bg-primary/20 p-2 rounded-full">
+            <div className="i-mdi:rocket-launch text-primary w-6 h-6"></div>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold mb-1">Ready to Graduate?</h3>
+            <p className="text-gray-300">
+              Graduate your DEX to earn fee splits.
+            </p>
+          </div>
+        </div>
+        <Button
+          as="a"
+          href="/dex/graduation"
+          className="whitespace-nowrap flex-shrink-0"
+        >
+          Graduate Now
+        </Button>
+      </div>
+    </Card>
+  );
+
+  const dexCardSetup = dexData && (
+    <Card className="my-6 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="flex-shrink-0 bg-purple-500/20 p-2 rounded-full">
+            <div className="i-mdi:share-variant text-purple-400 w-6 h-6"></div>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold mb-1">DEX Card Setup</h3>
+            <p className="text-gray-300">
+              Configure how your DEX appears on the board page. Set up
+              description, banner, logo, and token information for better
+              visibility. Note: Your DEX card will only appear on the board
+              after graduation.
+            </p>
+          </div>
+        </div>
+        <Button
+          as="a"
+          href="/dex/card"
+          className="whitespace-nowrap flex-shrink-0"
+        >
+          Setup DEX Card
+        </Button>
+      </div>
+    </Card>
+  );
+
+  const graduatedDexCard = dexData && dexData.brokerId !== "demo" && (
+    <Card
+      className={`my-6 ${
+        isGraduated
+          ? "bg-gradient-to-r from-success/20 to-primary/20 border border-success/30"
+          : "bg-gradient-to-r from-warning/20 to-primary/20 border border-warning/30"
+      }`}
+    >
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div
+            className={`flex-shrink-0 p-2 rounded-full ${
+              isGraduated ? "bg-success/20" : "bg-warning/20"
+            }`}
+          >
+            <div
+              className={`w-6 h-6 ${
+                isGraduated
+                  ? "i-mdi:check-circle text-success"
+                  : "i-mdi:account-key text-warning"
+              }`}
+            ></div>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold mb-1">
+              {isGraduated ? "Graduated DEX" : "Broker ID Created"}
+            </h3>
+            <p className="text-gray-300">
+              {isGraduated ? (
+                <>
+                  Your DEX is earning fee share revenue!{" "}
+                  <a
+                    href="/dex/graduation"
+                    className="text-primary-light hover:underline"
+                  >
+                    Visit the graduation page
+                  </a>{" "}
+                  to access your earnings and manage your DEX settings.
+                </>
+              ) : (
+                <>
+                  Your broker ID{" "}
+                  <span className="font-mono text-primary-light">
+                    {dexData.brokerId}
+                  </span>{" "}
+                  has been created. Complete the registration process to start
+                  earning fees.
+                </>
+              )}
+            </p>
+          </div>
+        </div>
+        <Button
+          as="a"
+          href="/dex/graduation"
+          variant={isGraduated ? "success" : "primary"}
+          leftIcon={
+            <div
+              className={`h-4 w-4 ${
+                isGraduated ? "i-mdi:cash-multiple" : "i-mdi:account-plus"
+              }`}
+            ></div>
+          }
+          className="flex-shrink-0"
+        >
+          {isGraduated ? "View Benefits" : "Complete Registration"}
+        </Button>
+      </div>
+    </Card>
+  );
+
+  const pointSystemCard = dexData && dexData.repoUrl && (
+    <Card
+      className={`my-6 ${
+        isGraduated
+          ? "bg-gradient-to-r from-secondary/20 to-primary/20 border border-secondary/30"
+          : "bg-gradient-to-r from-gray-500/20 to-gray-400/20 border border-gray-400/30"
+      }`}
+    >
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <PointSystemIcon className="flex-shrink-0" />
+
+          <div>
+            <h3 className="text-lg font-semibold mb-1">Point Campaign Setup</h3>
+            <p className="text-gray-300">
+              {isGraduated
+                ? "Configure campaign parameters and set coefficients for trading volume, PNL, and referrals."
+                : "Configure campaign parameters and set coefficients for trading volume, PNL, and referrals. Graduate first to enable the Point Campaign."}
+            </p>
+          </div>
+        </div>
+        {isGraduated ? (
+          <Button
+            as="a"
+            href="/points"
+            className="whitespace-nowrap flex-shrink-0"
+          >
+            Setup Point System
+          </Button>
+        ) : (
+          <Button
+            as="a"
+            href="/dex/graduation"
+            variant="secondary"
+            className="whitespace-nowrap flex-shrink-0"
+          >
+            Graduate DEX
+          </Button>
+        )}
+      </div>
+    </Card>
+  );
+
+  const referralSettingsCard = dexData && dexData.repoUrl && (
+    <Card
+      className={`my-6 ${
+        isGraduated
+          ? "bg-gradient-to-r from-warning/20 to-primary/20 border border-warning/30"
+          : "bg-gradient-to-r from-gray-500/20 to-gray-400/20 border border-gray-400/30"
+      }`}
+    >
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div
+            className={`flex-shrink-0 p-2 rounded-full ${
+              isGraduated ? "bg-warning/20" : "bg-gray-400/20"
+            }`}
+          >
+            <div
+              className={`w-6 h-6 ${
+                isGraduated
+                  ? "i-mdi:account-group text-warning"
+                  : "i-mdi:lock text-gray-400"
+              }`}
+            ></div>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold mb-1">Referral Settings</h3>
+            <p className="text-gray-300">
+              {isGraduated
+                ? "Set up and manage your auto referral program to incentivize traders and grow your DEX community."
+                : "Referral settings become available after graduating your DEX. Graduate first to start earning revenue and enable referrals."}
+            </p>
+          </div>
+        </div>
+        {isGraduated ? (
+          <Button
+            as="a"
+            href="/referral"
+            className="whitespace-nowrap flex-shrink-0"
+          >
+            Manage Referrals
+          </Button>
+        ) : (
+          <Button
+            as="a"
+            href="/dex/graduation"
+            variant="secondary"
+            className="whitespace-nowrap flex-shrink-0"
+          >
+            Graduate DEX
+          </Button>
+        )}
+      </div>
+    </Card>
+  );
+
   return (
     <div className="container mx-auto p-4 max-w-3xl mt-26 pb-52">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
@@ -428,90 +676,11 @@ export default function DexRoute() {
         <div className="space-y-8">
           <DexUpgrade dexData={dexData} token={token} />
 
-          {dexData && dexData.repoUrl && (
-            <Card className="my-6 bg-gradient-to-r from-secondary/20 to-primary/20 border border-secondary/30">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex-shrink-0 bg-secondary/20 p-2 rounded-full">
-                    <div className="i-mdi:cog text-secondary w-6 h-6"></div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold mb-1">
-                      Configure Your DEX
-                    </h3>
-                    <p className="text-gray-300">
-                      Customize branding, themes, social links, wallets, and
-                      advanced settings for your DEX.
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  as="a"
-                  href="/dex/config"
-                  className="whitespace-nowrap flex-shrink-0"
-                >
-                  Open Settings
-                </Button>
-              </div>
-            </Card>
-          )}
+          {dexConfigureCard}
 
-          {isGraduationEligible && !isGraduated && dexData && (
-            <Card className="my-6 bg-gradient-to-r from-primary/20 to-secondary/20 border border-primary/30">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex-shrink-0 bg-primary/20 p-2 rounded-full">
-                    <div className="i-mdi:rocket-launch text-primary w-6 h-6"></div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold mb-1">
-                      Ready to Graduate?
-                    </h3>
-                    <p className="text-gray-300">
-                      Graduate your DEX to earn fee splits.
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  as="a"
-                  href="/dex/graduation"
-                  className="whitespace-nowrap flex-shrink-0"
-                >
-                  Graduate Now
-                </Button>
-              </div>
-            </Card>
-          )}
+          {graduationCard}
 
-          {dexData && (
-            <Card className="my-6 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex-shrink-0 bg-purple-500/20 p-2 rounded-full">
-                    <div className="i-mdi:share-variant text-purple-400 w-6 h-6"></div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold mb-1">
-                      DEX Card Setup
-                    </h3>
-                    <p className="text-gray-300">
-                      Configure how your DEX appears on the board page. Set up
-                      description, banner, logo, and token information for
-                      better visibility. Note: Your DEX card will only appear on
-                      the board after graduation.
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  as="a"
-                  href="/dex/card"
-                  className="whitespace-nowrap flex-shrink-0"
-                >
-                  Setup DEX Card
-                </Button>
-              </div>
-            </Card>
-          )}
+          {dexCardSetup}
 
           {dexData && (
             <Card className="my-6 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30">
@@ -540,133 +709,11 @@ export default function DexRoute() {
             </Card>
           )}
 
-          {dexData && dexData.brokerId !== "demo" && (
-            <Card
-              className={`my-6 ${
-                isGraduated
-                  ? "bg-gradient-to-r from-success/20 to-primary/20 border border-success/30"
-                  : "bg-gradient-to-r from-warning/20 to-primary/20 border border-warning/30"
-              }`}
-            >
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`flex-shrink-0 p-2 rounded-full ${
-                      isGraduated ? "bg-success/20" : "bg-warning/20"
-                    }`}
-                  >
-                    <div
-                      className={`w-6 h-6 ${
-                        isGraduated
-                          ? "i-mdi:check-circle text-success"
-                          : "i-mdi:account-key text-warning"
-                      }`}
-                    ></div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold mb-1">
-                      {isGraduated ? "Graduated DEX" : "Broker ID Created"}
-                    </h3>
-                    <p className="text-gray-300">
-                      {isGraduated ? (
-                        <>
-                          Your DEX is earning fee share revenue!{" "}
-                          <a
-                            href="/dex/graduation"
-                            className="text-primary-light hover:underline"
-                          >
-                            Visit the graduation page
-                          </a>{" "}
-                          to access your earnings and manage your DEX settings.
-                        </>
-                      ) : (
-                        <>
-                          Your broker ID{" "}
-                          <span className="font-mono text-primary-light">
-                            {dexData.brokerId}
-                          </span>{" "}
-                          has been created. Complete the registration process to
-                          start earning fees.
-                        </>
-                      )}
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  as="a"
-                  href="/dex/graduation"
-                  variant={isGraduated ? "success" : "primary"}
-                  leftIcon={
-                    <div
-                      className={`h-4 w-4 ${
-                        isGraduated
-                          ? "i-mdi:cash-multiple"
-                          : "i-mdi:account-plus"
-                      }`}
-                    ></div>
-                  }
-                >
-                  {isGraduated ? "View Benefits" : "Complete Registration"}
-                </Button>
-              </div>
-            </Card>
-          )}
+          {graduatedDexCard}
 
-          {dexData && dexData.repoUrl && (
-            <Card
-              className={`my-6 ${
-                isGraduated
-                  ? "bg-gradient-to-r from-warning/20 to-primary/20 border border-warning/30"
-                  : "bg-gradient-to-r from-gray-500/20 to-gray-400/20 border border-gray-400/30"
-              }`}
-            >
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`flex-shrink-0 p-2 rounded-full ${
-                      isGraduated ? "bg-warning/20" : "bg-gray-400/20"
-                    }`}
-                  >
-                    <div
-                      className={`w-6 h-6 ${
-                        isGraduated
-                          ? "i-mdi:account-group text-warning"
-                          : "i-mdi:lock text-gray-400"
-                      }`}
-                    ></div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold mb-1">
-                      Referral Settings
-                    </h3>
-                    <p className="text-gray-300">
-                      {isGraduated
-                        ? "Set up and manage your auto referral program to incentivize traders and grow your DEX community."
-                        : "Referral settings become available after graduating your DEX. Graduate first to start earning revenue and enable referrals."}
-                    </p>
-                  </div>
-                </div>
-                {isGraduated ? (
-                  <Button
-                    as="a"
-                    href="/referral"
-                    className="whitespace-nowrap flex-shrink-0"
-                  >
-                    Manage Referrals
-                  </Button>
-                ) : (
-                  <Button
-                    as="a"
-                    href="/dex/graduation"
-                    variant="secondary"
-                    className="whitespace-nowrap flex-shrink-0"
-                  >
-                    Graduate DEX
-                  </Button>
-                )}
-              </div>
-            </Card>
-          )}
+          {pointSystemCard}
+
+          {referralSettingsCard}
 
           <DexCreationStatus
             dexData={dexData}
