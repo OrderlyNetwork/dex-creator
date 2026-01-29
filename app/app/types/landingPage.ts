@@ -35,14 +35,22 @@ export interface SocialLink {
   icon?: string;
 }
 
+export interface GeneratedFile {
+  path: string;
+  content: string;
+}
+
 export interface LandingPage {
   id: string;
   userId: string;
   repoIdentifier: string;
   repoUrl: string | null;
   customDomain: string | null;
-  htmlContent: string | null;
-  config: Record<string, unknown> | null;
+  config:
+    | (Record<string, unknown> & {
+        generatedFiles?: GeneratedFile[];
+      })
+    | null;
   createdAt: string;
   updatedAt: string;
 }

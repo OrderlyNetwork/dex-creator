@@ -148,7 +148,6 @@ model LandingPage {
   repoIdentifier String   @unique
   repoUrl        String?
   customDomain   String?
-  htmlContent    String?
   config         Json?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt

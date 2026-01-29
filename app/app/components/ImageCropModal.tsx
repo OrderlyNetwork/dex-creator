@@ -832,15 +832,15 @@ export default function ImageCropModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[1000] overflow-y-auto">
+    <div className="fixed inset-0 z-[2000] overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-background-dark/80 backdrop-blur-sm z-[1001]"
+        className="absolute inset-0 bg-background-dark/80 backdrop-blur-sm z-[2001]"
         onClick={isLoading ? undefined : onClose}
       ></div>
 
       {/* Modal Container */}
-      <div className="relative z-[1002] min-h-screen flex items-center justify-center p-2 sm:p-4">
+      <div className="relative z-[2002] min-h-screen flex items-center justify-center p-2 sm:p-4">
         {/* Modal */}
         <div className="w-full max-w-4xl p-4 sm:p-6 rounded-xl bg-background-light border border-light/10 shadow-2xl slide-fade-in my-4 sm:my-8 max-h-[calc(100vh-2rem)] overflow-y-auto">
           <h3 className="text-xl font-bold mb-4">Crop Image</h3>

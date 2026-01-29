@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { get } from "../utils/apiClient";
 import EditableList from "./EditableList";
 import EditableFaqList, { FaqItem } from "./EditableFaqList";
+import EditableTeamList, { TeamMember } from "./EditableTeamList";
 
 export type SectionType =
   | "hero"
@@ -26,13 +27,14 @@ interface SectionConfigModalProps {
   formData: {
     keyFeatures?: string[];
     faqItems?: FaqItem[];
-    teamMembers?: string[];
+    teamMembers?: TeamMember[];
     contactMethods?: string[];
     problemStatement?: string;
     uniqueValue?: string;
     targetAudience?: string;
     ctaButtonText?: string;
     ctaButtonColor?: string;
+    ctaButtonLink?: string;
     useCustomCtaColor?: boolean;
     ctaPlacement?: "hero" | "footer" | "both";
     primaryColor?: string;
@@ -54,8 +56,21 @@ export default function SectionConfigModal({
   formData = {},
   onUpdate,
 }: SectionConfigModalProps) {
-  const { dexData } = useDex();
+  const { dexData, deploymentUrl } = useDex();
   const { token } = useAuth();
+
+  const getDefaultDexUrl = () => {
+    if (dexData?.customDomain) {
+      return `https://${dexData.customDomain}`;
+    }
+    if (deploymentUrl) {
+      return deploymentUrl;
+    }
+    if (dexData?.repoUrl) {
+      return `https://dex.orderly.network/${dexData.repoUrl.split("/").pop()}/`;
+    }
+    return "";
+  };
   const [localData, setLocalData] = useState(formData || {});
   const [isLoadingFees, setIsLoadingFees] = useState(false);
 
@@ -148,6 +163,32 @@ export default function SectionConfigModal({
                 maxLength={50}
                 className="w-full p-3 bg-background-dark border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary"
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                CTA Button Link
+              </label>
+              <p className="text-xs text-gray-400 mb-2">
+                The URL that the CTA button will link to. Defaults to your DEX
+                URL.
+              </p>
+              <input
+                type="url"
+                value={localData.ctaButtonLink || getDefaultDexUrl() || ""}
+                onChange={e =>
+                  setLocalData(prev => ({
+                    ...prev,
+                    ctaButtonLink: e.target.value,
+                  }))
+                }
+                placeholder={getDefaultDexUrl() || "https://..."}
+                className="w-full p-3 bg-background-dark border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary"
+              />
+              {getDefaultDexUrl() && (
+                <p className="text-xs text-gray-400 mt-1">
+                  Default: {getDefaultDexUrl()}
+                </p>
+              )}
             </div>
             <div>
               <div className="flex items-center justify-between mb-2">
@@ -263,14 +304,15 @@ export default function SectionConfigModal({
 
       case "team":
         return (
-          <EditableList
+          <EditableTeamList
             items={localData.teamMembers || []}
             onItemsChange={items =>
               setLocalData(prev => ({ ...prev, teamMembers: items }))
             }
             label="Team Members"
-            description="Add team member names or roles. The AI will generate appropriate team member information."
-            placeholder="Enter team member name or role..."
+            description="Add team members with their names, descriptions, and social/professional links."
+            placeholderName="Enter team member name..."
+            placeholderDescription="Enter description (optional)..."
             emptyMessage="No team members added yet. Add your first team member above."
           />
         );

@@ -506,9 +506,9 @@ export async function createLandingPageRepository(
 export async function setupLandingPageRepository(
   owner: string,
   repo: string,
-  htmlContent: string,
   customDomain: string | null,
-  generatedFiles?: Array<{ path: string; content: string }>
+  generatedFiles: Array<{ path: string; content: string }>,
+  config?: Record<string, unknown> | null
 ): Promise<void> {
   console.log(`Setting up landing page repository ${owner}/${repo}...`);
 
@@ -559,68 +559,77 @@ jobs:
 
     const fileContents = new Map<string, string>();
 
-    // Use generatedFiles if provided, otherwise fallback to single htmlContent
-    if (generatedFiles && generatedFiles.length > 0) {
-      for (const file of generatedFiles) {
-        // Skip .github directory and CNAME as they're handled separately
-        if (!file.path.startsWith(".github/") && file.path !== "CNAME") {
-          fileContents.set(file.path, file.content);
-        }
+    for (const file of generatedFiles) {
+      if (!file.path.startsWith(".github/") && file.path !== "CNAME") {
+        fileContents.set(file.path, file.content);
       }
-    } else {
-      // Fallback to single index.html
-      fileContents.set("index.html", htmlContent);
     }
 
-    // Always set workflow and CNAME
     fileContents.set(".github/workflows/deploy.yml", landingPageWorkflow);
     if (customDomain) {
       fileContents.set("CNAME", customDomain);
     }
 
-    // Get all existing files to delete (except .github/ and CNAME)
-    const filesToDelete: string[] = [];
-    try {
-      const octokit = await getOctokit();
-      // Get the main branch SHA first
-      const { data: refData } = await octokit.rest.git.getRef({
-        owner,
-        repo,
-        ref: "heads/main",
-      });
-      const mainSha = refData.object.sha;
+    // Extract images from config and add them as binary files
+    const binaryFiles = new Map<string, Buffer>();
+    if (config) {
+      // Extract and convert base64 image data to Buffers
+      const imageMap: Array<{ configKey: string; path: string }> = [
+        { configKey: "primaryLogoData", path: "assets/primaryLogo.webp" },
+        { configKey: "secondaryLogoData", path: "assets/secondaryLogo.webp" },
+        { configKey: "bannerData", path: "assets/banner.webp" },
+      ];
 
-      const { data: treeData } = await octokit.rest.git.getTree({
-        owner,
-        repo,
-        tree_sha: mainSha,
-        recursive: "1",
-      });
-
-      if (treeData.tree) {
-        for (const item of treeData.tree) {
-          if (item.type === "blob" && item.path) {
-            // Skip .github directory, CNAME, and files we're about to create
-            if (
-              !item.path.startsWith(".github/") &&
-              item.path !== "CNAME" &&
-              !fileContents.has(item.path)
-            ) {
-              filesToDelete.push(item.path);
-            }
+      for (const { configKey, path } of imageMap) {
+        const imageData = config[configKey];
+        if (imageData && typeof imageData === "string") {
+          try {
+            // Remove data URL prefix if present (data:image/webp;base64,...)
+            const base64Data = imageData.includes(",")
+              ? imageData.split(",")[1]
+              : imageData;
+            const buffer = Buffer.from(base64Data, "base64");
+            binaryFiles.set(path, buffer);
+            console.log(`Added image to binary files: ${path}`);
+          } catch (error) {
+            console.warn(`Failed to process image ${configKey}:`, error);
           }
         }
       }
-    } catch (error) {
-      console.warn("Could not fetch existing files for cleanup:", error);
-      // Continue anyway - this might be a new repo
+
+      // Process team member images
+      const teamMembers = config.teamMembers as
+        | Array<{ imageData?: string; imagePath?: string }>
+        | undefined;
+      if (teamMembers && Array.isArray(teamMembers)) {
+        teamMembers.forEach((member, index) => {
+          if (member.imageData && typeof member.imageData === "string") {
+            try {
+              const base64Data = member.imageData.includes(",")
+                ? member.imageData.split(",")[1]
+                : member.imageData;
+              const buffer = Buffer.from(base64Data, "base64");
+              const path = `assets/team/member${index + 1}.webp`;
+              binaryFiles.set(path, buffer);
+              console.log(`Added team member image to binary files: ${path}`);
+            } catch (error) {
+              console.warn(
+                `Failed to process team member ${index + 1} image:`,
+                error
+              );
+            }
+          }
+        });
+      }
     }
 
-    await createSingleCommitWithForcePush(
+    const filesToDelete: string[] = [];
+
+    await syncRepoContents(
       owner,
       repo,
       fileContents,
-      new Map(),
+      binaryFiles,
       filesToDelete,
       "Update landing page files"
     );
@@ -1058,7 +1067,7 @@ async function createSingleCommit(
  * Create a single commit that cleans all existing files and adds new content
  * This deletes all files except .github/ and CNAME, then adds all new files
  */
-async function createSingleCommitWithForcePush(
+async function syncRepoContents(
   owner: string,
   repo: string,
   fileContents: Map<string, string>,
@@ -1071,6 +1080,7 @@ async function createSingleCommitWithForcePush(
 
   // Get the latest commit SHA (if exists)
   let baseCommitSha: string | null = null;
+  let isEmptyRepo = false;
   try {
     const { data: refData } = await octokit.rest.git.getRef({
       owner,
@@ -1079,22 +1089,82 @@ async function createSingleCommitWithForcePush(
     });
     baseCommitSha = refData.object.sha;
   } catch (_error) {
-    console.log("No existing main branch, creating initial commit");
+    console.log(
+      "No existing main branch, repository is empty - initializing with Contents API"
+    );
+    isEmptyRepo = true;
   }
 
-  // Get all existing files to delete (except .github/ and CNAME)
+  if (isEmptyRepo && (fileContents.size > 0 || binaryFiles.size > 0)) {
+    console.log(
+      "Repository is empty, initializing with first file then using Git API for single commit..."
+    );
+
+    let firstPath: string;
+    let firstContent: string | Buffer;
+
+    if (fileContents.has("index.html")) {
+      firstPath = "index.html";
+      firstContent = fileContents.get("index.html")!;
+    } else if (fileContents.size > 0) {
+      const firstEntry = fileContents.entries().next().value;
+      if (!firstEntry) {
+        throw new Error("No files to commit");
+      }
+      firstPath = firstEntry[0];
+      firstContent = firstEntry[1];
+    } else if (binaryFiles.size > 0) {
+      const firstEntry = binaryFiles.entries().next().value;
+      if (!firstEntry) {
+        throw new Error("No files to commit");
+      }
+      firstPath = firstEntry[0];
+      firstContent = firstEntry[1];
+    } else {
+      throw new Error("No files to commit");
+    }
+
+    try {
+      const initResponse = await octokit.rest.repos.createOrUpdateFileContents({
+        owner,
+        repo,
+        path: firstPath,
+        message: "Initial commit",
+        content: Buffer.isBuffer(firstContent)
+          ? firstContent.toString("base64")
+          : Buffer.from(firstContent).toString("base64"),
+        branch: "main",
+      });
+
+      if (initResponse.data.commit?.sha) {
+        baseCommitSha = initResponse.data.commit.sha;
+      } else {
+        const { data: refData } = await octokit.rest.git.getRef({
+          owner,
+          repo,
+          ref: "heads/main",
+        });
+        baseCommitSha = refData.object.sha;
+      }
+      console.log(
+        `Repository initialized with ${firstPath}, commit ${baseCommitSha}`
+      );
+    } catch (initError) {
+      console.error("Failed to initialize repository:", initError);
+      throw initError;
+    }
+  }
+
   const allFilesToDelete: string[] = [...filesToDelete];
 
   if (baseCommitSha) {
     try {
-      // Get the commit tree
       const { data: commitData } = await octokit.rest.git.getCommit({
         owner,
         repo,
         commit_sha: baseCommitSha,
       });
 
-      // Get the tree recursively
       const { data: treeData } = await octokit.rest.git.getTree({
         owner,
         repo,
@@ -1105,7 +1175,6 @@ async function createSingleCommitWithForcePush(
       if (treeData.tree) {
         for (const item of treeData.tree) {
           if (item.type === "blob" && item.path) {
-            // Skip .github directory, CNAME, and files we're about to create
             if (
               !item.path.startsWith(".github/") &&
               item.path !== "CNAME" &&
@@ -1121,11 +1190,9 @@ async function createSingleCommitWithForcePush(
       }
     } catch (error) {
       console.warn("Could not fetch existing files for cleanup:", error);
-      // Continue anyway
     }
   }
 
-  // Verify files to delete exist
   const verifiedFilesToDelete: string[] = [];
   if (baseCommitSha) {
     for (const filePath of allFilesToDelete) {
@@ -1143,7 +1210,6 @@ async function createSingleCommitWithForcePush(
     }
   }
 
-  // Create blobs for text files
   console.log("Creating blobs for text files...");
   const textBlobPromises = Array.from(fileContents.entries()).map(
     ([path, content]) =>
@@ -1157,7 +1223,6 @@ async function createSingleCommitWithForcePush(
         .then(response => ({ path, sha: response.data.sha }))
   );
 
-  // Create blobs for binary files
   console.log("Creating blobs for binary files...");
   const binaryBlobPromises = Array.from(binaryFiles.entries()).map(
     ([path, buffer]) =>
@@ -1174,7 +1239,6 @@ async function createSingleCommitWithForcePush(
   const textBlobs = await Promise.all(textBlobPromises);
   const binaryBlobs = await Promise.all(binaryBlobPromises);
 
-  // Build tree entries
   const treeEntries = [
     ...textBlobs.map(({ path, sha }) => ({
       path,
@@ -1196,7 +1260,6 @@ async function createSingleCommitWithForcePush(
     })),
   ];
 
-  // Create tree
   console.log("Creating git tree...");
   const treeOptions: Parameters<typeof octokit.rest.git.createTree>[0] = {
     owner,
@@ -1204,14 +1267,12 @@ async function createSingleCommitWithForcePush(
     tree: treeEntries,
   };
 
-  // Only set base_tree if we have an existing commit
   if (baseCommitSha) {
     treeOptions.base_tree = baseCommitSha;
   }
 
   const { data: newTree } = await octokit.rest.git.createTree(treeOptions);
 
-  // Create commit
   console.log("Creating commit...");
   const commitOptions: Parameters<typeof octokit.rest.git.createCommit>[0] = {
     owner,
@@ -1220,7 +1281,6 @@ async function createSingleCommitWithForcePush(
     tree: newTree.sha,
   };
 
-  // Only set parents if we have an existing commit
   if (baseCommitSha) {
     commitOptions.parents = [baseCommitSha];
   }
@@ -1228,14 +1288,25 @@ async function createSingleCommitWithForcePush(
   const { data: newCommit } =
     await octokit.rest.git.createCommit(commitOptions);
 
-  // Update ref normally (no force push)
+  // Update or create ref
   console.log("Updating branch reference...");
-  await octokit.rest.git.updateRef({
-    owner,
-    repo,
-    ref: "heads/main",
-    sha: newCommit.sha,
-  });
+  try {
+    await octokit.rest.git.updateRef({
+      owner,
+      repo,
+      ref: "heads/main",
+      sha: newCommit.sha,
+    });
+  } catch (_error) {
+    // Ref doesn't exist, create it
+    console.log("Main branch doesn't exist, creating it...");
+    await octokit.rest.git.createRef({
+      owner,
+      repo,
+      ref: "refs/heads/main",
+      sha: newCommit.sha,
+    });
+  }
 
   console.log(`Successfully committed changes to ${owner}/${repo}`);
 }

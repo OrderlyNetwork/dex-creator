@@ -149,11 +149,9 @@ export default function DexRoute() {
     }
   }, [dexData]);
 
-  // Handle smooth scrolling to DEX Creation Status when navigating from config
   useEffect(() => {
     const hash = window.location.hash;
     if (hash === "#dex-creation-status") {
-      // Wait for the component to render, then scroll
       const timer = setTimeout(() => {
         const element = document.getElementById("dex-creation-status");
         if (element) {
@@ -162,7 +160,6 @@ export default function DexRoute() {
             block: "start",
             inline: "nearest",
           });
-          // Clear the hash after scrolling
           window.history.replaceState(null, "", window.location.pathname);
         }
       }, 100);
@@ -201,7 +198,6 @@ export default function DexRoute() {
   ]);
 
   useEffect(() => {
-    // if user is ambassador, redirect to distributor page
     if (isAmbassador) {
       navigate(`/distributor${location.search}`);
     }
@@ -653,6 +649,32 @@ export default function DexRoute() {
     </Card>
   );
 
+  const landingPageCard = dexData && (
+    <Card className="my-6 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="flex-shrink-0 bg-blue-500/20 p-2 rounded-full">
+            <div className="i-mdi:web text-blue-400 w-6 h-6"></div>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold mb-1">Landing Page</h3>
+            <p className="text-gray-300">
+              Create and customize a beautiful landing page for your DEX. Use AI
+              to generate content and fine-tune it to attract traders.
+            </p>
+          </div>
+        </div>
+        <Button
+          as="a"
+          href="/dex/page"
+          className="whitespace-nowrap flex-shrink-0"
+        >
+          Manage Landing Page
+        </Button>
+      </div>
+    </Card>
+  );
+
   return (
     <div className="container mx-auto p-4 max-w-3xl mt-26 pb-52">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
@@ -682,38 +704,13 @@ export default function DexRoute() {
 
           {dexCardSetup}
 
-          {dexData && (
-            <Card className="my-6 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex-shrink-0 bg-blue-500/20 p-2 rounded-full">
-                    <div className="i-mdi:web text-blue-400 w-6 h-6"></div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold mb-1">Landing Page</h3>
-                    <p className="text-gray-300">
-                      Create and customize a beautiful landing page for your
-                      DEX. Use AI to generate content and fine-tune it to
-                      attract traders.
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  as="a"
-                  href="/dex/page"
-                  className="whitespace-nowrap flex-shrink-0"
-                >
-                  Manage Landing Page
-                </Button>
-              </div>
-            </Card>
-          )}
-
           {graduatedDexCard}
 
           {pointSystemCard}
 
           {referralSettingsCard}
+
+          {landingPageCard}
 
           <DexCreationStatus
             dexData={dexData}

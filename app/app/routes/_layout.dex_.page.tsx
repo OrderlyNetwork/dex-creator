@@ -10,6 +10,7 @@ import WalletConnect from "../components/WalletConnect";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { useNavigate, Link } from "@remix-run/react";
+import LandingPageCustomDomainSection from "../components/LandingPageCustomDomainSection";
 
 export const meta: MetaFunction = () => [
   { title: "Landing Page - Orderly One" },
@@ -34,6 +35,7 @@ export default function LandingPageRoute() {
   const navigate = useNavigate();
 
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated && token) {
@@ -71,6 +73,34 @@ export default function LandingPageRoute() {
     openModal("deleteConfirm", {
       onConfirm: handleDelete,
       entityName: "landing page",
+    });
+  };
+
+  const handleShowDomainRemoveConfirm = () => {
+    openModal("deleteConfirm", {
+      onConfirm: async () => {
+        if (!landingPageData || !landingPageData.id || !token) {
+          toast.error("Landing page information is not available");
+          return;
+        }
+
+        setIsSaving(true);
+        try {
+          await del<{ message: string }>(
+            `api/landing-page/${landingPageData.id}/custom-domain`,
+            null,
+            token
+          );
+          toast.success("Custom domain removed successfully");
+          await refreshLandingPageData();
+        } catch (error) {
+          console.error("Error removing custom domain:", error);
+          toast.error("Failed to remove custom domain");
+        } finally {
+          setIsSaving(false);
+        }
+      },
+      entityName: "custom domain",
     });
   };
 
@@ -257,24 +287,24 @@ export default function LandingPageRoute() {
                   <p className="text-gray-300">
                     Your landing page is live and accessible to visitors.
                   </p>
-                  <a
-                    href={
-                      landingPageData.customDomain ||
-                      `https://${landingPageData.repoUrl.split("/").pop()}.github.io`
-                    }
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary-light hover:underline text-sm mt-1 inline-block"
-                  >
-                    View Landing Page →
-                  </a>
+                  <div className="flex flex-col gap-1 mt-1">
+                    <a
+                      href={landingPageData.repoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-gray-300 hover:underline text-xs inline-block"
+                    >
+                      View Repository →
+                    </a>
+                  </div>
                 </div>
               </div>
               <Button
                 as="a"
                 href={
-                  landingPageData.customDomain ||
-                  `https://${landingPageData.repoUrl.split("/").pop()}.github.io`
+                  landingPageData.customDomain
+                    ? `https://${landingPageData.customDomain}`
+                    : `https://dex.orderly.network/landing-page-${landingPageData.repoIdentifier}`
                 }
                 target="_blank"
                 rel="noopener noreferrer"
@@ -284,6 +314,19 @@ export default function LandingPageRoute() {
                 Visit Page
               </Button>
             </div>
+          </Card>
+        )}
+
+        {landingPageData && landingPageData.repoUrl && (
+          <Card>
+            <LandingPageCustomDomainSection
+              landingPageData={landingPageData}
+              token={token}
+              isSaving={isSaving}
+              onLandingPageUpdate={refreshLandingPageData}
+              onSavingChange={setIsSaving}
+              onShowDomainRemoveConfirm={handleShowDomainRemoveConfirm}
+            />
           </Card>
         )}
 

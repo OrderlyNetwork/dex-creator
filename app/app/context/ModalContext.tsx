@@ -83,29 +83,34 @@ interface ModalProviderProps {
 }
 
 export function ModalProvider({ children }: ModalProviderProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentModalType, setCurrentModalType] = useState<ModalType>(null);
-  const [currentModalProps, setCurrentModalProps] = useState<
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Record<string, any>
-  >({});
+  const [modalStack, setModalStack] = useState<
+    Array<{
+      type: ModalType;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      props: Record<string, any>;
+    }>
+  >([]);
+
+  const isModalOpen = modalStack.length > 0;
+  const currentModalType =
+    modalStack.length > 0 ? modalStack[modalStack.length - 1].type : null;
+  const currentModalProps =
+    modalStack.length > 0 ? modalStack[modalStack.length - 1].props : {};
 
   const openModal = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (type: ModalType, props: Record<string, any> = {}) => {
-      setIsModalOpen(true);
-      setCurrentModalType(type);
-      setCurrentModalProps(props);
+      setModalStack(prev => [...prev, { type, props }]);
     },
     []
   );
 
   const closeModal = useCallback(() => {
-    setIsModalOpen(false);
-    setTimeout(() => {
-      setCurrentModalType(null);
-      setCurrentModalProps({});
-    }, 300);
+    setModalStack(prev => {
+      const newStack = [...prev];
+      newStack.pop();
+      return newStack;
+    });
   }, []);
 
   const contextValue = useMemo(

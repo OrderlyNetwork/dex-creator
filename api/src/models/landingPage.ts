@@ -93,7 +93,7 @@ export async function createLandingPage(
         userId,
         repoIdentifier: identifier,
         config,
-        repoUrl: null, // Will be set when deployed
+        repoUrl: null,
       },
     });
 
@@ -141,33 +141,45 @@ export async function deployLandingPage(
     };
   }
 
-  if (!landingPage.htmlContent) {
+  const config = landingPage.config as Record<string, unknown> | null;
+  const generatedFiles = config?.generatedFiles as
+    | Array<{ path: string; content: string }>
+    | undefined;
+  if (!generatedFiles || generatedFiles.length === 0) {
     return {
       success: false,
       error: {
         type: LandingPageErrorType.VALIDATION_ERROR,
-        message: "Landing page HTML content is required for deployment",
+        message: "Landing page generated files are required for deployment",
       },
     };
   }
 
-  // If repo already exists, just update it
   if (landingPage.repoUrl) {
     const repoInfo = extractRepoInfoFromUrl(landingPage.repoUrl);
     if (repoInfo) {
       try {
-        // Extract generatedFiles from config if available
         const config = landingPage.config as Record<string, unknown> | null;
         const generatedFiles = config?.generatedFiles as
           | Array<{ path: string; content: string }>
           | undefined;
 
+        if (!generatedFiles || generatedFiles.length === 0) {
+          return {
+            success: false,
+            error: {
+              type: LandingPageErrorType.VALIDATION_ERROR,
+              message: "Generated files are required for deployment",
+            },
+          };
+        }
+
         await setupLandingPageRepository(
           repoInfo.owner,
           repoInfo.repo,
-          landingPage.htmlContent || "",
           landingPage.customDomain,
-          generatedFiles
+          generatedFiles,
+          config
         );
         return {
           success: true,
@@ -187,7 +199,6 @@ export async function deployLandingPage(
     }
   }
 
-  // Create new repository
   try {
     console.log(
       "Creating landing page repository in OrderlyNetworkDexCreator organization..."
@@ -232,24 +243,32 @@ export async function deployLandingPage(
       };
     }
 
-    // Extract generatedFiles from config if available
     const config = landingPage.config as Record<string, unknown> | null;
     const generatedFiles = config?.generatedFiles as
       | Array<{ path: string; content: string }>
       | undefined;
 
+    if (!generatedFiles || generatedFiles.length === 0) {
+      return {
+        success: false,
+        error: {
+          type: LandingPageErrorType.VALIDATION_ERROR,
+          message: "Generated files are required for deployment",
+        },
+      };
+    }
+
     await setupLandingPageRepository(
       repoInfo.owner,
       repoInfo.repo,
-      landingPage.htmlContent || "",
       landingPage.customDomain,
-      generatedFiles
+      generatedFiles as Array<{ path: string; content: string }>,
+      config
     );
     console.log(
       `Successfully set up landing page repository for ${landingPage.repoIdentifier}`
     );
 
-    // Update landing page with repo URL
     const prismaClient = await getPrisma();
     const updatedLandingPage = await prismaClient.landingPage.update({
       where: { id },
@@ -278,8 +297,7 @@ export async function updateLandingPage(
   id: string,
   userId: string,
   data: {
-    htmlContent?: string;
-    config?: any;
+    config?: Prisma.InputJsonValue;
     repoUrl?: string;
     customDomain?: string;
   }
@@ -308,9 +326,6 @@ export async function updateLandingPage(
 
   const updateData: Prisma.LandingPageUpdateInput = {};
 
-  if ("htmlContent" in data && data.htmlContent !== undefined) {
-    updateData.htmlContent = data.htmlContent;
-  }
   if ("config" in data && data.config !== undefined) {
     updateData.config = data.config;
   }
@@ -381,7 +396,6 @@ export async function deleteLandingPage(
       },
     });
 
-    // If repo exists, delete it
     if (landingPage.repoUrl) {
       const repoInfo = extractRepoInfoFromUrl(landingPage.repoUrl);
       if (repoInfo) {
@@ -389,7 +403,6 @@ export async function deleteLandingPage(
           await deleteRepository(repoInfo.owner, repoInfo.repo);
         } catch (error) {
           console.error("Error deleting repository:", error);
-          // Don't fail the whole operation if repo deletion fails
         }
       }
     }
@@ -578,37 +591,23 @@ async function fileToBase64(file: File): Promise<string> {
 }
 
 /**
- * Get image dimensions from a File (simplified - returns null for now)
- * TODO: Add image dimension detection using a library like 'image-size' or 'sharp'
- */
-async function getImageDimensions(
-  _file: File
-): Promise<{ width: number; height: number } | null> {
-  // For now, return null. Dimensions can be detected client-side or
-  // we can add a library like 'image-size' or 'sharp' later
-  return null;
-}
-
-/**
  * Process landing page FormData and extract images with metadata
  */
 export async function processLandingPageFormData(formData: FormData): Promise<{
   config: Prisma.InputJsonValue;
   images: {
-    primaryLogo?: { data: string; width: number; height: number };
-    secondaryLogo?: { data: string; width: number; height: number };
+    primaryLogo?: { data: string };
+    secondaryLogo?: { data: string };
+    banner?: { data: string };
   };
 }> {
-  // Reconstruct config object from flattened FormData
   const config: Record<string, unknown> = {};
 
-  // Get all form data entries except images
   for (const [key, value] of formData.entries()) {
     if (key === "primaryLogo" || key === "secondaryLogo" || key === "banner") {
-      continue; // Skip image fields
+      continue;
     }
 
-    // Try to parse JSON strings, otherwise use as-is
     if (typeof value === "string") {
       try {
         config[key] = JSON.parse(value);
@@ -621,73 +620,54 @@ export async function processLandingPageFormData(formData: FormData): Promise<{
   }
 
   const images: {
-    primaryLogo?: { data: string; width: number; height: number };
-    secondaryLogo?: { data: string; width: number; height: number };
-    banner?: { data: string; width: number; height: number };
+    primaryLogo?: { data: string };
+    secondaryLogo?: { data: string };
+    banner?: { data: string };
   } = {};
 
-  // Process primary logo
   const primaryLogoFile = formData.get("primaryLogo");
   if (primaryLogoFile && primaryLogoFile instanceof File) {
-    const base64 = await fileToBase64(primaryLogoFile);
-    const dimensions = await getImageDimensions(primaryLogoFile);
     images.primaryLogo = {
-      data: base64,
-      width: dimensions?.width || 0,
-      height: dimensions?.height || 0,
+      data: await fileToBase64(primaryLogoFile),
     };
   }
 
-  // Process secondary logo
   const secondaryLogoFile = formData.get("secondaryLogo");
   if (secondaryLogoFile && secondaryLogoFile instanceof File) {
-    const base64 = await fileToBase64(secondaryLogoFile);
-    const dimensions = await getImageDimensions(secondaryLogoFile);
     images.secondaryLogo = {
-      data: base64,
-      width: dimensions?.width || 0,
-      height: dimensions?.height || 0,
+      data: await fileToBase64(secondaryLogoFile),
     };
   }
 
-  // Process banner
   const bannerFile = formData.get("banner");
   if (bannerFile && bannerFile instanceof File) {
-    const base64 = await fileToBase64(bannerFile);
-    const dimensions = await getImageDimensions(bannerFile);
     images.banner = {
-      data: base64,
-      width: dimensions?.width || 0,
-      height: dimensions?.height || 0,
+      data: await fileToBase64(bannerFile),
     };
   }
 
-  // Add image metadata to config for AI (with commit paths)
   if (images.primaryLogo) {
     config.primaryLogoImage = {
       path: "assets/primaryLogo.webp",
-      width: images.primaryLogo.width || 400, // Default if not detected
-      height: images.primaryLogo.height || 400,
+      width: 400,
+      height: 400,
     };
-    // Store the image data in config for deployment
     config.primaryLogoData = images.primaryLogo.data;
   }
   if (images.secondaryLogo) {
     config.secondaryLogoImage = {
       path: "assets/secondaryLogo.webp",
-      width: images.secondaryLogo.width || 200, // Default if not detected
-      height: images.secondaryLogo.height || 200,
+      width: 200,
+      height: 200,
     };
-    // Store the image data in config for deployment
     config.secondaryLogoData = images.secondaryLogo.data;
   }
   if (images.banner) {
     config.bannerImage = {
       path: "assets/banner.webp",
-      width: images.banner.width || 1200, // Default if not detected
-      height: images.banner.height || 400,
+      width: 1200,
+      height: 400,
     };
-    // Store the image data in config for deployment
     config.bannerData = images.banner.data;
   }
 

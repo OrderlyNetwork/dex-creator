@@ -19,67 +19,25 @@ import Form from "../components/Form";
 import { parseCSSVariables } from "../utils/cssParser";
 import { rgbSpaceSeparatedToHex } from "../utils/colorUtils";
 import { defaultTheme } from "../types/dex";
-import { AVAILABLE_LANGUAGES } from "../components/LanguageSupportSection";
-import { FaqItem } from "../components/EditableFaqList";
-import ImagePaste from "../components/ImagePaste";
+import type { TeamMember } from "../components/EditableTeamList";
+import LandingPageEditModal from "../components/LandingPageEditModal";
+import type { GeneratedFile, LandingPage } from "../types/landingPage";
 
-const FONT_FAMILIES = [
-  {
-    name: "Manrope",
-    value: "'Manrope', sans-serif",
-    category: "Default",
-  },
-  {
-    name: "Roboto",
-    value: "'Roboto', sans-serif",
-    category: "Modern",
-  },
-  {
-    name: "Open Sans",
-    value: "'Open Sans', sans-serif",
-    category: "Readable",
-  },
-  {
-    name: "Lato",
-    value: "'Lato', sans-serif",
-    category: "Readable",
-  },
-  {
-    name: "Poppins",
-    value: "'Poppins', sans-serif",
-    category: "Modern",
-  },
-  {
-    name: "Source Sans Pro",
-    value: "'Source Sans Pro', sans-serif",
-    category: "Readable",
-  },
-  {
-    name: "Nunito",
-    value: "'Nunito', sans-serif",
-    category: "Friendly",
-  },
-  {
-    name: "Montserrat",
-    value: "'Montserrat', sans-serif",
-    category: "Modern",
-  },
-  {
-    name: "Raleway",
-    value: "'Raleway', sans-serif",
-    category: "Elegant",
-  },
-  {
-    name: "Ubuntu",
-    value: "'Ubuntu', sans-serif",
-    category: "Modern",
-  },
-  {
-    name: "Fira Sans",
-    value: "'Fira Sans', sans-serif",
-    category: "Technical",
-  },
-];
+import {
+  combineGeneratedFilesToHtml,
+  migrateTeamMembers,
+} from "../utils/landingPagePreview";
+import type { LandingPageConfigForm } from "../types/landingPageConfig";
+
+import {
+  LandingPageBasicInfoForm,
+  LandingPageBrandingForm,
+  LandingPageDesignForm,
+  LandingPageLanguagesForm,
+  LandingPageMetadataForm,
+  LandingPageSectionsForm,
+  LandingPagePreviewPanel,
+} from "../components/landing-page";
 
 export const meta: MetaFunction = () => [
   { title: "Configure Landing Page - Orderly One" },
@@ -90,60 +48,13 @@ export const meta: MetaFunction = () => [
   },
 ];
 
-interface LandingPageConfigForm {
-  title: string;
-  subtitle?: string;
-  aiDescription?: string;
-  theme: "light" | "dark";
-  primaryColor: string;
-  primaryLight?: string;
-  primaryDarken?: string;
-  secondaryColor: string;
-  linkColor?: string;
-  successColor?: string;
-  dangerColor?: string;
-  warningColor?: string;
-  fontFamily: string;
-  languages: string[];
-  ctaButtonText?: string;
-  ctaButtonColor?: string;
-  useCustomCtaColor?: boolean;
-  ctaPlacement?: "hero" | "footer" | "both";
-  enabledSections?: string[];
-  telegramLink?: string;
-  discordLink?: string;
-  xLink?: string;
-  problemStatement?: string;
-  uniqueValue?: string;
-  targetAudience?: string;
-  keyFeatures?: string[];
-  faqItems?: FaqItem[];
-  teamMembers?: string[];
-  contactMethods?: string[];
-  makerFee?: number;
-  takerFee?: number;
-  rwaMakerFee?: number;
-  rwaTakerFee?: number;
-  sections: Array<{
-    type: "hero" | "features" | "about" | "contact" | "custom";
-    content: Record<string, unknown>;
-    order: number;
-  }>;
-  metadata?: {
-    description?: string;
-    keywords?: string[];
-    favicon?: string;
-  };
-}
-
 export default function LandingPageConfigRoute() {
   const { isAuthenticated, token, isLoading } = useAuth();
-  const { dexData, isLoading: isDexLoading } = useDex();
+  const { dexData, isLoading: isDexLoading, deploymentUrl } = useDex();
   const {
     landingPageData,
     isLoading: isLandingPageLoading,
     refreshLandingPageData,
-    updateLandingPageData,
   } = useLandingPage();
   const navigate = useNavigate();
   const { openModal } = useModal();
@@ -162,9 +73,11 @@ export default function LandingPageConfigRoute() {
     fontFamily: "'Manrope', sans-serif",
     languages: ["en"],
     ctaButtonText: "Start Trading",
+    ctaButtonLink: "",
     useCustomCtaColor: false,
     ctaPlacement: "both",
     enabledSections: ["hero", "features", "cta"],
+    teamMembers: [],
     keyFeatures: [
       "Built on Orderly Network's omnichain infrastructure",
       "Trade perpetual futures across EVM chains and Solana",
@@ -258,9 +171,105 @@ export default function LandingPageConfigRoute() {
     xLink: "",
   });
   const [previewHtml, setPreviewHtml] = useState<string | null>(null);
-  const [chatMode, setChatMode] = useState(false);
-  const [chatPrompt, setChatPrompt] = useState("");
   const [showWarning, setShowWarning] = useState(false);
+  const [editMode, setEditMode] = useState<
+    "modifyConfig" | "interactive" | null
+  >(null);
+  const [interactiveHasChanges, setInteractiveHasChanges] = useState(false);
+  const [teamMemberImageUrls, setTeamMemberImageUrls] = useState<
+    (string | null)[]
+  >([]);
+  const [brandingImageUrls, setBrandingImageUrls] = useState<{
+    primaryLogo?: string | null;
+    secondaryLogo?: string | null;
+    banner?: string | null;
+  }>({});
+  const [currentGeneratedFiles, setCurrentGeneratedFiles] = useState<
+    GeneratedFile[] | null
+  >(null);
+
+  useEffect(() => {
+    const convertBrandingImages = async () => {
+      const blobToDataUrl = (blob: Blob | null): Promise<string | null> => {
+        if (!blob) return Promise.resolve(null);
+        return new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.onerror = () => resolve(null);
+          reader.readAsDataURL(blob);
+        });
+      };
+
+      const [primaryLogoUrl, secondaryLogoUrl, bannerUrl] = await Promise.all([
+        blobToDataUrl(primaryLogo),
+        blobToDataUrl(secondaryLogo),
+        blobToDataUrl(banner),
+      ]);
+
+      setBrandingImageUrls({
+        primaryLogo: primaryLogoUrl,
+        secondaryLogo: secondaryLogoUrl,
+        banner: bannerUrl,
+      });
+    };
+
+    convertBrandingImages();
+  }, [primaryLogo, secondaryLogo, banner]);
+
+  useEffect(() => {
+    const updateTeamMemberImageUrls = async () => {
+      if (!formData.teamMembers || formData.teamMembers.length === 0) {
+        setTeamMemberImageUrls([]);
+        return;
+      }
+
+      const urls = await Promise.all(
+        formData.teamMembers.map(async member => {
+          if (member.image instanceof Blob) {
+            return new Promise<string | null>(resolve => {
+              const reader = new FileReader();
+              reader.onloadend = () => {
+                resolve(reader.result as string);
+              };
+              reader.onerror = () => resolve(null);
+              reader.readAsDataURL(member.image as Blob);
+            });
+          }
+          return null;
+        })
+      );
+      setTeamMemberImageUrls(urls);
+    };
+
+    updateTeamMemberImageUrls();
+  }, [formData.teamMembers]);
+
+  useEffect(() => {
+    if (landingPageData?.config?.generatedFiles && !interactiveHasChanges) {
+      setCurrentGeneratedFiles(
+        landingPageData.config.generatedFiles as GeneratedFile[]
+      );
+    }
+  }, [landingPageData?.config?.generatedFiles, interactiveHasChanges]);
+
+  useEffect(() => {
+    if (currentGeneratedFiles) {
+      const preview = combineGeneratedFilesToHtml(
+        currentGeneratedFiles,
+        landingPageData?.config as Record<string, unknown>,
+        teamMemberImageUrls,
+        brandingImageUrls
+      );
+      if (preview) {
+        setPreviewHtml(preview);
+      }
+    }
+  }, [
+    teamMemberImageUrls,
+    brandingImageUrls,
+    currentGeneratedFiles,
+    landingPageData?.config,
+  ]);
 
   const extractDexColors = useCallback(
     (themeCSS: string | null | undefined) => {
@@ -358,24 +367,26 @@ export default function LandingPageConfigRoute() {
     if (!isAuthenticated || !token) return;
 
     if (landingPageData) {
-      setChatMode(true);
       if (landingPageData.config) {
-        const config = landingPageData.config as Partial<LandingPageConfigForm>;
+        const config = landingPageData.config as Record<string, unknown>;
+        const configForm = config as Partial<LandingPageConfigForm>;
+
         setFormData(prev => ({
           ...prev,
-          ...config,
+          ...configForm,
           ctaButtonText:
-            config.ctaButtonText || prev.ctaButtonText || "Start Trading",
-          ctaPlacement: config.ctaPlacement || prev.ctaPlacement || "both",
-          enabledSections: config.enabledSections ||
+            configForm.ctaButtonText || prev.ctaButtonText || "Start Trading",
+          ctaPlacement: configForm.ctaPlacement || prev.ctaPlacement || "both",
+          enabledSections: configForm.enabledSections ||
             prev.enabledSections || ["hero", "features", "cta"],
-          keyFeatures: config.keyFeatures || prev.keyFeatures || [],
-          faqItems: config.faqItems || prev.faqItems || [],
+          keyFeatures: configForm.keyFeatures || prev.keyFeatures || [],
+          faqItems: configForm.faqItems || prev.faqItems || [],
           problemStatement:
-            config.problemStatement || prev.problemStatement || "",
-          uniqueValue: config.uniqueValue || prev.uniqueValue || "",
-          targetAudience: config.targetAudience || prev.targetAudience || "",
-          metadata: config.metadata ||
+            configForm.problemStatement || prev.problemStatement || "",
+          uniqueValue: configForm.uniqueValue || prev.uniqueValue || "",
+          targetAudience:
+            configForm.targetAudience || prev.targetAudience || "",
+          metadata: configForm.metadata ||
             prev.metadata || {
               description:
                 "Trade perpetual futures across EVM chains and Solana on a non-custodial DEX powered by Orderly Network. Unified liquidity, up to 50x leverage, and professional trading tools.",
@@ -394,9 +405,39 @@ export default function LandingPageConfigRoute() {
               ],
             },
         }));
+
+        const loadImage = async (
+          imageData: unknown,
+          setter: (blob: Blob | null) => void
+        ) => {
+          if (imageData && typeof imageData === "string") {
+            try {
+              const dataUrl = imageData.startsWith("data:")
+                ? imageData
+                : `data:image/webp;base64,${imageData}`;
+              const blob = await base64ToBlob(dataUrl);
+              setter(blob);
+            } catch (error) {
+              console.error("Error loading image:", error);
+              setter(null);
+            }
+          } else {
+            setter(null);
+          }
+        };
+
+        loadImage(config.primaryLogoData, setPrimaryLogo);
+        loadImage(config.secondaryLogoData, setSecondaryLogo);
+        loadImage(config.bannerData, setBanner);
       }
-      if (landingPageData.htmlContent) {
-        setPreviewHtml(landingPageData.htmlContent);
+      if (landingPageData.config?.generatedFiles) {
+        const preview = combineGeneratedFilesToHtml(
+          landingPageData.config.generatedFiles as GeneratedFile[],
+          landingPageData.config as Record<string, unknown>
+        );
+        if (preview) {
+          setPreviewHtml(preview);
+        }
       }
     } else if (dexData && !landingPageData) {
       const dexThemeCSS = dexData.themeCSS || defaultTheme;
@@ -518,7 +559,6 @@ export default function LandingPageConfigRoute() {
         return prev;
       });
 
-      // Set default SEO & Metadata if not already set
       setFormData(prev => {
         const needsMetadataDefaults =
           !prev.metadata?.description ||
@@ -575,7 +615,14 @@ export default function LandingPageConfigRoute() {
         };
       });
     }
-  }, [isAuthenticated, token, landingPageData, dexData, extractDexColors]);
+  }, [
+    isAuthenticated,
+    token,
+    landingPageData,
+    dexData,
+    extractDexColors,
+    base64ToBlob,
+  ]);
 
   useEffect(() => {
     if (dexData && !landingPageData) {
@@ -602,6 +649,26 @@ export default function LandingPageConfigRoute() {
     }
   };
 
+  const getDefaultDexUrl = useCallback(() => {
+    if (dexData?.customDomain) {
+      return `https://${dexData.customDomain}`;
+    }
+    if (deploymentUrl) {
+      return deploymentUrl;
+    }
+    if (dexData?.repoUrl) {
+      return `https://dex.orderly.network/${dexData.repoUrl.split("/").pop()}/`;
+    }
+    return "";
+  }, [dexData, deploymentUrl]);
+
+  useEffect(() => {
+    const defaultUrl = getDefaultDexUrl();
+    if (defaultUrl && !formData.ctaButtonLink) {
+      setFormData(prev => ({ ...prev, ctaButtonLink: defaultUrl }));
+    }
+  }, [getDefaultDexUrl, formData.ctaButtonLink]);
+
   const sectionsWithConfig = [
     "cta",
     "features",
@@ -611,98 +678,129 @@ export default function LandingPageConfigRoute() {
     "contact",
     "about",
     "socials",
-  ]; // Sections that have dedicated configuration
+  ];
 
-  const openSectionConfig = (sectionType: string) => {
-    console.log("openSectionConfig called with:", sectionType);
-    console.log("sectionsWithConfig:", sectionsWithConfig);
-    console.log("openModal function:", openModal);
+  const openSectionConfig = useCallback(
+    (sectionType: string) => {
+      if (!sectionsWithConfig.includes(sectionType)) {
+        return;
+      }
 
-    if (!sectionsWithConfig.includes(sectionType)) {
-      console.log("Section not in config list, returning");
-      return; // Don't open modal for sections without config
-    }
+      const sectionData: Record<string, unknown> = {};
+      if (sectionType === "cta") {
+        sectionData.ctaButtonText = formData.ctaButtonText || "Start Trading";
+        sectionData.ctaButtonColor = formData.ctaButtonColor;
+        sectionData.ctaButtonLink =
+          formData.ctaButtonLink || getDefaultDexUrl() || "";
+        sectionData.useCustomCtaColor = formData.useCustomCtaColor || false;
+        sectionData.ctaPlacement = formData.ctaPlacement || "both";
+        sectionData.primaryColor = formData.primaryColor;
+      } else if (sectionType === "features") {
+        sectionData.keyFeatures = formData.keyFeatures || [];
+      } else if (sectionType === "faq") {
+        sectionData.faqItems = formData.faqItems || [];
+      } else if (sectionType === "team") {
+        sectionData.teamMembers = formData.teamMembers || [];
+      } else if (sectionType === "contact") {
+        sectionData.contactMethods = formData.contactMethods || [];
+      } else if (sectionType === "about") {
+        sectionData.problemStatement = formData.problemStatement || "";
+        sectionData.uniqueValue = formData.uniqueValue || "";
+        sectionData.targetAudience = formData.targetAudience || "";
+      } else if (sectionType === "feeStructure") {
+        sectionData.makerFee = formData.makerFee;
+        sectionData.takerFee = formData.takerFee;
+        sectionData.rwaMakerFee = formData.rwaMakerFee;
+        sectionData.rwaTakerFee = formData.rwaTakerFee;
+      } else if (sectionType === "socials") {
+        sectionData.telegramLink = formData.telegramLink || "";
+        sectionData.discordLink = formData.discordLink || "";
+        sectionData.xLink = formData.xLink || "";
+      }
 
-    const sectionData: Record<string, unknown> = {};
-    if (sectionType === "cta") {
-      sectionData.ctaButtonText = formData.ctaButtonText || "Start Trading";
-      sectionData.ctaButtonColor = formData.ctaButtonColor;
-      sectionData.useCustomCtaColor = formData.useCustomCtaColor || false;
-      sectionData.ctaPlacement = formData.ctaPlacement || "both";
-      sectionData.primaryColor = formData.primaryColor;
-    } else if (sectionType === "features") {
-      sectionData.keyFeatures = formData.keyFeatures || [];
-    } else if (sectionType === "faq") {
-      sectionData.faqItems = formData.faqItems || [];
-    } else if (sectionType === "team") {
-      sectionData.teamMembers = formData.teamMembers || [];
-    } else if (sectionType === "contact") {
-      sectionData.contactMethods = formData.contactMethods || [];
-    } else if (sectionType === "about") {
-      sectionData.problemStatement = formData.problemStatement || "";
-      sectionData.uniqueValue = formData.uniqueValue || "";
-      sectionData.targetAudience = formData.targetAudience || "";
-    } else if (sectionType === "feeStructure") {
-      sectionData.makerFee = formData.makerFee;
-      sectionData.takerFee = formData.takerFee;
-      sectionData.rwaMakerFee = formData.rwaMakerFee;
-      sectionData.rwaTakerFee = formData.rwaTakerFee;
-    } else if (sectionType === "socials") {
-      sectionData.telegramLink = formData.telegramLink || "";
-      sectionData.discordLink = formData.discordLink || "";
-      sectionData.xLink = formData.xLink || "";
-    }
+      try {
+        openModal("sectionConfig", {
+          sectionType,
+          formData: sectionData,
+          onUpdate: (section: string, data: Record<string, unknown>) => {
+            if (section === "cta") {
+              handleInputChange(
+                "ctaButtonText",
+                data.ctaButtonText || "Start Trading"
+              );
+              handleInputChange("ctaButtonColor", data.ctaButtonColor);
+              handleInputChange(
+                "ctaButtonLink",
+                data.ctaButtonLink || getDefaultDexUrl() || ""
+              );
+              handleInputChange(
+                "useCustomCtaColor",
+                data.useCustomCtaColor || false
+              );
+              handleInputChange("ctaPlacement", data.ctaPlacement || "both");
+            } else if (section === "features") {
+              handleInputChange("keyFeatures", data.keyFeatures || []);
+            } else if (section === "faq") {
+              handleInputChange("faqItems", data.faqItems || []);
+            } else if (section === "team") {
+              handleInputChange("teamMembers", data.teamMembers || []);
+            } else if (section === "contact") {
+              handleInputChange("contactMethods", data.contactMethods || []);
+            } else if (section === "about") {
+              handleInputChange(
+                "problemStatement",
+                data.problemStatement || ""
+              );
+              handleInputChange("uniqueValue", data.uniqueValue || "");
+              handleInputChange("targetAudience", data.targetAudience || "");
+            } else if (section === "feeStructure") {
+              handleInputChange("makerFee", data.makerFee);
+              handleInputChange("takerFee", data.takerFee);
+              handleInputChange("rwaMakerFee", data.rwaMakerFee);
+              handleInputChange("rwaTakerFee", data.rwaTakerFee);
+            } else if (section === "socials") {
+              handleInputChange("telegramLink", data.telegramLink || "");
+              handleInputChange("discordLink", data.discordLink || "");
+              handleInputChange("xLink", data.xLink || "");
+            }
+          },
+        });
+      } catch (error) {
+        console.error("Error calling openModal:", error);
+      }
+    },
+    [formData, getDefaultDexUrl, openModal, handleInputChange]
+  );
 
-    console.log("Calling openModal with:", {
-      sectionType,
-      formData: sectionData,
+  const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result;
+        if (typeof result === "string") {
+          resolve(result);
+        } else {
+          reject(new Error("Failed to convert blob to base64"));
+        }
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
     });
+  };
 
-    try {
-      openModal("sectionConfig", {
-        sectionType,
-        formData: sectionData,
-        onUpdate: (section: string, data: Record<string, unknown>) => {
-          console.log("onUpdate called:", section, data);
-          if (section === "cta") {
-            handleInputChange(
-              "ctaButtonText",
-              data.ctaButtonText || "Start Trading"
-            );
-            handleInputChange("ctaButtonColor", data.ctaButtonColor);
-            handleInputChange(
-              "useCustomCtaColor",
-              data.useCustomCtaColor || false
-            );
-            handleInputChange("ctaPlacement", data.ctaPlacement || "both");
-          } else if (section === "features") {
-            handleInputChange("keyFeatures", data.keyFeatures || []);
-          } else if (section === "faq") {
-            handleInputChange("faqItems", data.faqItems || []);
-          } else if (section === "team") {
-            handleInputChange("teamMembers", data.teamMembers || []);
-          } else if (section === "contact") {
-            handleInputChange("contactMethods", data.contactMethods || []);
-          } else if (section === "about") {
-            handleInputChange("problemStatement", data.problemStatement || "");
-            handleInputChange("uniqueValue", data.uniqueValue || "");
-            handleInputChange("targetAudience", data.targetAudience || "");
-          } else if (section === "feeStructure") {
-            handleInputChange("makerFee", data.makerFee);
-            handleInputChange("takerFee", data.takerFee);
-            handleInputChange("rwaMakerFee", data.rwaMakerFee);
-            handleInputChange("rwaTakerFee", data.rwaTakerFee);
-          } else if (section === "socials") {
-            handleInputChange("telegramLink", data.telegramLink || "");
-            handleInputChange("discordLink", data.discordLink || "");
-            handleInputChange("xLink", data.xLink || "");
-          }
-        },
-      });
-      console.log("openModal called successfully");
-    } catch (error) {
-      console.error("Error calling openModal:", error);
-    }
+  const prepareTeamMembersForSubmission = async (
+    members: TeamMember[]
+  ): Promise<Array<Omit<TeamMember, "image"> & { imageData?: string }>> => {
+    return Promise.all(
+      members.map(async member => {
+        const { image, ...rest } = member;
+        if (image instanceof Blob) {
+          const imageData = await blobToBase64(image);
+          return { ...rest, imageData };
+        }
+        return rest;
+      })
+    );
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -716,7 +814,14 @@ export default function LandingPageConfigRoute() {
     setIsSaving(true);
 
     try {
-      const formDataToSend = createLandingPageFormData(formData, {
+      const preparedFormData = {
+        ...formData,
+        teamMembers: formData.teamMembers
+          ? await prepareTeamMembersForSubmission(formData.teamMembers)
+          : formData.teamMembers,
+      };
+
+      const formDataToSend = createLandingPageFormData(preparedFormData, {
         primaryLogo,
         secondaryLogo,
         banner,
@@ -755,39 +860,113 @@ export default function LandingPageConfigRoute() {
     }
   };
 
-  const handleGenerate = async () => {
-    if (!landingPageData || !token) {
-      toast.error("Landing page must be created first");
-      return;
-    }
+  useEffect(() => {
+    if (
+      editMode === "modifyConfig" &&
+      landingPageData &&
+      landingPageData.config
+    ) {
+      const config = landingPageData.config as Record<string, unknown>;
+      const configForm = config as Partial<LandingPageConfigForm>;
 
-    if (!chatPrompt.trim()) {
-      toast.error("Please enter a prompt");
-      return;
-    }
+      setFormData(prev => ({
+        ...prev,
+        ...configForm,
+        ctaButtonText:
+          configForm.ctaButtonText || prev.ctaButtonText || "Start Trading",
+        ctaPlacement: configForm.ctaPlacement || prev.ctaPlacement || "both",
+        enabledSections: configForm.enabledSections ||
+          prev.enabledSections || ["hero", "features", "cta"],
+        keyFeatures: configForm.keyFeatures || prev.keyFeatures || [],
+        faqItems: configForm.faqItems || prev.faqItems || [],
+        teamMembers:
+          migrateTeamMembers(config.teamMembers) || prev.teamMembers || [],
+        problemStatement:
+          configForm.problemStatement || prev.problemStatement || "",
+        uniqueValue: configForm.uniqueValue || prev.uniqueValue || "",
+        targetAudience: configForm.targetAudience || prev.targetAudience || "",
+        metadata: configForm.metadata ||
+          prev.metadata || {
+            description:
+              "Trade perpetual futures across EVM chains and Solana on a non-custodial DEX powered by Orderly Network. Unified liquidity, up to 50x leverage, and professional trading tools.",
+            keywords: [
+              "DEX",
+              "perpetual futures",
+              "Orderly Network",
+              "omnichain trading",
+              "DeFi",
+              "cryptocurrency trading",
+              "cross-chain",
+              "leverage trading",
+              "non-custodial",
+              "EVM",
+              "Solana",
+            ],
+          },
+      }));
 
-    setIsGenerating(true);
+      const loadImage = async (
+        imageData: unknown,
+        setter: (blob: Blob | null) => void
+      ) => {
+        if (imageData && typeof imageData === "string") {
+          try {
+            const dataUrl = imageData.startsWith("data:")
+              ? imageData
+              : `data:image/webp;base64,${imageData}`;
+            const blob = await base64ToBlob(dataUrl);
+            setter(blob);
+          } catch (error) {
+            console.error("Error loading image:", error);
+            setter(null);
+          }
+        } else {
+          setter(null);
+        }
+      };
 
-    try {
-      const result = await post<{ landingPage: { htmlContent: string } }>(
-        `api/landing-page/${landingPageData.id}/generate`,
-        { prompt: chatPrompt },
-        token
-      );
+      loadImage(config.primaryLogoData, setPrimaryLogo);
+      loadImage(config.secondaryLogoData, setSecondaryLogo);
+      loadImage(config.bannerData, setBanner);
 
-      if (result && result.landingPage) {
-        setPreviewHtml(result.landingPage.htmlContent);
-        updateLandingPageData({ htmlContent: result.landingPage.htmlContent });
-        toast.success("Landing page generated successfully!");
-        setChatPrompt("");
+      const migratedMembers = migrateTeamMembers(config.teamMembers);
+      if (migratedMembers && migratedMembers.length > 0) {
+        Promise.all(
+          migratedMembers.map(async (member, index) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const memberWithImageData = member as any;
+            if (
+              memberWithImageData.imageData &&
+              typeof memberWithImageData.imageData === "string"
+            ) {
+              try {
+                const dataUrl = memberWithImageData.imageData.startsWith(
+                  "data:"
+                )
+                  ? memberWithImageData.imageData
+                  : `data:image/webp;base64,${memberWithImageData.imageData}`;
+                const blob = await base64ToBlob(dataUrl);
+                setFormData(prev => {
+                  const updatedMembers = [...(prev.teamMembers || [])];
+                  if (updatedMembers[index]) {
+                    updatedMembers[index] = {
+                      ...updatedMembers[index],
+                      image: blob,
+                    };
+                  }
+                  return { ...prev, teamMembers: updatedMembers };
+                });
+              } catch (error) {
+                console.error("Error loading team member image:", error);
+              }
+            }
+          })
+        ).catch(error => {
+          console.error("Error loading team member images:", error);
+        });
       }
-    } catch (error) {
-      console.error("Error generating landing page:", error);
-      toast.error("Failed to generate landing page");
-    } finally {
-      setIsGenerating(false);
     }
-  };
+  }, [editMode, landingPageData, base64ToBlob]);
 
   if (isLoading || isDexLoading || isLandingPageLoading) {
     return (
@@ -855,7 +1034,7 @@ export default function LandingPageConfigRoute() {
             Back to Landing Page
           </Link>
           <h1 className="text-2xl md:text-3xl font-bold gradient-text">
-            {chatMode ? "Fine-tune Landing Page" : "Configure Landing Page"}
+            Configure Landing Page
           </h1>
         </div>
       </div>
@@ -879,708 +1058,398 @@ export default function LandingPageConfigRoute() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div>
-          {chatMode ? (
+          {landingPageData && !editMode ? (
             <Card>
-              <h2 className="text-xl font-bold mb-4">Chat Mode</h2>
+              <h2 className="text-xl font-bold mb-4">Modify Landing Page</h2>
               <p className="text-gray-300 mb-4">
-                Fine-tune your landing page by describing the changes you want.
+                Choose how you want to modify your landing page:
               </p>
               <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Describe your changes
-                  </label>
-                  <textarea
-                    value={chatPrompt}
-                    onChange={e => setChatPrompt(e.target.value)}
-                    placeholder="e.g., Make the hero section more vibrant, add a fee structure section, change colors to blue..."
-                    className="w-full p-3 bg-background-dark border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary"
-                    rows={6}
-                  />
-                </div>
                 <Button
-                  onClick={handleGenerate}
-                  disabled={isGenerating || !chatPrompt.trim()}
+                  onClick={() => setEditMode("modifyConfig")}
+                  variant="primary"
                   className="w-full"
+                  type="button"
                 >
-                  {isGenerating ? "Generating..." : "Generate Changes"}
+                  <span className="flex items-center gap-2 justify-center">
+                    <div className="i-mdi:cog h-5 w-5"></div>
+                    Modify Initial Config
+                  </span>
                 </Button>
+                <p className="text-sm text-gray-400 text-center">
+                  Update your configuration and regenerate the entire landing
+                  page with AI, using your existing page as context.
+                </p>
+                <Button
+                  onClick={() => setEditMode("interactive")}
+                  variant="secondary"
+                  className="w-full"
+                  type="button"
+                >
+                  <span className="flex items-center gap-2 justify-center">
+                    <div className="i-mdi:cursor-pointer h-5 w-5"></div>
+                    Interactive Edit Mode
+                  </span>
+                </Button>
+                <p className="text-sm text-gray-400 text-center">
+                  Ctrl+click elements on your landing page to modify them via
+                  AI.
+                </p>
               </div>
             </Card>
+          ) : editMode === "interactive" ? (
+            <>
+              <LandingPageEditModal
+                isOpen={true}
+                onClose={() => {
+                  setEditMode(null);
+                  setInteractiveHasChanges(false);
+                }}
+                previewHtml={previewHtml || ""}
+                generatedFiles={
+                  currentGeneratedFiles ||
+                  (landingPageData?.config
+                    ?.generatedFiles as GeneratedFile[]) ||
+                  []
+                }
+                landingPageId={landingPageData?.id || ""}
+                token={token}
+                onFilesUpdate={(updatedFiles: GeneratedFile[]) => {
+                  setCurrentGeneratedFiles(updatedFiles);
+                  const newPreview = combineGeneratedFilesToHtml(
+                    updatedFiles,
+                    landingPageData?.config as Record<string, unknown>,
+                    teamMemberImageUrls,
+                    brandingImageUrls
+                  );
+                  if (newPreview) {
+                    setPreviewHtml(newPreview);
+                  }
+                }}
+                onSave={async () => {
+                  if (!landingPageData?.id) return;
+                  await post(
+                    `api/landing-page/${landingPageData.id}/deploy`,
+                    { generatedFiles: currentGeneratedFiles },
+                    token
+                  );
+                  setInteractiveHasChanges(false);
+                  await refreshLandingPageData();
+                  setEditMode(null);
+                }}
+                hasChanges={interactiveHasChanges}
+                onMarkDirty={() => setInteractiveHasChanges(true)}
+                teamMemberImageUrls={teamMemberImageUrls}
+                brandingImageUrls={brandingImageUrls}
+              />
+            </>
           ) : (
-            <Form
-              onSubmit={handleSubmit}
-              className="space-y-6"
-              submitText={
-                landingPageData ? "Update Configuration" : "Create Landing Page"
-              }
-              isLoading={isSaving}
-              loadingText="Saving"
-              disabled={false}
-            >
-              {!landingPageData && formData.aiDescription && (
-                <Card className="bg-primary/10 border border-primary/30">
-                  <div className="flex items-start gap-3 mb-4">
-                    <div className="i-mdi:lightbulb-on text-primary h-6 w-6 flex-shrink-0 mt-0.5"></div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-primary mb-1">
-                        Ready to Generate
-                      </h3>
-                      <p className="text-sm text-gray-300 mb-4">
-                        You can generate your landing page using the AI
-                        description you provided. Save the configuration first,
-                        then click generate.
-                      </p>
-                      <Button
-                        type="button"
-                        variant="primary"
-                        onClick={async () => {
-                          if (!token) {
-                            toast.error("Authentication required");
-                            return;
-                          }
-
-                          if (!landingPageData) {
-                            try {
-                              const formDataToSend = createLandingPageFormData(
-                                formData,
-                                {
-                                  primaryLogo,
-                                  secondaryLogo,
-                                  banner,
-                                }
-                              );
-                              const result = await postFormData<{ id: string }>(
-                                "api/landing-page",
-                                formDataToSend,
-                                token
-                              );
-
-                              if (result) {
-                                await refreshLandingPageData();
-                                if (result.id) {
-                                  setIsGenerating(true);
-                                  try {
-                                    const genResult = await post<{
-                                      landingPage: { htmlContent: string };
-                                    }>(
-                                      `api/landing-page/${result.id}/generate`,
-                                      {
-                                        prompt: formData.aiDescription || "",
-                                      },
-                                      token
-                                    );
-
-                                    if (genResult && genResult.landingPage) {
-                                      setPreviewHtml(
-                                        genResult.landingPage.htmlContent
-                                      );
-                                      await refreshLandingPageData();
-                                      toast.success(
-                                        "Landing page generated successfully!"
-                                      );
-                                      setChatMode(true);
-                                    }
-                                  } catch (error) {
-                                    console.error(
-                                      "Error generating landing page:",
-                                      error
-                                    );
-                                    toast.error(
-                                      "Failed to generate landing page"
-                                    );
-                                  } finally {
-                                    setIsGenerating(false);
-                                  }
-                                }
-                              }
-                            } catch (error) {
-                              console.error(
-                                "Error creating landing page:",
-                                error
-                              );
-                              toast.error(
-                                "Failed to create landing page. Please try again."
-                              );
-                            }
-                          }
-                        }}
-                        disabled={isGenerating || isSaving}
-                        className="w-full"
-                      >
-                        {isGenerating
-                          ? "Generating..."
-                          : "Generate Landing Page with AI"}
-                      </Button>
-                    </div>
+            <>
+              {editMode === "modifyConfig" && (
+                <Card className="mb-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-bold">Modify Initial Config</h2>
+                    <Button
+                      onClick={() => setEditMode(null)}
+                      variant="ghost"
+                      size="sm"
+                      type="button"
+                    >
+                      <div className="i-mdi:close h-5 w-5"></div>
+                    </Button>
                   </div>
+                  <p className="text-gray-300 mb-4">
+                    Update your configuration below. The AI will regenerate your
+                    entire landing page using your existing page as context.
+                  </p>
                 </Card>
               )}
-              <Card>
-                <h2 className="text-lg font-bold mb-4">Basic Information</h2>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Title *
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.title}
-                      onChange={e => handleInputChange("title", e.target.value)}
-                      placeholder="Your Landing Page Title"
-                      className="w-full p-3 bg-background-dark border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Subtitle
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.subtitle || ""}
-                      onChange={e =>
-                        handleInputChange("subtitle", e.target.value)
-                      }
-                      placeholder="A brief description"
-                      className="w-full p-3 bg-background-dark border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      AI Description
-                    </label>
-                    <p className="text-xs text-gray-400 mb-2">
-                      Describe your landing page vision for AI generation. This
-                      helps the AI understand what you want to create.
-                    </p>
-                    <textarea
-                      value={formData.aiDescription || ""}
-                      onChange={e =>
-                        handleInputChange("aiDescription", e.target.value)
-                      }
-                      placeholder="e.g., A modern landing page for a DeFi DEX with a hero section showcasing trading features, a features section highlighting low fees and fast transactions, and a call-to-action section..."
-                      className="w-full p-3 bg-background-dark border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary"
-                      rows={5}
-                    />
-                  </div>
-                </div>
-              </Card>
+              <Form
+                onSubmit={
+                  editMode === "modifyConfig"
+                    ? async e => {
+                        e.preventDefault();
+                        if (!token || !landingPageData) return;
 
-              <Card>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold">Branding</h2>
-                  {dexData &&
-                    (dexData.primaryLogo ||
-                      dexData.secondaryLogo ||
-                      dexData.banner) && (
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        size="sm"
-                        onClick={loadDexImages}
-                      >
-                        <div className="i-mdi:refresh h-4 w-4 mr-2"></div>
-                        Reset
-                      </Button>
-                    )}
-                </div>
-                <div className="space-y-4">
-                  <div>
-                    <ImagePaste
-                      id="landingPagePrimaryLogo"
-                      label={
-                        <>
-                          Primary Logo{" "}
-                          <span className="text-gray-400 text-sm font-normal">
-                            (optional)
-                          </span>
-                        </>
-                      }
-                      value={primaryLogo || undefined}
-                      onChange={setPrimaryLogo}
-                      imageType="primaryLogo"
-                      helpText="Main logo for your landing page. Recommended: 400x400px or larger."
-                    />
-                  </div>
-                  <div>
-                    <ImagePaste
-                      id="landingPageSecondaryLogo"
-                      label={
-                        <>
-                          Secondary Logo{" "}
-                          <span className="text-gray-400 text-sm font-normal">
-                            (optional)
-                          </span>
-                        </>
-                      }
-                      value={secondaryLogo || undefined}
-                      onChange={setSecondaryLogo}
-                      imageType="secondaryLogo"
-                      helpText="Secondary logo for footer and other areas. Recommended: 200x200px or larger."
-                    />
-                  </div>
-                  <div>
-                    <ImagePaste
-                      id="landingPageBanner"
-                      label={
-                        <>
-                          Banner Image{" "}
-                          <span className="text-gray-400 text-sm font-normal">
-                            (optional)
-                          </span>
-                        </>
-                      }
-                      value={banner || undefined}
-                      onChange={setBanner}
-                      imageType="banner"
-                      helpText="Large banner image for hero section. Recommended: 1200x400px or larger."
-                    />
-                  </div>
-                </div>
-              </Card>
+                        setIsSaving(true);
+                        setIsGenerating(true);
 
-              <Card>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold">Design & Colors</h2>
-                  {dexData && (
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      onClick={loadDexColors}
-                    >
-                      <div className="i-mdi:refresh h-4 w-4 mr-2"></div>
-                      Reset
-                    </Button>
-                  )}
-                </div>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Default Theme
-                    </label>
-                    <p className="text-xs text-gray-400 mb-2">
-                      The default theme for the landing page. Users can toggle
-                      between light and dark modes.
-                    </p>
-                    <select
-                      value={formData.theme}
-                      onChange={e =>
-                        handleInputChange(
-                          "theme",
-                          e.target.value as "light" | "dark"
-                        )
-                      }
-                      className="w-full p-3 bg-background-dark border border-gray-700 rounded-lg text-white focus:outline-none focus:border-primary"
-                    >
-                      <option value="light">Light</option>
-                      <option value="dark">Dark</option>
-                    </select>
-                  </div>
-
-                  <div className="border-t border-gray-700 pt-4">
-                    <label className="block text-sm font-medium mb-3">
-                      Color Palette
-                    </label>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">
-                          Primary Color
-                        </label>
-                        <input
-                          type="color"
-                          value={formData.primaryColor}
-                          onChange={e =>
-                            handleInputChange("primaryColor", e.target.value)
-                          }
-                          className="w-full h-10 bg-background-dark border border-gray-700 rounded-lg"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-2">
-                          Secondary Color
-                        </label>
-                        <input
-                          type="color"
-                          value={formData.secondaryColor}
-                          onChange={e =>
-                            handleInputChange("secondaryColor", e.target.value)
-                          }
-                          className="w-full h-10 bg-background-dark border border-gray-700 rounded-lg"
-                        />
-                      </div>
-                      {formData.primaryLight && (
-                        <div>
-                          <label className="block text-sm font-medium mb-2">
-                            Primary Light
-                          </label>
-                          <input
-                            type="color"
-                            value={formData.primaryLight}
-                            onChange={e =>
-                              handleInputChange("primaryLight", e.target.value)
-                            }
-                            className="w-full h-10 bg-background-dark border border-gray-700 rounded-lg"
-                          />
-                        </div>
-                      )}
-                      {formData.linkColor && (
-                        <div>
-                          <label className="block text-sm font-medium mb-2">
-                            Link Color
-                          </label>
-                          <input
-                            type="color"
-                            value={formData.linkColor}
-                            onChange={e =>
-                              handleInputChange("linkColor", e.target.value)
-                            }
-                            className="w-full h-10 bg-background-dark border border-gray-700 rounded-lg"
-                          />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Font Family
-                    </label>
-                    <select
-                      value={formData.fontFamily}
-                      onChange={e =>
-                        handleInputChange("fontFamily", e.target.value)
-                      }
-                      className="w-full p-3 bg-background-dark border border-gray-700 rounded-lg text-white focus:outline-none focus:border-primary"
-                      style={{ fontFamily: formData.fontFamily }}
-                    >
-                      {FONT_FAMILIES.map(font => (
-                        <option key={font.value} value={font.value}>
-                          {font.name} ({font.category})
-                        </option>
-                      ))}
-                    </select>
-                    <p className="text-xs text-gray-400 mt-1">
-                      Selected font:{" "}
-                      <span style={{ fontFamily: formData.fontFamily }}>
-                        ABC abc 123
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              </Card>
-
-              <Card>
-                <h2 className="text-lg font-bold mb-4">Supported Languages</h2>
-                <div className="space-y-4">
-                  <div className="mb-3">
-                    <p className="text-xs text-gray-400 mb-2">
-                      Select languages for your landing page. At least one
-                      language is required.
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                    {AVAILABLE_LANGUAGES.map(language => {
-                      const isSelected = formData.languages.includes(
-                        language.code
-                      );
-
-                      return (
-                        <button
-                          key={language.code}
-                          type="button"
-                          onClick={() => {
-                            const newLanguages = isSelected
-                              ? formData.languages.filter(
-                                  code => code !== language.code
+                        try {
+                          const preparedFormData = {
+                            ...formData,
+                            teamMembers: formData.teamMembers
+                              ? await prepareTeamMembersForSubmission(
+                                  formData.teamMembers
                                 )
-                              : [...formData.languages, language.code];
+                              : formData.teamMembers,
+                          };
 
-                            // Ensure at least one language is selected
-                            if (newLanguages.length === 0) {
-                              toast.error(
-                                "At least one language must be selected"
+                          const formDataToSend = createLandingPageFormData(
+                            preparedFormData,
+                            {
+                              primaryLogo,
+                              secondaryLogo,
+                              banner,
+                            }
+                          );
+
+                          const updateResult = await putFormData<{
+                            id: string;
+                          }>(
+                            `api/landing-page/${landingPageData.id}`,
+                            formDataToSend,
+                            token
+                          );
+
+                          if (updateResult) {
+                            const existingFiles = landingPageData.config
+                              ?.generatedFiles as GeneratedFile[] | undefined;
+                            const regenerateResult = await post<{
+                              landingPage: LandingPage;
+                            }>(
+                              `api/landing-page/${landingPageData.id}/regenerate`,
+                              {
+                                prompt: formData.aiDescription || "",
+                                existingFiles: existingFiles || [],
+                              },
+                              token
+                            );
+
+                            if (regenerateResult?.landingPage) {
+                              await refreshLandingPageData();
+                              if (
+                                regenerateResult.landingPage.config
+                                  ?.generatedFiles
+                              ) {
+                                const newFiles = regenerateResult.landingPage
+                                  .config.generatedFiles as GeneratedFile[];
+                                setCurrentGeneratedFiles(newFiles);
+                                const preview = combineGeneratedFilesToHtml(
+                                  newFiles,
+                                  regenerateResult.landingPage.config as Record<
+                                    string,
+                                    unknown
+                                  >,
+                                  teamMemberImageUrls,
+                                  brandingImageUrls
+                                );
+                                if (preview) {
+                                  setPreviewHtml(preview);
+                                }
+                              }
+                              toast.success(
+                                "Landing page regenerated successfully!"
                               );
+                              setEditMode(null);
+                            }
+                          }
+                        } catch (error) {
+                          console.error(
+                            "Error regenerating landing page:",
+                            error
+                          );
+                          toast.error("Failed to regenerate landing page");
+                        } finally {
+                          setIsSaving(false);
+                          setIsGenerating(false);
+                        }
+                      }
+                    : handleSubmit
+                }
+                className="space-y-6"
+                submitText={
+                  editMode === "modifyConfig"
+                    ? "Update & Regenerate"
+                    : landingPageData
+                      ? "Update Configuration"
+                      : "Create Landing Page"
+                }
+                isLoading={
+                  isSaving || (editMode === "modifyConfig" && isGenerating)
+                }
+                loadingText={
+                  editMode === "modifyConfig" ? "Regenerating..." : "Saving"
+                }
+                disabled={false}
+              >
+                {!landingPageData && formData.aiDescription && (
+                  <Card className="bg-primary/10 border border-primary/30">
+                    <div className="flex items-start gap-3 mb-4">
+                      <div className="i-mdi:lightbulb-on text-primary h-6 w-6 flex-shrink-0 mt-0.5"></div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-primary mb-1">
+                          Ready to Generate
+                        </h3>
+                        <p className="text-sm text-gray-300 mb-4">
+                          You can generate your landing page using the AI
+                          description you provided. Save the configuration
+                          first, then click generate.
+                        </p>
+                        <Button
+                          type="button"
+                          variant="primary"
+                          onClick={async () => {
+                            if (!token) {
+                              toast.error("Authentication required");
                               return;
                             }
 
-                            setFormData(prev => ({
-                              ...prev,
-                              languages: newLanguages,
-                            }));
-                          }}
-                          className={`
-                            flex items-center gap-2 p-2 rounded-lg border text-sm transition-all cursor-pointer
-                            ${
-                              isSelected
-                                ? "bg-primary/20 border-primary text-primary-light"
-                                : "bg-background-dark/50 border-light/10 text-gray-300 hover:border-light/20 hover:bg-background-dark/80"
-                            }
-                          `}
-                        >
-                          <span className="text-base">{language.flag}</span>
-                          <span className="flex-1 text-left truncate">
-                            {language.name}
-                          </span>
-                          {isSelected && (
-                            <div className="i-mdi:check h-4 w-4 text-primary-light flex-shrink-0"></div>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  {formData.languages.length === 0 && (
-                    <div className="text-center py-4 text-gray-400 text-sm mt-2">
-                      <div className="i-mdi:information-outline h-5 w-5 mx-auto mb-2"></div>
-                      No languages selected. At least one language is required.
-                    </div>
-                  )}
-                </div>
-              </Card>
+                            if (!landingPageData) {
+                              try {
+                                const preparedFormData = {
+                                  ...formData,
+                                  teamMembers: formData.teamMembers
+                                    ? await prepareTeamMembersForSubmission(
+                                        formData.teamMembers
+                                      )
+                                    : formData.teamMembers,
+                                };
 
-              <Card>
-                <h2 className="text-lg font-bold mb-4">SEO & Metadata</h2>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Meta Description
-                    </label>
-                    <p className="text-xs text-gray-400 mb-2">
-                      A brief description of your landing page for search
-                      engines (150-160 characters recommended). If left empty,
-                      the AI will generate one.
-                    </p>
-                    <textarea
-                      value={formData.metadata?.description || ""}
-                      onChange={e =>
-                        handleInputChange("metadata", {
-                          ...formData.metadata,
-                          description: e.target.value,
-                        })
-                      }
-                      placeholder="e.g., Trade cryptocurrencies with zero fees on our advanced DEX platform..."
-                      maxLength={300}
-                      className="w-full p-3 bg-background-dark border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary"
-                      rows={3}
-                    />
-                    <p className="text-xs text-gray-400 mt-1">
-                      {(formData.metadata?.description || "").length}/300
-                      characters
-                    </p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Meta Keywords
-                    </label>
-                    <p className="text-xs text-gray-400 mb-2">
-                      Comma-separated keywords for SEO (e.g., "DEX, trading,
-                      cryptocurrency, DeFi").
-                    </p>
-                    <input
-                      type="text"
-                      value={(formData.metadata?.keywords || []).join(", ")}
-                      onChange={e => {
-                        const keywords = e.target.value
-                          .split(",")
-                          .map(k => k.trim())
-                          .filter(k => k.length > 0);
-                        handleInputChange("metadata", {
-                          ...formData.metadata,
-                          keywords,
-                        });
-                      }}
-                      placeholder="DEX, trading, cryptocurrency, DeFi, blockchain"
-                      className="w-full p-3 bg-background-dark border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary"
-                    />
-                    <p className="text-xs text-gray-400 mt-1">
-                      {(formData.metadata?.keywords || []).length} keyword(s)
-                      added
-                    </p>
-                  </div>
-                </div>
-              </Card>
+                                const formDataToSend =
+                                  createLandingPageFormData(preparedFormData, {
+                                    primaryLogo,
+                                    secondaryLogo,
+                                    banner,
+                                  });
+                                const result = await postFormData<{
+                                  id: string;
+                                }>("api/landing-page", formDataToSend, token);
 
-              {/* Page Sections */}
-              <Card>
-                <h2 className="text-lg font-bold mb-4">Page Sections</h2>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Enable Sections
-                    </label>
-                    <p className="text-xs text-gray-400 mb-2">
-                      Select which sections to include on your landing page. The
-                      AI will generate appropriate content for each enabled
-                      section.
-                    </p>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                      {[
-                        { id: "hero", label: "Hero", icon: "i-mdi:home" },
-                        {
-                          id: "cta",
-                          label: "CTA",
-                          icon: "i-mdi:cursor-pointer",
-                        },
-                        {
-                          id: "about",
-                          label: "About",
-                          icon: "i-mdi:information",
-                        },
-                        {
-                          id: "features",
-                          label: "Features",
-                          icon: "i-mdi:star",
-                        },
-                        {
-                          id: "feeStructure",
-                          label: "Fee Structure",
-                          icon: "i-mdi:percent",
-                        },
-                        { id: "faq", label: "FAQ", icon: "i-mdi:help-circle" },
-                        {
-                          id: "team",
-                          label: "Team",
-                          icon: "i-mdi:account-multiple",
-                        },
-                        {
-                          id: "contact",
-                          label: "Contact",
-                          icon: "i-mdi:email",
-                        },
-                        {
-                          id: "socials",
-                          label: "Socials",
-                          icon: "i-mdi:share-variant",
-                        },
-                      ].map(section => {
-                        const isEnabled = (
-                          formData.enabledSections || []
-                        ).includes(section.id);
-                        const hasConfig = sectionsWithConfig.includes(
-                          section.id
-                        );
+                                if (result) {
+                                  await refreshLandingPageData();
+                                  if (result.id) {
+                                    setIsGenerating(true);
+                                    try {
+                                      const genResult = await post<{
+                                        landingPage: LandingPage;
+                                      }>(
+                                        `api/landing-page/${result.id}/generate`,
+                                        {
+                                          prompt: formData.aiDescription || "",
+                                        },
+                                        token
+                                      );
 
-                        return (
-                          <div
-                            key={section.id}
-                            className={`
-                              relative flex flex-col items-center gap-2 p-3 rounded-lg border text-sm transition-all
-                              ${
-                                isEnabled
-                                  ? "bg-primary/20 border-primary text-primary-light"
-                                  : "bg-background-dark/50 border-light/10 text-gray-300 hover:border-light/20 hover:bg-background-dark/80"
-                              }
-                            `}
-                          >
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const currentSections =
-                                  formData.enabledSections || [];
-                                const newSections = isEnabled
-                                  ? currentSections.filter(
-                                      s => s !== section.id
-                                    )
-                                  : [...currentSections, section.id];
-                                // Ensure at least hero is always enabled
-                                if (
-                                  section.id === "hero" &&
-                                  isEnabled &&
-                                  newSections.length === 0
-                                ) {
-                                  toast.error(
-                                    "Hero section must always be enabled"
-                                  );
-                                  return;
+                                      if (genResult && genResult.landingPage) {
+                                        await refreshLandingPageData();
+
+                                        if (
+                                          genResult.landingPage.config
+                                            ?.generatedFiles
+                                        ) {
+                                          const newFiles = genResult.landingPage
+                                            .config
+                                            .generatedFiles as GeneratedFile[];
+                                          setCurrentGeneratedFiles(newFiles);
+                                          const preview =
+                                            combineGeneratedFilesToHtml(
+                                              newFiles,
+                                              genResult.landingPage
+                                                .config as Record<
+                                                string,
+                                                unknown
+                                              >,
+                                              teamMemberImageUrls,
+                                              brandingImageUrls
+                                            );
+                                          if (preview) {
+                                            setPreviewHtml(preview);
+                                          }
+                                        }
+                                        toast.success(
+                                          "Landing page generated successfully!"
+                                        );
+                                      }
+                                    } catch (error) {
+                                      console.error(
+                                        "Error generating landing page:",
+                                        error
+                                      );
+                                      toast.error(
+                                        "Failed to generate landing page"
+                                      );
+                                    } finally {
+                                      setIsGenerating(false);
+                                    }
+                                  }
                                 }
-                                handleInputChange(
-                                  "enabledSections",
-                                  newSections
+                              } catch (error) {
+                                console.error(
+                                  "Error creating landing page:",
+                                  error
                                 );
-                                // Open config modal when enabling sections with config
-                                if (
-                                  !isEnabled &&
-                                  newSections.includes(section.id) &&
-                                  hasConfig
-                                ) {
-                                  setTimeout(() => {
-                                    openSectionConfig(section.id);
-                                  }, 100);
-                                }
-                              }}
-                              disabled={
-                                section.id === "hero" &&
-                                isEnabled &&
-                                (formData.enabledSections || []).length === 1
+                                toast.error(
+                                  "Failed to create landing page. Please try again."
+                                );
                               }
-                              className={`
-                                flex flex-col items-center gap-2 w-full cursor-pointer
-                                ${section.id === "hero" && isEnabled && (formData.enabledSections || []).length === 1 ? "opacity-50 cursor-not-allowed" : ""}
-                              `}
-                            >
-                              <div className={`${section.icon} h-6 w-6`}></div>
-                              <span>{section.label}</span>
-                              {isEnabled && (
-                                <div className="i-mdi:check h-4 w-4 text-primary-light"></div>
-                              )}
-                            </button>
-                            {isEnabled && hasConfig && (
-                              <button
-                                type="button"
-                                onClick={e => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  openSectionConfig(section.id);
-                                }}
-                                className="absolute top-2 right-2 p-1.5 rounded hover:bg-primary/30 text-gray-400 hover:text-primary-light transition-colors z-10"
-                                title="Configure section"
-                                onMouseDown={e => e.stopPropagation()}
-                              >
-                                <div className="i-mdi:cog h-4 w-4"></div>
-                              </button>
-                            )}
-                          </div>
-                        );
-                      })}
+                            }
+                          }}
+                          disabled={isGenerating || isSaving}
+                          className="w-full"
+                        >
+                          {isGenerating
+                            ? "Generating..."
+                            : "Generate Landing Page with AI"}
+                        </Button>
+                      </div>
                     </div>
-                    {(formData.enabledSections || []).length === 0 && (
-                      <p className="text-sm text-red-400 mt-2">
-                        Please select at least one section (Hero is required).
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </Card>
-            </Form>
+                  </Card>
+                )}
+                <LandingPageBasicInfoForm
+                  formData={formData}
+                  onInputChange={handleInputChange}
+                />
+
+                <LandingPageBrandingForm
+                  primaryLogo={primaryLogo}
+                  secondaryLogo={secondaryLogo}
+                  banner={banner}
+                  onPrimaryLogoChange={setPrimaryLogo}
+                  onSecondaryLogoChange={setSecondaryLogo}
+                  onBannerChange={setBanner}
+                  showResetButton={
+                    !!(
+                      dexData &&
+                      (dexData.primaryLogo ||
+                        dexData.secondaryLogo ||
+                        dexData.banner)
+                    )
+                  }
+                  onReset={loadDexImages}
+                />
+
+                <LandingPageDesignForm
+                  formData={formData}
+                  onInputChange={handleInputChange}
+                  showResetButton={!!dexData}
+                  onReset={loadDexColors}
+                />
+
+                <LandingPageLanguagesForm
+                  formData={formData}
+                  onLanguagesChange={languages =>
+                    setFormData(prev => ({ ...prev, languages }))
+                  }
+                />
+
+                <LandingPageMetadataForm
+                  formData={formData}
+                  onInputChange={handleInputChange}
+                />
+
+                <LandingPageSectionsForm
+                  formData={formData}
+                  onInputChange={handleInputChange}
+                  sectionsWithConfig={sectionsWithConfig}
+                  onOpenSectionConfig={openSectionConfig}
+                />
+              </Form>
+            </>
           )}
         </div>
 
         <div>
-          <Card>
-            <h2 className="text-lg font-bold mb-4">Preview</h2>
-            <div className="border border-gray-700 rounded-lg overflow-hidden">
-              {previewHtml ? (
-                <iframe
-                  srcDoc={previewHtml}
-                  className="w-full h-[600px] border-0"
-                  title="Landing Page Preview"
-                />
-              ) : (
-                <div className="w-full h-[600px] flex items-center justify-center bg-background-dark text-gray-400">
-                  <div className="text-center">
-                    <div className="i-mdi:eye-off h-12 w-12 mx-auto mb-4"></div>
-                    <p>No preview available</p>
-                    <p className="text-sm mt-2">
-                      {chatMode
-                        ? "Generate content to see preview"
-                        : "Save configuration and generate content to see preview"}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </Card>
+          <LandingPagePreviewPanel previewHtml={previewHtml} />
         </div>
       </div>
     </div>
