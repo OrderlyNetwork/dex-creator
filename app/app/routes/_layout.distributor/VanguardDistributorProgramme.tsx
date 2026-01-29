@@ -8,8 +8,8 @@ export function VanguardDistributorProgramme() {
         {/* Header Section */}
         <div className="flex gap-10 md:gap-16 items-start relative w-full">
           <div className="flex flex-col gap-3 md:gap-4 grow items-center">
-            <h1 className="font-semibold leading-[1.2] text-2xl md:text-4xl text-center bg-gradient-to-t from-white to-purple-300 px-4 bg-clip-text text-transparent">
-              Vanguard Distributor Program
+            <h1 className="font-semibold leading-[1.2] md:leading-[1.3] text-2xl md:text-4xl text-center bg-gradient-to-t from-white to-purple-300 px-4 bg-clip-text text-transparent">
+              Orderly Distributor Program
             </h1>
             <div className="flex flex-col gap-1 items-center w-full px-4">
               <p className="text-xs md:text-base leading-[1.5] text-base-contrast-54 text-center">
@@ -24,7 +24,7 @@ export function VanguardDistributorProgramme() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Vanguard ↗
+                  Distributor Program ↗
                 </a>
               </p>
             </div>

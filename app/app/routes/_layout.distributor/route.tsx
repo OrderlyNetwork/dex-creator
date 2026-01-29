@@ -12,7 +12,7 @@ import VanguardDashboard from "./vanguard/VanguardDashboard";
 import { MetaFunction } from "@remix-run/node";
 
 export const meta: MetaFunction = () => [
-  { title: "Vanguard Distributor Program - Orderly One" },
+  { title: "Orderly Distributor Program - Orderly One" },
   {
     name: "description",
     content:
