@@ -109,7 +109,7 @@ const OverviewUI: React.FC<OverviewUIProps> = ({
             precison: 2,
           })}
           showInfoIcon={true}
-          infoTooltip="Your total revenue share to date from the Vanguard distributor programme."
+          infoTooltip="Your total revenue share to date from the Orderly Distributor Program."
         />
         <Card
           title="My broker tier"
