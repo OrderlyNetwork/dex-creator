@@ -321,6 +321,48 @@ export function createDexFormData(
 }
 
 /**
+ * Helper function to create FormData for Landing Page requests with images
+ */
+export function createLandingPageFormData(
+  config: Record<string, any>,
+  images: {
+    primaryLogo?: Blob | null;
+    secondaryLogo?: Blob | null;
+    banner?: Blob | null;
+  } = {}
+): FormData {
+  const formData = new FormData();
+
+  Object.entries(config).forEach(([key, value]) => {
+    if (value !== null && value !== undefined) {
+      if (Array.isArray(value)) {
+        formData.append(key, JSON.stringify(value));
+      } else if (typeof value === "object") {
+        formData.append(key, JSON.stringify(value));
+      } else {
+        formData.append(key, String(value));
+      }
+    }
+  });
+
+  if (images.primaryLogo) {
+    formData.append("primaryLogo", images.primaryLogo, "primaryLogo.webp");
+  }
+  if (images.secondaryLogo) {
+    formData.append(
+      "secondaryLogo",
+      images.secondaryLogo,
+      "secondaryLogo.webp"
+    );
+  }
+  if (images.banner) {
+    formData.append("banner", images.banner, "banner.webp");
+  }
+
+  return formData;
+}
+
+/**
  * Shorthand for POST requests with form data (for image uploads)
  */
 export function postFormData<T = any>(

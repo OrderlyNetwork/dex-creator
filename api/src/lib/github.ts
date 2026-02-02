@@ -406,6 +406,243 @@ export async function forkTemplateRepository(
 }
 
 /**
+ * Creates an empty repository for a landing page
+ * @param repoIdentifier The identifier for the new repository
+ * @returns The URL of the created repository
+ */
+export async function createLandingPageRepository(
+  repoIdentifier: string
+): Promise<GitHubResult<string>> {
+  try {
+    if (!repoIdentifier || repoIdentifier.trim() === "") {
+      return {
+        success: false,
+        error: {
+          type: GitHubErrorType.REPOSITORY_NAME_EMPTY,
+          message: "Repository identifier cannot be empty",
+        },
+      };
+    }
+
+    if (!/^[a-z0-9-]+$/i.test(repoIdentifier)) {
+      return {
+        success: false,
+        error: {
+          type: GitHubErrorType.REPOSITORY_NAME_INVALID,
+          message:
+            "Repository identifier can only contain alphanumeric characters and hyphens",
+        },
+      };
+    }
+
+    if (repoIdentifier.length > 100) {
+      return {
+        success: false,
+        error: {
+          type: GitHubErrorType.REPOSITORY_NAME_TOO_LONG,
+          message:
+            "Repository identifier exceeds GitHub's maximum length of 100 characters",
+        },
+      };
+    }
+
+    const repoName = `landing-page-${repoIdentifier}`;
+    const orgName = "OrderlyNetworkDexCreator";
+
+    console.log(`Creating landing page repository ${orgName}/${repoName}...`);
+
+    const octokit = await getOctokit();
+    const response = await octokit.rest.repos.createInOrg({
+      org: orgName,
+      name: repoName,
+      private: false,
+      auto_init: false,
+    });
+
+    const repoUrl = response.data.html_url;
+    console.log(`Successfully created repository: ${repoUrl}`);
+
+    await enableRepositoryActions(orgName, repoName);
+
+    const deploymentToken = await getSecret("templatePat");
+    try {
+      await addSecretToRepository(
+        orgName,
+        repoName,
+        "TEMPLATE_PAT",
+        deploymentToken
+      );
+      console.log(`Added TEMPLATE_PAT secret to ${orgName}/${repoName}`);
+    } catch (secretError) {
+      console.error(
+        "Error adding GitHub Pages deployment token secret:",
+        secretError
+      );
+    }
+
+    try {
+      await enableGitHubPages(orgName, repoName);
+      console.log(`Enabled GitHub Pages for ${orgName}/${repoName}`);
+    } catch (pagesError) {
+      console.error("Error enabling GitHub Pages:", pagesError);
+    }
+
+    return {
+      success: true,
+      data: repoUrl,
+    };
+  } catch (error: unknown) {
+    console.error("Error creating landing page repository:", error);
+    return {
+      success: false,
+      error: handleGitHubError(error, "create landing page repository"),
+    };
+  }
+}
+
+/**
+ * Setup landing page repository with HTML content and GitHub Pages workflow
+ */
+export async function setupLandingPageRepository(
+  owner: string,
+  repo: string,
+  customDomain: string | null,
+  generatedFiles: Array<{ path: string; content: string }>,
+  config?: Record<string, unknown> | null
+): Promise<void> {
+  console.log(`Setting up landing page repository ${owner}/${repo}...`);
+
+  try {
+    const landingPageWorkflow = `name: Deploy Landing Page to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: \${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: \${{ secrets.TEMPLATE_PAT }}
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        with:
+          token: \${{ secrets.TEMPLATE_PAT }}
+          enablement: true
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "."
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4`;
+
+    const fileContents = new Map<string, string>();
+
+    for (const file of generatedFiles) {
+      if (!file.path.startsWith(".github/") && file.path !== "CNAME") {
+        fileContents.set(file.path, file.content);
+      }
+    }
+
+    fileContents.set(".github/workflows/deploy.yml", landingPageWorkflow);
+    if (customDomain) {
+      fileContents.set("CNAME", customDomain);
+    }
+
+    // Extract images from config and add them as binary files
+    const binaryFiles = new Map<string, Buffer>();
+    if (config) {
+      // Extract and convert base64 image data to Buffers
+      const imageMap: Array<{ configKey: string; path: string }> = [
+        { configKey: "primaryLogoData", path: "assets/primaryLogo.webp" },
+        { configKey: "secondaryLogoData", path: "assets/secondaryLogo.webp" },
+        { configKey: "bannerData", path: "assets/banner.webp" },
+      ];
+
+      for (const { configKey, path } of imageMap) {
+        const imageData = config[configKey];
+        if (imageData && typeof imageData === "string") {
+          try {
+            // Remove data URL prefix if present (data:image/webp;base64,...)
+            const base64Data = imageData.includes(",")
+              ? imageData.split(",")[1]
+              : imageData;
+            const buffer = Buffer.from(base64Data, "base64");
+            binaryFiles.set(path, buffer);
+            console.log(`Added image to binary files: ${path}`);
+          } catch (error) {
+            console.warn(`Failed to process image ${configKey}:`, error);
+          }
+        }
+      }
+
+      // Process team member images
+      const teamMembers = config.teamMembers as
+        | Array<{ imageData?: string; imagePath?: string }>
+        | undefined;
+      if (teamMembers && Array.isArray(teamMembers)) {
+        teamMembers.forEach((member, index) => {
+          if (member.imageData && typeof member.imageData === "string") {
+            try {
+              const base64Data = member.imageData.includes(",")
+                ? member.imageData.split(",")[1]
+                : member.imageData;
+              const buffer = Buffer.from(base64Data, "base64");
+              const path = `assets/team/member${index + 1}.webp`;
+              binaryFiles.set(path, buffer);
+              console.log(`Added team member image to binary files: ${path}`);
+            } catch (error) {
+              console.warn(
+                `Failed to process team member ${index + 1} image:`,
+                error
+              );
+            }
+          }
+        });
+      }
+    }
+
+    const filesToDelete: string[] = [];
+
+    await syncRepoContents(
+      owner,
+      repo,
+      fileContents,
+      binaryFiles,
+      filesToDelete,
+      "Update landing page files"
+    );
+  } catch (error) {
+    console.error(
+      `Error setting up landing page repository ${owner}/${repo}:`,
+      error
+    );
+    throw error;
+  }
+}
+
+/**
  * Enables GitHub Actions on a repository
  * This is necessary because GitHub disables Actions by default on forked repositories
  * that contain workflows
@@ -822,6 +1059,254 @@ async function createSingleCommit(
     ref: "heads/main",
     sha: newCommit.sha,
   });
+
+  console.log(`Successfully committed changes to ${owner}/${repo}`);
+}
+
+/**
+ * Create a single commit that cleans all existing files and adds new content
+ * This deletes all files except .github/ and CNAME, then adds all new files
+ */
+async function syncRepoContents(
+  owner: string,
+  repo: string,
+  fileContents: Map<string, string>,
+  binaryFiles: Map<string, Buffer> = new Map(),
+  filesToDelete: string[] = [],
+  commitMessage: string
+): Promise<void> {
+  console.log(`Creating commit with file cleanup for ${owner}/${repo}...`);
+  const octokit = await getOctokit();
+
+  // Get the latest commit SHA (if exists)
+  let baseCommitSha: string | null = null;
+  let isEmptyRepo = false;
+  try {
+    const { data: refData } = await octokit.rest.git.getRef({
+      owner,
+      repo,
+      ref: "heads/main",
+    });
+    baseCommitSha = refData.object.sha;
+  } catch (_error) {
+    console.log(
+      "No existing main branch, repository is empty - initializing with Contents API"
+    );
+    isEmptyRepo = true;
+  }
+
+  if (isEmptyRepo && (fileContents.size > 0 || binaryFiles.size > 0)) {
+    console.log(
+      "Repository is empty, initializing with first file then using Git API for single commit..."
+    );
+
+    let firstPath: string;
+    let firstContent: string | Buffer;
+
+    if (fileContents.has("index.html")) {
+      firstPath = "index.html";
+      firstContent = fileContents.get("index.html")!;
+    } else if (fileContents.size > 0) {
+      const firstEntry = fileContents.entries().next().value;
+      if (!firstEntry) {
+        throw new Error("No files to commit");
+      }
+      firstPath = firstEntry[0];
+      firstContent = firstEntry[1];
+    } else if (binaryFiles.size > 0) {
+      const firstEntry = binaryFiles.entries().next().value;
+      if (!firstEntry) {
+        throw new Error("No files to commit");
+      }
+      firstPath = firstEntry[0];
+      firstContent = firstEntry[1];
+    } else {
+      throw new Error("No files to commit");
+    }
+
+    try {
+      const initResponse = await octokit.rest.repos.createOrUpdateFileContents({
+        owner,
+        repo,
+        path: firstPath,
+        message: "Initial commit",
+        content: Buffer.isBuffer(firstContent)
+          ? firstContent.toString("base64")
+          : Buffer.from(firstContent).toString("base64"),
+        branch: "main",
+      });
+
+      if (initResponse.data.commit?.sha) {
+        baseCommitSha = initResponse.data.commit.sha;
+      } else {
+        const { data: refData } = await octokit.rest.git.getRef({
+          owner,
+          repo,
+          ref: "heads/main",
+        });
+        baseCommitSha = refData.object.sha;
+      }
+      console.log(
+        `Repository initialized with ${firstPath}, commit ${baseCommitSha}`
+      );
+    } catch (initError) {
+      console.error("Failed to initialize repository:", initError);
+      throw initError;
+    }
+  }
+
+  const allFilesToDelete: string[] = [...filesToDelete];
+
+  if (baseCommitSha) {
+    try {
+      const { data: commitData } = await octokit.rest.git.getCommit({
+        owner,
+        repo,
+        commit_sha: baseCommitSha,
+      });
+
+      const { data: treeData } = await octokit.rest.git.getTree({
+        owner,
+        repo,
+        tree_sha: commitData.tree.sha,
+        recursive: "1",
+      });
+
+      if (treeData.tree) {
+        for (const item of treeData.tree) {
+          if (item.type === "blob" && item.path) {
+            if (
+              !item.path.startsWith(".github/") &&
+              item.path !== "CNAME" &&
+              !fileContents.has(item.path) &&
+              !binaryFiles.has(item.path) &&
+              !filesToDelete.includes(item.path)
+            ) {
+              allFilesToDelete.push(item.path);
+              console.log(`Will delete: ${item.path}`);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.warn("Could not fetch existing files for cleanup:", error);
+    }
+  }
+
+  const verifiedFilesToDelete: string[] = [];
+  if (baseCommitSha) {
+    for (const filePath of allFilesToDelete) {
+      try {
+        await octokit.rest.repos.getContent({
+          owner,
+          repo,
+          path: filePath,
+          ref: "heads/main",
+        });
+        verifiedFilesToDelete.push(filePath);
+      } catch {
+        // File doesn't exist, skip
+      }
+    }
+  }
+
+  console.log("Creating blobs for text files...");
+  const textBlobPromises = Array.from(fileContents.entries()).map(
+    ([path, content]) =>
+      octokit.rest.git
+        .createBlob({
+          owner,
+          repo,
+          content: Buffer.from(content).toString("base64"),
+          encoding: "base64",
+        })
+        .then(response => ({ path, sha: response.data.sha }))
+  );
+
+  console.log("Creating blobs for binary files...");
+  const binaryBlobPromises = Array.from(binaryFiles.entries()).map(
+    ([path, buffer]) =>
+      octokit.rest.git
+        .createBlob({
+          owner,
+          repo,
+          content: buffer.toString("base64"),
+          encoding: "base64",
+        })
+        .then(response => ({ path, sha: response.data.sha }))
+  );
+
+  const textBlobs = await Promise.all(textBlobPromises);
+  const binaryBlobs = await Promise.all(binaryBlobPromises);
+
+  const treeEntries = [
+    ...textBlobs.map(({ path, sha }) => ({
+      path,
+      mode: "100644" as const,
+      type: "blob" as const,
+      sha,
+    })),
+    ...binaryBlobs.map(({ path, sha }) => ({
+      path,
+      mode: "100644" as const,
+      type: "blob" as const,
+      sha,
+    })),
+    ...verifiedFilesToDelete.map(path => ({
+      path,
+      mode: "100644" as const,
+      type: "blob" as const,
+      sha: null as unknown as string,
+    })),
+  ];
+
+  console.log("Creating git tree...");
+  const treeOptions: Parameters<typeof octokit.rest.git.createTree>[0] = {
+    owner,
+    repo,
+    tree: treeEntries,
+  };
+
+  if (baseCommitSha) {
+    treeOptions.base_tree = baseCommitSha;
+  }
+
+  const { data: newTree } = await octokit.rest.git.createTree(treeOptions);
+
+  console.log("Creating commit...");
+  const commitOptions: Parameters<typeof octokit.rest.git.createCommit>[0] = {
+    owner,
+    repo,
+    message: commitMessage,
+    tree: newTree.sha,
+  };
+
+  if (baseCommitSha) {
+    commitOptions.parents = [baseCommitSha];
+  }
+
+  const { data: newCommit } =
+    await octokit.rest.git.createCommit(commitOptions);
+
+  // Update or create ref
+  console.log("Updating branch reference...");
+  try {
+    await octokit.rest.git.updateRef({
+      owner,
+      repo,
+      ref: "heads/main",
+      sha: newCommit.sha,
+    });
+  } catch (_error) {
+    // Ref doesn't exist, create it
+    console.log("Main branch doesn't exist, creating it...");
+    await octokit.rest.git.createRef({
+      owner,
+      repo,
+      ref: "refs/heads/main",
+      sha: newCommit.sha,
+    });
+  }
 
   console.log(`Successfully committed changes to ${owner}/${repo}`);
 }

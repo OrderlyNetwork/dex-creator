@@ -29,6 +29,9 @@ model User {
   // User can have only one DEX
   dex Dex?
 
+  // User can have only one LandingPage
+  landingPage LandingPage?
+
   @@index([address])
 }
 
@@ -136,4 +139,21 @@ model BrokerIndex {
   
   @@index([brokerIndex])
   @@index([brokerId])
+}
+
+// LandingPage model for storing user landing page configurations
+model LandingPage {
+  id             String   @id @default(uuid())
+  userId         String   @unique
+  repoIdentifier String   @unique
+  repoUrl        String?
+  customDomain   String?
+  config         Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  // Relation to User
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

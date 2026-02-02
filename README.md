@@ -115,6 +115,28 @@ yarn api orderly:generate
 yarn api sv:generate
 ```
 
+#### Mastra PostgreSQL Database (For AI Memory/Storage)
+
+Mastra requires a separate PostgreSQL database for storing agent memory, conversation history, and workflow state. This keeps AI-related data isolated from your main application database.
+
+```bash
+# Start a PostgreSQL container for Mastra
+docker run --name dex-creator-agents \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_DB=mastra \
+  -p 54321:5432 \
+  -d postgres:16
+```
+
+Add the Mastra database connection string to your `api/.env` file:
+
+```bash
+MASTRA_DATABASE_URL=postgresql://postgres:postgres@localhost:54321/mastra?schema=mastra
+```
+
+Mastra will automatically create the necessary tables in the `mastra` schema when first used.
+
 #### Orderly MySQL Database (For Graduation Testing)
 
 For testing the DEX graduation system with Orderly database integration:
@@ -211,6 +233,7 @@ The application requires several environment variables for proper operation. Bel
 | `PORT` | API server port | 3001 | No |
 | `NODE_ENV` | Environment (development/production) | development | No |
 | `DATABASE_URL` | PostgreSQL connection string | - | Yes |
+| `MASTRA_DATABASE_URL` | PostgreSQL connection string for Mastra AI memory/storage | - | Yes |
 
 #### GitHub Integration
 
