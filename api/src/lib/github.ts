@@ -1419,6 +1419,70 @@ export async function triggerRedeployment(
 }
 
 /**
+ * Check if a template branch exists in the template repository
+ * @param octokit The authenticated Octokit instance
+ * @param branch The branch name to check
+ * @returns A boolean indicating whether the branch exists
+ */
+async function templateBranchExists(
+  octokit: Awaited<ReturnType<typeof getOctokit>>,
+  branch: string
+): Promise<boolean> {
+  try {
+    await octokit.rest.git.getRef({
+      owner: templateOwner,
+      repo: templateRepoName,
+      ref: `heads/${branch}`,
+    });
+    return true;
+  } catch (error) {
+    if (isRequestError(error) && error.status === 404) {
+      return false;
+    }
+
+    console.error(
+      `Error checking existence of template branch ${branch} in ${templateOwner}/${templateRepoName}:`,
+      error
+    );
+    throw error;
+  }
+}
+
+/**
+ * Resolve the appropriate template branch based on DEPLOYMENT_ENV with fallbacks
+ * @param octokit The authenticated Octokit instance
+ * @param deploymentEnv The deployment environment (e.g. qa, testnet, mainnet)
+ * @returns The name of the template branch to use
+ */
+async function resolveTemplateBranchForEnv(
+  octokit: Awaited<ReturnType<typeof getOctokit>>,
+  deploymentEnv?: string
+): Promise<string> {
+  const env = deploymentEnv ?? "mainnet";
+
+  if (env === "mainnet") {
+    // For mainnet we always use main; if it somehow doesn't exist, we let the error propagate
+    return "main";
+  }
+
+  const candidates =
+    env === "testnet"
+      ? ["testnet", "main"]
+      : // dev or qa
+        ["qa", "testnet", "main"];
+
+  for (const branch of candidates) {
+    const exists = await templateBranchExists(octokit, branch);
+    if (exists) {
+      return branch;
+    }
+  }
+
+  // Safety fallback – should not normally be hit, but preserves behavior
+  return "main";
+}
+
+/**
  * Invalidate the template updates cache for a specific repository
  * @param owner The repository owner (username or organization)
  * @param repo The repository name
@@ -1457,9 +1521,14 @@ export async function checkForTemplateUpdates(
   try {
     const octokit = await getOctokit();
 
-    // Determine branch based on DEPLOYMENT_ENV
+    // Determine branch based on DEPLOYMENT_ENV with fallbacks
     const deploymentEnv = process.env.DEPLOYMENT_ENV;
-    const templateBranch = deploymentEnv === "mainnet" ? "main" : "testnet";
+    const templateBranch = await resolveTemplateBranchForEnv(
+      octokit,
+      deploymentEnv
+    );
+
+    console.log("templateBranch", templateBranch);
 
     const [templateRef, userRef] = await Promise.all([
       octokit.rest.git.getRef({

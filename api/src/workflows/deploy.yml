@@ -81,11 +81,27 @@ jobs:
           git remote add upstream https://github.com/OrderlyNetworkDexCreator/dex-creator-template.git || true
           git fetch upstream
 
-          # Determine branch based on VITE_DEPLOYMENT_ENV
-          if [ "${{ vars.VITE_DEPLOYMENT_ENV }}" = "mainnet" ]; then
+          # Determine branch based on VITE_DEPLOYMENT_ENV (same rules as api template branch resolver)
+          DEPLOYMENT_ENV="${{ vars.VITE_DEPLOYMENT_ENV }}"
+          [ -z "$DEPLOYMENT_ENV" ] && DEPLOYMENT_ENV="main"
+
+          if [ "$DEPLOYMENT_ENV" = "mainnet" ]; then
             UPSTREAM_BRANCH="main"
+          elif [ "$DEPLOYMENT_ENV" = "testnet" ]; then
+            if git rev-parse --verify upstream/testnet >/dev/null 2>&1; then
+              UPSTREAM_BRANCH="testnet"
+            else
+              UPSTREAM_BRANCH="main"
+            fi
           else
-            UPSTREAM_BRANCH="testnet"
+            # qa, dev: prefer qa, then testnet, fallback to main
+            if git rev-parse --verify upstream/qa >/dev/null 2>&1; then
+              UPSTREAM_BRANCH="qa"
+            elif git rev-parse --verify upstream/testnet >/dev/null 2>&1; then
+              UPSTREAM_BRANCH="testnet"
+            else
+              UPSTREAM_BRANCH="main"
+            fi
           fi
 
           BEFORE_MERGE=$(git rev-parse HEAD)
