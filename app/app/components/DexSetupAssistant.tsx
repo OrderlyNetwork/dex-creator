@@ -94,8 +94,6 @@ export default function DexSetupAssistant({
   const handleNextStep = async (step: number, skip?: boolean) => {
     const currentStepConfig = dexSections.find(s => s.id === step);
 
-    console.log("handleNextStep", currentStepConfig);
-
     if (
       currentStepConfig &&
       currentStepConfig.key === DEX_SECTION_KEYS.DistributorCode &&

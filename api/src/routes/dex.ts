@@ -290,6 +290,7 @@ dexRoutes.put(
 
       if (
         existingDex &&
+        formData.analyticsScript &&
         !(existingDex.customDomain || existingDex.customDomainOverride)
       ) {
         return c.json(
@@ -297,7 +298,7 @@ dexRoutes.put(
             error:
               "Analytics script cannot be enabled: custom domain is not configured. Please set a custom domain first.",
           },
-          { status: 500 }
+          { status: 400 }
         );
       }
 
