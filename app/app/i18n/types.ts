@@ -1,0 +1,33 @@
+import "i18next";
+import { defaultNS, LocaleEnum } from "./constant";
+import { en } from "./module";
+
+export type LocaleCode = keyof typeof LocaleEnum | (string & {});
+
+type EnType = typeof en;
+
+// need to use interface to support extending the LocaleMessages type in other packages
+export interface LocaleMessages extends EnType {}
+
+export type Resources<T extends {} = {}> = {
+  [key in LocaleCode]?: Partial<LocaleMessages & T>;
+};
+
+// https://www.i18next.com/overview/typescript#create-a-declaration-file
+// Enhance the input parameter intelliSense for the t function.
+declare module "i18next" {
+  interface CustomTypeOptions {
+    // custom namespace type, if you changed it
+    // defaultNS: "translation";
+
+    // custom resources type
+    resources: {
+      [defaultNS]: LocaleMessages;
+    };
+  }
+}
+
+export type Language = {
+  localCode: LocaleCode;
+  displayName: string;
+};
