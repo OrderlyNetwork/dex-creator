@@ -5,6 +5,7 @@ import {
   defaultNS,
   i18nCookieKey,
   i18nLocalStorageKey,
+  LocaleEnum,
 } from "./constant";
 import { en } from "./module";
 import resourcesToBackend from "i18next-resources-to-backend";
@@ -30,9 +31,9 @@ const i18n = createInstance({
 })
   .use(
     resourcesToBackend((lng: string, ns: string) => {
-      // if (lng === "en") {
-      //   return en;
-      // }
+      if (lng === LocaleEnum.en) {
+        return Promise.resolve({ default: en });
+      }
       return import(`./locales/${lng}.json`);
     })
   )

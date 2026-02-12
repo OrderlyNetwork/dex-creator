@@ -4,6 +4,7 @@ import { Card } from "../components/Card";
 import { useAuth } from "../context/useAuth";
 import { Outlet, useNavigate } from "@remix-run/react";
 import { useAppKit } from "@reown/appkit/react";
+import { useTranslation } from "~/i18n";
 
 export const meta: MetaFunction = () => [
   { title: "Orderly One | No-Code Perp DEX Launcher" },
@@ -17,6 +18,7 @@ export default function Index() {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const appKit = useAppKit();
+  const { t } = useTranslation();
 
   const handleStartBuilding = () => {
     if (isAuthenticated) {
@@ -52,20 +54,18 @@ export default function Index() {
         {/* Content */}
         <div className="relative z-10">
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-semibold mb-6 max-w-5xl leading-tight text-white">
-            The First No-Code Perp DEX Launcher
+            {t("home.hero.title")}
           </h1>
           <p className="text-xl text-white/80 max-w-3xl mb-12 leading-relaxed mxa">
-            Launch a fully-featured Omnichain perpetuals exchange in minutes.
-            Deep liquidity, 140+ assets, and support for 17+ major chains in
-            minutes.
+            {t("home.hero.description")}
           </p>
 
           <div className="flex gap-4 flex-wrap justify-center">
             <Button variant="primary" size="lg" onClick={handleStartBuilding}>
-              Start Building
+              {t("home.hero.startBuilding")}
             </Button>
             <Button variant="secondary" size="lg" as="a" href="/board">
-              View Board
+              {t("home.hero.viewBoard")}
             </Button>
           </div>
         </div>
@@ -82,7 +82,7 @@ export default function Index() {
                 preload="metadata"
               >
                 <source src="/promo.webm" type="video/webm" />
-                Your browser does not support the video tag.
+                {t("home.video.fallback")}
               </video>
             </div>
           </div>
@@ -95,7 +95,9 @@ export default function Index() {
               <div className="text-6xl md:text-7xl font-semibold bg-gradient-to-t from-white to-purple-300 bg-clip-text text-transparent mb-2">
                 700K+
               </div>
-              <div className="text-xl text-white font-semibold">TRADERS</div>
+              <div className="text-xl text-white font-semibold">
+                {t("home.stats.traders")}
+              </div>
             </div>
 
             <div className="w-full md:hidden min-h-px bg-gray-400"></div>
@@ -106,7 +108,7 @@ export default function Index() {
                 55+
               </div>
               <div className="text-xl text-white font-semibold">
-                TRUSTED PARTNERS
+                {t("home.stats.trustedPartners")}
               </div>
             </div>
 
@@ -118,7 +120,7 @@ export default function Index() {
                 $110B+
               </div>
               <div className="text-xl text-white font-semibold">
-                CUMULATIVE TRADING VOLUME
+                {t("home.stats.cumulativeVolume")}
               </div>
             </div>
           </div>
@@ -130,12 +132,10 @@ export default function Index() {
 
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-semibold mb-6 text-white">
-              Own the exchange
+              {t("home.ownExchange.title")}
             </h2>
             <p className="text-lg text-white/80 max-w-2xl mx-auto leading-relaxed">
-              Welcome to Orderly One, your no-code AI builder to launch a perp
-              DEX in minutes. 15+ chains, 110+ assets, up to 100x leverage. Your
-              brand, your community, your DEX.
+              {t("home.ownExchange.description")}
             </p>
           </div>
 
@@ -149,11 +149,10 @@ export default function Index() {
                 />
               </div>
               <h3 className="text-2xl font-semibold text-white mb-4">
-                New Revenue Streams
+                {t("home.ownExchange.newRevenue.title")}
               </h3>
               <p className="text-white/80">
-                Trading fees can be earned or shared with your community,
-                instead of making the exchanges rich.
+                {t("home.ownExchange.newRevenue.description")}
               </p>
             </Card>
 
@@ -166,11 +165,10 @@ export default function Index() {
                 />
               </div>
               <h3 className="text-2xl font-semibold text-white mb-4">
-                Showcase Your Brand
+                {t("home.ownExchange.showcaseBrand.title")}
               </h3>
               <p className="text-white/80">
-                AI agents generate a custom theme for you, use your own logos,
-                fonts, and colour scheme.
+                {t("home.ownExchange.showcaseBrand.description")}
               </p>
             </Card>
 
@@ -183,11 +181,10 @@ export default function Index() {
                 />
               </div>
               <h3 className="text-2xl font-semibold text-white mb-4">
-                Any Wallet, Any Chain
+                {t("home.ownExchange.anyWallet.title")}
               </h3>
               <p className="text-white/80">
-                An omnichain shared order book lets users access the way your
-                community prefers.
+                {t("home.ownExchange.anyWallet.description")}
               </p>
             </Card>
           </div>
@@ -197,18 +194,17 @@ export default function Index() {
           <div className="grid lg:grid-cols-2 gap-16 items-start max-w-6xl mx-auto">
             <div>
               <h2 className="text-4xl md:text-5xl font-semibold mb-6 text-white">
-                Built on Battle-Tested Infra
+                {t("home.infra.title")}
               </h2>
               <p className="text-lg text-white/80 mb-8 leading-relaxed">
-                Orderly’s SDK powers the DEXs deployed by WOO, Raydium,
-                Quickswap, and other established DeFi powerhouses.
+                {t("home.infra.description")}
               </p>
               <Button
                 variant="secondary"
                 size="lg"
                 onClick={handleStartBuilding}
               >
-                Start Building
+                {t("home.hero.startBuilding")}
               </Button>
             </div>
 
@@ -223,11 +219,10 @@ export default function Index() {
                 </div>
                 <div>
                   <h3 className="text-2xl font-semibold bg-gradient-to-r from-white to-purple-400 bg-clip-text text-transparent mb-2 w-fit">
-                    Best-In-Class Liquidity
+                    {t("home.infra.bestLiquidity.title")}
                   </h3>
                   <p className="text-white/80">
-                    Shared orderbooks are maintained by top institutional market
-                    makers, traders, and retail users all over the globe.
+                    {t("home.infra.bestLiquidity.description")}
                   </p>
                 </div>
               </div>
@@ -242,11 +237,10 @@ export default function Index() {
                 </div>
                 <div>
                   <h3 className="text-2xl font-semibold bg-gradient-to-r from-white to-purple-400 bg-clip-text text-transparent mb-2 w-fit">
-                    Professional-Grade Security
+                    {t("home.infra.security.title")}
                   </h3>
                   <p className="text-white/80">
-                    We work with renowned auditing and cybersecurity firms to
-                    protect smart contracts with 24/7 monitoring.
+                    {t("home.infra.security.description")}
                   </p>
                 </div>
               </div>
@@ -261,12 +255,10 @@ export default function Index() {
                 </div>
                 <div>
                   <h3 className="text-2xl font-semibold bg-gradient-to-r from-white to-purple-400 bg-clip-text text-transparent mb-2 w-fit">
-                    CeFi-Grade Performance
+                    {t("home.infra.cefiPerformance.title")}
                   </h3>
                   <p className="text-white/80">
-                    &lt;200ms latency for high-frequency trading, with
-                    self-custody, onchain orders, full transparency, and all the
-                    other benefits of DeFi.
+                    {t("home.infra.cefiPerformance.description")}
                   </p>
                 </div>
               </div>
@@ -277,7 +269,7 @@ export default function Index() {
         {/* Orderly One is for... Section */}
         <section className="section-container relative">
           <h2 className="text-4xl md:text-5xl font-semibold text-center mb-16 text-white">
-            Orderly One is for...
+            {t("home.forSection.title")}
           </h2>
           <div
             className="absolute w-200 h-230 top--2 right-0 pointer-events-none blur-sm"
@@ -302,12 +294,10 @@ export default function Index() {
                 </div>
                 <div className="flex-1 min-w-64">
                   <h3 className="text-2xl font-semibold text-white mb-4 leading-tight break-words">
-                    Trading Communities
+                    {t("home.forSection.tradingCommunities.title")}
                   </h3>
                   <p className="text-white/80 leading-relaxed">
-                    Stop shilling ref-links: Launch your own DEX and capture
-                    100% of your community's trading fees. Set your own fee
-                    structure—premium rates for profit or zero fees for loyalty.
+                    {t("home.forSection.tradingCommunities.description")}
                   </p>
                 </div>
               </div>
@@ -325,12 +315,10 @@ export default function Index() {
                 </div>
                 <div className="flex-1 min-w-64">
                   <h3 className="text-2xl font-semibold text-white mb-4 leading-tight break-words">
-                    Meme Projects
+                    {t("home.forSection.memeProjects.title")}
                   </h3>
                   <p className="text-white/80 leading-relaxed">
-                    Give your meme token real utility. Launch a community perp
-                    dex, use trading fees for token buybacks, and reward your
-                    holders with better trading terms. Turn hype into revenue.
+                    {t("home.forSection.memeProjects.description")}
                   </p>
                 </div>
               </div>
@@ -348,12 +336,10 @@ export default function Index() {
                 </div>
                 <div className="flex-1 min-w-64">
                   <h3 className="text-2xl font-semibold text-white mb-4 leading-tight break-words">
-                    DeFi Protocols
+                    {t("home.forSection.defiProtocols.title")}
                   </h3>
                   <p className="text-white/80 leading-relaxed">
-                    Add perpetuals to your protocol without months of
-                    development. White-label deployment in minutes—your brand,
-                    your fees, institutional-grade trading infrastructure.
+                    {t("home.forSection.defiProtocols.description")}
                   </p>
                 </div>
               </div>
@@ -371,12 +357,10 @@ export default function Index() {
                 </div>
                 <div className="flex-1 min-w-64">
                   <h3 className="text-2xl font-semibold text-white mb-4 leading-tight break-words">
-                    Everyone
+                    {t("home.forSection.everyone.title")}
                   </h3>
                   <p className="text-white/80 leading-relaxed">
-                    Why trade on someone else's exchange? Launch your own DEX in
-                    minutes. Set your fees, customize the experience, trade
-                    without limits. Your exchange, your rules.
+                    {t("home.forSection.everyone.description")}
                   </p>
                 </div>
               </div>
