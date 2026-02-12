@@ -2,6 +2,7 @@ import type { MetaFunction } from "@remix-run/node";
 import { useState } from "react";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
+import { i18n, useTranslation } from "~/i18n";
 
 export const meta: MetaFunction = () => [
   { title: "Case Studies | Orderly One" },
@@ -11,97 +12,104 @@ const caseStudies = [
   {
     id: "aden",
     name: "ADEN",
-    description:
-      "Aden, created by INBUM, the biggest Korean streamer with thousands of followers, saw a huge opportunity to keep his trading community’s activity within his own ecosystem. His community already generates over $50B in monthly trading volume on Gate and Bitget, so instead of directing that volume to third-party platforms, INBUM launched Aden, a fully branded perp DEX built with Orderly One’s no-code solution.",
+    description: i18n.t("caseStudies.aden.description"),
     image: "/aden.webp",
     dexUrl: "https://aden.io",
     socialUrl: "https://x.com/aden",
     stats: [
-      { value: "$45B+", label: "TOTAL TRADING VOLUME" },
-      { value: "2K+", label: "DAILY ACTIVE USERS" },
-      { value: "#2", label: "RANKING ON CMC" },
+      { value: "$45B+", label: i18n.t("caseStudies.stats.totalTradingVolume") },
+      { value: "2K+", label: i18n.t("caseStudies.stats.dailyActiveUsers") },
+      { value: "#2", label: i18n.t("caseStudies.stats.rankingOnCMC") },
     ],
     treasuryFeatures: [
       {
         type: "paragraph",
-        title: "How Aden Turns Trading into Community Value",
-        description:
-          "With Aden, INBUM set his own fees, branding, and user experience while eliminating the middleman. This move also gave his BGSC token new utility, as revenue from the DEX will be used for buybacks and burns, directly benefiting token holders.",
-        description2:
-          "Through this DEX, Aden is building a self-sustaining ecosystem while giving his community a familiar trading environment they can trust, all under his own brand, Aden. Aden currently plays a key role within the Orderly ecosystem, responsible for the highest trading volume.",
+        title: i18n.t("caseStudies.aden.treasury.title"),
+        description: i18n.t("caseStudies.aden.treasury.paragraph1"),
+        description2: i18n.t("caseStudies.aden.treasury.paragraph2"),
       },
     ],
   },
   {
     id: "noot",
     name: "NOOT",
-    description:
-      "NOOT, the first CTO memecoin on Abstract, quickly identified the need to bring real utility beyond just memes. They launched Nootrade.xyz, a custom perp DEX built using Orderly One's no-code solution, providing their community with a platform to trade perps within their own ecosystem.",
+    description: i18n.t("caseStudies.noot.description"),
     image: "/noot.webp",
     dexUrl: "https://nootrade.xyz",
     socialUrl: "https://x.com/nootonabstract",
     stats: [
-      { value: "$10M+", label: "TOTAL TRADING VOLUME" },
-      { value: "$4K+", label: "REVENUE GENERATED FOR NOOT TREASURY" },
-      { value: "815+", label: "UNIQUE TRADERS" },
+      { value: "$10M+", label: i18n.t("caseStudies.stats.totalTradingVolume") },
+      {
+        value: "$4K+",
+        label: i18n.t("caseStudies.noot.stats.revenueGeneratedForTreasury"),
+      },
+      { value: "815+", label: i18n.t("caseStudies.noot.stats.uniqueTraders") },
     ],
     treasuryFeatures: [
       {
         icon: "mdi:fire",
-        title: "Token Buybacks & Burns",
-        description:
-          "Regularly repurchasing $NOOT tokens from the market and permanently removing them from circulation to create scarcity and strengthen long-term value.",
+        title: i18n.t("caseStudies.noot.treasury.tokenBuybacks.title"),
+        description: i18n.t(
+          "caseStudies.noot.treasury.tokenBuybacks.description"
+        ),
       },
       {
         icon: "mdi:account-group",
-        title: "Community Growth Campaigns",
-        description:
-          "Running targeted marketing campaigns and hosting engaging trading competitions to attract new users, boost participation, and increase brand visibility.",
+        title: i18n.t("caseStudies.noot.treasury.communityGrowth.title"),
+        description: i18n.t(
+          "caseStudies.noot.treasury.communityGrowth.description"
+        ),
       },
       {
         icon: "mdi:currency-usd",
-        title: "Funding for Future CEX Listings",
-        description:
-          "Allocating resources to secure listings on major centralized exchanges, expanding market access and improving token liquidity.",
+        title: i18n.t("caseStudies.noot.treasury.cexListings.title"),
+        description: i18n.t(
+          "caseStudies.noot.treasury.cexListings.description"
+        ),
       },
     ],
   },
   {
     id: "lol",
     name: "LOL",
-    description:
-      "LOL DEX was built to give tangible utility to the LOL token, a CTO meme on Solana. Using Orderly One’s no-code solution, the team spun up a branded perps DEX so their community can trade perps inside the LOL ecosystem while the project captures a share of fees for its own growth.",
+    description: i18n.t("caseStudies.lol.description"),
     image: "/lol.webp",
     dexUrl: "https://www.loldex.lol/",
     socialUrl: "https://x.com/lolctolol",
     stats: [
-      { value: "$30M+", label: "TOTAL TRADING VOLUME" },
-      { value: "$9K+", label: "REVENUE USED TO LOL BUYBACKS" },
+      { value: "$30M+", label: i18n.t("caseStudies.stats.totalTradingVolume") },
+      {
+        value: "$9K+",
+        label: i18n.t("caseStudies.lol.stats.revenueUsedForBuybacks"),
+      },
     ],
     treasuryFeatures: [
       {
         icon: "mdi:fire",
-        title: "Token Buybacks & Burns",
-        description:
-          "Regularly repurchasing $LOL tokens from the market and permanently removing them from circulation to create scarcity and strengthen long-term value.",
+        title: i18n.t("caseStudies.lol.treasury.tokenBuybacks.title"),
+        description: i18n.t(
+          "caseStudies.lol.treasury.tokenBuybacks.description"
+        ),
       },
       {
         icon: "mdi:account-group",
-        title: "Community Growth Campaigns",
-        description:
-          "Running targeted marketing campaigns and hosting engaging trading competitions to attract new users, boost participation, and increase brand visibility.",
+        title: i18n.t("caseStudies.lol.treasury.communityGrowth.title"),
+        description: i18n.t(
+          "caseStudies.lol.treasury.communityGrowth.description"
+        ),
       },
       {
         icon: "mdi:currency-usd",
-        title: "Funding for Future CEX Listings",
-        description:
-          "Allocating resources to secure listings on major centralized exchanges, expanding market access and improving token liquidity.",
+        title: i18n.t("caseStudies.lol.treasury.cexListings.title"),
+        description: i18n.t("caseStudies.lol.treasury.cexListings.description"),
       },
     ],
   },
 ];
 
 export default function CaseStudies() {
+  const { t } = useTranslation();
+
   const [activeTab, setActiveTab] = useState("aden");
 
   const activeCaseStudy = caseStudies.find(study => study.id === activeTab);
@@ -130,12 +138,10 @@ export default function CaseStudies() {
           {/* Content */}
           <div className="relative z-10">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 max-w-5xl leading-tight text-white">
-              Case Studies
+              {t("caseStudies.title")}
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mb-12 leading-relaxed mx-auto">
-              See how communities and creators use Orderly One's no-code
-              solution to build branded perp DEXs and turn trading fees into
-              growth and utility.
+              {t("caseStudies.subtitle")}
             </p>
 
             <div className="flex justify-center">
@@ -178,7 +184,7 @@ export default function CaseStudies() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Visit DEX
+                        {t("caseStudies.buttons.visitDex")}
                       </Button>
                       <Button
                         variant="secondary"
@@ -187,7 +193,7 @@ export default function CaseStudies() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Discover Their X
+                        {t("caseStudies.buttons.discoverX")}
                       </Button>
                     </div>
 
@@ -234,8 +240,7 @@ export default function CaseStudies() {
 
                 {activeCaseStudy.id !== "aden" && (
                   <p className="text-sm text-white/60">
-                    *All figures are based on the first two months following the
-                    DEX's launch.
+                    {t("caseStudies.note.firstTwoMonths")}
                   </p>
                 )}
               </div>
@@ -268,7 +273,7 @@ export default function CaseStudies() {
                 <div className="grid lg:grid-cols-2 gap-16 items-start max-w-6xl mx-auto">
                   <div>
                     <h3 className="text-4xl md:text-5xl font-bold text-white mb-8">
-                      Trading fees fund a self-sustaining treasury for:
+                      {t("caseStudies.treasury.sectionHeading")}
                     </h3>
                   </div>
 
