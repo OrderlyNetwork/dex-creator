@@ -10,6 +10,7 @@ import { PointCampaign, PointCampaignFormType } from "~/types/points";
 import { usePointsStages } from "./hooks/usePointsService";
 import { useDex } from "~/context/DexContext";
 import { useDeleteStages } from "./hooks/useDeleteStages";
+import { useTranslation } from "~/i18n";
 
 export const meta: MetaFunction = () => [
   { title: "Create point system - Orderly one" },
@@ -21,6 +22,7 @@ export const meta: MetaFunction = () => [
 ];
 
 export default function PointsRoute() {
+  const { t } = useTranslation();
   const [type, setType] = useState<PointCampaignFormType | null>(null);
   const [currentPoints, setCurrentPoints] = useState<PointCampaign | null>(
     null
@@ -94,7 +96,7 @@ export default function PointsRoute() {
         <BackDexDashboard />
 
         <h1 className="text-lg md:text-2xl font-bold gradient-text">
-          Point Campaign Setup
+          {t("points.page.title")}
         </h1>
 
         <OrderlyKeyAuthGrard className="mt-10">

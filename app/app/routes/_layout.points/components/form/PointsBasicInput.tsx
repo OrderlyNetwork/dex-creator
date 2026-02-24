@@ -9,6 +9,7 @@ import { FormLabel } from "../FormLabel";
 import { Tooltip } from "~/components/tooltip";
 import { TooltipIcon } from "~/icons/TooltipIcon";
 import { Switch } from "~/components/switch";
+import { useTranslation } from "~/i18n";
 
 type PointsBasicInputProps = {
   values: PointCampaignFormValues;
@@ -34,18 +35,20 @@ export function PointsBasicInput(props: PointsBasicInputProps) {
     minStartTime,
   } = props;
 
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-base font-semibold text-base-contrast-80 leading-6 tracking-[0.48px]">
-        Basic information
+        {t("points.basic.title")}
       </h2>
 
       {/* Campaign Title and Stages row */}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="flex-1">
           <PointFormInput
-            label="Campaign Title"
-            placeholder="Name your campaign title"
+            label={t("points.basic.campaignTitle.label")}
+            placeholder={t("points.basic.campaignTitle.placeholder")}
             value={values.stage_name}
             onChange={e => setValue("stage_name", e.target.value)}
             disabled={readonly}
@@ -55,8 +58,8 @@ export function PointsBasicInput(props: PointsBasicInputProps) {
         </div>
         <div className="flex-1">
           <PointFormInput
-            label="Stages"
-            tooltip="This default number will increase as more campaigns are created. The stage is mainly used to help organize and track data in the future."
+            label={t("points.basic.stages.label")}
+            tooltip={t("points.basic.stages.tooltip")}
             value={stages?.toString() || ""}
             disabled
           />
@@ -66,8 +69,8 @@ export function PointsBasicInput(props: PointsBasicInputProps) {
       {/* Description */}
       <div>
         <PointFormInput
-          label="Description"
-          placeholder="Description..."
+          label={t("points.basic.description.label")}
+          placeholder={t("points.basic.description.placeholder")}
           type="textarea"
           value={values.stage_description}
           onChange={e => setValue("stage_description", e.target.value)}
@@ -93,7 +96,7 @@ export function PointsBasicInput(props: PointsBasicInputProps) {
                   : "border-transparent",
                 disabledStartDate && "pointer-events-none"
               )}
-              placeholder="Select a date"
+              placeholder={t("points.basic.startDate.placeholder")}
             />
             {errors.start_date ? (
               <div className="flex items-center gap-1 mt-1 pl-1">
@@ -106,7 +109,7 @@ export function PointsBasicInput(props: PointsBasicInputProps) {
               <div className="flex items-center gap-1 mt-1 pl-1">
                 <div className="w-1 h-1 rounded-full bg-base-contrast-54"></div>
                 <p className="text-xs text-base-contrast-54 leading-[18px] tracking-[0.36px]">
-                  Starts at 00:00:00 UTC
+                  {t("points.basic.startDate.help")}
                 </p>
               </div>
             )}
@@ -115,19 +118,22 @@ export function PointsBasicInput(props: PointsBasicInputProps) {
         <div className="flex-1">
           <div className={cn(readonly && "cursor-not-allowed")}>
             <div className="flex items-center justify-between gap-1 mb-1 md:mb-2 flex-wrap">
-              <FormLabel label="End Date (UTC)" className="mb-0 md:mb-0" />
+              <FormLabel
+                label={t("points.basic.endDate.label")}
+                className="mb-0 md:mb-0"
+              />
               <div className="flex items-center gap-1">
                 <Tooltip
                   delayDuration={300}
                   align="center"
                   sideOffset={4}
                   className="max-w-[276px]"
-                  content="You can leave the end time unset for now. Before creating a new campaign, please set the end date for the current one."
+                  content={t("points.basic.endDate.tooltip")}
                 >
                   <TooltipIcon />
                 </Tooltip>
                 <span className="text-xs font-semibold text-base-contrast-54 whitespace-nowrap">
-                  Recurring
+                  {t("points.basic.endDate.recurring")}
                 </span>
                 <Switch
                   checked={values.is_continuous}
@@ -139,7 +145,7 @@ export function PointsBasicInput(props: PointsBasicInputProps) {
 
             {values.is_continuous ? (
               <PointFormInput
-                value={"Recurring"}
+                value={t("points.basic.endDate.recurring")}
                 classNames={{ root: "mb-0" }}
                 disabled
               />
@@ -155,7 +161,7 @@ export function PointsBasicInput(props: PointsBasicInputProps) {
                     : "border-transparent",
                   readonly && "pointer-events-none"
                 )}
-                placeholder="Select a date"
+                placeholder={t("points.basic.endDate.placeholder")}
               />
             )}
             {!values.is_continuous && (
@@ -171,7 +177,7 @@ export function PointsBasicInput(props: PointsBasicInputProps) {
                   <div className="flex items-center gap-1 mt-1 pl-1">
                     <div className="w-1 h-1 rounded-full bg-base-contrast-54"></div>
                     <p className="text-xs text-base-contrast-54 leading-[18px] tracking-[0.36px]">
-                      Ends at 23:59:59 UTC
+                      {t("points.basic.endDate.help")}
                     </p>
                   </div>
                 )}

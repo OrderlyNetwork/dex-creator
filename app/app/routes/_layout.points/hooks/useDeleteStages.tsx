@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import { modal } from "@orderly.network/ui";
 import { useDeletePointsStage } from "./usePointsService";
+import { i18n } from "~/i18n";
 
 type UseDeleteStagesProps = {
   stage_id?: number;
@@ -16,30 +17,31 @@ export function useDeleteStages(props: UseDeleteStagesProps) {
       if (res.success) {
         toast.success(
           <div>
-            Campaign deleted
+            {i18n.t("points.delete.toast.title")}
             <div className="text-[13px] text-base-contrast-54">
-              The campaign has been successfully removed.
+              {i18n.t("points.delete.toast.description")}
             </div>
           </div>
         );
         props.onSuccess();
       } else {
-        toast.error(res?.message || "Campaign delete failed");
+        toast.error(
+          res?.message || i18n.t("points.delete.toast.error")
+        );
       }
     } catch (err: any) {
       console.error("Error deleting campaign:", err);
-      toast.error(err?.message || "Campaign delete failed");
+      toast.error(err?.message || i18n.t("points.delete.toast.error"));
     }
   };
 
   const onDelete = () => {
     modal.confirm({
-      title: "Delete Campaign?",
-      okLabel: "Delete",
+      title: i18n.t("points.delete.modal.title"),
+      okLabel: i18n.t("points.delete.modal.ok"),
       content: (
         <span className="text-warning">
-          Are you sure you want to delete this campaign? This action cannot be
-          undone.
+          {i18n.t("points.delete.modal.content")}
         </span>
       ),
       size: "md",

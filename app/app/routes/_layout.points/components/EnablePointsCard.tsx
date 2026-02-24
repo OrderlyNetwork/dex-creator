@@ -9,6 +9,7 @@ import { Card } from "../../../components/Card";
 import { toast } from "react-toastify";
 import { AVAILABLE_MENUS } from "~/components/NavigationMenuEditor";
 import { Spinner } from "@orderly.network/ui";
+import { useTranslation } from "~/i18n";
 
 type EnablePointsCardProps = {
   enabledMenus: string[];
@@ -17,6 +18,7 @@ type EnablePointsCardProps = {
 export const PointsMenuId = "Points";
 
 export function EnablePointsCard({ enabledMenus }: EnablePointsCardProps) {
+  const { t } = useTranslation();
   const [pointEnabled, setPointEnabled] = useState(
     enabledMenus.includes(PointsMenuId)
   );
@@ -57,9 +59,9 @@ export function EnablePointsCard({ enabledMenus }: EnablePointsCardProps) {
 
       toast.success(
         <div>
-          Point system enabled
+          {t("points.enableCard.toast.title")}
           <div className="text-[13px] text-base-contrast-54">
-            The feature will show on your DEX UI within 5 minutes.
+            {t("points.enableCard.toast.description")}
           </div>
         </div>
       );
@@ -67,7 +69,9 @@ export function EnablePointsCard({ enabledMenus }: EnablePointsCardProps) {
       updateDexData({ enabledMenus: newEnabledMenus });
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Failed to enable point system"
+        error instanceof Error
+          ? error.message
+          : t("points.enableCard.toast.error")
       );
     } finally {
       setIsLoading(false);
@@ -86,11 +90,10 @@ export function EnablePointsCard({ enabledMenus }: EnablePointsCardProps) {
 
           <div>
             <h3 className="text-sm md:text-lg font-semibold mb-1">
-              Enable Point System
+              {t("points.enableCard.title")}
             </h3>
             <p className="text-xs md:text-sm text-base-contrast-80">
-              Once enabled, the point system will appear in the header and
-              cannot be turned off for now.
+              {t("points.enableCard.description")}
             </p>
           </div>
         </div>

@@ -12,6 +12,7 @@ import { useOperatePoints } from "../../hooks/useOperatePoints";
 import { CoefficientInput } from "./CoefficientInput";
 import { PointsBasicInput } from "./PointsBasicInput";
 import { add } from "date-fns";
+import { useTranslation } from "~/i18n";
 
 type PointCampaignFormProps = {
   type: PointCampaignFormType;
@@ -23,6 +24,7 @@ type PointCampaignFormProps = {
 
 export function PointCampaignForm(props: PointCampaignFormProps) {
   const { currentPoints, type, latestPoints } = props;
+  const { t } = useTranslation();
 
   const { data: pointDetail } = usePointsDetail(currentPoints?.stage_id);
 
@@ -58,11 +60,11 @@ export function PointCampaignForm(props: PointCampaignFormProps) {
 
   const getTitle = () => {
     if (type === PointCampaignFormType.Create) {
-      return "Create Your Points Campaign";
+      return t("points.form.create.title");
     } else if (type === PointCampaignFormType.Edit) {
-      return "Edit Your Points Campaign";
+      return t("points.form.edit.title");
     } else if (type === PointCampaignFormType.View) {
-      return "View Your Points Campaign";
+      return t("points.form.view.title");
     }
   };
 
@@ -96,7 +98,7 @@ export function PointCampaignForm(props: PointCampaignFormProps) {
         onClick={props.close}
       >
         <div className="i-mdi:arrow-left h-4 w-4 mr-1"></div>
-        Back to Point Campaign Setup
+        {t("points.form.back")}
       </div>
 
       <h1 className="text-lg md:text-2xl font-bold gradient-text">
@@ -129,7 +131,7 @@ export function PointCampaignForm(props: PointCampaignFormProps) {
                 onClick={handleSave}
                 isLoading={isMutating}
               >
-                Save & Publish
+                {t("points.form.save")}
               </Button>
             </div>
           )}

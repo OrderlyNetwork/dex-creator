@@ -7,6 +7,7 @@ import {
   PointCampaignFormType,
   PointCampaignFormErrors,
 } from "~/types/points";
+import { useTranslation } from "~/i18n";
 
 type UsePointsFormProps = {
   type: PointCampaignFormType;
@@ -30,6 +31,8 @@ export function usePointsForm({ type, pointDetail }: UsePointsFormProps) {
     ...initialFormValues,
   });
   const [errors, setErrors] = useState<PointCampaignFormErrors>({});
+
+  const { t } = useTranslation();
 
   const clearError = (field: keyof PointCampaignFormErrors) => {
     setErrors(prev => ({ ...prev, [field]: undefined }));
@@ -83,27 +86,26 @@ export function usePointsForm({ type, pointDetail }: UsePointsFormProps) {
     const newErrors: PointCampaignFormErrors = {};
 
     if (values.stage_name?.trim() === "") {
-      newErrors.stage_name = "Campaign title is required";
+      newErrors.stage_name = t("points.form.validation.campaignTitle.required");
     }
 
     const stageNameLength = values.stage_name?.trim()?.length || 0;
     if (stageNameLength > 40) {
-      newErrors.stage_name = "Campaign title must be less than 40 characters";
+      newErrors.stage_name = t("points.form.validation.campaignTitle.max");
     }
 
     const descriptionLength = values.stage_description?.trim()?.length || 0;
     if (descriptionLength > 280) {
-      newErrors.stage_description =
-        "Description must be less than 280 characters";
+      newErrors.stage_description = t("points.form.validation.description.max");
     }
 
     if (values.start_date === undefined) {
-      newErrors.start_date = "Start date is required";
+      newErrors.start_date = t("points.form.validation.startDate.required");
     }
 
     if (!values.is_continuous) {
       if (values.end_date === undefined) {
-        newErrors.end_date = "End date is required";
+        newErrors.end_date = t("points.form.validation.endDate.required");
       } else if (values.start_date) {
         const startTime = `${formatDate(
           values.start_date,
@@ -112,30 +114,30 @@ export function usePointsForm({ type, pointDetail }: UsePointsFormProps) {
         const endTime = `${formatDate(values.end_date, "yyyy-MM-dd")}T23:59:59Z`;
 
         if (endTime < startTime) {
-          newErrors.end_date = "End date must be after start date";
+          newErrors.end_date = t("points.form.validation.endDate.after");
         }
       }
     }
 
     if (values.volume_boost === "") {
-      newErrors.volume_boost = "Trading volume is required";
+      newErrors.volume_boost = t("points.form.validation.volume.required");
     } else if (Number(values.volume_boost) < 0) {
-      newErrors.volume_boost = "Trading volume cannot be less than 0";
+      newErrors.volume_boost = t("points.form.validation.volume.min");
     }
     if (values.pnl_boost === "") {
-      newErrors.pnl_boost = "PNL is required";
+      newErrors.pnl_boost = t("points.form.validation.pnl.required");
     } else if (Number(values.pnl_boost) < 0) {
-      newErrors.pnl_boost = "PNL cannot be less than 0";
+      newErrors.pnl_boost = t("points.form.validation.pnl.min");
     }
     if (values.l1_referral_boost === "") {
-      newErrors.l1_referral_boost = "L1 referral rate is required";
+      newErrors.l1_referral_boost = t("points.form.validation.l1.required");
     } else if (Number(values.l1_referral_boost) < 0) {
-      newErrors.l1_referral_boost = "L1 referral rate cannot be less than 0";
+      newErrors.l1_referral_boost = t("points.form.validation.l1.min");
     }
     if (values.l2_referral_boost === "") {
-      newErrors.l2_referral_boost = "L2 referral rate is required";
+      newErrors.l2_referral_boost = t("points.form.validation.l2.required");
     } else if (Number(values.l2_referral_boost) < 0) {
-      newErrors.l2_referral_boost = "L2 referral rate cannot be less than 0";
+      newErrors.l2_referral_boost = t("points.form.validation.l2.min");
     }
 
     setErrors(newErrors);

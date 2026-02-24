@@ -3,6 +3,7 @@ import { caseStudies } from "./caseStudies";
 import { common } from "./common";
 import { distributor } from "./distributor";
 import { home } from "./home";
+import { points } from "./points";
 
 export const en = {
   ...caseStudies,
@@ -10,4 +11,5 @@ export const en = {
   ...common,
   ...distributor,
   ...home,
+  ...points,
 };

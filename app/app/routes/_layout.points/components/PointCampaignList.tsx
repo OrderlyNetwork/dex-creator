@@ -9,6 +9,7 @@ import { formatUTCDate } from "../../../utils/date";
 import { cn } from "~/utils/css";
 import { PointCampaign, PointCampaignStatus } from "~/types/points";
 import { Tooltip } from "~/components/tooltip";
+import { useTranslation } from "~/i18n";
 
 type PointCampaignListProps = {
   data?: PointCampaign[];
@@ -21,6 +22,7 @@ type PointCampaignListProps = {
 
 export function PointCampaignList(props: PointCampaignListProps) {
   const { data, disabledCreate } = props;
+  const { t } = useTranslation();
   const { page, pageSize, parsePagination } = usePagination();
 
   const pagination = useMemo(
@@ -36,19 +38,19 @@ export function PointCampaignList(props: PointCampaignListProps) {
   const columns = useMemo(
     () => [
       {
-        title: "Stage",
+        title: t("points.list.column.stage"),
         dataIndex: "epoch_period",
         width: 50,
       },
       {
-        title: "Status",
+        title: t("points.list.column.status"),
         dataIndex: "status",
         width: 60,
         render: (status: PointCampaignStatus, record: PointCampaign) => {
           const statusText = {
-            [PointCampaignStatus.Pending]: "Ready to go",
-            [PointCampaignStatus.Active]: "Ongoing",
-            [PointCampaignStatus.Completed]: "Ended",
+            [PointCampaignStatus.Pending]: t("points.list.status.pending"),
+            [PointCampaignStatus.Active]: t("points.list.status.active"),
+            [PointCampaignStatus.Completed]: t("points.list.status.completed"),
           };
           return (
             <span
@@ -65,14 +67,14 @@ export function PointCampaignList(props: PointCampaignListProps) {
         },
       },
       {
-        title: "Title",
+        title: t("points.list.column.title"),
         dataIndex: "stage_name",
         render: (stage_name: string) => {
           return <div className="py-2">{stage_name}</div>;
         },
       },
       {
-        title: "Time",
+        title: t("points.list.column.time"),
         dataIndex: "start_time",
         render: (_: any, record: PointCampaign) => {
           const { start_time, end_time } = record;
@@ -82,13 +84,13 @@ export function PointCampaignList(props: PointCampaignListProps) {
               {formatUTCDate(start_time * 1000, formatStr)} -{" "}
               {end_time
                 ? formatUTCDate(end_time * 1000, formatStr)
-                : "Recurring"}
+                : t("points.list.time.recurring")}
             </span>
           );
         },
       },
       {
-        title: "Action",
+        title: t("points.list.column.action"),
         dataIndex: "action",
         width: 80,
         render: (_: any, record: PointCampaign) => {
@@ -102,7 +104,7 @@ export function PointCampaignList(props: PointCampaignListProps) {
                   size="sm"
                   onClick={() => props.onView(record)}
                 >
-                  View
+                  {t("points.list.button.view")}
                 </OrderlyButton>
               )}
               {status !== PointCampaignStatus.Completed && (
@@ -112,7 +114,7 @@ export function PointCampaignList(props: PointCampaignListProps) {
                   size="sm"
                   onClick={() => props.onEdit(record)}
                 >
-                  Edit
+                  {t("points.list.button.edit")}
                 </OrderlyButton>
               )}
 
@@ -123,7 +125,7 @@ export function PointCampaignList(props: PointCampaignListProps) {
                   size="sm"
                   onClick={() => props.onDelete(record)}
                 >
-                  Delete
+                  {t("points.list.button.delete")}
                 </OrderlyButton>
               )}
             </div>
@@ -146,7 +148,7 @@ export function PointCampaignList(props: PointCampaignListProps) {
         onClick={props.onCreate}
         disabled={disabledCreate || hasRecurring}
       >
-        Create
+        {t("points.list.button.create")}
       </Button>
     );
 
@@ -156,8 +158,8 @@ export function PointCampaignList(props: PointCampaignListProps) {
           delayDuration={100}
           content={
             hasRecurring
-              ? "Please set an end date for the last stage first."
-              : "Please enable the Point System first to create a campaign."
+                ? t("points.list.tooltip.recurring")
+                : t("points.list.tooltip.enable")
           }
         >
           {button}
@@ -172,7 +174,7 @@ export function PointCampaignList(props: PointCampaignListProps) {
     <div>
       <div className="flex flex-row items-center justify-between gap-4">
         <div className="text-sm md:text-base font-semibold">
-          Point Campaign List
+          {t("points.list.title")}
         </div>
 
         {renderCreateButton()}
@@ -189,7 +191,7 @@ export function PointCampaignList(props: PointCampaignListProps) {
         pagination={pagination}
         emptyView={
           <div className="text-sm md:text-base my-4 text-base-contrast-54">
-            No campaigns
+            {t("points.list.empty")}
           </div>
         }
       />

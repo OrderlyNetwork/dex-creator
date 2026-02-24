@@ -3,6 +3,7 @@ import {
   PointCampaignFormValues,
 } from "~/types/points";
 import { PointFormInput } from "../PointFormInput";
+import { useTranslation } from "~/i18n";
 
 type CoefficientInputProps = {
   values: PointCampaignFormValues;
@@ -13,10 +14,11 @@ type CoefficientInputProps = {
 
 export function CoefficientInput(props: CoefficientInputProps) {
   const { values, setValue, readonly, errors } = props;
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-base font-semibold text-base-contrast-80 leading-6 tracking-[0.48px]">
-        Coefficient
+        {t("points.coefficient.title")}
       </h2>
 
       {/* Trading volume and PNL row */}
@@ -24,10 +26,12 @@ export function CoefficientInput(props: CoefficientInputProps) {
         <div className="flex-1">
           <PointFormInput
             type="number"
-            label="Trading volume"
+            label={t("points.coefficient.tradingVolume.label")}
             value={values.volume_boost}
             onChange={e => setValue("volume_boost", e.target.value)}
-            helpText={`Trading points = perp_volume × ${values.volume_boost || 0.1}`}
+            helpText={t("points.coefficient.tradingVolume.help", {
+              volumeBoost: values.volume_boost || 0.1,
+            })}
             disabled={readonly}
             error={!!errors.volume_boost}
             errorMessage={errors.volume_boost}
@@ -36,11 +40,13 @@ export function CoefficientInput(props: CoefficientInputProps) {
         <div className="flex-1">
           <PointFormInput
             type="number"
-            label="PNL"
-            tooltip="The profit or loss of each trade will be recorded in absolute value."
+            label={t("points.coefficient.pnl.label")}
+            tooltip={t("points.coefficient.pnl.tooltip")}
             value={values.pnl_boost}
             onChange={e => setValue("pnl_boost", e.target.value)}
-            helpText={`PNL points = |PNL| × ${values.pnl_boost || 1}`}
+            helpText={t("points.coefficient.pnl.help", {
+              pnlBoost: values.pnl_boost || 1,
+            })}
             disabled={readonly}
             error={!!errors.pnl_boost}
             errorMessage={errors.pnl_boost}
@@ -53,11 +59,13 @@ export function CoefficientInput(props: CoefficientInputProps) {
         <div className="flex-1">
           <PointFormInput
             type="number"
-            label="L1 Referral rate(%)"
-            tooltip="Points earned from the first-level invitee's invitees"
+            label={t("points.coefficient.l1.label")}
+            tooltip={t("points.coefficient.l1.tooltip")}
             value={values.l1_referral_boost}
             onChange={e => setValue("l1_referral_boost", e.target.value)}
-            helpText={`The first-level invitee's rebate inviter ${values.l1_referral_boost || 10}% of their points`}
+            helpText={t("points.coefficient.l1.help", {
+              l1ReferralBoost: values.l1_referral_boost || 10,
+            })}
             disabled={readonly}
             error={!!errors.l1_referral_boost}
             errorMessage={errors.l1_referral_boost}
@@ -66,11 +74,13 @@ export function CoefficientInput(props: CoefficientInputProps) {
         <div className="flex-1">
           <PointFormInput
             type="number"
-            label="L2 Referral rate(%)"
-            tooltip="Second-level referral rate percentage"
+            label={t("points.coefficient.l2.label")}
+            tooltip={t("points.coefficient.l2.tooltip")}
             value={values.l2_referral_boost}
             onChange={e => setValue("l2_referral_boost", e.target.value)}
-            helpText={`The second-level invitee's rebate inviter ${values.l2_referral_boost || 5}% of their points`}
+            helpText={t("points.coefficient.l2.help", {
+              l2ReferralBoost: values.l2_referral_boost || 5,
+            })}
             disabled={readonly}
             error={!!errors.l2_referral_boost}
             errorMessage={errors.l2_referral_boost}

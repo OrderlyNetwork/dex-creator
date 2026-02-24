@@ -7,6 +7,7 @@ import { useOperatePointsStage } from "./usePointsService";
 import { toast } from "react-toastify";
 import { modal } from "@orderly.network/ui";
 import { formatDate } from "~/utils/date";
+import { i18n } from "~/i18n";
 
 type UseOperatePointsProps = {
   type: PointCampaignFormType;
@@ -48,18 +49,18 @@ export function useOperatePoints(props: UseOperatePointsProps) {
         if (type === PointCampaignFormType.Create) {
           toast.success(
             <div>
-              Campaign created successfully
+              {i18n.t("points.operate.create.toast.title")}
               <div className="text-[13px] text-base-contrast-54">
-                You can now view and manage it in the campaign list.
+                {i18n.t("points.operate.create.toast.description")}
               </div>
             </div>
           );
         } else if (type === PointCampaignFormType.Edit) {
           toast.success(
             <div>
-              Campaign updated successfully
+              {i18n.t("points.operate.edit.toast.title")}
               <div className="text-[13px] text-base-contrast-54">
-                It may take some time for changes to process.
+                {i18n.t("points.operate.edit.toast.description")}
               </div>
             </div>
           );
@@ -71,7 +72,7 @@ export function useOperatePoints(props: UseOperatePointsProps) {
     } catch (err) {
       console.error("Error creating campaign:", err);
       const errorMessage =
-        err instanceof Error ? err.message : "An error occurred";
+        err instanceof Error ? err.message : i18n.t("points.operate.error");
       toast.error(errorMessage);
       return err;
     }
@@ -79,13 +80,11 @@ export function useOperatePoints(props: UseOperatePointsProps) {
 
   const onSubmit = (values: PointCampaignFormValues) => {
     modal.confirm({
-      title: "Publish Campaign?",
-      okLabel: "Confirm Publish",
+      title: i18n.t("points.operate.modal.title"),
+      okLabel: i18n.t("points.operate.modal.ok"),
       content: (
         <span className="text-warning">
-          Please confirm that you want to publish this campaign. Once published,
-          it cannot be deleted or withdrawn, but you may continue to modify its
-          parameters.
+          {i18n.t("points.operate.modal.content")}
         </span>
       ),
       size: "md",
