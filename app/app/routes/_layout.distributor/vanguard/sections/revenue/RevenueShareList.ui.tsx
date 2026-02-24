@@ -4,6 +4,7 @@ import { RevenueShareDetailsModalUI } from "../revenueShareDetailsModal";
 import type { RevenueShareDetailsModalUIProps } from "../revenueShareDetailsModal";
 import { Pagination, Spinner } from "../../components";
 import { SearchDocumentIcon } from "../../icons";
+import { useTranslation } from "~/i18n";
 
 interface RevenueShareListUIProps {
   dataSource: any[];
@@ -20,11 +21,12 @@ interface RevenueShareListUIProps {
 }
 
 const EmptyState = () => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center justify-center py-20 px-4 min-h-[305px]">
       <SearchDocumentIcon className="w-16 h-16" />
       <p className="mt-6 text-center text-sm font-medium leading-[1.5] text-base-contrast-54">
-        No revenue share yet.
+        {t("distributor.noRevenueShareYet")}
       </p>
     </div>
   );

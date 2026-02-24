@@ -10,6 +10,7 @@ import { useDistributor } from "../../context/DistributorContext";
 import { useDex } from "../../context/DexContext";
 import VanguardDashboard from "./vanguard/VanguardDashboard";
 import { MetaFunction } from "@remix-run/node";
+import { useTranslation } from "~/i18n";
 
 export const meta: MetaFunction = () => [
   { title: "Orderly Distributor Program - Orderly One" },
@@ -23,6 +24,7 @@ export const meta: MetaFunction = () => [
 export const AMBASSADOR_BROKER_ID = "ambassador";
 
 export default function DistributorRoute() {
+  const { t } = useTranslation();
   const { isAuthenticated } = useAuth();
   const { setBrokerId } = useDex();
 
@@ -54,7 +56,7 @@ export default function DistributorRoute() {
 
   const createKeyCard = (
     <div className="mt-15 md:mt-30 pb-52 max-w-6xl mx-auto flex flex-col gap-10 px-4 md:px-8 ">
-      <DistributorHeader title="Create key to manage your distributor profile" />
+      <DistributorHeader title={t("distributor.createKeyHeader")} />
       <OrderlyKeyCard />
     </div>
   );

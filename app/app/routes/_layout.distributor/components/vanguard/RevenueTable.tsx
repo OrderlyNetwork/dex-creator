@@ -1,4 +1,21 @@
+import { useTranslation } from "~/i18n";
+
 export function RevenueTable() {
+  const { t } = useTranslation();
+  const tierKey: Record<string, string> = {
+    Public: "distributor.tierPublic",
+    Silver: "distributor.tierSilver",
+    Gold: "distributor.tierGold",
+    Platinum: "distributor.tierPlatinum",
+    Diamond: "distributor.tierDiamond",
+  };
+  const stakeKey: Record<string, string> = {
+    "0 $ORDER": "distributor.stake0Order",
+    "100K $ORDER": "distributor.stake100kOrder",
+    "250K $ORDER": "distributor.stake250kOrder",
+    "2M $ORDER": "distributor.stake2mOrder",
+    "7M $ORDER": "distributor.stake7mOrder",
+  };
   const tiers = [
     {
       tier: "Public",
@@ -37,7 +54,7 @@ export function RevenueTable() {
       <div className="flex flex-col justify-center items-center gap-11 max-w-[1088px] mx-auto px-5 lg:px-0">
         <div className="flex flex-col items-center gap-2 text-center">
           <h2 className="text-[32px] font-semibold leading-[1.2]">
-            Monthly revenue by volume & tier
+            {t("distributor.monthlyRevenueByVolumeTier")}
           </h2>
         </div>
 
@@ -49,14 +66,14 @@ export function RevenueTable() {
                   <div className="border-b border-line-6">
                     <div className="flex flex-nowrap items-center gap-4 px-6 py-8">
                       <div className="w-[200px] shrink-0 text-sm font-medium text-base-contrast/54 revenue-sticky-col leading-[1.2]">
-                        Tier / Staked $ORDER
+                        {t("distributor.tierStakedOrder")}
                       </div>
                       {[
-                        "10M Vol.",
-                        "30M Vol.",
-                        "90M Vol.",
-                        "1B Vol.",
-                        "10B Vol.",
+                        t("distributor.vol.10m"),
+                        t("distributor.vol.30m"),
+                        t("distributor.vol.90m"),
+                        t("distributor.vol.1b"),
+                        t("distributor.vol.10b"),
                       ].map((label, idx) => (
                         <div
                           key={idx}
@@ -87,10 +104,10 @@ export function RevenueTable() {
                           </div>
                           <div className="flex flex-col gap-1">
                             <span className="text-base text-base-contrast leading-[1.2]">
-                              {row.tier}
+                              {t(tierKey[row.tier])}
                             </span>
                             <span className="text-sm text-purple-light leading-[1.2]">
-                              {row.stake}
+                              {t(stakeKey[row.stake])}
                             </span>
                           </div>
                         </div>
@@ -113,22 +130,20 @@ export function RevenueTable() {
               <div className="flex items-center gap-4">
                 <div className="w-2 h-2 rounded-full shrink-0 bg-[linear-gradient(-36deg,#1DF6B5_0%,#86ED92_91%)]"></div>
                 <span className="text-xs text-base-contrast/54">
-                  Estimated monthly revenue; actual amount is dependent on
-                  referrals' tiers and their taker volume.
+                  {t("distributor.revenueTableFootnote1")}
                 </span>
               </div>
               <div className="flex items-center gap-4">
                 <div className="w-2 h-2 rounded-full shrink-0 bg-purple-light"></div>
                 <span className="text-xs text-base-contrast/54">
-                  Stake $ORDER tokens to unlock higher tiers immediately for
-                  higher earnings.{" "}
+                  {t("distributor.revenueTableFootnote2")}
                   <a
                     href="https://orderly.network/docs/build-on-omnichain/user-flows/builder-staking-programme"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-purple-light no-underline"
                   >
-                    Learn more
+                    {t("distributor.learnMore")}
                   </a>
                 </span>
               </div>

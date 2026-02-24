@@ -1,7 +1,9 @@
 import { useNavigate } from "@remix-run/react";
 import { Button } from "../../../components/Button";
+import { useTranslation } from "~/i18n";
 
 export const CreateDexButton = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleCreate = () => {
@@ -10,7 +12,7 @@ export const CreateDexButton = () => {
 
   return (
     <Button variant="primary" size="md" onClick={handleCreate}>
-      <span>Create Dex</span>
+      <span>{t("distributor.createDex")}</span>
       <ArrowRightIcon />
     </Button>
   );

@@ -7,6 +7,7 @@ import {
 import { formatCurrency, getUserTimezone, splitDateTime } from "../../utils";
 import { Pagination } from "../../components";
 import { SearchDocumentIcon } from "../../icons";
+import { useTranslation } from "~/i18n";
 
 interface RevenueShareDetailsModalData {
   totalRevenueShare?: number;
@@ -31,11 +32,12 @@ export interface RevenueShareDetailsModalUIProps {
 }
 
 const EmptyState = () => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4">
       <SearchDocumentIcon className="w-16 h-16" />
       <p className="mt-6 text-center text-sm font-medium leading-[1.5] text-base-contrast-54">
-        No Detail Datas Available.
+        {t("distributor.noDetailDatasAvailable")}
       </p>
     </div>
   );
@@ -49,7 +51,9 @@ const RevenueShareDetailsModalUI: React.FC<RevenueShareDetailsModalUIProps> = ({
   isLoading,
   pagination,
 }) => {
+  const { t } = useTranslation();
   const columns = useRevenueShareDetailsColumn();
+  const timezone = getUserTimezone();
 
   if (!open) {
     return null;
@@ -64,9 +68,9 @@ const RevenueShareDetailsModalUI: React.FC<RevenueShareDetailsModalUIProps> = ({
             onClose();
           }
         }}
-        title="Revenue share details"
+        title={t("distributor.revenueShareDetails")}
         onCancel={onClose}
-        cancelText="Close"
+        cancelText={t("distributor.close")}
         contentClassName="w-[900px]"
         footer={null}
       >
@@ -75,7 +79,7 @@ const RevenueShareDetailsModalUI: React.FC<RevenueShareDetailsModalUIProps> = ({
             <div className="flex gap-20">
               <div>
                 <div className="mb-1 text-sm font-medium leading-[125%] text-base-contrast-54">
-                  Total revenue share
+                  {t("distributor.totalRevenueShare")}
                 </div>
                 <div className="text-sm font-medium leading-[125%] text-base-contrast">
                   {formatCurrency(data?.totalRevenueShare, {
@@ -86,7 +90,7 @@ const RevenueShareDetailsModalUI: React.FC<RevenueShareDetailsModalUIProps> = ({
               </div>
               <div>
                 <div className="mb-1 text-sm font-medium leading-[125%] text-base-contrast-54">
-                  Total invitee volume
+                  {t("distributor.totalInviteeVolume")}
                 </div>
                 <div className="text-sm font-medium leading-[125%] text-base-contrast">
                   {formatCurrency(data?.totalInviteeVolume, {
@@ -98,7 +102,7 @@ const RevenueShareDetailsModalUI: React.FC<RevenueShareDetailsModalUIProps> = ({
             </div>
             <div>
               <div className="mb-1 text-sm font-medium leading-[125%] text-base-contrast-54">
-                Period
+                {t("distributor.period")}
               </div>
               <div className="text-sm font-medium leading-[125%] flex flex-col">
                 {(() => {
@@ -145,7 +149,7 @@ const RevenueShareDetailsModalUI: React.FC<RevenueShareDetailsModalUIProps> = ({
             </div>
             <div>
               <div className="mb-1 text-sm font-medium leading-[125%] text-base-contrast-54">
-                Distribution time ({getUserTimezone()})
+                {t("distributor.distributionTime", { timezone })}
               </div>
               <div className="text-sm font-medium leading-[125%]">
                 {(() => {

@@ -7,6 +7,7 @@ import { Pagination, Spinner } from "../../components";
 import { CopyIcon, LinkIcon, SearchDocumentIcon } from "../../icons";
 import { copyText } from "../../utils";
 import { useVanguardSummary } from "../../hooks/useVanguard";
+import { useTranslation } from "~/i18n";
 
 interface InviteesListUIProps {
   dataSource: any[];
@@ -23,6 +24,7 @@ interface InviteesListUIProps {
 }
 
 const EmptyState = () => {
+  const { t } = useTranslation();
   const { data: summaryData } = useVanguardSummary();
   const distributorCode = summaryData?.distributor_code || "";
   const distributorUrl = summaryData?.distributor_url || "";
@@ -31,7 +33,7 @@ const EmptyState = () => {
     <div className="flex flex-col items-center justify-center py-20 px-4 min-h-[305px]">
       <SearchDocumentIcon className="w-16 h-16" />
       <p className="mt-6 text-center text-sm font-medium leading-[1.5] text-base-contrast-54">
-        No invitees yet. Share your distributor code to start referring now!
+        {t("distributor.noInviteesYet")}
       </p>
       <div className="mt-4 flex items-center gap-3">
         <span className="text-sm font-medium leading-[1.2] text-[#BC87FF]">
@@ -42,11 +44,11 @@ const EmptyState = () => {
             onClick={() => {
               if (distributorCode) {
                 copyText(distributorCode);
-                toast.success("Copied to clipboard");
+                toast.success(t("distributor.copiedToClipboard"));
               }
             }}
             className="text-base-contrast-54 hover:text-base-contrast transition-colors"
-            aria-label="Copy code"
+            aria-label={t("distributor.copyCode")}
           >
             <CopyIcon className="w-4 h-4" />
           </button>
@@ -54,11 +56,11 @@ const EmptyState = () => {
             onClick={() => {
               if (distributorUrl) {
                 copyText(distributorUrl);
-                toast.success("Copied to clipboard");
+                toast.success(t("distributor.copiedToClipboard"));
               }
             }}
             className="text-base-contrast-54 hover:text-base-contrast transition-colors"
-            aria-label="Copy URL"
+            aria-label={t("distributor.copyUrl")}
           >
             <LinkIcon className="w-4 h-4" />
           </button>

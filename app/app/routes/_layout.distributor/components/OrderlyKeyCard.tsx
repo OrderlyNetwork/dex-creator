@@ -3,8 +3,10 @@ import { useDex } from "../../../context/DexContext";
 import { useCreateOrderlyKey } from "../../../hooks/useCreateOrderlyKey";
 import { StepCard } from "./StepCard";
 import { SuccessStepCard } from "./SuccessStepCard";
+import { useTranslation } from "~/i18n";
 
 export const OrderlyKeyCard = () => {
+  const { t } = useTranslation();
   const { brokerId } = useDex();
   const { hasValidKey, isCreatingKey, createOrderlyKey, accountId } =
     useCreateOrderlyKey();
@@ -17,13 +19,13 @@ export const OrderlyKeyCard = () => {
   };
 
   if (hasValidKey) {
-    return <SuccessStepCard title="Orderly key" />;
+    return <SuccessStepCard title={t("distributor.orderlyKey")} />;
   }
 
   return (
     <StepCard
-      title="Orderly key"
-      description="This key provides secure access to the Orderly Network API. It will be stored locally to manage your distributor profile. A wallet signature is required to create this key."
+      title={t("distributor.orderlyKey")}
+      description={t("distributor.orderlyKeyDescription")}
       action={
         <Button
           variant="primary"
@@ -33,7 +35,7 @@ export const OrderlyKeyCard = () => {
           isLoading={isCreatingKey}
           className="shrink-0"
         >
-          Create key
+          {t("distributor.createKey")}
         </Button>
       }
     />

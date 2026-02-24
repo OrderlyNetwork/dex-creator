@@ -10,6 +10,7 @@ import {
   formatTier,
 } from "../../utils";
 import { CopyIcon, EditIcon, ClockIcon } from "../../icons";
+import { useTranslation } from "~/i18n";
 
 export interface Column {
   title: ReactNode;
@@ -24,11 +25,13 @@ interface UseInviteesColumnProps {
 
 export const useInviteesColumn = (props: UseInviteesColumnProps): Column[] => {
   const { onEditTier, canEditTier } = props;
+  const { t } = useTranslation();
+  const timeLabel = formatUTCTimeToLocal();
 
   const columns = useMemo(() => {
     return [
       {
-        title: "Invitee address",
+        title: t("distributor.inviteeAddress"),
         dataIndex: "address",
         render: (value: string, record: any) => (
           <div className="flex items-center">
@@ -36,10 +39,10 @@ export const useInviteesColumn = (props: UseInviteesColumnProps): Column[] => {
             <button
               onClick={() => {
                 copyText(value);
-                toast.success("Copied");
+                toast.success(t("distributor.copied"));
               }}
               className="ml-2 text-base-contrast-54 hover:text-base-contrast transition-colors"
-              aria-label="Copy address"
+              aria-label={t("distributor.copyAddress")}
             >
               <CopyIcon className="w-4 h-4" />
             </button>
@@ -50,7 +53,7 @@ export const useInviteesColumn = (props: UseInviteesColumnProps): Column[] => {
         ),
       },
       {
-        title: "Broker ID",
+        title: t("distributor.brokerId"),
         dataIndex: "brokerId",
         render: (value: string) => {
           if (!value) {
@@ -62,10 +65,10 @@ export const useInviteesColumn = (props: UseInviteesColumnProps): Column[] => {
               <button
                 onClick={() => {
                   copyText(value);
-                  toast.success("Copied");
+                  toast.success(t("distributor.copied"));
                 }}
                 className="ml-2 text-base-contrast-54 hover:text-base-contrast transition-colors"
-                aria-label="Copy broker ID"
+                aria-label={t("distributor.copyBrokerId")}
               >
                 <CopyIcon className="w-4 h-4" />
               </button>
@@ -74,12 +77,12 @@ export const useInviteesColumn = (props: UseInviteesColumnProps): Column[] => {
         },
       },
       {
-        title: "Broker name",
+        title: t("distributor.brokerName"),
         dataIndex: "brokerName",
         render: (value: string) => value || "--",
       },
       {
-        title: "30d volume",
+        title: t("distributor.volume30d"),
         dataIndex: "volume",
         render: (value: number) =>
           formatCurrency(value, { floor: true, precison: 2 }),
@@ -87,8 +90,8 @@ export const useInviteesColumn = (props: UseInviteesColumnProps): Column[] => {
       {
         title: (
           <TableTitleWithTooltip
-            title="Min. tier"
-            tooltip={`Minimum tier guarantees your invitee the assigned tier or a higher one if they meet the requirements. Once you change the assigned tier, it will take effect at the next ${formatUTCTimeToLocal()}.`}
+            title={t("distributor.minTier")}
+            tooltip={t("distributor.minTierTooltip", { time: timeLabel })}
           />
         ),
         dataIndex: "minTier",
@@ -99,7 +102,7 @@ export const useInviteesColumn = (props: UseInviteesColumnProps): Column[] => {
               <button
                 onClick={() => onEditTier(record)}
                 className="ml-2 text-base-contrast-54 hover:text-base-contrast transition-colors"
-                aria-label="Edit tier"
+                aria-label={t("distributor.editTier")}
               >
                 <EditIcon className="w-4 h-4" />
               </button>
@@ -110,35 +113,35 @@ export const useInviteesColumn = (props: UseInviteesColumnProps): Column[] => {
       {
         title: (
           <TableTitleWithTooltip
-            title="Effective tier"
-            tooltip={`Broker fee tier updates daily at ${formatUTCTimeToLocal()}.`}
+            title={t("distributor.effectiveTier")}
+            tooltip={t("distributor.effectiveTierTooltip", { time: timeLabel })}
           />
         ),
         dataIndex: "effectiveTier",
         render: (value: string) => formatTier(value),
       },
       {
-        title: "Base taker fee",
+        title: t("distributor.baseTakerFee"),
         dataIndex: "takerFee",
         render: (value: number) => formatBps(value, 2),
       },
       {
-        title: "Base maker fee",
+        title: t("distributor.baseMakerFee"),
         dataIndex: "makerFee",
         render: (value: number) => formatBps(value, 2),
       },
       {
-        title: "Base taker fee (RWA)",
+        title: t("distributor.baseTakerFeeRwa"),
         dataIndex: "rwaTakerFee",
         render: (value: number) => formatBps(value, 2),
       },
       {
-        title: "Base maker fee (RWA)",
+        title: t("distributor.baseMakerFeeRwa"),
         dataIndex: "rwaMakerFee",
         render: (value: number) => formatBps(value, 2),
       },
     ] as Column[];
-  }, [onEditTier, canEditTier]);
+  }, [onEditTier, canEditTier, t, timeLabel]);
 
   return columns;
 };

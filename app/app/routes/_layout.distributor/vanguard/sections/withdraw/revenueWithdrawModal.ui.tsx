@@ -11,6 +11,7 @@ import {
   DropdownMenuItem,
 } from "@radix-ui/react-dropdown-menu";
 import { cn } from "../../utils";
+import { useTranslation } from "~/i18n";
 
 export interface RevenueWithdrawModalUIProps {
   open: boolean;
@@ -57,11 +58,14 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
   showQty,
   minAmountWarningMessage,
 }) => {
+  const { t } = useTranslation();
   const selectedChain = chains.find(
     chain => chain.chain_id === selectedChainId
   );
   const selectedChainLabel =
-    selectedChain?.display_name || selectedChain?.name || "Select network";
+    selectedChain?.display_name ||
+    selectedChain?.name ||
+    t("distributor.selectNetwork");
   const formattedBalance = availableBalance.toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
@@ -75,7 +79,7 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
           onClose();
         }
       }}
-      title="Withdraw: distributor's balance"
+      title={t("distributor.withdrawTitle")}
       onOk={() => {
         if (!confirmDisabled && !isSubmitting) {
           onConfirm();
@@ -86,8 +90,8 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
           onClose();
         }
       }}
-      okText="Withdraw"
-      cancelText="Cancel"
+      okText={t("distributor.withdraw")}
+      cancelText={t("distributor.cancel")}
       contentClassName="max-w-[480px]"
       confirmDisable={confirmDisabled || isSubmitting}
       footer={
@@ -104,7 +108,7 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
               isSubmitting && "opacity-60 cursor-not-allowed"
             )}
           >
-            Cancel
+            {t("distributor.cancel")}
           </button>
           <Button
             variant="primary"
@@ -118,7 +122,7 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
             isLoading={isSubmitting}
             className="flex-1 h-10 justify-center"
           >
-            Withdraw
+            {t("distributor.withdraw")}
           </Button>
         </div>
       }
@@ -146,7 +150,7 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
               )}
             >
               <span className="shrink-0 text-sm font-medium leading-[1.25em] text-base-contrast-54">
-                Quantity
+                {t("distributor.quantity")}
               </span>
               <input
                 type="text"
@@ -171,9 +175,9 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
           </Tooltip>
           <div className="flex items-center justify-start">
             <div className="flex items-center gap-2 text-xs font-medium text-base-contrast-36">
-              <span>Available:</span>
+              <span>{t("distributor.available")}</span>
               {isLoadingBalance ? (
-                <span>Loading...</span>
+                <span>{t("distributor.loading")}</span>
               ) : (
                 <>
                   <span>{formattedBalance}</span>
@@ -182,7 +186,7 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
                     className="text-purple-light hover:text-purple-light/80 transition-colors"
                     onClick={onMaxClick}
                   >
-                    Max
+                    {t("distributor.max")}
                   </button>
                 </>
               )}
@@ -194,10 +198,10 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
         <div className="h-px bg-base-contrast-12" />
 
         {/* Wallet and Network Section */}
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-base-contrast-36">
-              Wallet
+              {t("distributor.wallet")}
             </span>
             <div className="flex items-center gap-1">
               {walletName ? (
@@ -222,7 +226,7 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
                 >
                   <div className="flex flex-col gap-0.5 items-start">
                     <span className="text-xs font-medium text-base-contrast-54 leading-[18px]">
-                      Network
+                      {t("distributor.network")}
                     </span>
                     <div className="flex items-center gap-1 text-sm font-medium text-base-contrast-80">
                       {selectedChainId ? (
@@ -285,7 +289,7 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
 
           <div className="w-full flex h-14 items-center gap-2 px-4 py-5 rounded-lg border border-base-contrast-12 bg-base-700">
             <span className="shrink-0 text-sm font-medium leading-[1.25em] text-base-contrast-54">
-              Quantity
+              {t("distributor.quantity")}
             </span>
             <span className="flex-1 bg-transparent text-base-contrast text-sm font-medium leading-[1.2em] text-right">
               {showQty || "0"}
@@ -301,7 +305,7 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
 
         <div className="flex flex-col items-start">
           <span className="text-xs font-medium text-base-contrast-36">
-            Fee ≈ <span className="text-base-contrast-80">{fee}</span> USDC
+            {t("distributor.feeUsdc", { fee })}
           </span>
         </div>
       </div>

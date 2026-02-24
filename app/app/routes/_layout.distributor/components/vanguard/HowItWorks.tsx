@@ -1,19 +1,25 @@
+import { useTranslation } from "~/i18n";
+
 export function HowItWorks() {
+  const { t } = useTranslation();
   const steps = [
     {
+      id: "step1",
       icon: "/distributor/icon-create.svg",
-      title: "1. Create profile",
-      desc: "Create your distributor profile directly on Orderly One. Not a builder? No problem! You can register as an ambassador.",
+      title: t("distributor.step1CreateProfile"),
+      desc: t("distributor.step1Desc"),
     },
     {
+      id: "step2",
       icon: "/distributor/icon-refer.svg",
-      title: "2. Refer builders",
-      desc: "Share your distributor link or code with your network. Builders in your network can use it to setup their DEXes.",
+      title: t("distributor.step2ReferBuilders"),
+      desc: t("distributor.step2Desc"),
     },
     {
+      id: "step3",
       icon: "/distributor/icon-earn.svg",
-      title: "3. Earn revenue share",
-      desc: "Immediately start earning revenue share once your invitees have successfully setup their DEXes and graduated.",
+      title: t("distributor.step3EarnRevenueShare"),
+      desc: t("distributor.step3Desc"),
     },
   ];
 
@@ -22,10 +28,10 @@ export function HowItWorks() {
       <div className="flex flex-col gap-5 max-w-[1088px] mx-auto px-5 lg:px-0">
         <div className="mb-6 flex flex-col items-center text-center gap-2">
           <h2 className="text-[32px] font-semibold leading-[1.2]">
-            How it works
+            {t("distributor.howItWorks")}
           </h2>
           <p className="text-base-contrast/54 text-lg">
-            Sign up and start earning in 3 steps:
+            {t("distributor.signUpThreeSteps")}
           </p>
         </div>
 
@@ -33,7 +39,7 @@ export function HowItWorks() {
           {steps.map(step => (
             <div
               className="flex-1 flex flex-col gap-5 p-8 bg-purple-dark border border-line-6 rounded-[20px]"
-              key={step.title}
+              key={step.id}
             >
               <div className="w-20 h-20">
                 <img src={step.icon} alt="" className="w-full h-full" />

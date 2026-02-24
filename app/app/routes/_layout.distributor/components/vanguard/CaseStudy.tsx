@@ -1,11 +1,16 @@
+import { useTranslation } from "~/i18n";
+
 export function CaseStudy() {
+  const { t } = useTranslation();
   return (
     <section className="py-16">
       <div className="flex flex-col items-center gap-11 max-w-[1088px] mx-auto px-5 lg:px-0">
         <div className="flex flex-col justify-center items-center gap-4 text-center w-full">
-          <span className="text-purple-light text-lg">Case study</span>
+          <span className="text-purple-light text-lg">
+            {t("distributor.caseStudy")}
+          </span>
           <h2 className="text-[32px] font-semibold leading-[1.2] text-base-contrast">
-            Inbum: Top Korean KOL's eight-figure acquisition
+            {t("distributor.inbumTitle")}
           </h2>
         </div>
 
@@ -21,7 +26,7 @@ export function CaseStudy() {
               className="max-w-[240px] h-auto relative z-[3]"
             />
             <span className="text-xl text-base-contrast/54 relative z-[3]">
-              By Inbum
+              {t("distributor.byInbum")}
             </span>
           </div>
 
@@ -31,10 +36,10 @@ export function CaseStudy() {
                 <div className="flex flex-col justify-center gap-2 w-full h-full">
                   <div className="flex flex-col gap-2">
                     <span className="text-[40px] font-semibold leading-[1.2]">
-                      10 mins
+                      {t("distributor.tenMins")}
                     </span>
                     <span className="text-lg text-purple-light">
-                      Launched DEX with Orderly
+                      {t("distributor.launchedDexWithOrderly")}
                     </span>
                   </div>
                 </div>
@@ -46,7 +51,7 @@ export function CaseStudy() {
                       $46B
                     </span>
                     <span className="text-lg text-purple-light">
-                      90-day trading volume
+                      {t("distributor.volume90d")}
                     </span>
                   </div>
                 </div>
@@ -60,7 +65,7 @@ export function CaseStudy() {
                       $1.25M+
                     </span>
                     <span className="text-lg text-purple-light">
-                      90-day net profit
+                      {t("distributor.netProfit90d")}
                     </span>
                   </div>
                 </div>
@@ -69,10 +74,10 @@ export function CaseStudy() {
                 <div className="flex flex-col justify-center gap-2 w-full h-full">
                   <div className="flex flex-col gap-2">
                     <span className="text-[40px] font-semibold leading-[1.2]">
-                      $8-figure
+                      {t("distributor.eightFigure")}
                     </span>
                     <span className="text-lg text-purple-light">
-                      Acquired by Gate
+                      {t("distributor.acquiredByGate")}
                     </span>
                   </div>
                 </div>

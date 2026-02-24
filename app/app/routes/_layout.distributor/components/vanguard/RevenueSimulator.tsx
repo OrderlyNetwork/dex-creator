@@ -4,8 +4,10 @@ import { useAppKit } from "@reown/appkit/react";
 import { useModal } from "../../../../context/ModalContext";
 import { useAuth } from "../../../../context/useAuth";
 import { TIER_CONFIG, TIER_ORDER, ALPHA_GUARANTEE } from "./constants";
+import { useTranslation } from "~/i18n";
 
 export function RevenueSimulator() {
+  const { t } = useTranslation();
   interface Invitee {
     id: number;
     tier: string;
@@ -98,8 +100,12 @@ export function RevenueSimulator() {
     activeMargins.every(m => Math.abs(m - activeMargins[0]) < 0.01);
   const shareText =
     activeMargins.length > 0 && allSameShare
-      ? `${Math.round(maxSharePercentage)}% of fees earned`
-      : `Up to ${Math.round(maxSharePercentage)}%`;
+      ? t("distributor.percentOfFeesEarned", {
+          percent: Math.round(maxSharePercentage),
+        })
+      : t("distributor.upToPercent", {
+          percent: Math.round(maxSharePercentage),
+        });
 
   const isUpgrade = getTierIndex(projectedTier) > getTierIndex(userTier);
 
@@ -164,7 +170,7 @@ export function RevenueSimulator() {
       <div className="flex flex-col items-center gap-8 max-w-[1088px] mx-auto px-5 lg:px-0">
         <div className="flex flex-col justify-center items-center text-center gap-4 w-full">
           <h2 className="text-[32px] font-semibold leading-[1.2]">
-            Calculate your revenue potential
+            {t("distributor.calculateRevenuePotential")}
           </h2>
         </div>
 
@@ -176,7 +182,7 @@ export function RevenueSimulator() {
               <div className="flex items-center gap-6">
                 <div className="flex flex-col gap-2 flex-1">
                   <h3 className="text-lg font-medium leading-[1.2] text-base-contrast/54">
-                    My tier
+                    {t("distributor.myTier")}
                   </h3>
                   <div className="flex items-center gap-2 flex-1 relative group">
                     <span className="text-2xl font-medium leading-[1.2] text-base-contrast">
@@ -217,7 +223,7 @@ export function RevenueSimulator() {
                   rel="noopener noreferrer"
                   className="text-sm font-medium leading-[1.2] text-purple-light"
                 >
-                  Learn more
+                  {t("distributor.learnMore")}
                 </a>
               </div>
             </div>
@@ -226,10 +232,10 @@ export function RevenueSimulator() {
             <div className="flex flex-col gap-4">
               <div className="flex justify-between items-center w-full">
                 <h3 className="text-lg font-medium leading-[1.2] text-base-contrast text-left">
-                  Invitee tier
+                  {t("distributor.inviteeTier")}
                 </h3>
                 <h3 className="text-lg font-medium leading-[1.2] text-base-contrast text-right">
-                  Est. monthly volume
+                  {t("distributor.estMonthlyVolume")}
                 </h3>
               </div>
 
@@ -291,12 +297,12 @@ export function RevenueSimulator() {
           <div className="flex flex-col justify-start gap-8 flex-1 bg-purple-dark border border-line-6 rounded-[20px] p-0 overflow-hidden">
             <div className="flex flex-col gap-5 p-6 bg-transparent rounded-[19px] flex-1 justify-between">
               <h3 className="text-lg font-medium leading-[1.2] text-base-contrast">
-                Preview
+                {t("distributor.preview")}
               </h3>
 
               <div className="flex flex-col justify-center gap-3 p-5 bg-purple-darker rounded-3xl">
                 <h4 className="text-lg font-medium leading-[1.2] text-base-contrast text-center">
-                  Est. monthly revenue
+                  {t("distributor.estMonthlyRevenue")}
                 </h4>
                 <div
                   className="text-[40px] font-medium leading-[1.2] text-center bg-[linear-gradient(-36deg,#1DF6B5_0%,#86ED92_91%)] bg-clip-text text-transparent"
@@ -305,14 +311,14 @@ export function RevenueSimulator() {
                   {formatCurrency(totalRevenue)}
                 </div>
                 <div className="text-sm font-medium leading-[1.2] text-base-contrast/54 text-center">
-                  Paid daily in USDC
+                  {t("distributor.paidDailyUsdc")}
                 </div>
               </div>
 
               <div className="flex flex-col gap-4 p-3 md:p-4">
                 <div className="flex justify-stretch items-stretch gap-6">
                   <h4 className="text-lg font-medium leading-[1.2] text-base-contrast flex-1">
-                    Revenue share
+                    {t("distributor.revenueShare")}
                   </h4>
                   <div
                     className="text-lg font-medium leading-[1.2] text-base-contrast text-right"
@@ -325,7 +331,7 @@ export function RevenueSimulator() {
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-6">
                     <h4 className="text-lg font-medium leading-[1.2] text-base-contrast flex-1">
-                      Tier
+                      {t("distributor.tier")}
                     </h4>
                     <div className="flex items-center gap-2" id="tierDisplay">
                       <div
@@ -379,7 +385,7 @@ export function RevenueSimulator() {
                     className="text-base font-medium leading-[1.2] text-purple-light text-right"
                     style={{ display: isUpgrade ? "block" : "none" }}
                   >
-                    Upgraded based on invitee volume!
+                    {t("distributor.upgradedBasedOnVolume")}
                   </div>
                 </div>
               </div>
@@ -387,7 +393,7 @@ export function RevenueSimulator() {
                 onClick={handleGetStarted}
                 className="flex justify-center items-center px-5 py-3 h-10 rounded-full border-0 cursor-pointer text-lg font-medium no-underline transition-opacity hover:opacity-90 bg-[linear-gradient(270deg,#48BDFF_0%,#786CFF_48%,#BD00FF_100%)] text-white w-full"
               >
-                Start earning now
+                {t("distributor.startEarningNow")}
               </button>
             </div>
           </div>

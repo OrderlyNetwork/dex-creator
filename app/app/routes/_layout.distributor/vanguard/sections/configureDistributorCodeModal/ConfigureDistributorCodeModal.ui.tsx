@@ -3,6 +3,7 @@ import ConfirmDialog from "../../components/ConfirmDialog";
 import { cn } from "../../utils";
 import { ApprovedIcon, LinkIcon, InfoIcon } from "../../icons";
 import { Tooltip } from "@orderly.network/ui";
+import { useTranslation } from "~/i18n";
 
 export interface ConfigureDistributorCodeModalUIProps {
   open: boolean;
@@ -40,6 +41,7 @@ const ConfigureDistributorCodeModalUI: React.FC<
   isValid,
   isSaving,
 }) => {
+  const { t } = useTranslation();
   return (
     <ConfirmDialog
       open={open}
@@ -48,11 +50,11 @@ const ConfigureDistributorCodeModalUI: React.FC<
           onClose();
         }
       }}
-      title="Configure distributor code"
+      title={t("distributor.configureDistributorCode")}
       onOk={onConfirm}
       onCancel={onClose}
-      okText="Save"
-      cancelText="Cancel"
+      okText={t("distributor.save")}
+      cancelText={t("distributor.cancel")}
       contentClassName="max-w-[480px]"
       confirmDisable={!isValid}
       loading={isLoading || isSaving}
@@ -77,7 +79,7 @@ const ConfigureDistributorCodeModalUI: React.FC<
               )}
             >
               <span className="shrink-0 text-sm font-medium leading-[1.25em] text-base-contrast-54">
-                Distributor code
+                {t("distributor.distributorCode")}
               </span>
               <input
                 id="distributor-code"
@@ -95,7 +97,7 @@ const ConfigureDistributorCodeModalUI: React.FC<
             <LinkIcon className="w-4 h-4" />
             <span>
               {isLoading && showChecking
-                ? "Checking availability..."
+                ? t("distributor.checkingAvailability")
                 : urlPreviewText}
             </span>
           </div>
@@ -105,8 +107,7 @@ const ConfigureDistributorCodeModalUI: React.FC<
         <div className="flex gap-1 items-start">
           <InfoIcon className="shrink-0 mt-0.5 text-base-contrast-54 w-4 h-4" />
           <div className="text-base-contrast-54 text-[13px] font-medium leading-[1.2em]">
-            Once updated, the original distributor code and URL will be
-            invalidated.
+            {t("distributor.codeUpdateInvalidateNotice")}
           </div>
         </div>
       </div>

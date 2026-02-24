@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components";
+import { useTranslation } from "~/i18n";
 
 export interface MinTierModalUIProps {
   open: boolean;
@@ -39,6 +40,8 @@ const MinTierModalUI: React.FC<MinTierModalUIProps> = ({
   onCopyInviteeAddress,
   isSaving,
 }) => {
+  const { t } = useTranslation();
+  const timeLabel = formatUTCTimeToLocal();
   return (
     <ConfirmDialog
       open={open}
@@ -47,11 +50,11 @@ const MinTierModalUI: React.FC<MinTierModalUIProps> = ({
           onClose();
         }
       }}
-      title="Configure minimum tier"
+      title={t("distributor.configureMinTier")}
       onOk={onConfirm}
       onCancel={onClose}
-      okText="Save"
-      cancelText="Cancel"
+      okText={t("distributor.save")}
+      cancelText={t("distributor.cancel")}
       contentClassName="max-w-[480px]"
       confirmDisable={!isChanged}
       loading={isSaving}
@@ -60,14 +63,14 @@ const MinTierModalUI: React.FC<MinTierModalUIProps> = ({
         <div className="flex gap-5">
           <div className="flex-1 flex flex-col gap-1">
             <div className="text-base-contrast-54 text-xs mb-1">
-              Invitee address
+              {t("distributor.inviteeAddress")}
             </div>
             <div className="text-base-contrast-80 text-sm font-medium flex items-center gap-2">
               {inviteeAddress}
               <button
                 onClick={onCopyInviteeAddress}
                 className="text-base-contrast-54 hover:text-base-contrast transition-colors"
-                aria-label="Copy address"
+                aria-label={t("distributor.copyAddress")}
               >
                 <CopyIcon className="w-4 h-4" />
               </button>
@@ -77,7 +80,7 @@ const MinTierModalUI: React.FC<MinTierModalUIProps> = ({
 
         <div className="flex-1 flex flex-col gap-1">
           <div className="text-base-contrast-54 text-xs mb-1">
-            Current effective tier
+            {t("distributor.currentEffectiveTier")}
           </div>
           <div className="text-base-contrast-80 text-sm font-medium">
             {formatTier(currentEffectiveTier)}
@@ -96,7 +99,7 @@ const MinTierModalUI: React.FC<MinTierModalUIProps> = ({
             <SelectTrigger
               prefix={
                 <span className="text-sm font-medium leading-[1.25em] pl-4 text-base-contrast-54">
-                  Minimum tier
+                  {t("distributor.minimumTier")}
                 </span>
               }
               valueAlign="right"
@@ -122,7 +125,7 @@ const MinTierModalUI: React.FC<MinTierModalUIProps> = ({
           <div className="flex-1 flex flex-col gap-5">
             <div className="flex flex-col gap-1">
               <div className="text-base-contrast-54 text-xs">
-                Base taker fee
+                {t("distributor.baseTakerFee")}
               </div>
               <div className="text-base-contrast text-base font-normal">
                 {formatBps(selectedTierData?.base_taker_fee_rate, 2)}
@@ -130,7 +133,7 @@ const MinTierModalUI: React.FC<MinTierModalUIProps> = ({
             </div>
             <div className="flex flex-col gap-1">
               <div className="text-base-contrast-54 text-xs">
-                Base maker fee
+                {t("distributor.baseMakerFee")}
               </div>
               <div className="text-base-contrast text-base font-normal">
                 {formatBps(selectedTierData?.base_maker_fee_rate, 2)}
@@ -140,7 +143,7 @@ const MinTierModalUI: React.FC<MinTierModalUIProps> = ({
           <div className="flex-1 flex flex-col gap-5">
             <div className="flex flex-col gap-1">
               <div className="text-base-contrast-54 text-xs">
-                Base taker fee (RWA)
+                {t("distributor.baseTakerFeeRwa")}
               </div>
               <div className="text-base-contrast text-base font-normal">
                 {formatBps(selectedTierData?.base_rwa_taker_fee_rate, 2)}
@@ -148,7 +151,7 @@ const MinTierModalUI: React.FC<MinTierModalUIProps> = ({
             </div>
             <div className="flex flex-col gap-1">
               <div className="text-base-contrast-54 text-xs">
-                Base maker fee (RWA)
+                {t("distributor.baseMakerFeeRwa")}
               </div>
               <div className="text-base-contrast text-base font-normal">
                 {formatBps(selectedTierData?.base_rwa_maker_fee_rate, 2)}
@@ -162,8 +165,7 @@ const MinTierModalUI: React.FC<MinTierModalUIProps> = ({
         <div className="flex gap-1 items-start">
           <InfoIcon className="shrink-0 mt-0.5 text-base-contrast-54 w-4 h-4" />
           <div className="text-base-contrast-54 text-[13px] font-medium leading-[1.2em]">
-            Any changes to the minimum tier configuration will only take effect
-            the next day at {formatUTCTimeToLocal()}.
+            {t("distributor.minTierEffectTime", { time: timeLabel })}
           </div>
         </div>
       </div>

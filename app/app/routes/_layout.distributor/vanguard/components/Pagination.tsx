@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "../utils";
+import { useTranslation } from "~/i18n";
 
 interface PaginationProps {
   current: number;
@@ -16,6 +17,7 @@ const Pagination: React.FC<PaginationProps> = ({
   total,
   onPageChange,
 }) => {
+  const { t } = useTranslation();
   const totalPages = Math.ceil(total / pageSize);
 
   // Calculate display range
@@ -57,7 +59,7 @@ const Pagination: React.FC<PaginationProps> = ({
     <div className="flex items-center mt-4 relative min-h-[32px]">
       {/* Left - Showing range */}
       <span className="text-sm text-base-contrast-54">
-        Showing {start}-{end} of {total}
+        {t("distributor.showingRange", { start, end, total })}
       </span>
 
       {/* Center - Page buttons (absolutely centered) */}
@@ -67,7 +69,7 @@ const Pagination: React.FC<PaginationProps> = ({
           <button
             onClick={() => onPageChange(pageNumbers[0] - 1)}
             className="w-8 h-8 rounded flex items-center justify-center bg-base-700 text-base-contrast border border-base-contrast-36 hover:bg-base-600 transition-colors"
-            aria-label="Previous page"
+            aria-label={t("distributor.previousPage")}
           >
             &lt;
           </button>
@@ -98,7 +100,7 @@ const Pagination: React.FC<PaginationProps> = ({
               onPageChange(pageNumbers[pageNumbers.length - 1] + 1)
             }
             className="w-8 h-8 rounded flex items-center justify-center bg-base-700 text-base-contrast border border-base-contrast-36 hover:bg-base-600 transition-colors"
-            aria-label="Next page"
+            aria-label={t("distributor.nextPage")}
           >
             &gt;
           </button>

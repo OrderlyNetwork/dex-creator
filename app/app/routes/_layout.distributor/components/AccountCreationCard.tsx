@@ -9,6 +9,7 @@ import { parseWalletError } from "../../../utils/wallet";
 import { registerAccount } from "../../../utils/orderly";
 import { useDistributor } from "../../../context/DistributorContext";
 import { SuccessStepCard } from "./SuccessStepCard";
+import { useTranslation } from "~/i18n";
 
 type AccountCreationCardProps = {
   brokerId: string;
@@ -16,6 +17,7 @@ type AccountCreationCardProps = {
 };
 
 export const AccountCreationCard = (props: AccountCreationCardProps) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const { address } = useAccount();
   const chainId = useChainId();
@@ -37,11 +39,12 @@ export const AccountCreationCard = (props: AccountCreationCardProps) => {
         props.brokerId
       );
       props.onSuccess(res);
-      toast.success("Create account");
+      toast.success(t("distributor.toastCreateAccount"));
       setBrokerId(props.brokerId);
     } catch (error: any) {
       console.error("Error creating account:", error);
-      const message = parseWalletError(error) || "Failed to create account";
+      const message =
+        parseWalletError(error) || t("distributor.toastFailedCreateAccount");
       toast.error(message);
     } finally {
       setLoading(false);
@@ -49,12 +52,12 @@ export const AccountCreationCard = (props: AccountCreationCardProps) => {
   };
 
   if (isAmbassador) {
-    return <SuccessStepCard title="Account creation" />;
+    return <SuccessStepCard title={t("distributor.accountCreation")} />;
   }
 
   return (
     <StepCard
-      title="Account creation"
+      title={t("distributor.accountCreation")}
       action={
         <Button
           variant="primary"
@@ -64,7 +67,7 @@ export const AccountCreationCard = (props: AccountCreationCardProps) => {
           isLoading={loading}
           className="shrink-0"
         >
-          Create account
+          {t("distributor.createAccount")}
         </Button>
       }
     />

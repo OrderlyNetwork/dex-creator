@@ -11,6 +11,7 @@ import { ProfileTypeCard } from "./components/ProfileTypeCard";
 import { CreateDexButton } from "./components/CreateDexButton";
 import { DistributorHeader } from "./components/DistributorHeader";
 import { parseWalletError } from "../../utils/wallet";
+import { useTranslation } from "~/i18n";
 
 type ProfileType = "ambassador" | "builder" | null;
 
@@ -20,6 +21,7 @@ type CreateDistributorProfileProps = {
 };
 
 export function CreateDistributorProfile(props: CreateDistributorProfileProps) {
+  const { t } = useTranslation();
   const [selectedType, setSelectedType] = useState<ProfileType>(null);
   const [loading, setLoading] = useState(false);
   const { address } = useAccount();
@@ -44,11 +46,12 @@ export function CreateDistributorProfile(props: CreateDistributorProfileProps) {
         props.brokerId
       );
       props.onSuccess(res);
-      toast.success("Create profile");
+      toast.success(t("distributor.toastCreateProfile"));
       setBrokerId(props.brokerId);
     } catch (error: any) {
       console.error("Error creating profile:", error);
-      const message = parseWalletError(error) || "Failed to create profile";
+      const message =
+        parseWalletError(error) || t("distributor.toastFailedCreateProfile");
       toast.error(message);
     } finally {
       setLoading(false);
@@ -59,14 +62,14 @@ export function CreateDistributorProfile(props: CreateDistributorProfileProps) {
     <div className="mt-18 md:mt-30 pt-5 pb-10 md:pb-15 font-medium">
       <div className="flex flex-col gap-10 md:gap-15 px-4 md:px-8 relative max-w-6xl mx-auto">
         {/* Header Section */}
-        <DistributorHeader title="Create your distributor profile" />
+        <DistributorHeader title={t("distributor.createProfileHeader")} />
 
         {/* Main Content */}
         <div className="flex flex-col gap-5 items-start w-full">
           <Card className="!border-none w-full p-6 md:p-6 flex flex-col gap-5">
             {/* Question Section */}
             <p className="text-lg text-base-contrast">
-              What describes you best?
+              {t("distributor.whatDescribesYou")}
             </p>
 
             {/* Divider */}
@@ -74,7 +77,7 @@ export function CreateDistributorProfile(props: CreateDistributorProfileProps) {
 
             {/* Instruction Text */}
             <p className="text-sm text-base-contrast-54">
-              Choose one that applies
+              {t("distributor.chooseOne")}
             </p>
 
             {/* Selection Cards */}
@@ -85,16 +88,16 @@ export function CreateDistributorProfile(props: CreateDistributorProfileProps) {
               )}
             >
               <ProfileTypeCard
-                title="Ambassador"
-                description="Not a builder? No problem! You can register as an ambassador*."
-                footer="*After signing up as an ambassador, you cannot create your own DEX using the same address."
+                title={t("distributor.ambassador")}
+                description={t("distributor.ambassadorDesc")}
+                footer={t("distributor.ambassadorFooter")}
                 isSelected={selectedType === "ambassador"}
                 onClick={() => handleSelectType("ambassador")}
               />
 
               <ProfileTypeCard
-                title="Builder"
-                description="Builder with a strong network to help onboard projects to Orderly One. Orderly One's graduation rules apply to qualify."
+                title={t("distributor.builder")}
+                description={t("distributor.builderDesc")}
                 isSelected={selectedType === "builder"}
                 onClick={() => handleSelectType("builder")}
               />
@@ -109,7 +112,7 @@ export function CreateDistributorProfile(props: CreateDistributorProfileProps) {
                   disabled={!selectedType}
                   isLoading={loading}
                 >
-                  Create now
+                  {t("distributor.createNow")}
                 </Button>
               ) : (
                 <CreateDexButton />

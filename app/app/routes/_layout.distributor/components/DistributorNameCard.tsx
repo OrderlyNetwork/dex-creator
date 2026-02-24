@@ -11,12 +11,14 @@ import {
 } from "../../../utils/validation";
 import { toast } from "react-toastify";
 import { Button } from "../../../components/Button";
+import { useTranslation } from "~/i18n";
 
 type DistributorNameCardProps = {
   onSuccess: () => void;
 };
 
 export const DistributorNameCard = (props: DistributorNameCardProps) => {
+  const { t } = useTranslation();
   const [error, setError] = useState<string | null>(null);
 
   const [distributorName, setDistributorName] = useState("");
@@ -25,11 +27,12 @@ export const DistributorNameCard = (props: DistributorNameCardProps) => {
     "/v1/orderly_one/vanguard/ambassador_name"
   );
 
+  const distributorNameLabel = t("distributor.distributorNamePlaceholder");
   const distributorNameValidator = composeValidators(
-    required("Distributor name"),
-    minLength(4, "Distributor name"),
-    maxLength(30, "Distributor name"),
-    alphanumericWithSpecialChars("Distributor name")
+    required(distributorNameLabel),
+    minLength(4, distributorNameLabel),
+    maxLength(30, distributorNameLabel),
+    alphanumericWithSpecialChars(distributorNameLabel)
   );
 
   const handleUpdateAmbassadorName = async () => {
@@ -38,12 +41,14 @@ export const DistributorNameCard = (props: DistributorNameCardProps) => {
         ambassador_name: distributorName,
       });
       if (res.success) {
-        toast.success("Configure profile");
+        toast.success(t("distributor.toastConfigureProfile"));
         props.onSuccess();
       }
     } catch (error: any) {
       console.error("Error updating ambassador name:", error);
-      toast.error(error?.message || "Failed to update ambassador name");
+      toast.error(
+        error?.message || t("distributor.toastFailedUpdateAmbassadorName")
+      );
     }
   };
 
@@ -52,7 +57,9 @@ export const DistributorNameCard = (props: DistributorNameCardProps) => {
   return (
     <Card className="flex flex-col gap-5 p-4 md:p-6">
       {/* Header */}
-      <p className="text-lg text-base-contrast">Distributor details</p>
+      <p className="text-lg text-base-contrast">
+        {t("distributor.distributorDetails")}
+      </p>
 
       {/* Separator line */}
       <div className="h-px w-full bg-base-contrast-12"></div>
@@ -61,16 +68,14 @@ export const DistributorNameCard = (props: DistributorNameCardProps) => {
       <div className="flex flex-col gap-4 items-start">
         {/* Help text above input */}
         <p className="text-sm text-base-contrast-54">
-          Provide a name for your distributor profile. This name will be used in
-          the HTML metadata, environment configuration, and other places
-          throughout the Orderly One ecosystem.
+          {t("distributor.distributorNameHelp")}
         </p>
 
         <FormInput
           id="distributorName"
           value={distributorName}
           onChange={e => setDistributorName(e.target.value)}
-          placeholder="Distributor name"
+          placeholder={t("distributor.distributorNamePlaceholder")}
           className="w-full"
           required={true}
           minLength={4}
@@ -81,8 +86,7 @@ export const DistributorNameCard = (props: DistributorNameCardProps) => {
 
         {/* Validation hint text */}
         <p className="text-sm text-base-contrast-54">
-          Alphanumeric characters, spaces, dots, hyphens, and underscores only.
-          Other special characters are not permitted.
+          {t("distributor.distributorNameValidationHint")}
         </p>
       </div>
 
@@ -95,7 +99,7 @@ export const DistributorNameCard = (props: DistributorNameCardProps) => {
           onClick={handleUpdateAmbassadorName}
           isLoading={isMutating}
         >
-          Confirm
+          {t("distributor.confirm")}
         </Button>
       </div>
     </Card>

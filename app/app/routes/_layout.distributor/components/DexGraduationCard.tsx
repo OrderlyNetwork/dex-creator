@@ -4,8 +4,10 @@ import { ArrowRightIcon } from "./CreateDexButton";
 import { StepCard } from "./StepCard";
 import { useDex } from "../../../context/DexContext";
 import { SuccessStepCard } from "./SuccessStepCard";
+import { useTranslation } from "~/i18n";
 
 export const DexGraduationCard = () => {
+  const { t } = useTranslation();
   const { dexData } = useDex();
   const navigate = useNavigate();
 
@@ -18,16 +20,16 @@ export const DexGraduationCard = () => {
   }
 
   if (dexData?.isGraduated) {
-    return <SuccessStepCard title="DEX graduation" />;
+    return <SuccessStepCard title={t("distributor.dexGraduation")} />;
   }
 
   return (
     <StepCard
-      title="DEX graduation"
-      description="Your distributor profile will be available after graduating your DEX. Graduate first to qualify automatically."
+      title={t("distributor.dexGraduation")}
+      description={t("distributor.dexGraduationDesc")}
       action={
         <Button variant="primary" size="md" onClick={handleGraduate}>
-          <span>Graduate now</span>
+          <span>{t("distributor.graduateNow")}</span>
           <ArrowRightIcon />
         </Button>
       }
