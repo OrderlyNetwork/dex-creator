@@ -40,21 +40,21 @@ export enum LocaleEnum {
 export const defaultLanguages: Language[] = [
   { localCode: LocaleEnum.en, displayName: "English" }, // English
   { localCode: LocaleEnum.zh, displayName: "中文" }, // Chinese
-  { localCode: LocaleEnum.ja, displayName: "日本語" }, // Japanese
+  { localCode: LocaleEnum.tc, displayName: "繁體中文" }, // Traditional Chinese
+  // { localCode: LocaleEnum.ja, displayName: "日本語" }, // Japanese
   { localCode: LocaleEnum.es, displayName: "Español" }, // Spanish
   { localCode: LocaleEnum.ko, displayName: "한국어" }, // Korean
-  { localCode: LocaleEnum.vi, displayName: "Tiếng Việt" }, // Vietnamese
-  { localCode: LocaleEnum.de, displayName: "Deutsch" }, // German
-  { localCode: LocaleEnum.fr, displayName: "Français" }, // French
-  { localCode: LocaleEnum.ru, displayName: "Русский" }, // Russian
-  { localCode: LocaleEnum.id, displayName: "Bahasa Indonesia" }, // Indonesian
-  { localCode: LocaleEnum.tr, displayName: "Türkçe" }, // Turkish
-  { localCode: LocaleEnum.it, displayName: "Italiano" }, // Italian
-  { localCode: LocaleEnum.pt, displayName: "Português" }, // Portuguese
-  { localCode: LocaleEnum.uk, displayName: "Українська" }, // Ukrainian
-  { localCode: LocaleEnum.pl, displayName: "Polski" }, // Polish
-  { localCode: LocaleEnum.nl, displayName: "Nederlands" }, // Dutch
-  { localCode: LocaleEnum.tc, displayName: "繁體中文" }, // Traditional Chinese
+  // { localCode: LocaleEnum.vi, displayName: "Tiếng Việt" }, // Vietnamese
+  // { localCode: LocaleEnum.de, displayName: "Deutsch" }, // German
+  // { localCode: LocaleEnum.fr, displayName: "Français" }, // French
+  // { localCode: LocaleEnum.ru, displayName: "Русский" }, // Russian
+  // { localCode: LocaleEnum.id, displayName: "Bahasa Indonesia" }, // Indonesian
+  // { localCode: LocaleEnum.tr, displayName: "Türkçe" }, // Turkish
+  // { localCode: LocaleEnum.it, displayName: "Italiano" }, // Italian
+  // { localCode: LocaleEnum.pt, displayName: "Português" }, // Portuguese
+  // { localCode: LocaleEnum.uk, displayName: "Українська" }, // Ukrainian
+  // { localCode: LocaleEnum.pl, displayName: "Polski" }, // Polish
+  // { localCode: LocaleEnum.nl, displayName: "Nederlands" }, // Dutch
 ];
 export const defaultLng = LocaleEnum.en;
 export const defaultNS = "translation";

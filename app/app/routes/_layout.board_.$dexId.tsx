@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "@remix-run/react";
 import { Helmet } from "react-helmet-async";
 import { Icon } from "@iconify/react";
+import { useTranslation } from "~/i18n";
 import { apiClient } from "../utils/apiClient";
 import { type TimePeriod, getTimePeriodString } from "../types/leaderboard";
 
@@ -43,6 +44,7 @@ interface DailyStats {
 }
 
 export default function DexDetailRoute() {
+  const { t } = useTranslation();
   const { dexId } = useParams();
   const [dexData, setDexData] = useState<BrokerStats | null>(null);
   const [dailyStats, setDailyStats] = useState<DailyStats[]>([]);
@@ -110,7 +112,7 @@ export default function DexDetailRoute() {
       );
     } catch (err) {
       console.error("Error fetching DEX data:", err);
-      setError("Failed to load DEX data");
+      setError(t("board.dexDetailErrorLoadFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -176,7 +178,7 @@ export default function DexDetailRoute() {
               className="text-primary"
             />
             <span className="ml-3 text-lg text-gray-300">
-              Loading DEX details...
+              {t("board.dexDetailLoading")}
             </span>
           </div>
         </div>
@@ -195,17 +197,17 @@ export default function DexDetailRoute() {
               className="text-error mx-auto mb-4"
             />
             <h2 className="text-2xl font-bold text-white mb-2">
-              DEX Not Found
+              {t("board.dexDetailNotFoundTitle")}
             </h2>
             <p className="text-gray-400 mb-6">
-              {error || "The requested DEX could not be found."}
+              {error || t("board.dexDetailNotFoundDescription")}
             </p>
             <Link
               to="/board"
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors"
             >
               <Icon icon="heroicons:arrow-left" width={20} />
-              Back to Board
+              {t("board.backToBoard")}
             </Link>
           </div>
         </div>
@@ -217,8 +219,12 @@ export default function DexDetailRoute() {
   const timePeriodString = getTimePeriodString(timePeriod);
   const geckoUrl = getGeckoTerminalUrl();
 
-  const pageTitle = `${dexData.brokerName} - DEX Details | Orderly One`;
-  const pageDescription = `View detailed statistics and performance metrics for ${dexData.brokerName}, a DEX built on Orderly Network.`;
+  const pageTitle = t("board.dexDetailPageTitle", {
+    brokerName: dexData.brokerName,
+  });
+  const pageDescription = t("board.dexDetailPageDescription", {
+    brokerName: dexData.brokerName,
+  });
 
   return (
     <div className="min-h-screen pt-24 pb-12 px-4 md:px-8">
@@ -235,7 +241,7 @@ export default function DexDetailRoute() {
               className="inline-flex items-center gap-2 px-4 py-2 bg-background-card hover:bg-primary/20 text-gray-300 hover:text-white rounded-lg transition-colors"
             >
               <Icon icon="heroicons:arrow-left" width={20} />
-              Back to Board
+              {t("board.backToBoard")}
             </Link>
           </div>
 
@@ -283,7 +289,7 @@ export default function DexDetailRoute() {
                 className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors"
               >
                 <Icon icon="mdi:chart-line" width={20} />
-                Visit DEX
+                {t("board.visitDex")}
               </a>
               {dexData.websiteUrl && (
                 <a
@@ -293,7 +299,7 @@ export default function DexDetailRoute() {
                   className="inline-flex items-center gap-2 px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors"
                 >
                   <Icon icon="mdi:web" width={20} />
-                  Website
+                  {t("board.website")}
                 </a>
               )}
             </div>
@@ -314,7 +320,9 @@ export default function DexDetailRoute() {
         {/* Time Period Selector */}
         <div className="mb-8 slide-fade-in-delayed">
           <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-400">Time Period:</span>
+            <span className="text-sm text-gray-400">
+              {t("board.timePeriodLabel")}
+            </span>
             {(["daily", "weekly", "30d", "90d"] as TimePeriod[]).map(period => (
               <button
                 key={period}
@@ -344,7 +352,7 @@ export default function DexDetailRoute() {
                 />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-white">Volume</h3>
+                <h3 className="text-lg font-semibold text-white">{t("board.volume")}</h3>
                 <p className="text-sm text-gray-400">({timePeriodString})</p>
               </div>
             </div>
@@ -364,7 +372,7 @@ export default function DexDetailRoute() {
                 />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-white">Fees</h3>
+                <h3 className="text-lg font-semibold text-white">{t("board.fees")}</h3>
                 <p className="text-sm text-gray-400">({timePeriodString})</p>
               </div>
             </div>
@@ -384,7 +392,7 @@ export default function DexDetailRoute() {
                 />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-white">Revenue</h3>
+                <h3 className="text-lg font-semibold text-white">{t("board.revenue")}</h3>
                 <p className="text-sm text-gray-400">({timePeriodString})</p>
               </div>
             </div>
@@ -429,7 +437,7 @@ export default function DexDetailRoute() {
                   className="text-primary"
                 />
                 <h3 className="text-xl font-semibold text-white">
-                  Token Information
+                  {t("board.tokenInformation")}
                 </h3>
               </div>
               <div className="aspect-[3/4] sm:aspect-square md:aspect-[4/3] bg-gray-800 rounded-lg overflow-hidden">
@@ -453,7 +461,7 @@ export default function DexDetailRoute() {
           <div className="mb-8 slide-fade-in-delayed">
             <div className="bg-background-card border border-gray-600 rounded-lg p-6">
               <h3 className="text-xl font-semibold text-white mb-4">
-                Social Links
+                {t("board.socialLinks")}
               </h3>
               <div className="flex flex-wrap gap-4">
                 {dexData.telegramLink && (
@@ -464,7 +472,7 @@ export default function DexDetailRoute() {
                     className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                   >
                     <Icon icon="mdi:telegram" width={20} />
-                    Telegram
+                    {t("board.telegram")}
                   </a>
                 )}
                 {dexData.discordLink && (
@@ -475,7 +483,7 @@ export default function DexDetailRoute() {
                     className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
                   >
                     <Icon icon="mdi:discord" width={20} />
-                    Discord
+                    {t("board.discord")}
                   </a>
                 )}
                 {dexData.xLink && (
@@ -507,23 +515,23 @@ export default function DexDetailRoute() {
           <div className="slide-fade-in-delayed">
             <div className="bg-background-card border border-gray-600 rounded-lg p-6">
               <h3 className="text-xl font-semibold text-white mb-4">
-                Daily Performance
+                {t("board.dailyPerformance")}
               </h3>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-600">
                       <th className="text-left py-3 px-2 text-gray-400">
-                        Date
+                        {t("board.tableDate")}
                       </th>
                       <th className="text-right py-3 px-2 text-gray-400">
-                        Volume
+                        {t("board.tableVolume")}
                       </th>
                       <th className="text-right py-3 px-2 text-gray-400">
-                        Fees
+                        {t("board.tableFees")}
                       </th>
                       <th className="text-right py-3 px-2 text-gray-400">
-                        Revenue
+                        {t("board.tableRevenue")}
                       </th>
                       {/* <th className="text-right py-3 px-2 text-gray-400">
                         PnL

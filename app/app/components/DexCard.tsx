@@ -1,3 +1,4 @@
+import { useTranslation } from "~/i18n";
 import { type TimePeriod, getTimePeriodString } from "../types/leaderboard";
 
 interface DexCardProps {
@@ -67,6 +68,7 @@ const getRankIcon = (index: number) => {
 };
 
 export default function DexCard({ broker, rank, timePeriod }: DexCardProps) {
+  const { t } = useTranslation();
   // const pnlFormatted = broker.totalPnl ? formatPnl(broker.totalPnl) : null;
   const timePeriodString = timePeriod ? getTimePeriodString(timePeriod) : null;
 
@@ -134,7 +136,7 @@ export default function DexCard({ broker, rank, timePeriod }: DexCardProps) {
               <div className="flex flex-wrap gap-3">
                 <div className="flex-1">
                   <div className="text-xs text-gray-400">
-                    Volume ({timePeriodString})
+                    {t("board.volumeWithPeriod", { period: timePeriodString })}
                   </div>
                   <div className="font-medium text-white">
                     ${formatVolume(broker.totalVolume)}
@@ -143,7 +145,7 @@ export default function DexCard({ broker, rank, timePeriod }: DexCardProps) {
                 {broker.totalFee !== undefined && (
                   <div className="flex-1">
                     <div className="text-xs text-gray-400">
-                      Fees ({timePeriodString})
+                      {t("board.feesWithPeriod", { period: timePeriodString })}
                     </div>
                     <div className="font-medium text-white">
                       ${formatFee(broker.totalFee)}
@@ -179,7 +181,7 @@ export default function DexCard({ broker, rank, timePeriod }: DexCardProps) {
               className="inline-flex items-center justify-center gap-2 p-2 bg-primary hover:bg-primary-light text-white text-sm font-medium rounded-lg transition-colors flex-1"
             >
               <div className="i-mdi:chart-line min-h-4 min-w-4"></div>
-              Visit DEX
+              {t("board.visitDex")}
             </a>
 
             {/* Website Link CTA Button */}
@@ -192,7 +194,7 @@ export default function DexCard({ broker, rank, timePeriod }: DexCardProps) {
                 className="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors flex-1 justify-center"
               >
                 <div className="i-mdi:web min-h-4 min-w-4"></div>
-                Website
+                {t("board.website")}
               </a>
             )}
           </div>
@@ -207,7 +209,7 @@ export default function DexCard({ broker, rank, timePeriod }: DexCardProps) {
                   rel="noopener noreferrer"
                   onClick={e => e.stopPropagation()}
                   className="text-gray-400 hover:text-primary transition-colors"
-                  title="Telegram"
+                  title={t("board.telegram")}
                 >
                   <div className="i-mdi:telegram h-5 w-5"></div>
                 </a>
@@ -219,7 +221,7 @@ export default function DexCard({ broker, rank, timePeriod }: DexCardProps) {
                   rel="noopener noreferrer"
                   onClick={e => e.stopPropagation()}
                   className="text-gray-400 hover:text-primary transition-colors"
-                  title="Discord"
+                  title={t("board.discord")}
                 >
                   <div className="i-mdi:discord h-5 w-5"></div>
                 </a>
@@ -231,7 +233,7 @@ export default function DexCard({ broker, rank, timePeriod }: DexCardProps) {
                   rel="noopener noreferrer"
                   onClick={e => e.stopPropagation()}
                   className="text-gray-400 hover:text-primary transition-colors"
-                  title="X (Twitter)"
+                  title={t("board.xTwitter")}
                 >
                   <svg
                     width="20"
@@ -260,16 +262,16 @@ export default function DexCard({ broker, rank, timePeriod }: DexCardProps) {
                 )}
                 <div className="flex-1">
                   <div className="text-sm text-gray-300">
-                    Token: ${broker.tokenSymbol}
+                    {t("board.tokenLabel", { symbol: broker.tokenSymbol })}
                   </div>
                   <div className="text-xs text-gray-400 mt-1">
-                    Price: $
+                    {t("board.price")}$
                     {new Intl.NumberFormat("en-US", {
                       maximumSignificantDigits: 4,
                     }).format(broker.tokenPrice)}
                     {broker.tokenMarketCap && (
                       <span className="ml-2">
-                        • Market Cap: $
+                        • {t("board.marketCap")}$
                         {new Intl.NumberFormat("en-US", {
                           notation: "compact",
                           maximumSignificantDigits: 4,
@@ -286,7 +288,7 @@ export default function DexCard({ broker, rank, timePeriod }: DexCardProps) {
                       onClick={e => e.stopPropagation()}
                       className="text-xs text-primary hover:text-primary-light inline-flex items-center gap-1 mt-1"
                     >
-                      View on GeckoTerminal
+                      {t("board.viewOnGeckoTerminal")}
                       <div className="i-mdi:open-in-new h-3 w-3"></div>
                     </a>
                   )}

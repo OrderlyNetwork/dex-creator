@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { MetaFunction } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 import { Icon } from "@iconify/react";
+import { i18n, useTranslation } from "~/i18n";
 import { apiClient } from "../utils/apiClient";
 import DexCard from "../components/DexCard";
 import Pagination from "../components/Pagination";
@@ -80,27 +81,16 @@ interface DexStats {
 type SortOption = "volume" | "pnl" | "fee";
 
 const periods = [
-  {
-    label: "Daily",
-    value: "daily",
-  },
-  {
-    label: "Weekly",
-    value: "weekly",
-  },
-  {
-    label: "30 Days",
-    value: "30d",
-  },
-  {
-    label: "90 Days",
-    value: "90d",
-  },
+  { label: i18n.t("board.period.daily"), value: "daily" },
+  { label: i18n.t("board.period.weekly"), value: "weekly" },
+  { label: i18n.t("board.period.30d"), value: "30d" },
+  { label: i18n.t("board.period.90d"), value: "90d" },
 ];
 
 const filterTabs = ["volume", "fee"];
 
 export default function BoardRoute() {
+  const { t } = useTranslation();
   const [leaderboard, setLeaderboard] = useState<BrokerStats[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -132,7 +122,7 @@ export default function BoardRoute() {
       setError(null);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to fetch board data"
+        err instanceof Error ? err.message : t("board.errorFetchFailed")
       );
       console.error("Error fetching leaderboard:", err);
     } finally {
@@ -178,11 +168,11 @@ export default function BoardRoute() {
   const getSortLabel = (sort: SortOption) => {
     switch (sort) {
       case "volume":
-        return "Volume";
+        return t("board.sortVolume");
       case "pnl":
-        return "PnL";
+        return t("board.sortPnl");
       case "fee":
-        return "Fees";
+        return t("board.sortFees");
     }
   };
 
@@ -192,10 +182,10 @@ export default function BoardRoute() {
         {/* Header */}
         <div className="text-center mb-8 slide-fade-in">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            DEX Board
+            {t("board.title")}
           </h1>
           <p className="text-gray-300 text-lg md:text-xl mb-6">
-            Discover the top performing DEXs on Orderly One
+            {t("board.subtitle")}
           </p>
         </div>
 
@@ -215,9 +205,12 @@ export default function BoardRoute() {
                     dexStats.total.allTime.toLocaleString()
                   )}
                 </div>
-                <div className="text-xs text-gray-300 mb-1">Total DEXs</div>
+                <div className="text-xs text-gray-300 mb-1">
+                  {t("board.statsTotalDexs")}
+                </div>
                 <div className="text-xs text-primary-light">
-                  +{dexStats.total.new.toLocaleString()} new ({dexStats.period})
+                  +{dexStats.total.new.toLocaleString()}{" "}
+                  {t("board.statsNewSuffix", { period: dexStats.period })}
                 </div>
               </div>
               <div className="bg-background-card rounded-lg border border-light/10 px-4 py-3 text-center">
@@ -232,10 +225,12 @@ export default function BoardRoute() {
                     dexStats.graduated.allTime.toLocaleString()
                   )}
                 </div>
-                <div className="text-xs text-gray-300 mb-1">Graduated</div>
+                <div className="text-xs text-gray-300 mb-1">
+                  {t("board.statsGraduated")}
+                </div>
                 <div className="text-xs text-green-400/70">
-                  +{dexStats.graduated.new.toLocaleString()} new (
-                  {dexStats.period})
+                  +{dexStats.graduated.new.toLocaleString()}{" "}
+                  {t("board.statsNewSuffix", { period: dexStats.period })}
                 </div>
               </div>
             </div>
@@ -263,7 +258,9 @@ export default function BoardRoute() {
           <div className="flex items-center gap-3">
             {/* Time Period Dropdown */}
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-300">Period:</span>
+              <span className="text-sm text-gray-300">
+                {t("board.period")}:
+              </span>
               {/* <select
                 value={timePeriod}
                 onChange={e =>
@@ -308,7 +305,7 @@ export default function BoardRoute() {
                 }
                 width={16}
               />
-              Refresh
+              {t("board.refresh")}
             </button>
           </div>
         </div>
@@ -323,7 +320,7 @@ export default function BoardRoute() {
                 className="text-error mx-auto mb-3"
               />
               <p className="text-error font-medium mb-2">
-                Failed to load board
+                {t("board.errorLoadFailed")}
               </p>
               <p className="text-gray-400 text-sm">{error}</p>
             </div>
@@ -338,7 +335,7 @@ export default function BoardRoute() {
               width={48}
               className="text-primary mx-auto mb-4"
             />
-            <p className="text-gray-300">Loading board...</p>
+            <p className="text-gray-300">{t("board.loading")}</p>
           </div>
         )}
 
@@ -373,7 +370,7 @@ export default function BoardRoute() {
             pageSize={pageSize}
             totalItems={totalItems}
             onPageChange={handlePageChange}
-            itemName="DEXs"
+            itemName={t("board.paginationItemName")}
             showPageSizeSelector={false}
           />
         )}
@@ -386,39 +383,37 @@ export default function BoardRoute() {
               width={48}
               className="text-gray-500 mx-auto mb-4"
             />
-            <p className="text-gray-300 text-lg mb-2">No data available</p>
-            <p className="text-gray-400">
-              The board will populate as DEXs generate trading activity.
+            <p className="text-gray-300 text-lg mb-2">
+              {t("board.emptyTitle")}
             </p>
+            <p className="text-gray-400">{t("board.emptyDescription")}</p>
           </div>
         )}
 
         {/* Info Section */}
         <div className="mt-12 bg-background-card rounded-lg border border-light/10 p-6 slide-fade-in">
           <h3 className="text-lg font-semibold text-white mb-4">
-            About the Board
+            {t("board.aboutTitle")}
           </h3>
           <div className="grid md:grid-cols-2 gap-6 text-sm text-gray-300">
             <div>
               <h4 className="font-medium text-white mb-2 underline">
-                How it works
+                {t("board.aboutHowItWorks")}
               </h4>
-              <p>
-                The board aggregates trading data from DEXs launched via Orderly
-                One over the last 30 days.
-              </p>
+              <p>{t("board.aboutHowItWorksDescription")}</p>
             </div>
             <div>
               <h4 className="font-medium text-white mb-2 underline">
-                Metrics explained
+                {t("board.aboutMetricsExplained")}
               </h4>
               <ul className="space-y-1">
                 <li>
-                  <strong>Volume:</strong> Sum of all perpetual trading volume
+                  <strong>{t("board.aboutVolumeLabel")}</strong>{" "}
+                  {t("board.aboutVolumeDescription")}
                 </li>
                 <li>
-                  <strong>Fees:</strong> Total fees paid by users from trading
-                  (includes both DEX revenue and infrastructure fees)
+                  <strong>{t("board.aboutFeesLabel")}</strong>{" "}
+                  {t("board.aboutFeesDescription")}
                 </li>
                 {/* <li>
                   <strong>PnL:</strong> Realized profit and loss across all
