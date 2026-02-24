@@ -1,11 +1,11 @@
 ---
 name: extract-i18n-keys
-description: Extracts hardcoded copy from ts/tsx/js/jsx files, writes i18n keys to app/app/i18n/module by route/component prefix, and replaces strings with t() or i18n.t(). Use when extracting i18n keys, hardcoded copy, localization, or running extract-i18n-keys. Supports file/directory or commit hash as input; requires a clean working tree.
+description: Extracts hardcoded copy from ts/tsx/js/jsx files, writes i18n keys to app/app/i18n/module by route/component prefix, and replaces strings with t() or i18n.t(). Use when extracting i18n keys, hardcoded copy, localization, or running extract-i18n-keys. Supports file/directory or commit hash as input; requires no unstaged changes (staged changes are allowed).
 ---
 
 # Extract i18n Keys
 
-You are responsible for extracting hardcoded copy from TypeScript/JavaScript files in this repo and writing them as i18n module keys under `app/app/i18n/module/`. Execute only when the working tree is clean. Do not merge new keys into `app/app/i18n/locales/en.json`; locale sync is handled by the project.
+You are responsible for extracting hardcoded copy from TypeScript/JavaScript files in this repo and writing them as i18n module keys under `app/app/i18n/module/`. Execute only when there are no unstaged changes (staged changes are allowed). Do not merge new keys into `app/app/i18n/locales/en.json`; locale sync is handled by the project.
 
 ## 0. Conventions and paths
 
@@ -16,11 +16,13 @@ You are responsible for extracting hardcoded copy from TypeScript/JavaScript fil
 
 ## 1. Pre-checks and parameters
 
-**1.1 Clean working tree**
+**1.1 No unstaged changes**
 
 Before any extraction or writes:
 
-- Run `git status --porcelain`. If there is any output, **abort** and tell the user to commit or stash changes. Do not proceed.
+- Run `git status --porcelain`.
+- If any line has a **non-space second character** (i.e. there are unstaged changes in the working tree), **abort** and tell the user to commit, stash, or discard those unstaged changes. Do not proceed.
+- If all lines have a space as the second character (only index/staged changes), or there is no output, **continue**. Staged changes are allowed.
 
 **1.2 Input (user must provide one of)**
 
@@ -48,7 +50,7 @@ Result: the **list of files to scan**.
 
 - **String literals**: Double/single-quoted strings, length ≥ 2, e.g. `"([^"\\n]{2,})"`, `'([^'\\n]{2,})'`.
 - **Template literals**: With or without `${...}`; e.g. `` `([^`\n]{2,})` ``.
-- **React JSX text nodes**: Text inside elements, e.g. `<div>button</div>` → `button`, `<Button>Confirm</Button>` → `Confirm`. Identify JSXText / text children and treat as candidates.
+- **React JSX text nodes**: Text inside elements, e.g. `<div>button</div>` → `button`, `<Button>Confirm</Button>` → `Confirm`. Identify JSXText / text children and treat as candidates. **Include text inside heading elements** (`h1`, `h2`, `h3`, `h4`, `h5`, `h6`)—section headings are user-facing copy and must be extracted (e.g. `<h3>Trading fees fund a self-sustaining treasury for:</h3>` → extract the full heading text).
 - **JSX attribute strings**: e.g. `placeholder="Enter name"`, `title="Submit"`, `aria-label="Close"`. Treat as string literal candidates, **excluding `img` elements' `alt` attributes**.
 
 **2.2 Template literal interpolation**
@@ -62,6 +64,7 @@ Result: the **list of files to scan**.
 - Exclude text already inside `t("...")`, `i18n.t("...")`, or `Trans`.
 - Exclude: class names, CSS, Tailwind tokens, routes, variable names, enum keys, log tags, URLs, hex, pure numbers/symbols.
 - Exclude: JSX `img` elements' `alt` attribute values from extraction (do not create i18n keys for them).
+- Exclude: route-level `meta` exports at the top of route files, such as `export const meta: MetaFunction = () => [ { title: "Case Studies | Orderly One" }, ... ];`. Do not extract or replace the strings inside these `meta` definitions; they should remain hardcoded.
 - Keep: human-readable text with spaces/punctuation or multiple words; placeholder patterns like `{{qty}}`, `{value}`.
 - For JSX text: apply the same rules; exclude trim-empty, pure punctuation/digits; single words that are clearly UI labels (e.g. button text) may be kept.
 
@@ -95,6 +98,16 @@ Aggregate per file: **file → list of extracted texts** for module mapping and 
 - **slugKey**: Short, readable identifier from the text; preserve placeholders like `{{qty}}`.
 - **De-duplication**: If the target module already has the same key or same English value, reuse it. If only similar, add a suffix (e.g. `.description`, `.title`) or `-1`, `-2`.
 
+**4.1 slugKey naming rules (hierarchical and dotted)**
+
+- **Logical groupings**: Use dotted sub-namespaces for related keys instead of flat suffixes. Prefer `prefix.concept.subKey` over `prefix.conceptSubKey` when the concept has multiple variants.
+  - Good: `distributor.completeProfile.step.3`, `distributor.completeProfile.step.4` (variant is step count).
+  - Avoid: `distributor.completeProfile3Steps`, `distributor.completeProfile4Steps`.
+- **Numeric or unit segments**: When the slug encodes a number, unit, or scale (e.g. volume 10M, 30M, 1B), put that segment after a dot so the key reads as a hierarchy: `prefix.vol.10m`, `prefix.vol.1b`, not `prefix.vol10m`, `prefix.vol1b`.
+  - Good: `distributor.vol.10m`, `distributor.vol.30m`, `distributor.vol.90m`, `distributor.vol.1b`, `distributor.vol.10b`.
+  - Avoid: `distributor.vol10m`, `distributor.vol1b`.
+- **Step or ordinal variants**: For “step 1”, “step 2”, or “N steps” flows, use a single parent and dot suffix: e.g. `prefix.flowName.step.1`, `prefix.flowName.step.2`, or `prefix.completeProfile.step.3`.
+
 ## 5. Write to module and index
 
 - **Target**: `app/app/i18n/module/<prefix>.ts`.
@@ -114,6 +127,12 @@ Aggregate per file: **file → list of extracted texts** for module mapping and 
 - **Examples**:
   - Simple: `<span>Confirm</span>` → `<span>{t("common.confirm")}</span>`
   - With interpolation: `` `${qty} items` `` → `t("cart.itemCount", { qty })`
+
+### 7.1 Constants and config objects
+
+- When UI is driven by **constant config objects/arrays** (e.g. `const steps = [{ title: "...", desc: "..." }]`), **do not rename existing property names** just to store i18n keys. Keep the original shape (`title`, `description`, `label`, etc.).
+  - Good: `title: t("distributor.step1.title")`, `desc: t("distributor.step1.desc")` and later render `{step.title}`, `{step.desc}`.
+  - Avoid: introducing `titleKey`, `descKey` and calling `t(step.titleKey)`, `t(step.descKey)` in the render.
 
 ## Additional reference
 

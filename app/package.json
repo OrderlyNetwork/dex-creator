@@ -8,7 +8,9 @@
     "build": "remix vite:build",
     "start": "vite preview",
     "typecheck": "tsc",
-    "typechain": "typechain --target ethers-v6 --out-dir ./types './abi/**/*.json'"
+    "typechain": "typechain --target ethers-v6 --out-dir ./types './abi/**/*.json'",
+    "export-en-json": "tsx scripts/export-en-json.ts",
+    "sync-locales": "tsx scripts/sync-locales.ts"
   },
   "license": "MIT",
   "author": "Mario Reder <mario@orderly.network>",
