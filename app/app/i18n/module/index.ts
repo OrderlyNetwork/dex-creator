@@ -2,6 +2,7 @@ import { board } from "./board";
 import { caseStudies } from "./caseStudies";
 import { common } from "./common";
 import { dexCard } from "./dexCard";
+import { dex } from "./dex";
 import { distributor } from "./distributor";
 import { graduation } from "./graduation";
 import { home } from "./home";
@@ -13,6 +14,7 @@ export const en = {
   ...caseStudies,
   ...common,
   ...dexCard,
+  ...dex,
   ...distributor,
   ...graduation,
   ...home,

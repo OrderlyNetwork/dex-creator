@@ -20,6 +20,7 @@ import { useDistributor } from "../context/DistributorContext";
 import { useDex } from "../context/DexContext";
 import { BackDexDashboard } from "../components/BackDexDashboard";
 import { useThemeHandlers } from "../hooks/useThemeHandlers";
+import { useTranslation } from "~/i18n";
 
 export const meta: MetaFunction = () => [
   { title: "Configure Your DEX - Orderly One" },
@@ -31,6 +32,7 @@ export const meta: MetaFunction = () => [
 ];
 
 export default function DexConfigRoute() {
+  const { t } = useTranslation();
   const { isAuthenticated, token, isLoading } = useAuth();
   const navigate = useNavigate();
   const form = useDexForm();
@@ -126,13 +128,17 @@ export default function DexConfigRoute() {
         const isValid = section.getValidationTest(sectionProps);
         // validate error
         if (!isValid) {
-          const commonErrorMessage = `${section.title}: validation failed`;
+          const commonErrorMessage = t("dex.config.validationFailed", {
+            sectionTitle: section.title,
+          });
           if (section.key === DEX_SECTION_KEYS.BrokerDetails) {
             const error = form.brokerNameValidator(form.brokerName.trim());
             validationErrors.push(error || commonErrorMessage);
           } else if (section.key === DEX_SECTION_KEYS.PrivyConfiguration) {
             validationErrors.push(
-              `${section.title}: Please enter a valid Terms of Use URL`
+              t("dex.config.privyTermsUrlInvalid", {
+                sectionTitle: section.title,
+              })
             );
           } else {
             validationErrors.push(commonErrorMessage);
@@ -143,9 +149,7 @@ export default function DexConfigRoute() {
 
     const isSwapEnabled = form.enabledMenus.split(",").includes("Swap");
     if (isSwapEnabled && form.swapFeeBps === null) {
-      validationErrors.push(
-        "Navigation Menus: Swap fee configuration is required when Swap page is enabled"
-      );
+      validationErrors.push(t("dex.config.swapFeeRequired"));
     }
 
     return validationErrors;
@@ -195,16 +199,14 @@ export default function DexConfigRoute() {
         );
 
         form.setDexData(savedData);
-        toast.success("DEX configuration updated successfully!");
+        toast.success(t("dex.config.updatedSuccess"));
         navigate("/dex#dex-creation-status");
       }
     } catch (error) {
       console.error("Error updating DEX:", error);
 
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to update DEX configuration";
+        error instanceof Error ? error.message : t("dex.config.updateFailed");
 
       toast.error(errorMessage);
     } finally {
@@ -228,10 +230,10 @@ export default function DexConfigRoute() {
         <div className="text-center">
           <div className="i-svg-spinners:pulse-rings-multiple h-12 w-12 mx-auto text-primary-light mb-4"></div>
           <div className="text-base md:text-lg mb-2">
-            Loading DEX Configuration
+            {t("dex.config.loading")}
           </div>
           <div className="text-xs md:text-sm text-gray-400">
-            Please wait while we fetch your settings
+            {t("dex.config.fetchSettingsHint")}
           </div>
         </div>
       </div>
@@ -243,14 +245,14 @@ export default function DexConfigRoute() {
       <div className="w-full max-w-3xl mx-auto px-4 py-6 md:py-10 mt-26 pb-52">
         <div className="text-center">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">
-            DEX Configuration
+            {t("dex.config.pageTitle")}
           </h1>
           <Card>
             <h2 className="text-lg md:text-xl font-medium mb-3 md:mb-4">
-              Authentication Required
+              {t("dex.config.authRequired")}
             </h2>
             <p className="mb-4 md:mb-6 text-sm md:text-base text-gray-300">
-              Please connect your wallet and login to access DEX configuration.
+              {t("dex.config.authRequiredHint")}
             </p>
             <div className="flex justify-center">
               <WalletConnect />
@@ -266,18 +268,18 @@ export default function DexConfigRoute() {
       <div className="w-full max-w-3xl mx-auto px-4 py-6 md:py-10 mt-26 pb-52">
         <div className="text-center">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">
-            DEX Configuration
+            {t("dex.config.pageTitle")}
           </h1>
           <Card>
             <h2 className="text-lg md:text-xl font-medium mb-3 md:mb-4">
-              No DEX Found
+              {t("dex.config.noDexFound")}
             </h2>
             <p className="mb-4 md:mb-6 text-sm md:text-base text-gray-300">
-              You need to create a DEX first before you can configure it.
+              {t("dex.config.createDexFirst")}
             </p>
             <div className="flex justify-center">
               <Link to="/dex" className="btn-connect">
-                Create Your DEX
+                {t("dex.createYourDex")}
               </Link>
             </div>
           </Card>
@@ -292,7 +294,7 @@ export default function DexConfigRoute() {
         <div>
           <BackDexDashboard />
           <h1 className="text-2xl md:text-3xl font-bold gradient-text">
-            DEX Configuration
+            {t("dex.config.pageTitle")}
           </h1>
         </div>
       </div>
@@ -300,9 +302,9 @@ export default function DexConfigRoute() {
       <Form
         onSubmit={handleSubmit}
         className="space-y-6"
-        submitText="Update DEX Configuration"
+        submitText={t("dex.config.updateButton")}
         isLoading={isSaving}
-        loadingText="Saving"
+        loadingText={t("dex.config.saving")}
         disabled={false}
         enableRateLimit={true}
       >
@@ -320,7 +322,7 @@ export default function DexConfigRoute() {
           customDescription={section => {
             if (section.key === DEX_SECTION_KEYS.DistributorCode) {
               return distributorInfo?.exist
-                ? "You have been invited by the following distributor."
+                ? t("dex.config.invitedByDistributor")
                 : section.description;
             }
             return section.description;

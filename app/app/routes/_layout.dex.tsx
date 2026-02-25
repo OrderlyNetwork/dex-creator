@@ -20,6 +20,7 @@ import { MainnetChains } from "../components/ChainsSelect";
 import clsx from "clsx";
 import { useDistributor } from "../context/DistributorContext";
 import { PointSystemIcon } from "../icons/PointSystemIcon";
+import { Trans, useTranslation } from "~/i18n";
 
 export const meta: MetaFunction = () => [
   { title: "Create Your DEX - Orderly One" },
@@ -31,6 +32,7 @@ export const meta: MetaFunction = () => [
 ];
 
 export default function DexRoute() {
+  const { t } = useTranslation();
   const { isAuthenticated, token, isLoading } = useAuth();
   const {
     dexData,
@@ -209,7 +211,7 @@ export default function DexRoute() {
 
   const handleRetryForking = async () => {
     if (!dexData || !dexData.id || !token) {
-      toast.error("DEX information is not available");
+      toast.error(t("dex.infoUnavailable"));
       return;
     }
 
@@ -226,7 +228,7 @@ export default function DexRoute() {
         updateDexData(result.dex);
 
         if (result.dex.repoUrl) {
-          toast.success("Repository forked successfully!");
+          toast.success(t("dex.repoForkedSuccess"));
 
           setLocalDeploymentUrl(
             `https://dex.orderly.network/${result.dex.repoUrl
@@ -234,16 +236,14 @@ export default function DexRoute() {
               .pop()}/`
           );
         } else {
-          toast.error("Repository creation failed. Please try again later.");
+          toast.error(t("dex.repoCreationFailed"));
         }
       } else {
-        toast.error(
-          "Failed to get response from server. Please try again later."
-        );
+        toast.error(t("dex.serverResponseFailed"));
       }
     } catch (error) {
       console.error("Error forking repository:", error);
-      toast.error("Failed to fork repository. Please try again later.");
+      toast.error(t("dex.repoCreationFailed"));
     } finally {
       setIsForking(false);
     }
@@ -257,13 +257,13 @@ export default function DexRoute() {
     setDeploymentConfirmed(true);
 
     if (isNewDeployment) {
-      toast.success("Your DEX has been successfully deployed!");
+      toast.success(t("dex.deployedSuccess"));
     }
   };
 
   const handleDelete = async () => {
     if (!dexData || !dexData.id || !token) {
-      toast.error("DEX information is not available");
+      toast.error(t("dex.infoUnavailable"));
       return;
     }
 
@@ -271,7 +271,7 @@ export default function DexRoute() {
 
     try {
       await del<{ message: string }>(`api/dex/${dexData.id}`, null, token);
-      toast.success("DEX deleted successfully!");
+      toast.success(t("dex.deletedSuccess"));
 
       form.resetForm();
       setLocalDeploymentUrl(null);
@@ -281,7 +281,7 @@ export default function DexRoute() {
       navigate("/");
     } catch (error) {
       console.error("Error deleting DEX:", error);
-      toast.error("Failed to delete the DEX. Please try again later.");
+      toast.error(t("dex.deleteFailed"));
     } finally {
       setIsDeleting(false);
     }
@@ -290,7 +290,7 @@ export default function DexRoute() {
   const handleShowDeleteConfirm = () => {
     openModal("deleteConfirm", {
       onConfirm: handleDelete,
-      entityName: "DEX",
+      entityName: t("dex.entityName"),
     });
   };
 
@@ -306,19 +306,21 @@ export default function DexRoute() {
             updateDexData({
               customDomain: null,
             });
-            toast.success("Custom domain removed successfully");
+            toast.success(t("dex.customDomainRemovedSuccess"));
           })
           .catch(error => {
             console.error("Error removing custom domain:", error);
-            toast.error("Failed to remove custom domain");
+            toast.error(t("dex.customDomainRemoveFailed"));
           })
           .finally(() => {
             setIsSaving(false);
           });
       },
-      entityName: "custom domain",
-      title: "Remove Custom Domain",
-      message: `Are you sure you want to remove the custom domain "${dexData.customDomain}"? This action cannot be undone.`,
+      entityName: t("dex.customDomainEntityName"),
+      title: t("dex.removeCustomDomainTitle"),
+      message: t("dex.removeCustomDomainMessage", {
+        customDomain: dexData.customDomain,
+      }),
     });
   };
 
@@ -327,9 +329,11 @@ export default function DexRoute() {
       <div className="w-full h-[calc(100vh-64px)] flex items-center justify-center px-4 mt-26 pb-52">
         <div className="text-center">
           <div className="i-svg-spinners:pulse-rings-multiple h-12 w-12 mx-auto text-primary-light mb-4"></div>
-          <div className="text-base md:text-lg mb-2">Loading your DEX</div>
+          <div className="text-base md:text-lg mb-2">
+            {t("dex.loadingYourDex")}
+          </div>
           <div className="text-xs md:text-sm text-gray-400">
-            Please wait while we fetch your configuration
+            {t("dex.fetchConfigurationHint")}
           </div>
         </div>
       </div>
@@ -341,10 +345,10 @@ export default function DexRoute() {
       <div className="w-full max-w-3xl mx-auto px-4 py-6 md:py-10 mt-26 pb-52">
         <div className="text-center">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">
-            Create Your DEX
+            {t("dex.createYourDex")}
           </h1>
           <div className="flex items-center justify-center mb-4">
-            <p className="text-gray-400 mr-3">Via</p>
+            <p className="text-gray-400 mr-3">{t("dex.via")}</p>
             {MainnetChains.map((chain, index) => (
               <div
                 style={{
@@ -365,27 +369,23 @@ export default function DexRoute() {
             ))}
           </div>
           <h2 className="text-lg md:text-xl">
-            Join{" "}
             {distributorInfo.distributor_name
-              ? `${distributorInfo.distributor_name} and other `
-              : ""}
-            1K+ Orderly builders to launch your no-code DEX
+              ? t("dex.joinBuildersWithDistributor", {
+                  distributorName: distributorInfo.distributor_name,
+                })
+              : t("dex.joinBuilders")}
           </h2>
           <div className="text-base-contrast-54 mt-4 mb-15">
-            <p>Create your own omnichain perpetuals exchange in minutes.</p>
-            <p>
-              Deep liquidity, 140+ assets, and support for 17+ major chains in
-              minutes.
-            </p>
+            <p>{t("dex.omnichainPerpetualsIntro")}</p>
+            <p>{t("dex.deepLiquidityIntro")}</p>
           </div>
 
           <Card>
             <h2 className="text-md md:text-2xl font-medium mb-3 md:mb-4 text-base-contrast">
-              Connect your wallet to get started
+              {t("dex.connectWalletToStart")}
             </h2>
             <p className="px-10 mb-4 md:mb-6 text-xs md:text-sm text-base-contrast-54">
-              Authentication required. Please connect your wallet and login to
-              create and manage your DEX
+              {t("dex.authRequiredHint")}
             </p>
             <div className="flex justify-center">
               <WalletConnect />
@@ -414,11 +414,10 @@ export default function DexRoute() {
             <div className="i-mdi:cog text-secondary w-6 h-6"></div>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-1">Configure Your DEX</h3>
-            <p className="text-gray-300">
-              Customize branding, themes, social links, wallets, and advanced
-              settings for your DEX.
-            </p>
+            <h3 className="text-lg font-semibold mb-1">
+              {t("dex.configureYourDex")}
+            </h3>
+            <p className="text-gray-300">{t("dex.configureDescription")}</p>
           </div>
         </div>
         <Button
@@ -426,7 +425,7 @@ export default function DexRoute() {
           href="/dex/config"
           className="whitespace-nowrap flex-shrink-0"
         >
-          Open Settings
+          {t("dex.openSettings")}
         </Button>
       </div>
     </Card>
@@ -440,10 +439,10 @@ export default function DexRoute() {
             <div className="i-mdi:rocket-launch text-primary w-6 h-6"></div>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-1">Ready to Graduate?</h3>
-            <p className="text-gray-300">
-              Graduate your DEX to earn fee splits.
-            </p>
+            <h3 className="text-lg font-semibold mb-1">
+              {t("dex.readyToGraduate")}
+            </h3>
+            <p className="text-gray-300">{t("dex.graduateDescription")}</p>
           </div>
         </div>
         <Button
@@ -451,7 +450,7 @@ export default function DexRoute() {
           href="/dex/graduation"
           className="whitespace-nowrap flex-shrink-0"
         >
-          Graduate Now
+          {t("dex.graduateNow")}
         </Button>
       </div>
     </Card>
@@ -465,13 +464,10 @@ export default function DexRoute() {
             <div className="i-mdi:share-variant text-purple-400 w-6 h-6"></div>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-1">DEX Card Setup</h3>
-            <p className="text-gray-300">
-              Configure how your DEX appears on the board page. Set up
-              description, banner, logo, and token information for better
-              visibility. Note: Your DEX card will only appear on the board
-              after graduation.
-            </p>
+            <h3 className="text-lg font-semibold mb-1">
+              {t("dex.cardSetupTitle")}
+            </h3>
+            <p className="text-gray-300">{t("dex.cardSetupDescription")}</p>
           </div>
         </div>
         <Button
@@ -479,7 +475,7 @@ export default function DexRoute() {
           href="/dex/card"
           className="whitespace-nowrap flex-shrink-0"
         >
-          Setup DEX Card
+          {t("dex.setupDexCard")}
         </Button>
       </div>
     </Card>
@@ -510,29 +506,28 @@ export default function DexRoute() {
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-1">
-              {isGraduated ? "Graduated DEX" : "Broker ID Created"}
+              {isGraduated ? t("dex.graduatedDex") : t("dex.brokerIdCreated")}
             </h3>
             <p className="text-gray-300">
               {isGraduated ? (
-                <>
-                  Your DEX is earning fee share revenue!{" "}
-                  <a
-                    href="/dex/graduation"
-                    className="text-primary-light hover:underline"
-                  >
-                    Visit the graduation page
-                  </a>{" "}
-                  to access your earnings and manage your DEX settings.
-                </>
+                <Trans
+                  i18nKey="dex.earningFeeShareWithLink"
+                  components={[
+                    <a
+                      key="0"
+                      href="/dex/graduation"
+                      className="text-primary-light hover:underline"
+                    />,
+                  ]}
+                />
               ) : (
-                <>
-                  Your broker ID{" "}
-                  <span className="font-mono text-primary-light">
-                    {dexData.brokerId}
-                  </span>{" "}
-                  has been created. Complete the registration process to start
-                  earning fees.
-                </>
+                <Trans
+                  i18nKey="dex.brokerIdCreatedDescription"
+                  values={{ brokerId: dexData.brokerId }}
+                  components={[
+                    <span key="0" className="font-mono text-primary-light" />,
+                  ]}
+                />
               )}
             </p>
           </div>
@@ -550,7 +545,7 @@ export default function DexRoute() {
           }
           className="flex-shrink-0"
         >
-          {isGraduated ? "View Benefits" : "Complete Registration"}
+          {isGraduated ? t("dex.viewBenefits") : t("dex.completeRegistration")}
         </Button>
       </div>
     </Card>
@@ -569,11 +564,13 @@ export default function DexRoute() {
           <PointSystemIcon className="flex-shrink-0" />
 
           <div>
-            <h3 className="text-lg font-semibold mb-1">Point Campaign Setup</h3>
+            <h3 className="text-lg font-semibold mb-1">
+              {t("dex.pointCampaignSetupTitle")}
+            </h3>
             <p className="text-gray-300">
               {isGraduated
-                ? "Configure campaign parameters and set coefficients for trading volume, PNL, and referrals."
-                : "Configure campaign parameters and set coefficients for trading volume, PNL, and referrals. Graduate first to enable the Point Campaign."}
+                ? t("dex.pointCampaignDescriptionGraduated")
+                : t("dex.pointCampaignDescriptionLocked")}
             </p>
           </div>
         </div>
@@ -583,7 +580,7 @@ export default function DexRoute() {
             href="/points"
             className="whitespace-nowrap flex-shrink-0"
           >
-            Setup Point System
+            {t("dex.setupPointSystem")}
           </Button>
         ) : (
           <Button
@@ -592,7 +589,7 @@ export default function DexRoute() {
             variant="secondary"
             className="whitespace-nowrap flex-shrink-0"
           >
-            Graduate DEX
+            {t("dex.graduateDex")}
           </Button>
         )}
       </div>
@@ -623,11 +620,13 @@ export default function DexRoute() {
             ></div>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-1">Referral Settings</h3>
+            <h3 className="text-lg font-semibold mb-1">
+              {t("dex.referralSettingsTitle")}
+            </h3>
             <p className="text-gray-300">
               {isGraduated
-                ? "Set up and manage your auto referral program to incentivize traders and grow your DEX community."
-                : "Referral settings become available after graduating your DEX. Graduate first to start earning revenue and enable referrals."}
+                ? t("dex.referralDescriptionGraduated")
+                : t("dex.referralDescriptionLocked")}
             </p>
           </div>
         </div>
@@ -637,7 +636,7 @@ export default function DexRoute() {
             href="/referral"
             className="whitespace-nowrap flex-shrink-0"
           >
-            Manage Referrals
+            {t("dex.manageReferrals")}
           </Button>
         ) : (
           <Button
@@ -646,7 +645,7 @@ export default function DexRoute() {
             variant="secondary"
             className="whitespace-nowrap flex-shrink-0"
           >
-            Graduate DEX
+            {t("dex.graduateDex")}
           </Button>
         )}
       </div>
@@ -657,7 +656,7 @@ export default function DexRoute() {
     <div className="container mx-auto p-4 max-w-3xl mt-26 pb-52">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <h1 className="text-2xl md:text-3xl font-bold gradient-text">
-          {dexData ? "Manage Your DEX" : "Create Your DEX"}
+          {dexData ? t("dex.manageYourDex") : t("dex.createYourDex")}
         </h1>
       </div>
 
@@ -665,7 +664,7 @@ export default function DexRoute() {
         <div className="text-center mt-16">
           <Card className="p-8">
             <p className="text-lg mb-6">
-              Please connect your wallet to create or manage your DEX.
+              {t("dex.connectWalletToCreateOrManage")}
             </p>
             <div className="flex justify-center">
               <WalletConnect />
@@ -713,17 +712,16 @@ export default function DexRoute() {
           {dexData && !isGraduated && (
             <Card>
               <h3 className="text-lg font-bold mb-4 text-red-400">
-                Danger Zone
+                {t("dex.dangerZone")}
               </h3>
               <div className="border border-red-500/20 rounded-lg p-4 bg-red-500/5">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                   <div>
                     <h4 className="font-medium text-red-400 mb-1">
-                      Delete DEX
+                      {t("dex.deleteDex")}
                     </h4>
                     <p className="text-sm text-gray-400">
-                      Permanently delete your DEX configuration and repository.
-                      This action cannot be undone.
+                      {t("dex.deleteDexWarning")}
                     </p>
                   </div>
                   <Button
@@ -732,7 +730,7 @@ export default function DexRoute() {
                     disabled={isDeleting}
                     className="whitespace-nowrap"
                   >
-                    {isDeleting ? "Deleting..." : "Delete DEX"}
+                    {isDeleting ? t("dex.deleting") : t("dex.deleteDex")}
                   </Button>
                 </div>
               </div>

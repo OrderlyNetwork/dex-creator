@@ -51,6 +51,7 @@ Result: the **list of files to scan**.
 - **String literals**: Double/single-quoted strings, length ≥ 2, e.g. `"([^"\\n]{2,})"`, `'([^'\\n]{2,})'`.
 - **Template literals**: With or without `${...}`; e.g. `` `([^`\n]{2,})` ``.
 - **React JSX text nodes**: Text inside elements, e.g. `<div>button</div>` → `button`, `<Button>Confirm</Button>` → `Confirm`. Identify JSXText / text children and treat as candidates. **Include text inside heading elements** (`h1`, `h2`, `h3`, `h4`, `h5`, `h6`)—section headings are user-facing copy and must be extracted (e.g. `<h3>Trading fees fund a self-sustaining treasury for:</h3>` → extract the full heading text).
+- **JSX interleaving text and components**: When you see a fragment or block that **interleaves** user-facing text with React nodes (e.g. `<>Sentence one <a href="...">link text</a> sentence two.</>` or `<>Label <span className="...">{{var}}</span> suffix.</>`), treat it as **one Trans candidate**, not multiple t() candidates. The replacement will use a single key with `<0>...</0>` placeholders and `Trans` with `components={[...]}` so the link/span styling is preserved.
 - **JSX attribute strings**: e.g. `placeholder="Enter name"`, `title="Submit"`, `aria-label="Close"`. Treat as string literal candidates, **excluding `img` elements' `alt` attributes**.
 
 **2.2 Template literal interpolation**
@@ -124,10 +125,15 @@ Aggregate per file: **file → list of extracted texts** for module mapping and 
 
 - **Inside React components**: Add `import { useTranslation } from "~/i18n"` if missing; use `const { t } = useTranslation();` and replace with `t("prefix.slugKey")` or `t("prefix.slugKey", { var1, var2 })` for interpolations. Placeholder names must match the object keys (e.g. `{{var1}}` → `{ var1 }`).
 - **Outside components** (e.g. utils, scripts, class methods): Add `import { i18n } from "~/i18n"` and replace with `i18n.t("prefix.slugKey")` or `i18n.t("prefix.slugKey", { var1, var2 })`.
-- **Trans vs t()**: If the original is plain static text with no rich text or HTML, replace with `t()`. If it contains React nodes or complex structure (e.g. inline links, components), keep `Trans` and follow project conventions.
+- **Trans vs t()** — apply during replacement:
+  - **Use `t()`** when the original is plain static text with no rich structure (no inline `<a>`, `<span>`, or other components in the middle of the sentence).
+  - **Use `Trans`** when the original **interleaves** user-facing text with React nodes that must keep their structure (e.g. inline links, styled spans). **Trigger**: You see patterns like `<>text <a href="...">link text</a> more text</>` or `<>prefix <span className="...">{{var}}</span> suffix</>`.
+  - **Trans procedure**: (1) Create **one** key whose value is the full sentence with component placeholders: use `<0>wrapped text</0>` for the first component, `<1>...</1>` for the second, and `{{varName}}` inside a tag if the component wraps a variable. (2) Replace the JSX with `<Trans i18nKey="prefix.slugKey" components={[<a key="0" href="..." className="..." />, ...]} />` (or with `values={{ varName }}` when using `{{varName}}` in the key). (3) Import `Trans` from `"~/i18n"` if missing.
 - **Examples**:
   - Simple: `<span>Confirm</span>` → `<span>{t("common.confirm")}</span>`
   - With interpolation: `` `${qty} items` `` → `t("cart.itemCount", { qty })`
+  - **Trans (inline link)**: Original `<>Your DEX is earning fee share revenue! <a href="/dex/graduation" className="...">Visit the graduation page</a> to access your earnings.</>` → one key `"prefix.earningFeeShareWithLink": "Your DEX is earning fee share revenue! <0>Visit the graduation page</0> to access your earnings."` and replace with `<Trans i18nKey="prefix.earningFeeShareWithLink" components={[<a key="0" href="/dex/graduation" className="..." />]} />`.
+  - **Trans (styled variable)**: Original `<>Your broker ID <span className="font-mono">{{brokerId}}</span> has been created.</>` → one key with `"...<0>{{brokerId}}</0>..."` and replace with `<Trans i18nKey="..." values={{ brokerId }} components={[<span key="0" className="font-mono ..." />]} />`.
 
 ### 7.1 Constants and config objects
 
