@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Button } from "~/components/Button";
 import { Card } from "~/components/Card";
+import { useTranslation } from "~/i18n";
 import type { MultiLevelReferralInfo } from "~/utils/orderly";
 import { updateMultiLevelReferralConfig } from "~/utils/orderly";
 
@@ -41,6 +42,7 @@ export default function MultiLevelSettings({
   orderlyKey,
   onSaved,
 }: MultiLevelSettingsProps) {
+  const { t } = useTranslation();
   const [requiredVolume, setRequiredVolume] = useState<string>("0");
   const [defaultCommissionRate, setDefaultCommissionRate] =
     useState<string>("0");
@@ -68,25 +70,25 @@ export default function MultiLevelSettings({
 
   const handleSaveSettings = async () => {
     if (!accountId || !orderlyKey) {
-      toast.error("Orderly key required to update settings");
+      toast.error(t("referral.multiLevel.keyRequiredUpdate"));
       return;
     }
 
     const parsedVolume = Number(requiredVolume);
     const volume = Math.floor(parsedVolume);
     if (Number.isNaN(parsedVolume) || volume < 0) {
-      toast.error("Please enter a valid minimum trading volume");
+      toast.error(t("referral.multiLevel.validVolume"));
       return;
     }
 
     const commissionPercent = Number(defaultCommissionRate);
     if (Number.isNaN(commissionPercent) || commissionPercent < 0) {
-      toast.error("Please enter a valid commission rate");
+      toast.error(t("referral.multiLevel.validCommission"));
       return;
     }
 
     if (commissionPercent > 100) {
-      toast.error("Commission rate cannot exceed 100%");
+      toast.error(t("referral.multiLevel.commissionMax100"));
       return;
     }
 
@@ -99,7 +101,7 @@ export default function MultiLevelSettings({
         default_rebate_rate: defaultRebateRate,
       });
 
-      toast.success("Referral settings updated successfully");
+      toast.success(t("referral.multiLevel.saved"));
 
       // Update initial values after successful save
       setInitialRequiredVolume(requiredVolume);
@@ -110,7 +112,7 @@ export default function MultiLevelSettings({
       const message =
         error instanceof Error
           ? error.message
-          : "Failed to save multi-level settings";
+          : t("referral.multiLevel.saveFailed");
       toast.error(message);
     } finally {
       setIsSaving(false);
@@ -136,8 +138,7 @@ export default function MultiLevelSettings({
         <div className="flex items-center gap-[4px] rounded-[8px] p-3 bg-[#D9AB52]/20">
           <WarningIcon />
           <span className="flex-1 text-[12px] font-medium leading-[15px] tracking-[0.36px] text-[#D9AB52]">
-            To protect existing users, you can only increase the default
-            commission rate once referral codes are generated.
+            {t("referral.multiLevel.protectUsersNotice")}
           </span>
         </div>
 
@@ -146,7 +147,7 @@ export default function MultiLevelSettings({
             {/* Minimum trading volume input */}
             <div className="flex flex-col gap-1">
               <label className="text-xs font-medium leading-[18px] tracking-[0.36px] text-base-contrast-54">
-                Minimum trading volume (USDC)
+                {t("referral.multiLevel.minVolumeLabel")}
               </label>
               <div className="bg-[#2b2638] rounded-[6px] px-3 py-2.5">
                 <input
@@ -169,8 +170,7 @@ export default function MultiLevelSettings({
               <div className="flex gap-1 items-center pl-1">
                 <div className="size-1 rounded-full bg-base-contrast-54 shrink-0 self-center" />
                 <p className="flex-1 text-xs font-medium leading-[18px] tracking-[0.36px] text-base-contrast-54">
-                  Users must meet this volume requirement to generate referral
-                  codes. Set to 0 to allow all users.
+                  {t("referral.multiLevel.minVolumeHint")}
                 </p>
               </div>
             </div>
@@ -178,7 +178,7 @@ export default function MultiLevelSettings({
             {/* Default commission rate input */}
             <div className="flex flex-col gap-1">
               <label className="text-xs font-medium leading-[18px] tracking-[0.36px] text-base-contrast-54">
-                Default commission rate
+                {t("referral.multiLevel.defaultCommissionLabel")}
               </label>
               <div className="bg-[#2b2638] rounded-[6px] px-3 py-2.5">
                 <input
@@ -201,10 +201,10 @@ export default function MultiLevelSettings({
               <div className="flex gap-1 items-center pl-1">
                 <div className="size-1 rounded-full bg-base-contrast-54 shrink-0 self-center" />
                 <p className="flex-1 text-xs font-medium leading-[18px] tracking-[0.36px] text-base-contrast-54">
-                  Sets the base commission percentage for Level 1 affiliates. A{" "}
-                  {directBonusPercent}% fixed bonus is also paid to the direct
-                  referrer. Based on this setting, you will retain{" "}
-                  {remainingPercent}%.
+                  {t("referral.multiLevel.defaultCommissionHint", {
+                    directBonusPercent,
+                    remainingPercent,
+                  })}
                 </p>
               </div>
             </div>
@@ -215,11 +215,11 @@ export default function MultiLevelSettings({
                 variant="primary"
                 onClick={handleSaveSettings}
                 isLoading={isSaving}
-                loadingText="Saving..."
+                loadingText={t("referral.saving")}
                 disabled={!hasChanges}
                 className="text-[16px] leading-[120%] font-medium"
               >
-                Save Settings
+                {t("referral.multiLevel.saveButton")}
               </Button>
             </div>
           </div>
@@ -228,30 +228,27 @@ export default function MultiLevelSettings({
     );
   }
 
-  // 如果未启用，显示升级按钮
   return (
     <Card className="bg-[#161726] border border-[1px] border-[#FFFFFF]/[0.12]">
       <div className="flex flex-col gap-4">
         <h2 className="text-[18px] font-medium leading-[120%] text-white/98">
-          Upgrade to Multi-Level Referral
+          {t("referral.multiLevel.upgradeTitle")}
         </h2>
         <p className="text-[14px] leading-[120%] font-medium text-white/50">
-          Empower your Sub-affiliates with custom commission rates. Earn passive
-          commissions from every trade made by Referees deep within your
-          network.
+          {t("referral.multiLevel.upgradeDescription")}
         </p>
         <MLRUpgradeWarning />
         {isLoading ? (
           <div className="flex items-center gap-2 text-sm text-gray-400">
             <div className="i-svg-spinners:pulse-rings-multiple w-4 h-4"></div>
-            Loading...
+            {t("referral.loading.generic")}
           </div>
         ) : (
           <Button
             className="w-fit text-[16px] leading-[120%] font-medium"
             onClick={onUpgradeClick}
           >
-            Upgrade to Multi-Level
+            {t("referral.multiLevel.upgradeCta")}
           </Button>
         )}
       </div>
@@ -260,22 +257,15 @@ export default function MultiLevelSettings({
 }
 
 export function MLRUpgradeWarning() {
+  const { t } = useTranslation();
   return (
     <div className="flex  gap-[4px] rounded-[8px] p-3 bg-[#D9AB52]/20">
       <WarningIcon />
       <div className="ml-3">
         <ul className="list-disc ml-2 text-[#D9AB52] font-semibold text-[12px] leading-[15px] tracking-[0.03em] space-y-1">
-          <li>
-            This upgrade is permanent. You will not be able to switch back to
-            Single-level referral.
-          </li>
-          <li>
-            You will no longer be able to create new Single-level referral
-            codes.
-          </li>
-          <li>
-            Your existing Single-level codes will remain editable and active.
-          </li>
+          <li>{t("referral.multiLevel.upgradeWarning.permanent")}</li>
+          <li>{t("referral.multiLevel.upgradeWarning.noNewSingle")}</li>
+          <li>{t("referral.multiLevel.upgradeWarning.existingRemain")}</li>
         </ul>
       </div>
     </div>

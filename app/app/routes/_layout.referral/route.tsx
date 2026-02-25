@@ -15,6 +15,7 @@ import SingleLevelSettings from "./SingleLevelSettings";
 import MultiLevelSettings from "./MultiLevelSettings";
 import AdvancedReferralManagement from "./AdvancedReferralManagement";
 import { Button } from "~/components/Button";
+import { useTranslation } from "~/i18n";
 import {
   enableMultiLevelReferral,
   getMultiLevelReferralInfo,
@@ -33,6 +34,7 @@ export const meta: MetaFunction = () => [
 ];
 
 export default function ReferralRoute() {
+  const { t } = useTranslation();
   const { isAuthenticated, isLoading } = useAuth();
   const { dexData, brokerId, isGraduated, isLoading: isDexLoading } = useDex();
   const {
@@ -54,8 +56,8 @@ export default function ReferralRoute() {
   const [isCheckingSingleLevel, setIsCheckingSingleLevel] = useState(false);
 
   const referralTypeOptions = [
-    { value: "single-level", label: "Single-level" },
-    { value: "multi-level", label: "Multi-level" },
+    { value: "single-level", label: t("referral.type.singleLevel") },
+    { value: "multi-level", label: t("referral.type.multiLevel") },
   ];
 
   const loadMultiLevelReferralInfo = async () => {
@@ -111,7 +113,7 @@ export default function ReferralRoute() {
 
   const handleCreateOrderlyKey = async () => {
     if (!address || !brokerId || !accountId) {
-      toast.error("Missing required information for key creation");
+      toast.error(t("referral.toast.missingKeyInfo"));
       return;
     }
 
@@ -130,7 +132,7 @@ export default function ReferralRoute() {
       });
     } catch (error) {
       console.error("Failed to create orderly key:", error);
-      toast.error("Failed to create orderly key");
+      toast.error(t("referral.toast.createKeyFailed"));
     } finally {
       setIsCreatingKey(false);
     }
@@ -138,7 +140,7 @@ export default function ReferralRoute() {
 
   const handleOpenAdminLogin = () => {
     if (!hasValidKey || !orderlyKey || !accountId) {
-      toast.error("Orderly key required to access admin credentials");
+      toast.error(t("referral.toast.orderlyKeyRequiredAdmin"));
       return;
     }
 
@@ -150,7 +152,7 @@ export default function ReferralRoute() {
 
   const handleOpenUpgradeModal = () => {
     if (!hasValidKey || !orderlyKey || !accountId) {
-      toast.error("Orderly key required to upgrade to multi-level referral");
+      toast.error(t("referral.toast.orderlyKeyRequiredUpgrade"));
       return;
     }
     openModal("mlrConfirm", {
@@ -158,7 +160,7 @@ export default function ReferralRoute() {
         try {
           await enableMultiLevelReferral(accountId, orderlyKey, true);
 
-          toast.success(`Multi-Level Referral enabled successfully`);
+          toast.success(t("referral.toast.mlrEnabled"));
 
           // 刷新 Multi-Level Referral 信息
           await loadMultiLevelReferralInfo();
@@ -167,7 +169,7 @@ export default function ReferralRoute() {
           const errorMessage =
             error instanceof Error
               ? error.message
-              : "Failed to enable multi-level referral";
+              : t("referral.toast.mlrEnableFailed");
           toast.error(errorMessage);
           throw error;
         }
@@ -190,10 +192,10 @@ export default function ReferralRoute() {
         <div className="text-center">
           <div className="i-svg-spinners:pulse-rings-multiple h-12 w-12 mx-auto text-primary-light mb-4"></div>
           <div className="text-base md:text-lg mb-2">
-            Loading Referral Settings
+            {t("referral.loading.settings")}
           </div>
           <div className="text-xs md:text-sm text-gray-400">
-            Please wait while we prepare your referral dashboard
+            {t("referral.loading.dashboard")}
           </div>
         </div>
       </div>
@@ -205,14 +207,14 @@ export default function ReferralRoute() {
       <div className="w-full max-w-3xl mx-auto px-4 py-6 md:py-10 mt-26 pb-52">
         <div className="text-center">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">
-            Referral Settings
+            {t("referral.pageTitle")}
           </h1>
           <Card>
             <h2 className="text-lg md:text-xl font-medium mb-3 md:mb-4">
-              Authentication Required
+              {t("referral.authRequired.title")}
             </h2>
             <p className="mb-4 md:mb-6 text-sm md:text-base text-gray-300">
-              Please connect your wallet and login to access referral settings.
+              {t("referral.authRequired.description")}
             </p>
             <div className="flex justify-center">
               <WalletConnect />
@@ -232,21 +234,21 @@ export default function ReferralRoute() {
             className="text-sm text-gray-400 hover:text-primary-light mb-2 inline-flex items-center"
           >
             <div className="i-mdi:arrow-left h-4 w-4 mr-1"></div>
-            Back to DEX Dashboard
+            {t("referral.backToDexDashboard")}
           </Link>
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">
-            Referral Settings
+            {t("referral.pageTitle")}
           </h1>
           <Card>
             <h2 className="text-lg md:text-xl font-medium mb-3 md:mb-4">
-              No DEX Found
+              {t("referral.noDex.title")}
             </h2>
             <p className="mb-4 md:mb-6 text-sm md:text-base text-gray-300">
-              You need to create a DEX first before you can set up referrals.
+              {t("referral.noDex.description")}
             </p>
             <div className="flex justify-center">
               <Link to="/dex" className="btn-connect">
-                Create Your DEX
+                {t("referral.createYourDex")}
               </Link>
             </div>
           </Card>
@@ -265,10 +267,10 @@ export default function ReferralRoute() {
               className="text-sm text-gray-400 hover:text-primary-light mb-2 inline-flex items-center"
             >
               <div className="i-mdi:arrow-left h-4 w-4 mr-1"></div>
-              Back to DEX Dashboard
+              {t("referral.backToDexDashboard")}
             </Link>
             <h1 className="text-2xl md:text-3xl font-bold gradient-text">
-              Referral Settings
+              {t("referral.pageTitle")}
             </h1>
           </div>
         </div>
@@ -280,36 +282,33 @@ export default function ReferralRoute() {
             </div>
             <div className="flex-1">
               <h3 className="text-lg font-medium text-warning mb-2">
-                Graduation Required
+                {t("referral.graduationRequired.title")}
               </h3>
               <p className="text-gray-300 mb-4">
-                Referral settings are only available for graduated DEXs. You
-                need to graduate your DEX first to start earning revenue and
-                enable referral programs.
+                {t("referral.graduationRequired.description")}
               </p>
 
               <div className="bg-background-dark/50 p-4 rounded-lg border border-secondary-light/10 mb-6">
                 <h4 className="font-semibold mb-2 text-secondary-light">
-                  Why graduation is required:
+                  {t("referral.graduationRequired.whyTitle")}
                 </h4>
                 <ul className="space-y-2 text-sm text-gray-400">
                   <li className="flex items-start gap-2">
                     <div className="i-mdi:cash-multiple text-primary w-4 h-4 flex-shrink-0 mt-0.5"></div>
                     <span>
-                      Referrals are tied to revenue sharing from trading fees
+                      {t("referral.graduationRequired.reason1")}
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <div className="i-mdi:account-group text-primary w-4 h-4 flex-shrink-0 mt-0.5"></div>
                     <span>
-                      Graduated DEXs can offer rebates and rewards to traders
+                      {t("referral.graduationRequired.reason2")}
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <div className="i-mdi:shield-check text-primary w-4 h-4 flex-shrink-0 mt-0.5"></div>
                     <span>
-                      Ensures your DEX has the necessary infrastructure for
-                      referrals
+                      {t("referral.graduationRequired.reason3")}
                     </span>
                   </li>
                 </ul>
@@ -321,7 +320,7 @@ export default function ReferralRoute() {
                 className="flex items-center gap-2"
               >
                 <div className="i-mdi:rocket-launch w-4 h-4"></div>
-                Graduate Your DEX
+                {t("referral.graduationRequired.graduateCta")}
               </Button>
             </div>
           </div>
@@ -329,11 +328,10 @@ export default function ReferralRoute() {
 
         <Card className="mt-6">
           <h3 className="text-lg font-medium mb-4">
-            Preview: Referral Features
+            {t("referral.preview.title")}
           </h3>
           <p className="text-gray-300 mb-4">
-            Once your DEX is graduated, you'll have access to these referral
-            management features:
+            {t("referral.preview.intro")}
           </p>
 
           <div className="grid md:grid-cols-2 gap-4 text-sm">
@@ -342,10 +340,10 @@ export default function ReferralRoute() {
                 <div className="i-mdi:percent text-secondary w-5 h-5 flex-shrink-0 mt-0.5"></div>
                 <div>
                   <h4 className="font-medium text-white mb-1">
-                    Auto Referral Program
+                    {t("referral.preview.autoReferral.title")}
                   </h4>
                   <p className="text-gray-400">
-                    Set trading volume thresholds and automatic rebate rates
+                    {t("referral.preview.autoReferral.description")}
                   </p>
                 </div>
               </div>
@@ -354,10 +352,10 @@ export default function ReferralRoute() {
                 <div className="i-mdi:chart-line text-secondary w-5 h-5 flex-shrink-0 mt-0.5"></div>
                 <div>
                   <h4 className="font-medium text-white mb-1">
-                    Revenue Sharing
+                    {t("referral.preview.revenueSharing.title")}
                   </h4>
                   <p className="text-gray-400">
-                    Configure referrer and referee rebate percentages
+                    {t("referral.preview.revenueSharing.description")}
                   </p>
                 </div>
               </div>
@@ -368,10 +366,10 @@ export default function ReferralRoute() {
                 <div className="i-mdi:cog text-secondary w-5 h-5 flex-shrink-0 mt-0.5"></div>
                 <div>
                   <h4 className="font-medium text-white mb-1">
-                    Program Management
+                    {t("referral.preview.programManagement.title")}
                   </h4>
                   <p className="text-gray-400">
-                    Enable/disable programs and update settings in real-time
+                    {t("referral.preview.programManagement.description")}
                   </p>
                 </div>
               </div>
@@ -380,10 +378,10 @@ export default function ReferralRoute() {
                 <div className="i-mdi:shield-check text-secondary w-5 h-5 flex-shrink-0 mt-0.5"></div>
                 <div>
                   <h4 className="font-medium text-white mb-1">
-                    Secure API Access
+                    {t("referral.preview.secureApi.title")}
                   </h4>
                   <p className="text-gray-400">
-                    Manage settings through secure Orderly Network integration
+                    {t("referral.preview.secureApi.description")}
                   </p>
                 </div>
               </div>
@@ -392,11 +390,10 @@ export default function ReferralRoute() {
                 <div className="i-mdi:tools text-secondary w-5 h-5 flex-shrink-0 mt-0.5"></div>
                 <div>
                   <h4 className="font-medium text-white mb-1">
-                    Advanced Dashboard
+                    {t("referral.preview.advancedDashboard.title")}
                   </h4>
                   <p className="text-gray-400">
-                    Access to Orderly Admin Dashboard for creating custom
-                    referral codes and detailed analytics
+                    {t("referral.preview.advancedDashboard.description")}
                   </p>
                 </div>
               </div>
@@ -418,10 +415,10 @@ export default function ReferralRoute() {
               className="text-sm text-gray-400 hover:text-primary-light mb-2 inline-flex items-center"
             >
               <div className="i-mdi:arrow-left h-4 w-4 mr-1"></div>
-              Back to DEX Dashboard
+              {t("referral.backToDexDashboard")}
             </Link>
             <h1 className="text-2xl md:text-3xl font-bold gradient-text">
-              Referral Settings
+              {t("referral.pageTitle")}
             </h1>
           </div>
         </div>
@@ -454,7 +451,7 @@ export default function ReferralRoute() {
                   <div className="text-center">
                     <div className="i-svg-spinners:pulse-rings-multiple w-8 h-8 mx-auto text-primary mb-4"></div>
                     <div className="text-sm text-gray-400">
-                      Loading referral settings...
+                      {t("referral.loading.settingsInline")}
                     </div>
                   </div>
                 </div>

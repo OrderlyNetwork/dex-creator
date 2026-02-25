@@ -8,6 +8,7 @@ import {
   type AutoReferralInfo,
 } from "../../utils/orderly";
 import { toast } from "react-toastify";
+import { useTranslation } from "~/i18n";
 
 interface SingleLevelSettingsProps {
   hasValidKey: boolean;
@@ -24,6 +25,7 @@ export default function SingleLevelSettings({
   onLoadComplete,
   isMultiLevelEnabled,
 }: SingleLevelSettingsProps) {
+  const { t } = useTranslation();
   const [isLoadingReferralInfo, setIsLoadingReferralInfo] = useState(false);
   const [isSavingReferral, setIsSavingReferral] = useState(false);
   const [referralInfo, setReferralInfo] = useState<AutoReferralInfo | null>(
@@ -43,10 +45,10 @@ export default function SingleLevelSettings({
 
   const validateMaxRebate = (value: number): string | null => {
     if (value <= 0) {
-      return "Max rebate must be greater than 0%";
+      return t("referral.singleLevel.maxRebateMin");
     }
     if (value > 100) {
-      return "Max rebate cannot exceed 100%";
+      return t("referral.singleLevel.maxRebateMax");
     }
     return null;
   };
@@ -100,6 +102,7 @@ export default function SingleLevelSettings({
       // If multi-level referral is enabled, skip toast if permission denied
       const errorMessage =
         error instanceof Error ? error.message : String(error);
+      //TODO: use error code
       const shouldSkipToast =
         errorMessage.includes(
           "Permission denied. Multilevel referral is already enabled."
@@ -116,7 +119,7 @@ export default function SingleLevelSettings({
         );
       } else {
         console.error("Failed to load referral info:", error);
-        toast.error("Failed to load referral settings");
+        toast.error(t("referral.singleLevel.loadFailed"));
       }
     } finally {
       setIsLoadingReferralInfo(false);
@@ -125,21 +128,19 @@ export default function SingleLevelSettings({
 
   const handleSaveReferralSettings = async () => {
     if (isMultiLevelEnabled) {
-      toast.error(
-        "Cannot modify Single-level settings when Multi-level Referral is enabled"
-      );
+      toast.error(t("referral.singleLevel.cannotModifyWhenMlr"));
       return;
     }
 
     if (!hasValidKey || !accountId || !orderlyKey) {
-      toast.error("Orderly key required to save settings");
+      toast.error(t("referral.singleLevel.keyRequiredSave"));
       return;
     }
 
     const maxRebateValidationError = validateMaxRebate(maxRebate);
     if (maxRebateValidationError) {
       setMaxRebateError(maxRebateValidationError);
-      toast.error("Please fix validation errors before saving");
+      toast.error(t("referral.singleLevel.fixValidation"));
       return;
     }
 
@@ -156,12 +157,12 @@ export default function SingleLevelSettings({
       };
 
       await updateAutoReferral(accountId, orderlyKey, settings);
-      toast.success("Referral settings updated successfully!");
+      toast.success(t("referral.singleLevel.saved"));
 
       await loadReferralInfo();
     } catch (error) {
       console.error("Failed to save referral settings:", error);
-      toast.error("Failed to save referral settings");
+      toast.error(t("referral.singleLevel.saveFailed"));
     } finally {
       setIsSavingReferral(false);
     }
@@ -179,12 +180,10 @@ export default function SingleLevelSettings({
         className={`bg-[#161726] border border-[1px] border-[#FFFFFF]/[0.12] ${isDisabled ? "opacity-30" : ""}`}
       >
         <h2 className="text-xl font-medium mb-4">
-          Auto Referral Configuration
+          {t("referral.singleLevel.configTitle")}
         </h2>
         <p className="text-gray-300 mb-6">
-          Configure your automatic referral program settings. Users who meet the
-          trading volume requirements will be automatically enrolled in your
-          referral program.
+          {t("referral.singleLevel.configIntro")}
         </p>
 
         {isLoadingReferralInfo ? (
@@ -197,11 +196,10 @@ export default function SingleLevelSettings({
             <div className="flex items-center justify-between p-4 bg-background-dark/30 rounded-lg border border-light/10">
               <div className="flex-1 pr-4">
                 <h3 className="text-sm font-medium mb-1">
-                  Auto Referral Program
+                  {t("referral.singleLevel.autoProgram.title")}
                 </h3>
                 <p className="text-xs text-gray-400">
-                  Enable automatic enrollment for users who meet trading
-                  requirements
+                  {t("referral.singleLevel.autoProgram.hint")}
                 </p>
               </div>
               <button
@@ -227,7 +225,7 @@ export default function SingleLevelSettings({
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    Required Trading Volume (USDC)
+                    {t("referral.singleLevel.requiredVolumeLabel")}
                   </label>
                   <input
                     type="number"
@@ -241,13 +239,13 @@ export default function SingleLevelSettings({
                     disabled={!isEnabled || isDisabled}
                   />
                   <p className="text-xs text-gray-400 mt-1">
-                    Minimum trading volume required to join referral program
+                    {t("referral.singleLevel.requiredVolumeHint")}
                   </p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    Max Rebate (%)
+                    {t("referral.singleLevel.maxRebateLabel")}
                   </label>
                   <input
                     type="number"
@@ -269,7 +267,7 @@ export default function SingleLevelSettings({
                     <p className="text-xs text-error mt-1">{maxRebateError}</p>
                   ) : (
                     <p className="text-xs text-gray-400 mt-1">
-                      Maximum rebate percentage for participants
+                      {t("referral.singleLevel.maxRebateHint")}
                     </p>
                   )}
                 </div>
@@ -280,13 +278,13 @@ export default function SingleLevelSettings({
                 <div className="flex justify-between items-center">
                   <div>
                     <h4 className="text-sm font-medium text-gray-300">
-                      Default referrer rebate
+                      {t("referral.singleLevel.referrerRebate")}
                     </h4>
                     <p className="text-lg font-bold">{referrerRebate}%</p>
                   </div>
                   <div className="text-right">
                     <h4 className="text-sm font-medium text-gray-300">
-                      Default referee rebate
+                      {t("referral.singleLevel.refereeRebate")}
                     </h4>
                     <p className="text-lg font-bold">{refereeRebate}%</p>
                   </div>
@@ -327,21 +325,20 @@ export default function SingleLevelSettings({
                 </div>
 
                 <p className="text-xs text-gray-400 text-center">
-                  Adjust the split between referrer and referee rebates. Total
-                  rebate: {maxRebate}%
+                  {t("referral.singleLevel.rebateSplitHint", { maxRebate })}
                 </p>
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  Description
+                  {t("referral.singleLevel.descriptionLabel")}
                 </label>
                 <textarea
                   value={description}
                   onChange={e => setDescription(e.target.value)}
                   className="w-full px-3 py-2 rounded-lg bg-background-dark border border-light/10 text-white disabled:opacity-50 disabled:cursor-not-allowed"
                   rows={3}
-                  placeholder="Describe your referral program..."
+                  placeholder={t("referral.singleLevel.descriptionPlaceholder")}
                   disabled={!isEnabled || isDisabled}
                 />
               </div>
@@ -356,12 +353,12 @@ export default function SingleLevelSettings({
                 {isSavingReferral ? (
                   <>
                     <div className="i-svg-spinners:pulse-rings-multiple w-4 h-4"></div>
-                    Saving...
+                    {t("referral.saving")}
                   </>
                 ) : (
                   <>
                     <div className="i-mdi:content-save w-4 h-4"></div>
-                    Save Settings
+                    {t("referral.singleLevel.saveButton")}
                   </>
                 )}
               </Button>
@@ -373,44 +370,60 @@ export default function SingleLevelSettings({
       {/* Current Settings Display */}
       {referralInfo && (
         <Card className={isDisabled ? "opacity-30" : ""}>
-          <h3 className="text-lg font-medium mb-4">Current Settings</h3>
+          <h3 className="text-lg font-medium mb-4">
+            {t("referral.singleLevel.currentSettings")}
+          </h3>
           <div className="grid md:grid-cols-2 gap-4 text-sm">
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-gray-400">Trading Volume Required:</span>
+                <span className="text-gray-400">
+                  {t("referral.singleLevel.tradingVolumeRequired")}
+                </span>
                 <span>
                   {referralInfo.required_trading_volume.toLocaleString()} USDC
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-400">Max Rebate:</span>
+                <span className="text-gray-400">
+                  {t("referral.singleLevel.maxRebateDisplay")}
+                </span>
                 <span>{(referralInfo.max_rebate * 100).toFixed(1)}%</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-400">Referrer Rebate:</span>
+                <span className="text-gray-400">
+                  {t("referral.singleLevel.referrerRebateDisplay")}
+                </span>
                 <span>{(referralInfo.referrer_rebate * 100).toFixed(1)}%</span>
               </div>
             </div>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-gray-400">Referee Rebate:</span>
+                <span className="text-gray-400">
+                  {t("referral.singleLevel.refereeRebateDisplay")}
+                </span>
                 <span>{(referralInfo.referee_rebate * 100).toFixed(1)}%</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-400">Status:</span>
+                <span className="text-gray-400">
+                  {t("referral.singleLevel.status")}
+                </span>
                 <span
                   className={
                     referralInfo.enable ? "text-success" : "text-warning"
                   }
                 >
-                  {referralInfo.enable ? "Enabled" : "Disabled"}
+                  {referralInfo.enable
+                    ? t("referral.singleLevel.statusEnabled")
+                    : t("referral.singleLevel.statusDisabled")}
                 </span>
               </div>
             </div>
           </div>
           {referralInfo.description && (
             <div className="mt-4 pt-4 border-t border-light/10">
-              <span className="text-gray-400 text-sm">Description:</span>
+              <span className="text-gray-400 text-sm">
+                {t("referral.singleLevel.descriptionLabel")}:
+              </span>
               <p className="text-sm mt-1">{referralInfo.description}</p>
             </div>
           )}
@@ -421,6 +434,7 @@ export default function SingleLevelSettings({
 }
 
 function MLRActivatedBanner() {
+  const { t } = useTranslation();
   return (
     <div className="flex items-center gap-[4px] rounded-[8px] p-3 bg-[#D9AB52]/20 mb-6">
       <span className="flex-shrink-0 flex items-center justify-center w-5 h-5">
@@ -439,7 +453,7 @@ function MLRActivatedBanner() {
         </svg>
       </span>
       <p className="flex-1 text-[12px] font-medium leading-[15px] tracking-[0.36px] text-[#D9AB52]">
-        Multi-Level Referral activated.
+        {t("referral.singleLevel.mlrActivatedBanner")}
       </p>
     </div>
   );

@@ -1,5 +1,6 @@
 import { Button } from "~/components/Button";
 import { Card } from "~/components/Card";
+import { useTranslation } from "~/i18n";
 
 interface AdvancedReferralManagementProps {
   hasValidKey: boolean;
@@ -12,6 +13,7 @@ export default function AdvancedReferralManagement({
   onOpenAdminLogin,
   hideFirstFeature = false,
 }: AdvancedReferralManagementProps) {
+  const { t } = useTranslation();
   return (
     <Card className="bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
       <div className="flex gap-4 items-start">
@@ -20,45 +22,34 @@ export default function AdvancedReferralManagement({
         </div>
         <div className="flex-1">
           <h3 className="text-lg font-medium mb-2">
-            Advanced Referral Management
+            {t("referral.advanced.title")}
           </h3>
           <p className="text-gray-300 mb-4">
-            For more advanced referral features, you can use the Orderly Admin
-            Dashboard which provides additional tools for managing your referral
-            program.
+            {t("referral.advanced.description")}
           </p>
 
           <div className="bg-background-dark/50 p-4 rounded-lg border border-secondary-light/10 mb-4">
             <h4 className="font-semibold mb-3 text-sm text-secondary-light">
-              Additional features available:
+              {t("referral.advanced.featuresTitle")}
             </h4>
             <ul className="space-y-2 text-sm text-gray-400">
               {!hideFirstFeature && (
                 <li className="flex items-start gap-2">
                   <div className="i-mdi:ticket-percent text-secondary w-4 h-4 flex-shrink-0 mt-0.5"></div>
-                  <span>
-                    Create specific referral codes manually for targeted
-                    campaigns
-                  </span>
+                  <span>{t("referral.advanced.feature1")}</span>
                 </li>
               )}
               <li className="flex items-start gap-2">
                 <div className="i-mdi:chart-box text-secondary w-4 h-4 flex-shrink-0 mt-0.5"></div>
-                <span>
-                  Detailed analytics and performance tracking for referrals
-                </span>
+                <span>{t("referral.advanced.feature2")}</span>
               </li>
               <li className="flex items-start gap-2">
                 <div className="i-mdi:account-group text-secondary w-4 h-4 flex-shrink-0 mt-0.5"></div>
-                <span>
-                  Advanced user management and referral relationship tracking
-                </span>
+                <span>{t("referral.advanced.feature3")}</span>
               </li>
               <li className="flex items-start gap-2">
                 <div className="i-mdi:cog-box text-secondary w-4 h-4 flex-shrink-0 mt-0.5"></div>
-                <span>
-                  Fine-grained control over referral program parameters
-                </span>
+                <span>{t("referral.advanced.feature4")}</span>
               </li>
             </ul>
           </div>
@@ -72,7 +63,7 @@ export default function AdvancedReferralManagement({
               className="flex items-center gap-2"
             >
               <div className="i-mdi:open-in-new w-4 h-4"></div>
-              Open Admin Dashboard
+              {t("referral.advanced.openAdmin")}
             </Button>
 
             <Button
@@ -82,17 +73,13 @@ export default function AdvancedReferralManagement({
               className="flex items-center gap-2"
             >
               <div className="i-mdi:key w-4 h-4"></div>
-              Get Login Credentials
+              {t("referral.advanced.getCredentials")}
             </Button>
           </div>
 
           <div className="mt-3 text-xs text-gray-400 flex items-start gap-1.5">
             <div className="i-mdi:information-outline w-4 h-4 flex-shrink-0 mt-0.5"></div>
-            <p>
-              Use the same wallet that you used to set up your DEX to access
-              your broker settings in the admin dashboard. Click "Get Login
-              Credentials" to copy the required keys and account ID for login.
-            </p>
+            <p>{t("referral.advanced.credentialsHint")}</p>
           </div>
         </div>
       </div>
