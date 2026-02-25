@@ -63,6 +63,7 @@ Result: the **list of files to scan**.
 
 - Exclude text already inside `t("...")`, `i18n.t("...")`, or `Trans`.
 - Exclude: class names, CSS, Tailwind tokens, routes, variable names, enum keys, log tags, URLs, hex, pure numbers/symbols.
+- **Exclude pure URL values**: Do not extract or create i18n keys for any string value (in placeholders, JSX text, attributes, or literals) that is a **pure URL or URL-like** (e.g. starts with `http://` or `https://`, or is clearly a domain/hostname such as `https://t.me/your-group`, `https://discord.gg/your-server`, `https://your-dex.com`, `example.com`). These are not user-facing copy and do not need translation; keep them hardcoded in source.
 - Exclude: JSX `img` elements' `alt` attribute values from extraction (do not create i18n keys for them).
 - Exclude: route-level `meta` exports at the top of route files, such as `export const meta: MetaFunction = () => [ { title: "Case Studies | Orderly One" }, ... ];`. Do not extract or replace the strings inside these `meta` definitions; they should remain hardcoded.
 - Keep: human-readable text with spaces/punctuation or multiple words; placeholder patterns like `{{qty}}`, `{value}`.
@@ -137,4 +138,5 @@ Aggregate per file: **file → list of extracted texts** for module mapping and 
 ## Additional reference
 
 - Note: JSX `img` elements' `alt` texts are intentionally excluded from extraction.
+- **URLs and domains**: Any string that is a pure URL or URL-like (e.g. `http://...`, `https://...`, or domain/hostname) is not translated; do not extract and keep it hardcoded.
 - For route→module table, component-name examples, regex/filter details, and edge cases, see [reference.md](reference.md) if present.

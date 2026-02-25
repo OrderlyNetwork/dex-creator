@@ -42,6 +42,7 @@
 - Inside `t("...")`, `i18n.t("...")`, `<Trans>...</Trans>`
 - Class names, `className` values that look like Tailwind/CSS
 - Paths, URLs, hex colors, pure numbers
+- **Pure URL detection**: Strings starting with `http://`/`https://` or matching common URL/domain patterns are excluded from extraction in all contexts (placeholders, JSX text, attributes, literals).
 - Enum keys, variable names, log tags
 - Single-letter or very short technical tokens unless clearly UI label
 

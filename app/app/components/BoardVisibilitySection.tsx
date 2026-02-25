@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { useTranslation } from "~/i18n";
 import { post } from "../utils/apiClient";
 import type { DexData } from "../types/dex";
 
@@ -14,11 +15,12 @@ const BoardVisibilitySection: React.FC<BoardVisibilitySectionProps> = ({
   token,
   onUpdate,
 }) => {
+  const { t } = useTranslation();
   const [isUpdating, setIsUpdating] = useState(false);
 
   const handleToggle = async (checked: boolean) => {
     if (!dexData.isGraduated) {
-      toast.info("You must graduate your DEX before changing board visibility");
+      toast.info(t("dexCard.visibility.toast.mustGraduate"));
       return;
     }
 
@@ -34,13 +36,13 @@ const BoardVisibilitySection: React.FC<BoardVisibilitySectionProps> = ({
         onUpdate(response.dex);
         toast.success(
           checked
-            ? "Your DEX will now appear on the public board"
-            : "Your DEX is now hidden from the public board"
+            ? t("dexCard.visibility.toast.showOnBoard")
+            : t("dexCard.visibility.toast.hiddenFromBoard")
         );
       }
     } catch (error) {
       console.error("Error updating board visibility:", error);
-      toast.error("Failed to update board visibility");
+      toast.error(t("dexCard.visibility.toast.updateFailed"));
     } finally {
       setIsUpdating(false);
     }
@@ -53,16 +55,15 @@ const BoardVisibilitySection: React.FC<BoardVisibilitySectionProps> = ({
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <h3 className="text-sm font-medium text-gray-200">
-            Show my DEX on the public board
+            {t("dexCard.visibility.heading")}
             {!dexData.isGraduated && (
               <span className="text-xs text-gray-500 font-normal ml-2">
-                (Available after graduation)
+                {t("dexCard.visibility.afterGraduation")}
               </span>
             )}
           </h3>
           <p className="text-xs text-gray-400 mt-1">
-            Control whether your DEX appears on the public leaderboard. When
-            disabled, your DEX will be private.
+            {t("dexCard.visibility.description")}
           </p>
         </div>
         <button
@@ -88,7 +89,7 @@ const BoardVisibilitySection: React.FC<BoardVisibilitySectionProps> = ({
       {isUpdating && (
         <div className="flex items-center gap-2 text-xs text-gray-400">
           <div className="i-svg-spinners:pulse-rings-multiple h-4 w-4"></div>
-          Updating...
+          {t("dexCard.visibility.updating")}
         </div>
       )}
     </div>
