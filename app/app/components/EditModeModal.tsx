@@ -1,4 +1,5 @@
 import { FC, useState, useRef, useEffect, useCallback } from "react";
+import { useTranslation, Trans } from "~/i18n";
 import DexPreview, { DexPreviewProps } from "./DexPreview";
 import CSSVariableInspector from "./CSSVariableInspector";
 import { parseCSSVariables, generateThemeCSS } from "../utils/cssParser";
@@ -36,6 +37,7 @@ const EditModeModal: FC<EditModeModalProps> = ({
   tradingViewColorConfig,
   setTradingViewColorConfig,
 }) => {
+  const { t } = useTranslation();
   const { openModal, currentModalType } = useModal();
   const [selectedElement, setSelectedElement] = useState<HTMLElement | null>(
     null
@@ -451,16 +453,22 @@ const EditModeModal: FC<EditModeModalProps> = ({
       <div className="flex items-center justify-between p-4 border-b border-light/10 bg-background-card">
         <div className="flex items-center gap-4">
           <h2 className="text-lg font-bold text-gray-200">
-            {viewMode === "desktop" ? "Desktop" : "Mobile"} Preview
+            {viewMode === "desktop"
+              ? t("editModeModal.desktopPreview")
+              : t("editModeModal.mobilePreview")}
           </h2>
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-background-dark/50 border border-light/20">
             <div className="i-mdi:cursor-pointer h-4 w-4 text-gray-400"></div>
             <span className="text-xs text-gray-400">
-              Hold{" "}
-              <kbd className="px-1.5 py-0.5 bg-background-dark rounded text-xs font-mono">
-                Ctrl
-              </kbd>{" "}
-              + Click to inspect CSS variables
+              <Trans
+                i18nKey="editModeModal.holdCtrlToInspect"
+                components={[
+                  <kbd
+                    key="0"
+                    className="px-1.5 py-0.5 bg-background-dark rounded text-xs font-mono"
+                  />,
+                ]}
+              />
             </span>
           </div>
         </div>
@@ -490,7 +498,7 @@ const EditModeModal: FC<EditModeModalProps> = ({
           >
             <span className="flex items-center gap-1">
               <div className="i-mdi:swatch h-4 w-4"></div>
-              Presets
+              {t("editModeModal.presets")}
             </span>
           </Button>
           <Button
@@ -524,7 +532,7 @@ const EditModeModal: FC<EditModeModalProps> = ({
           >
             <span className="flex items-center gap-1">
               <div className="i-mdi:palette h-4 w-4"></div>
-              Theme
+              {t("editModeModal.theme")}
             </span>
           </Button>
           <Button
@@ -544,11 +552,11 @@ const EditModeModal: FC<EditModeModalProps> = ({
           >
             <span className="flex items-center gap-1">
               <div className="i-mdi:magic-wand h-4 w-4"></div>
-              AI
+              {t("editModeModal.ai")}
             </span>
           </Button>
           <Button onClick={onClose} variant="secondary" size="sm" type="button">
-            Close
+            {t("editModeModal.close")}
           </Button>
         </div>
       </div>

@@ -92,4 +92,18 @@ export const dex = {
   "dex.config.updateFailed": "Failed to update DEX configuration",
   "dex.config.updatedSuccess": "DEX configuration updated successfully!",
   "dex.config.validationFailed": "{{sectionTitle}}: validation failed",
+
+  // useDexForm 校验与 toasts
+  "dex.brokerName": "Broker name",
+  "dex.distributorCode": "Distributor code",
+  "dex.pleaseEnterThemeDescription": "Please enter a theme description",
+  "dex.themeGeneratedSuccess": "Theme generated successfully!",
+  "dex.failedToGenerateTheme": "Failed to generate theme",
+  "dex.rateLimitExceeded":
+    "Rate limit exceeded. Please wait 30 seconds before generating another theme.",
+  "dex.errorGeneratingThemeTryAgain":
+    "Error generating theme. Please try again.",
+  "dex.themeReset": "Theme reset",
+  "dex.themeResetToDefault": "Theme reset to default",
+  "dex.failedToLoadDexConfiguration": "Failed to load DEX configuration",
 };

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { i18n, useTranslation } from "~/i18n";
 
 interface ThemeRoundedControlsProps {
   css: string;
@@ -10,23 +11,26 @@ interface RoundedValues {
 }
 
 // The order in which we want to display the rounded variables
-const ROUNDED_ORDER = ["sm", "", "md", "lg", "xl", "2xl", "full"];
+const ROUNDED_ORDER = ["sm", "", "md", "lg", "xl", "2xl", "full"] as const;
 
-// Map variable keys to display names
-const ROUNDED_DISPLAY_NAMES: { [key: string]: string } = {
-  sm: "Small",
-  "": "Base",
-  md: "Medium",
-  lg: "Large",
-  xl: "Extra Large",
-  "2xl": "2X Large",
-  full: "Full",
-};
+function getDisplayNameKey(key: (typeof ROUNDED_ORDER)[number]): string {
+  const DISPLAY_NAME_KEYS = {
+    "": i18n.t("themeRoundedControls.displayName.base"),
+    sm: i18n.t("themeRoundedControls.displayName.sm"),
+    md: i18n.t("themeRoundedControls.displayName.md"),
+    lg: i18n.t("themeRoundedControls.displayName.lg"),
+    xl: i18n.t("themeRoundedControls.displayName.xl"),
+    "2xl": i18n.t("themeRoundedControls.displayName.2xl"),
+    full: i18n.t("themeRoundedControls.displayName.full"),
+  };
+  return DISPLAY_NAME_KEYS[key];
+}
 
 export default function ThemeRoundedControls({
   css,
   onValueChange,
 }: ThemeRoundedControlsProps) {
+  const { t } = useTranslation();
   const [roundedValues, setRoundedValues] = useState<RoundedValues>({});
 
   // Extract rounded values from CSS when component mounts or CSS changes
@@ -138,9 +142,7 @@ export default function ThemeRoundedControls({
       {/* Help text on top for mobile */}
       <div className="text-xs text-gray-400 flex items-center gap-1.5 mb-2">
         <span className="i-mdi:radius-outline text-primary text-sm"></span>
-        <span>
-          Adjust the border radius values used throughout your DEX interface
-        </span>
+        <span>{t("themeRoundedControls.helpText")}</span>
       </div>
 
       {ROUNDED_ORDER.map(key => {
@@ -148,7 +150,7 @@ export default function ThemeRoundedControls({
         const { value: numValue } = parseCssValue(value);
         const isFullRounded = key === "full";
         const variableName = `--oui-rounded${key ? `-${key}` : ""}`;
-        const displayName = ROUNDED_DISPLAY_NAMES[key];
+        const displayName = getDisplayNameKey(key);
 
         return (
           <div
@@ -190,7 +192,7 @@ export default function ThemeRoundedControls({
                 </div>
               ) : (
                 <div className="text-xs text-gray-400 italic px-1">
-                  (Full rounded value cannot be modified)
+                  ({t("themeRoundedControls.fullRoundedCannotModify")})
                 </div>
               )}
             </div>

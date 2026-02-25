@@ -3,6 +3,7 @@ import decodePng from "@jsquash/png/decode";
 import decodeWebp from "@jsquash/webp/decode";
 import encodeWebp from "@jsquash/webp/encode";
 import resize from "@jsquash/resize";
+import { i18n } from "~/i18n";
 
 export const DEFAULT_DIMENSIONS = {
   primaryLogo: { width: 600, height: 120 },
@@ -49,9 +50,7 @@ export async function convertImage(
     } else if (base64Icon.includes("image/webp")) {
       sourceType = "webp";
     } else {
-      throw new Error(
-        "Unsupported image format. Please use JPEG, PNG, or WebP."
-      );
+      throw new Error(i18n.t("imageUtils.unsupportedFormat"));
     }
 
     let decodedImage = await decode(sourceType, imageBuffer);
@@ -84,9 +83,8 @@ export async function convertImage(
     return `data:image/webp;base64,${base64String}`;
   } catch (error) {
     console.error("Error processing image:", error);
-    throw new Error(
-      `Failed to process image: ${error instanceof Error ? error.message : String(error)}`
-    );
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(i18n.t("imageUtils.failedToProcess", { message }));
   }
 }
 
@@ -101,14 +99,14 @@ function cropImage(imageData: ImageData, cropParams: CropParams): ImageData {
   const ctx = canvas.getContext("2d");
 
   if (!ctx) {
-    throw new Error("Could not create canvas context for cropping");
+    throw new Error(i18n.t("imageUtils.canvasContextError"));
   }
 
   const sourceCanvas = new OffscreenCanvas(imageData.width, imageData.height);
   const sourceCtx = sourceCanvas.getContext("2d");
 
   if (!sourceCtx) {
-    throw new Error("Could not create source canvas context");
+    throw new Error(i18n.t("imageUtils.sourceCanvasContextError"));
   }
 
   sourceCtx.putImageData(imageData, 0, 0);
@@ -150,7 +148,7 @@ async function decode(
       result = await decodeWebp(fileBuffer);
       break;
     default:
-      throw new Error(`Unknown source type: ${sourceType}`);
+      throw new Error(i18n.t("imageUtils.unknownSourceType", { sourceType }));
   }
   return result;
 }
@@ -178,7 +176,7 @@ export function getImageDimensions(
       resolve({ width: img.width, height: img.height });
     };
     img.onerror = () => {
-      reject(new Error("Failed to load image for dimension calculation"));
+      reject(new Error(i18n.t("imageUtils.failedToLoadForDimensions")));
     };
     img.src = base64Image;
   });
@@ -251,9 +249,7 @@ export async function convertImageToBinary(
     } else if (base64Icon.includes("image/webp")) {
       sourceType = "webp";
     } else {
-      throw new Error(
-        "Unsupported image format. Please use JPEG, PNG, or WebP."
-      );
+      throw new Error(i18n.t("imageUtils.unsupportedFormat"));
     }
 
     let decodedImage = await decode(sourceType, imageBuffer);
@@ -276,8 +272,7 @@ export async function convertImageToBinary(
     return new Blob([encodedImage], { type: "image/webp" });
   } catch (error) {
     console.error("Error processing image:", error);
-    throw new Error(
-      `Failed to process image: ${error instanceof Error ? error.message : String(error)}`
-    );
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(i18n.t("imageUtils.failedToProcess", { message }));
   }
 }

@@ -1,3 +1,4 @@
+import { Trans, useTranslation } from "~/i18n";
 import { Card } from "./Card";
 import { Button } from "./Button";
 import WorkflowStatus from "./WorkflowStatus";
@@ -25,25 +26,26 @@ export default function DexCreationStatus({
   handleRetryForking,
   handleSuccessfulDeployment,
 }: DexCreationStatusProps) {
+  const { t } = useTranslation();
   if (!dexData) return null;
 
   if (dexData.repoUrl) {
     return (
       <Card variant="success" className="mb-6" id="dex-creation-status">
-        <h3 className="text-lg font-bold mb-2">DEX Creation Status</h3>
+        <h3 className="text-lg font-bold mb-2">
+          {t("dexCreationStatus.title")}
+        </h3>
         <p className="text-sm text-gray-300 mb-4">
-          We've created the source code for your DEX! Here's what's happening
-          now:
+          {t("dexCreationStatus.intro")}
         </p>
 
         <div className="mb-4 p-3 bg-primary/10 rounded-lg border border-primary/20">
           <h4 className="text-base font-bold mb-2 flex items-center">
             <div className="i-mdi:code-tags text-primary-light mr-2 h-5 w-5"></div>
-            Step 1: Source Code Created
+            {t("dexCreationStatus.step1Title")}
           </h4>
           <p className="text-sm text-gray-300 mb-2">
-            We've created a GitHub repository containing all the code needed for
-            your DEX. Think of this as the blueprint for your exchange:
+            {t("dexCreationStatus.step1Desc")}
           </p>
           <a
             href={dexData.repoUrl}
@@ -55,8 +57,7 @@ export default function DexCreationStatus({
             <div className="i-mdi:open-in-new h-4 w-4 ml-1 flex-shrink-0"></div>
           </a>
           <p className="text-xs text-gray-400 italic">
-            (You don't need to do anything with this link unless you're a
-            developer)
+            ({t("dexCreationStatus.repoNote")})
           </p>
         </div>
 
@@ -64,11 +65,10 @@ export default function DexCreationStatus({
           <div className="mb-4 p-3 bg-success/10 rounded-lg border border-success/20 slide-fade-in">
             <h4 className="text-base font-bold mb-2 flex items-center">
               <div className="i-mdi:check-circle text-success mr-2 h-5 w-5"></div>
-              Step 2: Your DEX is Live!
+              {t("dexCreationStatus.step2Live")}
             </h4>
             <p className="text-sm text-gray-300 mb-3">
-              Congratulations! Your DEX website is fully built and ready to use.
-              Your users can access it at:
+              {t("dexCreationStatus.congratulations")}
             </p>
             <a
               href={
@@ -89,49 +89,33 @@ export default function DexCreationStatus({
             {dexData.customDomain && (
               <div className="mt-2 text-xs text-gray-400 flex items-start gap-1">
                 <div className="i-mdi:information-outline h-3.5 w-3.5 mt-0.5 flex-shrink-0"></div>
-                <span>
-                  Your DEX is using a custom domain. The standard deployment URL
-                  will no longer work correctly as the build is now optimized
-                  for your custom domain.
-                </span>
+                <span>{t("dexCreationStatus.customDomainNote")}</span>
               </div>
             )}
 
             {dexData.customDomain && (
               <div className="mt-2 text-xs text-warning flex items-start gap-1">
                 <div className="i-mdi:alert-circle-outline h-3.5 w-3.5 mt-0.5 flex-shrink-0"></div>
-                <span>
-                  Note: After changing any custom domain settings, you must wait
-                  for a deployment to complete (check "Updates & Deployment
-                  Status" below) for domain changes to take effect.
-                </span>
+                <span>{t("dexCreationStatus.domainChangeNote")}</span>
               </div>
             )}
 
             <div className="mt-4 pt-3 border-t border-light/10">
               <h5 className="text-sm font-bold mb-2 flex items-center">
                 <div className="i-mdi:information-outline text-primary-light mr-2 h-4 w-4"></div>
-                Making Changes to Your DEX
+                {t("dexCreationStatus.makingChanges")}
               </h5>
               <p className="text-xs text-gray-300 mb-2">
-                When you update any information above (like your broker name,
-                logos, or social links):
+                {t("dexCreationStatus.changesDesc")}
               </p>
               <ul className="text-xs text-gray-300 list-disc ml-5 space-y-1">
-                <li>Your changes are first saved to our system</li>
-                <li>
-                  An automatic update process (workflow) runs to rebuild your
-                  DEX
-                </li>
-                <li>
-                  Once complete, your changes will appear live on your DEX
-                  website
-                </li>
-                <li>This process typically takes 2-5 minutes</li>
+                <li>{t("dexCreationStatus.changesSaved")}</li>
+                <li>{t("dexCreationStatus.workflowRuns")}</li>
+                <li>{t("dexCreationStatus.changesLive")}</li>
+                <li>{t("dexCreationStatus.takes2to5Minutes")}</li>
               </ul>
               <p className="text-xs text-gray-400 mt-2 italic">
-                You can track the progress of your updates in the "Deployment
-                Progress" section above
+                {t("dexCreationStatus.trackProgress")}
               </p>
             </div>
           </div>
@@ -139,26 +123,22 @@ export default function DexCreationStatus({
           <div className="mb-4 p-3 bg-warning/10 rounded-lg border border-warning/20">
             <h4 className="text-base font-bold mb-2 flex items-center">
               <div className="i-mdi:progress-clock text-warning mr-2 h-5 w-5"></div>
-              Step 2: Building Your DEX Website
+              {t("dexCreationStatus.step2Building")}
             </h4>
             <p className="text-sm text-gray-300 mb-2">
-              We're currently building your DEX website from the source code.
-              This process usually takes 2-5 minutes to complete.
+              {t("dexCreationStatus.buildingDesc")}
             </p>
             <p className="text-xs text-gray-400 mb-3">
-              Once complete, you'll see a link to your live DEX here.
+              {t("dexCreationStatus.seeLinkWhenComplete")}
             </p>
 
             <div className="mt-3 pt-3 border-t border-light/10">
               <h5 className="text-sm font-bold mb-2 flex items-center">
                 <div className="i-mdi:information-outline text-warning mr-2 h-4 w-4"></div>
-                About Future Updates
+                {t("dexCreationStatus.aboutFutureUpdates")}
               </h5>
               <p className="text-xs text-gray-300">
-                Whenever you make changes to your DEX (updating logos, social
-                links, etc.), this same build process will run again. Your
-                changes will be live after the process completes, which
-                typically takes 2-5 minutes.
+                {t("dexCreationStatus.futureUpdatesDesc")}
               </p>
             </div>
           </div>
@@ -166,15 +146,14 @@ export default function DexCreationStatus({
 
         <div className="mt-4 pt-4 border-t border-light/10">
           <h4 className="text-base font-bold mb-3">
-            Updates & Deployment Status
+            {t("dexCreationStatus.updatesDeploymentStatus")}
           </h4>
           <p className="text-xs text-gray-400 mb-3">
-            This shows the current status of your DEX updates. When the latest
-            run shows "completed", your changes are live on your DEX website:
+            {t("dexCreationStatus.statusDesc")}
           </p>
           <WorkflowStatus
             dexId={dexData.id}
-            workflowName="Deploy to GitHub Pages"
+            workflowName={t("dexCreationStatus.deployWorkflowName")}
             onSuccessfulDeployment={handleSuccessfulDeployment}
           />
         </div>
@@ -186,11 +165,13 @@ export default function DexCreationStatus({
     return (
       <Card variant="error" className="mb-6" id="dex-creation-status">
         <p className="text-sm text-gray-300 mb-2">
-          <span className="text-red-300 font-medium">⚠️ Note:</span> Your DEX
-          configuration was saved, but we couldn't create your repository.
+          <Trans
+            i18nKey="dexCreationStatus.repoErrorNote"
+            components={[<span key="0" className="text-red-300 font-medium" />]}
+          />
         </p>
         <p className="text-sm text-gray-300 mb-4">
-          You can retry the repository creation now.
+          {t("dexCreationStatus.retryNote")}
         </p>
         <Button
           onClick={handleRetryForking}
@@ -198,9 +179,9 @@ export default function DexCreationStatus({
           variant="danger"
           size="sm"
           isLoading={isForking}
-          loadingText="Retrying..."
+          loadingText={t("dexCreationStatus.retrying")}
         >
-          Retry Repository Creation
+          {t("dexCreationStatus.retryRepoCreation")}
         </Button>
       </Card>
     );

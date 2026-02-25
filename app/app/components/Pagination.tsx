@@ -1,3 +1,5 @@
+import { useTranslation } from "~/i18n";
+
 interface PaginationProps {
   currentPage: number;
   pageSize: number;
@@ -19,6 +21,7 @@ export default function Pagination({
   itemName = "items",
   showPageSizeSelector = true,
 }: PaginationProps) {
+  const { t } = useTranslation();
   const totalPages = Math.ceil(totalItems / pageSize);
   const startItem = (currentPage - 1) * pageSize + 1;
   const endItem = Math.min(currentPage * pageSize, totalItems);
@@ -51,7 +54,9 @@ export default function Pagination({
         {/* Page Size Selector */}
         {showPageSizeSelector && onPageSizeChange && (
           <div className="flex items-center gap-2">
-            <label className="text-sm text-gray-400">Show:</label>
+            <label className="text-sm text-gray-400">
+              {t("pagination.show")}:
+            </label>
             <select
               value={pageSize}
               onChange={e => {
@@ -66,13 +71,20 @@ export default function Pagination({
                 </option>
               ))}
             </select>
-            <span className="text-sm text-gray-400">per page</span>
+            <span className="text-sm text-gray-400">
+              {t("pagination.perPage")}
+            </span>
           </div>
         )}
 
         {/* Pagination Info */}
         <div className="text-sm text-gray-400">
-          Showing {startItem} to {endItem} of {totalItems} {itemName}
+          {t("pagination.showingRange", {
+            startItem,
+            endItem,
+            totalItems,
+            itemName,
+          })}
         </div>
 
         {/* Pagination Navigation */}

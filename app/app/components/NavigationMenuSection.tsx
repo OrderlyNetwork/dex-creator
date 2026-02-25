@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "~/i18n";
 import NavigationMenuEditor from "./NavigationMenuEditor";
 import CustomMenuEditor from "./CustomMenuEditor";
 import { useModal } from "../context/ModalContext";
@@ -24,6 +25,7 @@ const NavigationMenuSection: React.FC<NavigationMenuProps> = ({
   swapFeeBps,
   setSwapFeeBps,
 }) => {
+  const { t } = useTranslation();
   const { openModal } = useModal();
 
   const handleOpenSwapFeeConfig = () => {
@@ -65,10 +67,10 @@ const NavigationMenuSection: React.FC<NavigationMenuProps> = ({
               htmlFor="enableCampaigns"
               className="text-sm font-medium cursor-pointer"
             >
-              Enable ORDER Token Campaigns
+              {t("navigationMenuSection.enableOrderTokenCampaigns")}
             </label>
             <p className="text-xs text-gray-400 mt-1">
-              Enable ORDER token-related features and campaigns menu in your DEX
+              {t("navigationMenuSection.enableOrderTokenCampaignsDesc")}
             </p>
           </div>
         </div>
@@ -78,20 +80,16 @@ const NavigationMenuSection: React.FC<NavigationMenuProps> = ({
             <div className="i-mdi:information-outline h-5 w-5 text-blue-300 mt-0.5"></div>
             <div>
               <h4 className="text-base font-bold text-blue-300 mb-2">
-                About ORDER Token Campaigns
+                {t("navigationMenuSection.aboutOrderTokenCampaigns")}
               </h4>
               <div className="text-xs text-gray-300 space-y-2">
-                <p>
-                  When enabled, this feature adds ORDER token-related links and
-                  menu items to your DEX including:
-                </p>
+                <p>{t("navigationMenuSection.whenEnabledAddsLinks")}</p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
-                  <li>ORDER token campaigns navigation links</li>
-                  <li>Links to ORDER token-related pages</li>
+                  <li>{t("navigationMenuSection.orderTokenCampaignsLinks")}</li>
+                  <li>{t("navigationMenuSection.linksToOrderTokenPages")}</li>
                 </ul>
                 <p className="pt-2 text-blue-200">
-                  <strong>Note:</strong> This is an optional feature that adds
-                  navigation links for ORDER token campaigns.
+                  {t("navigationMenuSection.noteOptionalFeature")}
                 </p>
               </div>
             </div>

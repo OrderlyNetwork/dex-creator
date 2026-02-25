@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "~/i18n";
 
 interface BlockchainConfigProps {
   chainIds: number[];
@@ -21,6 +22,7 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
   onDisableMainnetChange,
   onDisableTestnetChange,
 }) => {
+  const { t } = useTranslation();
   const supportedChains = [
     // Mainnet chains
     {
@@ -249,13 +251,13 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
               </span>
               {chain.network === "testnet" && (
                 <span className="text-xs px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-300">
-                  Testnet
+                  {t("blockchainConfigSection.testnetBadge")}
                 </span>
               )}
               {isDefaultChain && (
                 <span className="text-xs px-1.5 py-0.5 rounded bg-primary/30 text-primary-light flex items-center gap-1">
                   <div className="i-mdi:star w-3 h-3"></div>
-                  Default
+                  {t("blockchainConfigSection.defaultBadge")}
                 </span>
               )}
             </div>
@@ -272,10 +274,11 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h4 className="text-base font-bold mb-1">Supported Blockchains</h4>
+          <h4 className="text-base font-bold mb-1">
+            {t("blockchainConfigSection.title")}
+          </h4>
           <p className="text-xs text-gray-400">
-            Select which blockchains your DEX will support. Users will be able
-            to trade on these networks.
+            {t("blockchainConfigSection.description")}
           </p>
         </div>
         <div className="flex gap-2">
@@ -284,14 +287,14 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
             onClick={handleSelectAll}
             className="text-xs px-3 py-1 bg-primary/20 hover:bg-primary/30 text-primary-light rounded-full transition-all duration-200 ease-in-out"
           >
-            Select All
+            {t("blockchainConfigSection.selectAll")}
           </button>
           <button
             type="button"
             onClick={handleClearAll}
             className="text-xs px-3 py-1 bg-gray-500/20 hover:bg-gray-500/30 text-gray-300 rounded-full transition-all duration-200 ease-in-out"
           >
-            Clear All
+            {t("blockchainConfigSection.clearAll")}
           </button>
         </div>
       </div>
@@ -300,13 +303,12 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
       {chainIds.length === 0 && (
         <div className="text-center py-4 px-2 text-sm bg-blue-500/10 border border-blue-500/20 rounded-lg slide-fade-in">
           <div className="text-blue-300 font-medium mb-1">
-            🌐 All Chains Mode (Default)
+            {t("blockchainConfigSection.allChainsMode")}
           </div>
           <div className="text-gray-400 text-xs leading-relaxed">
-            No specific chains selected. Your DEX will automatically support{" "}
-            <strong>all current and future blockchains</strong> added to the
-            Orderly Network. This ensures maximum compatibility and
-            future-proofing without needing updates.
+            {t("blockchainConfigSection.noChainsSelectedDesc")}
+            <strong>{t("blockchainConfigSection.allCurrentAndFuture")}</strong>
+            {t("blockchainConfigSection.addedToOrderly")}
           </div>
         </div>
       )}
@@ -318,12 +320,10 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
             htmlFor="defaultChain"
             className="block text-sm font-medium mb-1"
           >
-            Default Chain (Optional)
+            {t("blockchainConfigSection.defaultChainLabel")}
           </label>
           <p className="text-xs text-gray-400 mb-2">
-            Choose which mainnet blockchain your DEX will use by default when
-            users first connect. Users can always switch to other supported
-            chains afterward.
+            {t("blockchainConfigSection.defaultChainHelp")}
           </p>
         </div>
         <select
@@ -336,7 +336,9 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
           }
           className="w-full px-3 py-2 bg-background-card border border-light/10 rounded-lg text-sm"
         >
-          <option value="">No default chain</option>
+          <option value="">
+            {t("blockchainConfigSection.noDefaultChain")}
+          </option>
           {(chainIds.length > 0
             ? chainIds
             : supportedChains.map(chain => chain.id)
@@ -359,10 +361,12 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
         </select>
         {defaultChain && (
           <div className="text-xs text-gray-400">
-            Selected default:{" "}
+            {t("blockchainConfigSection.selectedDefault")}{" "}
             <span className="text-primary-light">
               {supportedChains.find(c => c.id === defaultChain)?.name ||
-                `Chain ${defaultChain}`}
+                t("blockchainConfigSection.chainIdFallback", {
+                  chainId: defaultChain,
+                })}
             </span>
           </div>
         )}
@@ -381,11 +385,13 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
             onChange={e => handleMainnetToggle(e.target.checked)}
             title={
               disableTestnet
-                ? "Cannot disable mainnet when testnet is already disabled"
+                ? t("blockchainConfigSection.cannotDisableMainnet")
                 : ""
             }
           />
-          <span className="text-sm text-gray-300">Disable Mainnet</span>
+          <span className="text-sm text-gray-300">
+            {t("blockchainConfigSection.disableMainnet")}
+          </span>
         </label>
         <label
           className={`flex items-center cursor-pointer transition-all duration-200 ease-in-out hover:text-white ${disableMainnet ? "opacity-50" : ""}`}
@@ -398,11 +404,13 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
             onChange={e => handleTestnetToggle(e.target.checked)}
             title={
               disableMainnet
-                ? "Cannot disable testnet when mainnet is already disabled"
+                ? t("blockchainConfigSection.cannotDisableTestnet")
                 : ""
             }
           />
-          <span className="text-sm text-gray-300">Disable Testnet</span>
+          <span className="text-sm text-gray-300">
+            {t("blockchainConfigSection.disableTestnet")}
+          </span>
         </label>
       </div>
 
@@ -410,11 +418,10 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
       {bothNetworksDisabled && (
         <div className="text-center py-3 text-sm bg-red-500/10 border border-red-500/20 rounded-lg slide-fade-in">
           <div className="text-red-300 font-medium mb-1">
-            ⚠️ Invalid Configuration
+            {t("blockchainConfigSection.invalidConfig")}
           </div>
           <div className="text-gray-400 text-xs">
-            Cannot disable both mainnet and testnet. Your DEX needs to support
-            at least one network type.
+            {t("blockchainConfigSection.cannotDisableBoth")}
           </div>
         </div>
       )}
@@ -425,10 +432,10 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
       >
         <h4 className="text-sm font-semibold text-white flex items-center">
           <div className="i-mdi:earth h-4 w-4 mr-2"></div>
-          Mainnet Networks
+          {t("blockchainConfigSection.mainnetNetworks")}
           {disableMainnet && (
             <span className="ml-2 text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded slide-fade-in">
-              Disabled
+              {t("blockchainConfigSection.disabled")}
             </span>
           )}
         </h4>
@@ -439,7 +446,7 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
             <div>
               <h5 className="text-sm font-bold mb-3 text-blue-300 flex items-center">
                 <div className="i-mdi:layers h-4 w-4 mr-2"></div>
-                Layer 1 Networks
+                {t("blockchainConfigSection.layer1Networks")}
               </h5>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {mainnetL1.map(chain => (
@@ -452,7 +459,7 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
             <div>
               <h5 className="text-sm font-bold mb-3 text-green-300 flex items-center">
                 <div className="i-mdi:layers-triple h-4 w-4 mr-2"></div>
-                Layer 2 Networks
+                {t("blockchainConfigSection.layer2Networks")}
               </h5>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {mainnetL2.map(chain => (
@@ -463,7 +470,7 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
           </div>
         ) : (
           <div className="text-center py-4 text-sm text-gray-500 slide-fade-in">
-            Mainnet networks are disabled
+            {t("blockchainConfigSection.mainnetDisabled")}
           </div>
         )}
       </div>
@@ -474,10 +481,10 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
       >
         <h4 className="text-sm font-semibold text-orange-300 flex items-center">
           <div className="i-mdi:flask h-4 w-4 mr-2"></div>
-          Testnet Networks
+          {t("blockchainConfigSection.testnetNetworks")}
           {disableTestnet && (
             <span className="ml-2 text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded slide-fade-in">
-              Disabled
+              {t("blockchainConfigSection.disabled")}
             </span>
           )}
         </h4>
@@ -489,7 +496,7 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
               <div>
                 <h5 className="text-sm font-bold mb-3 text-blue-300 flex items-center">
                   <div className="i-mdi:layers h-4 w-4 mr-2"></div>
-                  Layer 1 Networks
+                  {t("blockchainConfigSection.layer1Networks")}
                 </h5>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {testnetL1.map(chain => (
@@ -504,7 +511,7 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
               <div>
                 <h5 className="text-sm font-bold mb-3 text-green-300 flex items-center">
                   <div className="i-mdi:layers-triple h-4 w-4 mr-2"></div>
-                  Layer 2 Networks
+                  {t("blockchainConfigSection.layer2Networks")}
                 </h5>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {testnetL2.map(chain => (
@@ -516,7 +523,7 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
           </div>
         ) : (
           <div className="text-center py-4 text-sm text-gray-500 slide-fade-in">
-            Testnet networks are disabled
+            {t("blockchainConfigSection.testnetDisabled")}
           </div>
         )}
       </div>
@@ -525,17 +532,19 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
       <div className="pt-3 border-t border-light/10">
         {chainIds.length === 0 ? (
           <div className="text-center py-2 text-xs text-gray-400">
-            Using All Chains Mode - supporting all current and future
-            blockchains
+            {t("blockchainConfigSection.usingAllChainsMode")}
           </div>
         ) : (
           <div className="text-xs text-gray-400">
-            Selected {chainIds.length} blockchain
-            {chainIds.length !== 1 ? "s" : ""} •{" "}
-            {mainnetChains.filter(chain => chainIds.includes(chain.id)).length}{" "}
-            Mainnet,{" "}
-            {testnetChains.filter(chain => chainIds.includes(chain.id)).length}{" "}
-            Testnet
+            {t("blockchainConfigSection.selectedCount", {
+              count: chainIds.length,
+              mainnetCount: mainnetChains.filter(chain =>
+                chainIds.includes(chain.id)
+              ).length,
+              testnetCount: testnetChains.filter(chain =>
+                chainIds.includes(chain.id)
+              ).length,
+            })}
           </div>
         )}
       </div>

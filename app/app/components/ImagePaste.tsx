@@ -10,6 +10,7 @@ import { Card } from "./Card";
 import { useModal } from "../context/ModalContext";
 import { toast } from "react-toastify";
 import { Button } from "./Button";
+import { useTranslation } from "~/i18n";
 
 type ImageType =
   | "primaryLogo"
@@ -50,6 +51,7 @@ export default function ImagePaste({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const dimensions = DEFAULT_DIMENSIONS[imageType];
+  const { t } = useTranslation();
 
   const enforceSquare =
     imageType === "secondaryLogo" ||
@@ -116,7 +118,7 @@ export default function ImagePaste({
         onChange(processedImageBlob);
       } catch (error) {
         console.error("Image processing error:", error);
-        toast.error("Failed to process image. Please try again.");
+        toast.error(t("imagePaste.failedToProcess"));
       } finally {
         setIsProcessing(false);
       }
@@ -128,7 +130,7 @@ export default function ImagePaste({
     async (imageDataUrl: string) => {
       if (!imageDataUrl) {
         console.error("No image data provided");
-        toast.error("No image data provided. Please try again.");
+        toast.error(t("imagePaste.noImageDataProvided"));
         setIsProcessing(false);
         return;
       }
@@ -219,9 +221,7 @@ export default function ImagePaste({
           "Error getting image dimensions or processing image:",
           error
         );
-        toast.error(
-          "Could not process image. Please ensure it\\'s a valid image file."
-        );
+        toast.error(t("imagePaste.couldNotProcessInvalidImage"));
         setIsProcessing(false);
       }
     },
@@ -267,9 +267,7 @@ export default function ImagePaste({
             }
           } catch (err) {
             console.error("Clipboard API error:", err);
-            toast.error(
-              "Could not access clipboard. Please try using Ctrl+V or ⌘+V directly in the paste area."
-            );
+            toast.error(t("imagePaste.couldNotAccessClipboard"));
             pasteAreaRef.current?.focus();
             setIsProcessing(false);
             return;
@@ -278,9 +276,7 @@ export default function ImagePaste({
 
         if (!imageDataUrl) {
           console.error("No image found in clipboard");
-          toast.error(
-            "No image found in clipboard. Please copy an image first."
-          );
+          toast.error(t("imagePaste.noImageInClipboard"));
           setIsProcessing(false);
           return;
         }
@@ -313,12 +309,12 @@ export default function ImagePaste({
       if (imageDataUrl) {
         await processImageAndOpenCropModal(imageDataUrl);
       } else {
-        toast.error("Could not read the selected image file.");
+        toast.error(t("imagePaste.couldNotReadSelectedFile"));
         setIsProcessing(false);
       }
     } catch (error) {
       console.error("File selection error:", error);
-      toast.error("Failed to load the selected image. Please try again.");
+      toast.error(t("imagePaste.failedToLoadSelectedImage"));
       setIsProcessing(false);
     }
 
@@ -359,7 +355,7 @@ export default function ImagePaste({
             className="text-xs text-error hover:text-error/70 transition-colors"
             disabled={isProcessing}
           >
-            Clear
+            {t("imagePaste.clear")}
           </button>
         )}
       </div>
@@ -413,7 +409,9 @@ export default function ImagePaste({
             <p
               className={`text-sm ${isFocused ? "text-gray-200" : "text-gray-400"} mb-1`}
             >
-              {isProcessing ? "Processing..." : "Drag & drop, paste, or"}
+              {isProcessing
+                ? t("imagePaste.processing")
+                : t("imagePaste.dragDropPasteOr")}
             </p>
             {!isProcessing && (
               <button
@@ -421,7 +419,7 @@ export default function ImagePaste({
                 onClick={handleSelectFileButtonClick}
                 className="text-sm text-primary-light hover:underline focus:outline-none focus:ring-1 focus:ring-primary-light rounded px-1"
               >
-                select a file
+                {t("imagePaste.selectFileLink")}
               </button>
             )}
           </div>
@@ -437,11 +435,11 @@ export default function ImagePaste({
           className="w-full sm:w-auto"
           disabled={isProcessing}
           isLoading={isProcessing && originalImageRef.current === null}
-          loadingText="Pasting..."
+          loadingText={t("imagePaste.pasting")}
         >
           <span className="flex items-center justify-center gap-1.5">
             <div className="i-mdi:content-paste h-4 w-4"></div>
-            Paste Image
+            {t("imagePaste.pasteImageButton")}
           </span>
         </Button>
         <Button
@@ -452,11 +450,11 @@ export default function ImagePaste({
           className="w-full sm:w-auto"
           disabled={isProcessing}
           isLoading={isProcessing && originalImageRef.current === null}
-          loadingText="Selecting..."
+          loadingText={t("imagePaste.selecting")}
         >
           <span className="flex items-center justify-center gap-1.5">
             <div className="i-mdi:file-image-plus-outline h-4 w-4"></div>
-            Select File
+            {t("imagePaste.selectFileButton")}
           </span>
         </Button>
       </div>
@@ -475,14 +473,11 @@ export default function ImagePaste({
       <Card variant="default" className="p-3 text-xs text-gray-400 mt-3">
         <p>
           <span className="font-medium text-primary-light">
-            Recommended size:
+            {t("imagePaste.recommendedSizeLabel")}:
           </span>{" "}
           {dimensions.width}x{dimensions.height}px
         </p>
-        <p className="mt-1">
-          Images will be converted to WebP format. The final size will be your
-          crop area size.
-        </p>
+        <p className="mt-1">{t("imagePaste.recommendedSizeDescription")}</p>
       </Card>
     </div>
   );

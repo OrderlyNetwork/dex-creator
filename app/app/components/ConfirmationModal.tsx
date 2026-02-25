@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "~/i18n";
 import { Button } from "./Button";
 
 interface ConfirmationModalProps {
@@ -29,9 +30,10 @@ export default function ConfirmationModal({
   warningMessage,
   confirmButtonText,
   confirmButtonVariant = "primary",
-  cancelButtonText = "Cancel",
+  cancelButtonText,
   isDestructive = false,
 }: ConfirmationModalProps) {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
 
   if (!isOpen) return null;
@@ -122,7 +124,9 @@ export default function ConfirmationModal({
               className={`bg-background-dark/50 p-4 rounded-lg border ${getWarningBorderColor()} text-sm`}
             >
               <h4 className={`font-semibold mb-2 ${getWarningTitleColor()}`}>
-                {isDestructive ? "⚠️ Warning" : "ℹ️ Important"}
+                {isDestructive
+                  ? t("confirmationModal.warning")
+                  : t("confirmationModal.important")}
               </h4>
               <p className="text-gray-400">{warningMessage}</p>
             </div>
@@ -131,13 +135,13 @@ export default function ConfirmationModal({
 
         <div className="flex gap-3 justify-end">
           <Button variant="ghost" onClick={onClose} disabled={isLoading}>
-            {cancelButtonText}
+            {cancelButtonText ?? t("confirmationModal.cancel")}
           </Button>
           <Button
             variant={confirmButtonVariant}
             onClick={handleConfirm}
             isLoading={isLoading}
-            loadingText="Processing..."
+            loadingText={t("confirmationModal.processing")}
           >
             {confirmButtonText}
           </Button>

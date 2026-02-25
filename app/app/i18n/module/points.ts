@@ -101,4 +101,3 @@ export const points = {
   "points.form.validation.l2.required": "L2 referral rate is required",
   "points.form.validation.l2.min": "L2 referral rate cannot be less than 0",
 };
-

@@ -10,7 +10,8 @@
     "typecheck": "tsc",
     "typechain": "typechain --target ethers-v6 --out-dir ./types './abi/**/*.json'",
     "export-en-json": "tsx scripts/export-en-json.ts",
-    "sync-locales": "tsx scripts/sync-locales.ts"
+    "sync-locales": "tsx scripts/sync-locales.ts",
+    "check-i18n-untranslated": "node scripts/check-i18n-untranslated.mjs --json"
   },
   "license": "MIT",
   "author": "Mario Reder <mario@orderly.network>",

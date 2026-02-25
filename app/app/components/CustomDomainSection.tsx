@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Trans, useTranslation } from "~/i18n";
 import { toast } from "react-toastify";
 import { Button } from "./Button";
 import { post } from "../utils/apiClient";
@@ -59,6 +60,7 @@ export default function CustomDomainSection({
   onSavingChange,
   onShowDomainRemoveConfirm,
 }: CustomDomainSectionProps) {
+  const { t } = useTranslation();
   const [customDomain, setCustomDomain] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const { openModal, closeModal } = useModal();
@@ -70,17 +72,17 @@ export default function CustomDomainSection({
       /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*\.[a-z]{2,}$/;
 
     if (!normalizedDomain) {
-      toast.error("Domain name cannot be empty");
+      toast.error(t("customDomainSection.domainEmpty"));
       return;
     }
 
     if (normalizedDomain !== customDomain) {
-      toast.error("Domain must be lowercase with no leading/trailing spaces");
+      toast.error(t("customDomainSection.domainLowercase"));
       return;
     }
 
     if (!domainRegex.test(normalizedDomain)) {
-      toast.error("Please enter a valid domain name (e.g., example.com)");
+      toast.error(t("customDomainSection.domainInvalid"));
       return;
     }
 
@@ -89,15 +91,13 @@ export default function CustomDomainSection({
       normalizedDomain.startsWith(".") ||
       normalizedDomain.endsWith(".")
     ) {
-      toast.error(
-        "Domain cannot have consecutive dots or start/end with a dot"
-      );
+      toast.error(t("customDomainSection.domainNoConsecutiveDots"));
       return;
     }
 
     const ipRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
     if (ipRegex.test(normalizedDomain)) {
-      toast.error("IP addresses are not allowed. Please use a domain name");
+      toast.error(t("customDomainSection.ipNotAllowed"));
       return;
     }
 
@@ -132,8 +132,8 @@ export default function CustomDomainSection({
 
       toast.success(
         isEditing
-          ? "Custom domain updated successfully"
-          : "Custom domain configured successfully"
+          ? t("customDomainSection.domainUpdatedSuccess")
+          : t("customDomainSection.domainConfiguredSuccess")
       );
       setIsEditing(false);
       setCustomDomain("");
@@ -141,8 +141,8 @@ export default function CustomDomainSection({
       console.error("Error setting custom domain:", error);
       toast.error(
         isEditing
-          ? "Failed to update custom domain"
-          : "Failed to set custom domain"
+          ? t("customDomainSection.failedToUpdate")
+          : t("customDomainSection.failedToSet")
       );
     } finally {
       onSavingChange(false);
@@ -166,27 +166,24 @@ export default function CustomDomainSection({
 
   return (
     <div>
-      <h3 className="text-lg font-bold mb-4">Custom Domain Setup</h3>
+      <h3 className="text-lg font-bold mb-4">
+        {t("customDomainSection.title")}
+      </h3>
       <p className="text-sm text-gray-300 mb-4">
-        Deploy your DEX to your own domain instead of using the default GitHub
-        Pages URL. You'll need to configure your domain's DNS settings to point
-        to GitHub Pages.
+        {t("customDomainSection.intro")}
       </p>
 
       {!dexData.customDomain && (
         <div className="mb-4 p-3 bg-warning/10 rounded-lg border border-warning/30">
           <h5 className="text-sm font-bold mb-2 flex items-center">
             <div className="i-mdi:alert-circle h-4 w-4 mr-2 text-warning"></div>
-            Limited Mobile Functionality
+            {t("customDomainSection.limitedMobileFunctionality")}
           </h5>
           <p className="text-xs text-gray-300 mb-2">
-            Your DEX is currently using the default deployment domain. This
-            means a special mobile feature that allows users to connect to their
-            mobile device without requiring a mobile wallet will not work.
+            {t("customDomainSection.limitedMobileDesc")}
           </p>
           <p className="text-xs text-gray-300">
-            Configure a custom domain below to enable this mobile connection
-            feature for your users.
+            {t("customDomainSection.configureCustomDomain")}
           </p>
         </div>
       )}
@@ -194,13 +191,10 @@ export default function CustomDomainSection({
       <div className="mb-4 p-3 bg-red-900/30 rounded-lg border border-red-500/30">
         <h5 className="text-sm font-bold mb-2 flex items-center">
           <div className="i-mdi:alert h-4 w-4 mr-2 text-red-400"></div>
-          Important License Requirement
+          {t("customDomainSection.importantLicenseRequirement")}
         </h5>
         <p className="text-xs text-gray-300 mb-3">
-          When using your own custom domain, you are required to apply for your
-          own
-          <strong> TradingView Advanced Charts license</strong>. The default
-          license only covers the default domain.
+          {t("customDomainSection.licenseNote")}
         </p>
         <div className="flex flex-col gap-2">
           <a
@@ -209,14 +203,14 @@ export default function CustomDomainSection({
             rel="noopener noreferrer"
             className="text-xs text-primary-light hover:underline flex items-center"
           >
-            Apply for TradingView Advanced Charts license
+            {t("customDomainSection.applyForLicense")}
             <div className="i-mdi:open-in-new h-3.5 w-3.5 ml-1"></div>
           </a>
           <button
             onClick={() => openModal("tradingViewLicense")}
             className="text-xs text-secondary-light hover:underline flex items-center"
           >
-            Need help? Read our guide
+            {t("customDomainSection.needHelp")}
             <div className="i-mdi:help-circle-outline h-3.5 w-3.5 ml-1"></div>
           </button>
         </div>
@@ -229,10 +223,10 @@ export default function CustomDomainSection({
               <div className="flex flex-col md:flex-row gap-3 items-start md:items-center mb-4">
                 <div className="bg-success/10 text-success px-3 py-1 rounded-full text-sm flex items-center">
                   <div className="i-mdi:check-circle h-4 w-4 mr-1"></div>
-                  Domain Configured
+                  {t("customDomainSection.domainConfigured")}
                 </div>
                 <div className="text-sm">
-                  Your DEX is available at{" "}
+                  {t("customDomainSection.availableAt")}{" "}
                   <a
                     href={`https://${dexData.customDomain}`}
                     target="_blank"
@@ -248,11 +242,10 @@ export default function CustomDomainSection({
               <div className="bg-info/10 rounded-lg border border-info/20 p-4 mb-4">
                 <h5 className="text-sm font-bold mb-2 flex items-center">
                   <div className="i-mdi:information-outline text-info mr-2 h-4 w-4"></div>
-                  DNS Configuration Status
+                  {t("customDomainSection.dnsConfigStatus")}
                 </h5>
                 <p className="text-sm text-gray-300 mb-3">
-                  It may take up to 24 hours for DNS changes to propagate. If
-                  your domain is not working yet, please check back later.
+                  {t("customDomainSection.dnsPropagationNote")}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <Button
@@ -263,7 +256,7 @@ export default function CustomDomainSection({
                   >
                     <span className="flex items-center gap-1">
                       <div className="i-mdi:pencil h-4 w-4"></div>
-                      Edit Domain
+                      {t("customDomainSection.editDomain")}
                     </span>
                   </Button>
                   <Button
@@ -271,12 +264,12 @@ export default function CustomDomainSection({
                     variant="danger"
                     size="sm"
                     isLoading={isSaving}
-                    loadingText="Removing..."
+                    loadingText={t("customDomainSection.removing")}
                     disabled={isSaving}
                   >
                     <span className="flex items-center gap-1">
                       <div className="i-mdi:delete h-4 w-4"></div>
-                      Remove Custom Domain
+                      {t("customDomainSection.removeCustomDomain")}
                     </span>
                   </Button>
                 </div>
@@ -287,10 +280,11 @@ export default function CustomDomainSection({
               <div className="flex flex-col md:flex-row gap-3 items-start md:items-center mb-4">
                 <div className="bg-warning/10 text-warning px-3 py-1 rounded-full text-sm flex items-center">
                   <div className="i-mdi:pencil h-4 w-4 mr-1"></div>
-                  Editing Domain
+                  {t("customDomainSection.editingDomain")}
                 </div>
                 <div className="text-sm text-gray-300">
-                  Current domain: {dexData.customDomain}
+                  {t("customDomainSection.currentDomain")}:{" "}
+                  {dexData.customDomain}
                 </div>
               </div>
 
@@ -299,7 +293,7 @@ export default function CustomDomainSection({
                   htmlFor="editCustomDomain"
                   className="block text-sm font-bold mb-1"
                 >
-                  Domain Name
+                  {t("customDomainSection.domainName")}
                 </label>
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-2">
                   <input
@@ -307,6 +301,7 @@ export default function CustomDomainSection({
                     type="text"
                     value={customDomain}
                     onChange={e => setCustomDomain(e.target.value)}
+                    // i18n-ignore
                     placeholder="example.com"
                     className="flex-1 bg-background-dark/80 border border-light/10 rounded px-3 py-2 text-sm focus:ring-1 focus:ring-primary-light focus:border-primary-light"
                   />
@@ -316,12 +311,12 @@ export default function CustomDomainSection({
                       variant="primary"
                       size="sm"
                       isLoading={isSaving}
-                      loadingText="Saving..."
+                      loadingText={t("customDomainSection.saving")}
                       disabled={!customDomain || isSaving}
                     >
                       <span className="flex items-center gap-1">
                         <div className="i-mdi:check h-4 w-4"></div>
-                        Update
+                        {t("customDomainSection.update")}
                       </span>
                     </Button>
                     <Button
@@ -332,14 +327,13 @@ export default function CustomDomainSection({
                     >
                       <span className="flex items-center gap-1">
                         <div className="i-mdi:close h-4 w-4"></div>
-                        Cancel
+                        {t("customDomainSection.cancel")}
                       </span>
                     </Button>
                   </div>
                 </div>
                 <p className="text-xs text-gray-400 mt-1">
-                  Enter your domain without 'http://' or 'https://' (e.g.,
-                  example.com)
+                  {t("customDomainSection.domainInputHint")}
                 </p>
               </div>
             </div>
@@ -352,7 +346,7 @@ export default function CustomDomainSection({
               htmlFor="customDomain"
               className="block text-sm font-bold mb-1"
             >
-              Domain Name
+              {t("customDomainSection.domainName")}
             </label>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-2">
               <input
@@ -360,6 +354,7 @@ export default function CustomDomainSection({
                 type="text"
                 value={customDomain}
                 onChange={e => setCustomDomain(e.target.value)}
+                // i18n-ignore
                 placeholder="example.com"
                 className="flex-1 bg-background-dark/80 border border-light/10 rounded px-3 py-2 text-sm focus:ring-1 focus:ring-primary-light focus:border-primary-light"
               />
@@ -368,19 +363,18 @@ export default function CustomDomainSection({
                 variant="primary"
                 size="sm"
                 isLoading={isSaving}
-                loadingText="Saving..."
+                loadingText={t("customDomainSection.saving")}
                 disabled={!customDomain || isSaving}
                 className="w-full sm:w-auto"
               >
                 <span className="flex items-center gap-1 justify-center sm:justify-start">
                   <div className="i-mdi:link h-4 w-4"></div>
-                  Set Domain
+                  {t("customDomainSection.setDomain")}
                 </span>
               </Button>
             </div>
             <p className="text-xs text-gray-400 mt-1">
-              Enter your domain without 'http://' or 'https://' (e.g.,
-              example.com)
+              {t("customDomainSection.domainInputHint")}
             </p>
           </div>
         </div>
@@ -389,11 +383,10 @@ export default function CustomDomainSection({
       <div className="mb-4 p-4 bg-primary-light/5 rounded-lg border border-primary-light/20">
         <h5 className="text-sm font-bold mb-2 flex items-center">
           <div className="i-mdi:shopping-cart h-4 w-4 mr-2 text-primary-light"></div>
-          Need to Purchase a Domain?
+          {t("customDomainSection.needToPurchaseDomain")}
         </h5>
         <p className="text-sm text-gray-300 mb-3">
-          Don't have a domain yet? We've created step-by-step guides to help you
-          purchase and configure your domain with popular providers.
+          {t("customDomainSection.purchaseDomainDesc")}
         </p>
         <Button
           onClick={() =>
@@ -406,7 +399,7 @@ export default function CustomDomainSection({
         >
           <span className="flex items-center gap-1">
             <div className="i-mdi:book-open-variant h-4 w-4"></div>
-            Show Step-by-Step Guide
+            {t("customDomainSection.showStepByStepGuide")}
           </span>
         </Button>
       </div>
@@ -414,11 +407,10 @@ export default function CustomDomainSection({
       <div className="rounded-lg border border-light/10 p-4 bg-base-8/50">
         <h5 className="text-sm font-bold mb-3 flex items-center">
           <div className="i-mdi:dns h-4 w-4 mr-2 text-primary-light"></div>
-          DNS Configuration Instructions
+          {t("customDomainSection.dnsInstructions")}
         </h5>
         <p className="text-sm text-gray-300 mb-3">
-          To use a custom domain, you'll need to configure your domain's DNS
-          settings:
+          {t("customDomainSection.dnsIntro")}:
         </p>
 
         {/* Check if it's an apex domain or subdomain */}
@@ -428,19 +420,28 @@ export default function CustomDomainSection({
           <div className="space-y-3">
             <div className="bg-base-9/70 rounded p-3 font-mono text-xs overflow-x-auto">
               <div className="mb-2 text-gray-400">
-                <span className="text-primary-light">Step 1:</span> Add{" "}
-                <span className="text-primary-light">A records</span> for your
-                apex domain:
+                <Trans
+                  i18nKey="customDomainSection.step1AddARecords"
+                  components={[
+                    <span key="0" className="text-primary-light" />,
+                    <span key="1" className="text-primary-light" />,
+                  ]}
+                />
               </div>
               <div className="space-y-1">
                 <div className="flex items-center">
-                  <span className="text-gray-400">Type:</span>{" "}
+                  <span className="text-gray-400">
+                    {t("customDomainSection.dnsRecordType")}:
+                  </span>{" "}
                   <div className="flex items-center">
                     <span className="text-white">A</span>
                     <button
                       className="ml-1.5 text-gray-400 hover:text-primary-light transition-colors"
                       onClick={() =>
-                        copyToClipboard("A", "Copied to clipboard")
+                        copyToClipboard(
+                          "A",
+                          t("customDomainSection.copiedToClipboard")
+                        )
                       }
                       aria-label="Copy record type to clipboard"
                     >
@@ -449,13 +450,18 @@ export default function CustomDomainSection({
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <span className="text-gray-400">Name:</span>{" "}
+                  <span className="text-gray-400">
+                    {t("customDomainSection.dnsRecordName")}:
+                  </span>{" "}
                   <div className="flex items-center">
                     <span className="text-white">@</span>
                     <button
                       className="ml-1.5 text-gray-400 hover:text-primary-light transition-colors"
                       onClick={() =>
-                        copyToClipboard("@", "Copied to clipboard")
+                        copyToClipboard(
+                          "@",
+                          t("customDomainSection.copiedToClipboard")
+                        )
                       }
                       aria-label="Copy @ symbol to clipboard"
                     >
@@ -464,7 +470,7 @@ export default function CustomDomainSection({
                   </div>
                 </div>
                 <div className="text-gray-400">
-                  Values (create 4 separate A records):
+                  {t("customDomainSection.valuesCreate4Records")}
                 </div>
                 {[
                   "185.199.108.153",
@@ -476,7 +482,12 @@ export default function CustomDomainSection({
                     <span className="text-white">{ip}</span>
                     <button
                       className="ml-1.5 text-gray-400 hover:text-primary-light transition-colors"
-                      onClick={() => copyToClipboard(ip, "Copied to clipboard")}
+                      onClick={() =>
+                        copyToClipboard(
+                          ip,
+                          t("customDomainSection.copiedToClipboard")
+                        )
+                      }
                       aria-label={`Copy IP address ${ip} to clipboard`}
                     >
                       <div className="i-mdi:content-copy h-3.5 w-3.5"></div>
@@ -484,19 +495,23 @@ export default function CustomDomainSection({
                   </div>
                 ))}
                 <div className="flex items-center">
+                  {/* i18n-ignore */}
                   <span className="text-gray-400">TTL:</span>{" "}
                   <div className="flex items-center">
                     <span className="text-white">3600</span>
                     <button
                       className="ml-1.5 text-gray-400 hover:text-primary-light transition-colors"
                       onClick={() =>
-                        copyToClipboard("3600", "Copied to clipboard")
+                        copyToClipboard(
+                          "3600",
+                          t("customDomainSection.copiedToClipboard")
+                        )
                       }
                       aria-label="Copy TTL value to clipboard"
                     >
                       <div className="i-mdi:content-copy h-3.5 w-3.5"></div>
                     </button>{" "}
-                    (or automatic)
+                    {t("customDomainSection.ttlOrAutomatic")}
                   </div>
                 </div>
               </div>
@@ -504,23 +519,23 @@ export default function CustomDomainSection({
 
             <div className="bg-base-9/70 rounded p-3 font-mono text-xs overflow-x-auto">
               <div className="mb-2 text-gray-400">
-                <span className="text-primary-light">Step 2:</span> Add a{" "}
-                <span className="text-primary-light">CNAME record</span> for www
-                subdomain{" "}
-                <span className="text-warning">
-                  (required for SSL certificate)
-                </span>
-                :
+                {t("customDomainSection.step2AddCname")}
               </div>
               <div className="space-y-1">
                 <div className="flex items-center">
-                  <span className="text-gray-400">Type:</span>{" "}
+                  <span className="text-gray-400">
+                    {t("customDomainSection.dnsRecordType")}:
+                  </span>{" "}
                   <div className="flex items-center">
+                    {/* i18n-ignore */}
                     <span className="text-white">CNAME</span>
                     <button
                       className="ml-1.5 text-gray-400 hover:text-primary-light transition-colors"
                       onClick={() =>
-                        copyToClipboard("CNAME", "Copied to clipboard")
+                        copyToClipboard(
+                          "CNAME",
+                          t("customDomainSection.copiedToClipboard")
+                        )
                       }
                       aria-label="Copy record type to clipboard"
                     >
@@ -529,13 +544,19 @@ export default function CustomDomainSection({
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <span className="text-gray-400">Name:</span>{" "}
+                  <span className="text-gray-400">
+                    {t("customDomainSection.dnsRecordName")}:
+                  </span>{" "}
                   <div className="flex items-center">
+                    {/* i18n-ignore */}
                     <span className="text-white">www</span>
                     <button
                       className="ml-1.5 text-gray-400 hover:text-primary-light transition-colors"
                       onClick={() =>
-                        copyToClipboard("www", "Copied to clipboard")
+                        copyToClipboard(
+                          "www",
+                          t("customDomainSection.copiedToClipboard")
+                        )
                       }
                       aria-label="Copy www to clipboard"
                     >
@@ -544,8 +565,11 @@ export default function CustomDomainSection({
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <span className="text-gray-400">Value:</span>{" "}
+                  <span className="text-gray-400">
+                    {t("customDomainSection.dnsRecordValue")}:
+                  </span>{" "}
                   <div className="flex items-center">
+                    {/* i18n-ignore */}
                     <span className="text-white">
                       orderlynetworkdexcreator.github.io
                     </span>
@@ -554,7 +578,7 @@ export default function CustomDomainSection({
                       onClick={() =>
                         copyToClipboard(
                           "orderlynetworkdexcreator.github.io",
-                          "Copied to clipboard"
+                          t("customDomainSection.copiedToClipboard")
                         )
                       }
                       aria-label="Copy domain value to clipboard"
@@ -564,19 +588,23 @@ export default function CustomDomainSection({
                   </div>
                 </div>
                 <div className="flex items-center">
+                  {/* i18n-ignore */}
                   <span className="text-gray-400">TTL:</span>{" "}
                   <div className="flex items-center">
                     <span className="text-white">3600</span>
                     <button
                       className="ml-1.5 text-gray-400 hover:text-primary-light transition-colors"
                       onClick={() =>
-                        copyToClipboard("3600", "Copied to clipboard")
+                        copyToClipboard(
+                          "3600",
+                          t("customDomainSection.copiedToClipboard")
+                        )
                       }
                       aria-label="Copy TTL value to clipboard"
                     >
                       <div className="i-mdi:content-copy h-3.5 w-3.5"></div>
                     </button>{" "}
-                    (or automatic)
+                    {t("customDomainSection.ttlOrAutomatic")}
                   </div>
                 </div>
               </div>
@@ -587,11 +615,12 @@ export default function CustomDomainSection({
           // Subdomain - show CNAME record
           <div className="bg-base-9/70 rounded p-3 font-mono text-xs overflow-x-auto mb-3">
             <div className="mb-1 text-gray-400">
-              Add a <span className="text-primary-light">CNAME record</span>{" "}
-              with the following values:
+              {t("customDomainSection.addCnameRecord")}
             </div>
             <div className="flex items-center">
-              <span className="text-gray-400">Name:</span>{" "}
+              <span className="text-gray-400">
+                {t("customDomainSection.dnsRecordName")}:
+              </span>{" "}
               <div className="flex items-center">
                 <span className="text-white">
                   {dexData.customDomain.split(".")[0]}
@@ -601,7 +630,7 @@ export default function CustomDomainSection({
                   onClick={() =>
                     copyToClipboard(
                       dexData.customDomain?.split(".")[0] || "",
-                      "Copied to clipboard"
+                      t("customDomainSection.copiedToClipboard")
                     )
                   }
                   aria-label="Copy subdomain name to clipboard"
@@ -611,8 +640,11 @@ export default function CustomDomainSection({
               </div>
             </div>
             <div className="flex items-center">
-              <span className="text-gray-400">Value:</span>{" "}
+              <span className="text-gray-400">
+                {t("customDomainSection.dnsRecordValue")}:
+              </span>{" "}
               <div className="flex items-center">
+                {/* i18n-ignore */}
                 <span className="text-white">
                   orderlynetworkdexcreator.github.io
                 </span>
@@ -621,7 +653,7 @@ export default function CustomDomainSection({
                   onClick={() =>
                     copyToClipboard(
                       "orderlynetworkdexcreator.github.io",
-                      "Copied to clipboard"
+                      t("customDomainSection.copiedToClipboard")
                     )
                   }
                   aria-label="Copy domain value to clipboard"
@@ -631,17 +663,23 @@ export default function CustomDomainSection({
               </div>
             </div>
             <div className="flex items-center">
+              {/* i18n-ignore */}
               <span className="text-gray-400">TTL:</span>{" "}
               <div className="flex items-center">
                 <span className="text-white">3600</span>
                 <button
                   className="ml-1.5 text-gray-400 hover:text-primary-light transition-colors"
-                  onClick={() => copyToClipboard("3600", "Copied to clipboard")}
+                  onClick={() =>
+                    copyToClipboard(
+                      "3600",
+                      t("customDomainSection.copiedToClipboard")
+                    )
+                  }
                   aria-label="Copy TTL value to clipboard"
                 >
                   <div className="i-mdi:content-copy h-3.5 w-3.5"></div>
                 </button>{" "}
-                (or automatic)
+                {t("customDomainSection.ttlOrAutomatic")}
               </div>
             </div>
           </div>
@@ -649,25 +687,27 @@ export default function CustomDomainSection({
           // No domain configured yet - show generic instructions
           <div className="bg-base-9/70 rounded p-3 font-mono text-xs overflow-x-auto mb-3">
             <div className="mb-2 text-gray-400">
-              DNS configuration depends on your domain type:
+              {t("customDomainSection.dnsConfigDepends")}
             </div>
             <div className="mb-3">
               <div className="text-primary-light mb-1">
-                For apex domains (example.com):
+                {t("customDomainSection.forApexDomains")}
               </div>
               <div className="ml-2 space-y-1">
                 <div className="mb-2">
                   <div className="text-warning text-xs mb-1">
-                    Step 1: A Records
+                    {t("customDomainSection.step1ARecords")}
                   </div>
                   <div>
-                    Type: <span className="text-white">A</span>
+                    {t("customDomainSection.dnsRecordType")}:{" "}
+                    <span className="text-white">A</span>
                   </div>
                   <div>
-                    Name: <span className="text-white">@</span>
+                    {t("customDomainSection.dnsRecordName")}:{" "}
+                    <span className="text-white">@</span>
                   </div>
                   <div>
-                    Values:{" "}
+                    {t("customDomainSection.dnsRecordValues")}:{" "}
                     <span className="text-white">
                       185.199.108.153, 185.199.109.153, 185.199.110.153,
                       185.199.111.153
@@ -676,16 +716,18 @@ export default function CustomDomainSection({
                 </div>
                 <div>
                   <div className="text-warning text-xs mb-1">
-                    Step 2: www CNAME (required for SSL)
+                    {t("customDomainSection.step2WwwCname")}
                   </div>
                   <div>
-                    Type: <span className="text-white">CNAME</span>
+                    {t("customDomainSection.dnsRecordType")}:{" "}
+                    <span className="text-white">CNAME</span>
                   </div>
                   <div>
-                    Name: <span className="text-white">www</span>
+                    {t("customDomainSection.dnsRecordName")}:{" "}
+                    <span className="text-white">www</span>
                   </div>
                   <div>
-                    Value:{" "}
+                    {t("customDomainSection.dnsRecordValue")}:{" "}
                     <span className="text-white">
                       orderlynetworkdexcreator.github.io
                     </span>
@@ -695,19 +737,22 @@ export default function CustomDomainSection({
             </div>
             <div>
               <div className="text-primary-light mb-1">
-                For subdomains (dex.example.com):
+                {t("customDomainSection.forSubdomains")}
               </div>
               <div className="ml-2 space-y-1">
                 <div>
-                  Type: <span className="text-white">CNAME</span>
+                  {t("customDomainSection.dnsRecordType")}:{" "}
+                  <span className="text-white">CNAME</span>
                 </div>
                 <div>
-                  Name: <span className="text-white">dex</span> (your subdomain)
+                  {t("customDomainSection.dnsRecordName")}:{" "}
+                  <span className="text-white">dex</span> (
+                  {t("customDomainSection.yourSubdomain")})
                 </div>
                 <div>
-                  Value:{" "}
+                  {t("customDomainSection.dnsRecordValue")}:
                   <span className="text-white">
-                    orderlynetworkdexcreator.github.io
+                    {/* i18n-ignore */}orderlynetworkdexcreator.github.io
                   </span>
                 </div>
               </div>
@@ -718,16 +763,13 @@ export default function CustomDomainSection({
         <div className="mb-3 p-3 bg-info/10 rounded-lg border border-info/20">
           <h6 className="text-xs font-medium mb-2 flex items-center">
             <div className="i-mdi:information-outline h-3.5 w-3.5 mr-1.5 text-info"></div>
-            Important: About Domain Updates
+            {t("customDomainSection.importantAboutDomainUpdates")}
           </h6>
           <p className="text-xs text-gray-300">
-            After adding or removing a custom domain, a deployment process must
-            complete for the changes to take effect. Your domain will not work
-            correctly until this process finishes (usually 2-5 minutes).
+            {t("customDomainSection.domainUpdateNote")}
           </p>
           <p className="text-xs text-gray-300 mt-1">
-            You can monitor the deployment status in the "Updates & Deployment
-            Status" section below.
+            {t("customDomainSection.monitorDeployment")}
           </p>
         </div>
 
@@ -737,9 +779,9 @@ export default function CustomDomainSection({
             <div className="flex items-start gap-1 mb-1">
               <div className="i-mdi:information-outline h-3.5 w-3.5 mt-0.5 flex-shrink-0"></div>
               <span>
-                You've configured an apex domain ({dexData.customDomain}). You
-                must create 4 separate A records with the IP addresses shown
-                above.
+                {t("customDomainSection.apexDomainNote", {
+                  domain: dexData.customDomain,
+                })}
               </span>
             </div>
           ) : dexData.customDomain &&
@@ -747,27 +789,20 @@ export default function CustomDomainSection({
             <div className="flex items-start gap-1 mb-1">
               <div className="i-mdi:information-outline h-3.5 w-3.5 mt-0.5 flex-shrink-0"></div>
               <span>
-                You've configured a subdomain (
-                {dexData.customDomain.split(".")[0]}.
-                {dexData.customDomain.split(".").slice(1).join(".")}). Use the
-                exact subdomain name shown above in the Name field.
+                {t("customDomainSection.subdomainNote", {
+                  subdomain: `${dexData.customDomain.split(".")[0]}.${dexData.customDomain.split(".").slice(1).join(".")}`,
+                })}
               </span>
             </div>
           ) : (
             <div className="flex items-start gap-1 mb-1">
               <div className="i-mdi:information-outline h-3.5 w-3.5 mt-0.5 flex-shrink-0"></div>
-              <span>
-                Choose between an apex domain (example.com) using A records or a
-                subdomain (dex.example.com) using a CNAME record.
-              </span>
+              <span>{t("customDomainSection.chooseDomainType")}</span>
             </div>
           )}
           <div className="flex items-start gap-1">
             <div className="i-mdi:clock-outline h-3.5 w-3.5 mt-0.5 flex-shrink-0"></div>
-            <span>
-              DNS changes can take up to 24 hours to propagate globally, though
-              they often complete within a few hours.
-            </span>
+            <span>{t("customDomainSection.dnsPropagationTime")}</span>
           </div>
         </div>
       </div>
@@ -775,31 +810,34 @@ export default function CustomDomainSection({
       <div className="mt-4 rounded-lg border border-warning/20 p-4 bg-warning/5">
         <h5 className="text-sm font-bold mb-3 flex items-center">
           <div className="i-mdi:security h-4 w-4 mr-2 text-warning"></div>
-          Recommended: Email Security Records
+          {t("customDomainSection.recommendedEmailSecurity")}
         </h5>
         <p className="text-sm text-gray-300 mb-4">
-          Add these TXT records to protect your domain from email spoofing
-          attacks. Without these records, attackers could send phishing emails
-          that appear to come from your domain, which may cause your site to be
-          flagged by Google Safe Browsing.
+          {t("customDomainSection.emailSecurityDesc")}
         </p>
 
         <div className="space-y-4">
           <div>
             <div className="text-xs font-bold mb-2 text-warning flex items-center">
               <div className="i-mdi:shield-lock h-3.5 w-3.5 mr-1"></div>
-              SPF Record (Sender Policy Framework)
+              {t("customDomainSection.spfRecord")}
             </div>
             <div className="bg-base-9/70 rounded p-3 font-mono text-xs overflow-x-auto">
               <div className="space-y-1">
                 <div className="flex items-center">
-                  <span className="text-gray-400">Type:</span>{" "}
+                  <span className="text-gray-400">
+                    {t("customDomainSection.dnsRecordType")}:
+                  </span>{" "}
                   <div className="flex items-center">
+                    {/* i18n-ignore */}
                     <span className="text-white ml-1">TXT</span>
                     <button
                       className="ml-1.5 text-gray-400 hover:text-primary-light transition-colors"
                       onClick={() =>
-                        copyToClipboard("TXT", "Copied to clipboard")
+                        copyToClipboard(
+                          "TXT",
+                          t("customDomainSection.copiedToClipboard")
+                        )
                       }
                       aria-label="Copy record type to clipboard"
                     >
@@ -808,13 +846,18 @@ export default function CustomDomainSection({
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <span className="text-gray-400">Name:</span>{" "}
+                  <span className="text-gray-400">
+                    {t("customDomainSection.dnsRecordName")}:
+                  </span>{" "}
                   <div className="flex items-center">
                     <span className="text-white ml-1">@</span>
                     <button
                       className="ml-1.5 text-gray-400 hover:text-primary-light transition-colors"
                       onClick={() =>
-                        copyToClipboard("@", "Copied to clipboard")
+                        copyToClipboard(
+                          "@",
+                          t("customDomainSection.copiedToClipboard")
+                        )
                       }
                       aria-label="Copy @ symbol to clipboard"
                     >
@@ -823,13 +866,19 @@ export default function CustomDomainSection({
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <span className="text-gray-400">Value:</span>{" "}
+                  <span className="text-gray-400">
+                    {t("customDomainSection.dnsRecordValue")}:
+                  </span>{" "}
                   <div className="flex items-center">
+                    {/* i18n-ignore */}
                     <span className="text-white ml-1">v=spf1 -all</span>
                     <button
                       className="ml-1.5 text-gray-400 hover:text-primary-light transition-colors"
                       onClick={() =>
-                        copyToClipboard("v=spf1 -all", "Copied to clipboard")
+                        copyToClipboard(
+                          "v=spf1 -all",
+                          t("customDomainSection.copiedToClipboard")
+                        )
                       }
                       aria-label="Copy SPF record value to clipboard"
                     >
@@ -844,18 +893,24 @@ export default function CustomDomainSection({
           <div>
             <div className="text-xs font-bold mb-2 text-warning flex items-center">
               <div className="i-mdi:email-lock h-3.5 w-3.5 mr-1"></div>
-              DMARC Record (Email Authentication)
+              {t("customDomainSection.dmarcRecord")}
             </div>
             <div className="bg-base-9/70 rounded p-3 font-mono text-xs overflow-x-auto">
               <div className="space-y-1">
                 <div className="flex items-center">
-                  <span className="text-gray-400">Type:</span>{" "}
+                  <span className="text-gray-400">
+                    {t("customDomainSection.dnsRecordType")}:
+                  </span>{" "}
                   <div className="flex items-center">
+                    {/* i18n-ignore */}
                     <span className="text-white ml-1">TXT</span>
                     <button
                       className="ml-1.5 text-gray-400 hover:text-primary-light transition-colors"
                       onClick={() =>
-                        copyToClipboard("TXT", "Copied to clipboard")
+                        copyToClipboard(
+                          "TXT",
+                          t("customDomainSection.copiedToClipboard")
+                        )
                       }
                       aria-label="Copy record type to clipboard"
                     >
@@ -864,13 +919,18 @@ export default function CustomDomainSection({
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <span className="text-gray-400">Name:</span>{" "}
+                  <span className="text-gray-400">
+                    {t("customDomainSection.dnsRecordName")}:
+                  </span>{" "}
                   <div className="flex items-center">
                     <span className="text-white ml-1">_dmarc</span>
                     <button
                       className="ml-1.5 text-gray-400 hover:text-primary-light transition-colors"
                       onClick={() =>
-                        copyToClipboard("_dmarc", "Copied to clipboard")
+                        copyToClipboard(
+                          "_dmarc",
+                          t("customDomainSection.copiedToClipboard")
+                        )
                       }
                       aria-label="Copy _dmarc to clipboard"
                     >
@@ -879,8 +939,11 @@ export default function CustomDomainSection({
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <span className="text-gray-400 flex-shrink-0">Value:</span>{" "}
+                  <span className="text-gray-400 flex-shrink-0">
+                    {t("customDomainSection.dnsRecordValue")}:
+                  </span>{" "}
                   <div className="flex items-start ml-1">
+                    {/* i18n-ignore */}
                     <span className="text-white break-all">
                       v=DMARC1; p=reject; sp=reject; aspf=s; adkim=s
                     </span>
@@ -889,7 +952,7 @@ export default function CustomDomainSection({
                       onClick={() =>
                         copyToClipboard(
                           "v=DMARC1; p=reject; sp=reject; aspf=s; adkim=s",
-                          "Copied to clipboard"
+                          t("customDomainSection.copiedToClipboard")
                         )
                       }
                       aria-label="Copy DMARC record value to clipboard"
@@ -908,26 +971,28 @@ export default function CustomDomainSection({
             <div className="flex items-start gap-1.5">
               <div className="i-mdi:information-outline h-3.5 w-3.5 mt-0.5 flex-shrink-0 text-info"></div>
               <span>
-                <strong>What these records do:</strong> They tell email servers
-                that your domain doesn't send emails and to reject any emails
-                claiming to be from your domain.
+                <Trans
+                  i18nKey="customDomainSection.whatTheseRecordsDo"
+                  components={[<strong key="0" />]}
+                />
               </span>
             </div>
             <div className="flex items-start gap-1.5">
               <div className="i-mdi:shield-check h-3.5 w-3.5 mt-0.5 flex-shrink-0 text-success"></div>
               <span>
-                <strong>Why this matters:</strong> Prevents attackers from
-                spoofing your domain to send phishing emails, which could get
-                your site flagged by Google Safe Browsing.
+                <Trans
+                  i18nKey="customDomainSection.whyThisMatters"
+                  components={[<strong key="0" />]}
+                />
               </span>
             </div>
             <div className="flex items-start gap-1.5">
               <div className="i-mdi:alert-circle-outline h-3.5 w-3.5 mt-0.5 flex-shrink-0 text-warning"></div>
               <span>
-                <strong>Note:</strong> Only add these records if your domain
-                won't be used for sending legitimate emails. If you plan to send
-                emails from this domain, consult your email provider for proper
-                SPF/DMARC configuration.
+                <Trans
+                  i18nKey="customDomainSection.noteEmailRecords"
+                  components={[<strong key="0" />]}
+                />
               </span>
             </div>
           </div>

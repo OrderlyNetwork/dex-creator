@@ -1,3 +1,4 @@
+import { useTranslation } from "~/i18n";
 import { cn } from "~/utils/css";
 import { Card } from "../Card";
 import WalletConnect from "../WalletConnect";
@@ -7,6 +8,7 @@ type ConnectWalletAuthGrardProps = {
 };
 
 export const ConnectWalletAuthGrard = (props: ConnectWalletAuthGrardProps) => {
+  const { t } = useTranslation();
   return (
     <Card
       className={cn(
@@ -15,10 +17,10 @@ export const ConnectWalletAuthGrard = (props: ConnectWalletAuthGrardProps) => {
       )}
     >
       <h2 className="text-xl md:text-2xl font-semibold text-base-contrast">
-        Connect wallet
+        {t("connectWalletAuthGuard.title")}
       </h2>
       <p className="text-sm md:text-sm text-base-contrast-54">
-        Authentication required. Please connect your wallet and login.
+        {t("connectWalletAuthGuard.description")}
       </p>
 
       <div className="flex justify-center">

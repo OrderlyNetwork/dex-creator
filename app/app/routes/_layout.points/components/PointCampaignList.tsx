@@ -158,8 +158,8 @@ export function PointCampaignList(props: PointCampaignListProps) {
           delayDuration={100}
           content={
             hasRecurring
-                ? t("points.list.tooltip.recurring")
-                : t("points.list.tooltip.enable")
+              ? t("points.list.tooltip.recurring")
+              : t("points.list.tooltip.enable")
           }
         >
           {button}

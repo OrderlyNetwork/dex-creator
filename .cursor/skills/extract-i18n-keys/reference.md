@@ -8,7 +8,8 @@
 | `_layout.board`, `_layout.board_.$dexId` | `board` |
 | `_layout.admin` | `admin` |
 | `_layout.case-studies` | `caseStudies` |
-| `_layout.dex`, `_layout.dex_.card`, `_layout.dex_.config`, `_layout.dex_.graduation` | `dex` |
+| `_layout.dex`, `_layout.dex_.config`, `_layout.dex_.graduation` | `dex` |
+| `_layout.dex_.card` | `dexCard` |
 | `_layout.distributor` (and nested `route.tsx`, vanguard, etc.) | `distributor` |
 | `_layout.points` (and nested `route.tsx`, components) | `points` |
 | `_layout.referral`, `_layout.referral_old` | `referral` |
@@ -28,7 +29,7 @@
 | `app/app/routes/_layout.distributor/vanguard/components/Card.tsx` | `distributor` (route module, not component name) |
 
 **Rules**:
-- Under `app/app/components/`: single file → filename without ext, PascalCase → camelCase; directory → directory name (already camelCase or lowercase).
+- Under `app/app/components/`: single file → filename without ext, PascalCase → camelCase; directory → directory name when file is `index` or same as dir, otherwise filename → camelCase (e.g. `ConnectWalletAuthGuard.tsx` → `connectWalletAuthGuard`). All component keys are written to **`app/app/i18n/module/components.ts`** (one file), not separate files per component.
 - Under `app/app/routes/.../components/`: use the route’s module (e.g. `distributor`, `points`).
 
 ## Regex and filter details
@@ -40,7 +41,9 @@
 
 **Exclude**:
 - Inside `t("...")`, `i18n.t("...")`, `<Trans>...</Trans>`
+- JSX elements with `data-i18n-ignore` attribute (opt-out marker)
 - Class names, `className` values that look like Tailwind/CSS
+- JSX `data-*` attribute values (e.g. `data-testid`, `data-cy`)
 - Paths, URLs, hex colors, pure numbers
 - **Pure URL detection**: Strings starting with `http://`/`https://` or matching common URL/domain patterns are excluded from extraction in all contexts (placeholders, JSX text, attributes, literals).
 - Enum keys, variable names, log tags
@@ -59,4 +62,4 @@
 3. **Multiple components in one file**: Use the same prefix for the file (from route or from filename/dir); differentiate with slugKey (e.g. `home.dialog.title`, `home.dialog.description`).
 4. **Template with complex expression**: Replace with one placeholder, e.g. `${format(date, "HH:mm")}` → `{{formattedTime}}` and pass `formattedTime` at call site.
 5. **Key already exists with same value**: Reuse the existing key. Same value in another module: still reuse if it’s the same logical string, or use a new key under the correct prefix.
-6. **New module**: Create `app/app/i18n/module/<prefix>.ts` and add to `app/app/i18n/module/index.ts` (import + spread in `en`), keeping alphabetical order.
+6. **New module** (route/page only): Create `app/app/i18n/module/<prefix>.ts` and add to `app/app/i18n/module/index.ts` (import + spread in `en`), keeping alphabetical order. For components, append keys to `components.ts` only.

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation, Trans } from "~/i18n";
 import { useAccount, useSwitchChain, useChainId } from "wagmi";
 import { keccak256, encodePacked } from "viem";
 import { Button } from "./Button";
@@ -37,6 +38,7 @@ export default function SafeInstructionsModal({
   const [selectedChainId, setSelectedChainId] =
     useState<ChainId>(initialChainId);
   const [isSwitchingChain, setIsSwitchingChain] = useState(false);
+  const { t } = useTranslation();
   const { address } = useAccount();
   const connectedChainId = useChainId();
   const { switchChain } = useSwitchChain();
@@ -98,10 +100,13 @@ export default function SafeInstructionsModal({
   if (!isOpen) return null;
 
   const tabs = [
-    { value: "safe" as const, label: "1. Open Wallet" },
-    { value: "transaction" as const, label: "2. Create Tx" },
-    { value: "review-confirm" as const, label: "3. Review & Confirm" },
-    { value: "txhash" as const, label: "4. Get Tx Hash" },
+    { value: "safe" as const, label: t("safeInstructions.openWallet") },
+    { value: "transaction" as const, label: t("safeInstructions.createTx") },
+    {
+      value: "review-confirm" as const,
+      label: t("safeInstructions.reviewConfirm"),
+    },
+    { value: "txhash" as const, label: t("safeInstructions.getTxHash") },
   ];
 
   return (
@@ -114,7 +119,9 @@ export default function SafeInstructionsModal({
             <div className="bg-primary/20 p-2 rounded-lg">
               <div className="i-mdi:safe text-primary w-6 h-6"></div>
             </div>
-            <h2 className="text-xl font-bold text-white">Safe Wallet</h2>
+            <h2 className="text-xl font-bold text-white">
+              {t("safeInstructions.safeWallet")}
+            </h2>
           </div>
 
           <nav className="space-y-2">
@@ -137,20 +144,20 @@ export default function SafeInstructionsModal({
         <div className="flex-1 flex flex-col">
           <div className="flex-shrink-0 p-8 pb-4">
             <h3 className="text-2xl font-bold text-white mb-2">
-              Gnosis Safe Instructions
+              {t("safeInstructions.gnosisSafeInstructions")}
             </h3>
 
             <div className="flex items-center justify-between mb-2">
               {connectedChainId !== selectedChainId && !isSwitchingChain && (
                 <div className="text-xs text-warning flex items-center gap-1">
                   <div className="i-mdi:alert-circle h-3 w-3"></div>
-                  Not connected
+                  {t("safeInstructions.notConnected")}
                 </div>
               )}
               {isSwitchingChain && (
                 <div className="text-xs text-info flex items-center gap-1">
                   <div className="i-mdi:loading h-3 w-3 animate-spin"></div>
-                  Switching...
+                  {t("safeInstructions.switching")}
                 </div>
               )}
             </div>
@@ -198,7 +205,9 @@ export default function SafeInstructionsModal({
                   className="text-xs text-primary hover:text-primary-light flex items-center gap-1"
                 >
                   <div className="i-mdi:swap-horizontal h-3 w-3"></div>
-                  Switch to {chain?.name}
+                  {t("safeInstructions.switchToChain", {
+                    chainName: chain?.name ?? "",
+                  })}
                 </button>
               </div>
             )}
@@ -212,33 +221,37 @@ export default function SafeInstructionsModal({
                     <div className="i-mdi:information-outline text-info w-5 h-5 mt-0.5 flex-shrink-0"></div>
                     <div>
                       <h4 className="font-semibold text-info mb-2">
-                        Important: Match Your Safe's Network
+                        {t("safeInstructions.importantMatchNetwork")}
                       </h4>
                       <p className="text-sm text-gray-300">
-                        Use the network selector above to choose the chain where
-                        your Safe wallet is deployed. Currently selected:{" "}
-                        <span className="font-semibold text-white">
-                          {chain?.name}
-                        </span>
-                        . If your Safe is on a different chain, switch using the
-                        network selector at the top before proceeding.
+                        <Trans
+                          i18nKey="safeInstructions.matchNetworkDesc"
+                          values={{ chainName: chain?.name ?? "" }}
+                          components={[
+                            <span
+                              key="0"
+                              className="font-semibold text-primary"
+                            />,
+                          ]}
+                        />
                       </p>
                     </div>
                   </div>
                 </div>
 
                 <p className="text-gray-300">
-                  Visit{" "}
-                  <a
-                    href="https://app.safe.global/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:text-primary-light underline"
-                  >
-                    Gnosis Safe
-                  </a>
-                  . Set up your wallet if not already done. Then visit the batch
-                  transaction builder as shown below.
+                  <Trans
+                    i18nKey="safeInstructions.visitGnosisSafe"
+                    components={[
+                      <a
+                        key="0"
+                        href="https://app.safe.global/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:text-primary-light underline"
+                      />,
+                    ]}
+                  />
                 </p>
                 <img
                   src="/safe.webp"
@@ -253,7 +266,7 @@ export default function SafeInstructionsModal({
                 <div className="bg-background-dark/50 rounded-lg p-4 border border-primary/10">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-semibold text-white">
-                      Enter Orderly Vault Address
+                      {t("safeInstructions.enterVaultAddress")}
                     </h4>
                     <button
                       onClick={() =>
@@ -268,18 +281,21 @@ export default function SafeInstructionsModal({
                             : "i-mdi:content-copy h-4 w-4"
                         }
                       ></div>
-                      {copiedItem === "vault" ? "Copied!" : "Copy"}
+                      {copiedItem === "vault"
+                        ? t("safeInstructions.copied")
+                        : t("safeInstructions.copy")}
                     </button>
                   </div>
                   <code className="block text-sm text-gray-300 bg-background-dark p-3 rounded border border-primary/10 break-all">
-                    {vaultAddress ||
-                      "Vault address not available for this chain"}
+                    {vaultAddress || t("safeInstructions.vaultNotAvailable")}
                   </code>
                 </div>
 
                 <div className="bg-background-dark/50 rounded-lg p-4 border border-primary/10">
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-semibold text-white">Copy ABI</h4>
+                    <h4 className="font-semibold text-white">
+                      {t("safeInstructions.copyAbi")}
+                    </h4>
                     <button
                       onClick={() => abi && handleCopy(abi, "abi")}
                       disabled={!abi}
@@ -292,19 +308,21 @@ export default function SafeInstructionsModal({
                             : "i-mdi:content-copy h-4 w-4"
                         }
                       ></div>
-                      {copiedItem === "abi" ? "Copied!" : "Copy"}
+                      {copiedItem === "abi"
+                        ? t("safeInstructions.copied")
+                        : t("safeInstructions.copy")}
                     </button>
                   </div>
                   <div className="max-h-32 overflow-y-auto bg-background-dark p-3 rounded border border-primary/10">
                     <code className="text-xs text-gray-300 break-all whitespace-pre-wrap">
-                      {abi ?? "Loading ABI..."}
+                      {abi ?? t("safeInstructions.loadingAbi")}
                     </code>
                   </div>
                 </div>
 
                 <div className="bg-background-dark/50 rounded-lg p-4 border border-primary/10">
                   <h4 className="font-semibold text-white mb-2">
-                    Select Contract Method
+                    {t("safeInstructions.selectContractMethod")}
                   </h4>
                   <code className="text-sm text-primary bg-background-dark px-3 py-1 rounded">
                     delegateSigner
@@ -314,7 +332,7 @@ export default function SafeInstructionsModal({
                 <div className="bg-background-dark/50 rounded-lg p-4 border border-primary/10">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-semibold text-white">
-                      Insert Data Tuple
+                      {t("safeInstructions.insertDataTuple")}
                     </h4>
                     <button
                       onClick={() => handleCopy(JSON.stringify(data), "data")}
@@ -327,12 +345,13 @@ export default function SafeInstructionsModal({
                             : "i-mdi:content-copy h-4 w-4"
                         }
                       ></div>
-                      {copiedItem === "data" ? "Copied!" : "Copy"}
+                      {copiedItem === "data"
+                        ? t("safeInstructions.copied")
+                        : t("safeInstructions.copy")}
                     </button>
                   </div>
                   <p className="text-sm text-gray-400 mb-2">
-                    This data will send your wallet address & Delegate Signer
-                    address.
+                    {t("safeInstructions.dataTupleDesc")}
                   </p>
                   <code className="block text-xs text-gray-300 bg-background-dark p-3 rounded border border-primary/10 break-all whitespace-pre-wrap">
                     {JSON.stringify(data, undefined, 2)}
@@ -341,7 +360,7 @@ export default function SafeInstructionsModal({
 
                 <div>
                   <h4 className="font-semibold text-white mb-3">
-                    Create Batch Transaction
+                    {t("safeInstructions.createBatchTransaction")}
                   </h4>
                   <img
                     src="/batch-create.webp"
@@ -356,11 +375,10 @@ export default function SafeInstructionsModal({
               <div className="space-y-6 mb-8">
                 <div>
                   <h4 className="font-semibold text-white mb-2">
-                    Review Transaction
+                    {t("safeInstructions.reviewTransaction")}
                   </h4>
                   <p className="text-gray-300 mb-4">
-                    You can simulate the transaction in order to make sure that
-                    it will not fail.
+                    {t("safeInstructions.reviewTransactionDesc")}
                   </p>
                   <img
                     src="/review-batch.webp"
@@ -371,7 +389,7 @@ export default function SafeInstructionsModal({
 
                 <div>
                   <h4 className="font-semibold text-white mb-2">
-                    Execute Transaction
+                    {t("safeInstructions.executeTransaction")}
                   </h4>
                   <img
                     src="/confirm-tx.webp"
@@ -386,12 +404,10 @@ export default function SafeInstructionsModal({
               <div className="space-y-4 mb-8">
                 <div>
                   <h4 className="font-semibold text-white mb-2">
-                    Receive Transaction Hash
+                    {t("safeInstructions.receiveTransactionHash")}
                   </h4>
                   <p className="text-gray-300 mb-4">
-                    After the multisig transaction succeeded with enough wallets
-                    signing the transaction, you need to receive the transaction
-                    hash. Copy it in order to accept the Delegate Signer link.
+                    {t("safeInstructions.receiveTxHashDesc")}
                   </p>
                   <img
                     src="/multisig-txhash.webp"
@@ -408,7 +424,7 @@ export default function SafeInstructionsModal({
               <Button variant="secondary" onClick={onClose}>
                 <span className="flex items-center gap-2">
                   <div className="i-mdi:close h-4 w-4"></div>
-                  Close
+                  {t("safeInstructions.close")}
                 </span>
               </Button>
             </div>

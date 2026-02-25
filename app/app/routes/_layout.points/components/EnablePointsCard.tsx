@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PointSystemIcon } from "~/icons/PointSystemIcon";
 import { Switch } from "../../../components/switch";
 import { DexData } from "~/types/dex";
@@ -7,7 +7,7 @@ import { useAuth } from "~/context/useAuth";
 import { useDex } from "~/context/DexContext";
 import { Card } from "../../../components/Card";
 import { toast } from "react-toastify";
-import { AVAILABLE_MENUS } from "~/components/NavigationMenuEditor";
+import { getAvailableMenus } from "~/components/NavigationMenuEditor";
 import { Spinner } from "@orderly.network/ui";
 import { useTranslation } from "~/i18n";
 
@@ -26,6 +26,8 @@ export function EnablePointsCard({ enabledMenus }: EnablePointsCardProps) {
   const { token } = useAuth();
 
   const { dexData, updateDexData } = useDex();
+
+  const AVAILABLE_MENUS = useMemo(() => getAvailableMenus(), [t]);
 
   useEffect(() => {
     setPointEnabled(enabledMenus.includes(PointsMenuId));

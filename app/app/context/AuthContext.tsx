@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { setGlobalDisconnect } from "../utils/globalDisconnect";
 import { useGoogleUserId } from "../hooks/useGoogleAnalysis";
 import { trackEvent } from "~/analytics/tracking";
+import { useTranslation } from "~/i18n";
 
 interface User {
   id: string;
@@ -33,6 +34,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export { AuthContext };
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const { t } = useTranslation();
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -125,7 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (!isValid) {
             console.log("Saved token is invalid, logging out");
             logout();
-            toast.warning("Your session has expired. Please log in again.");
+            toast.warning(t("authContext.sessionExpired"));
           }
         }
       } catch (error) {
@@ -137,7 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     validateSavedAuth();
-  }, [isConnected, address, logout]);
+  }, [isConnected, address, logout, t]);
 
   useEffect(() => {
     if (!isConnected && user) {
@@ -159,7 +161,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem("auth_token");
       localStorage.removeItem("auth_user");
 
-      toast.info("Wallet switched. Please sign in with the new wallet.");
+      toast.info(t("authContext.walletSwitched"));
     }
 
     // Track wallet connection when address first becomes available or changes
@@ -179,7 +181,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async () => {
     if (!address) {
-      const errorMsg = "No wallet connected";
+      const errorMsg = t("authContext.noWalletConnected");
       setError(errorMsg);
       throw new Error(errorMsg);
     }
@@ -197,7 +199,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       if (!nonceResponse.ok) {
-        const errorMsg = "Failed to get authentication nonce";
+        const errorMsg = t("authContext.failedToGetNonce");
         throw new Error(errorMsg);
       }
 
@@ -219,7 +221,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       if (!verifyResponse.ok) {
-        const errorMsg = "Signature verification failed";
+        const errorMsg = t("authContext.signatureVerificationFailed");
         throw new Error(errorMsg);
       }
 
@@ -231,13 +233,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem("auth_user", JSON.stringify(userData));
     } catch (err) {
       const errorMsg =
-        err instanceof Error ? err.message : "Authentication failed";
+        err instanceof Error
+          ? err.message
+          : t("authContext.authenticationFailed");
       setError(errorMsg);
       throw err;
     } finally {
       setIsLoading(false);
     }
-  }, [address, signMessageAsync]);
+  }, [address, signMessageAsync, t]);
 
   return (
     <AuthContext.Provider

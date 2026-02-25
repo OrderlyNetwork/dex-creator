@@ -1,30 +1,34 @@
+import { useMemo, useState } from "react";
+import { useTranslation, i18n } from "~/i18n";
 import SystemStatus from "./SystemStatus";
-import { useState } from "react";
-
-// TODO: define others section links here instead of hardcoding them
-const URLS = {
-  legal: [
-    {
-      title: "Privacy Policy",
-      href: "https://orderly.network/docs/introduction/privacy-policy",
-    },
-    {
-      title: "Terms of Service",
-      href: "https://orderly.network/docs/introduction/terms-of-service",
-    },
-    {
-      title: "Builder Guidelines",
-      href: "https://orderly.network/docs/introduction/orderly-one/builder-guidelines",
-    },
-    {
-      title: "Supplemental Terms for DEXs",
-      href: "https://orderly.network/docs/introduction/orderly-one/supplemental-terms-for-dexes",
-    },
-  ],
-};
 
 export default function Footer() {
+  const { t } = useTranslation();
   const [openSections, setOpenSections] = useState<Set<string>>(new Set());
+
+  // TODO: define others section links here instead of hardcoding them
+  const URLS = useMemo(() => {
+    return {
+      legal: [
+        {
+          title: t("footer.privacyPolicy"),
+          href: "https://orderly.network/docs/introduction/privacy-policy",
+        },
+        {
+          title: t("footer.termsOfService"),
+          href: "https://orderly.network/docs/introduction/terms-of-service",
+        },
+        {
+          title: t("footer.builderGuidelines"),
+          href: "https://orderly.network/docs/introduction/orderly-one/builder-guidelines",
+        },
+        {
+          title: t("footer.supplementalTermsForDexs"),
+          href: "https://orderly.network/docs/introduction/orderly-one/supplemental-terms-for-dexes",
+        },
+      ],
+    };
+  }, [t]);
 
   const toggleSection = (section: string) => {
     const newOpenSections = new Set(openSections);
@@ -52,7 +56,7 @@ export default function Footer() {
                 className="flex justify-between items-center"
                 onClick={() => toggleSection("developers")}
               >
-                Developers
+                {t("footer.developers")}
                 <svg
                   width="24"
                   height="25"
@@ -71,21 +75,21 @@ export default function Footer() {
                     target="_blank"
                     className="block text-gray-400 hover:text-gray-300"
                   >
-                    Documentation
+                    {t("footer.documentation")}
                   </a>
                   <a
                     href="https://github.com/OrderlyNetwork"
                     target="_blank"
                     className="block text-gray-400 hover:text-gray-300"
                   >
-                    GitHub
+                    {t("footer.github")}
                   </a>
                   <a
                     href="https://orderly.network/docs/sdks/overview"
                     target="_blank"
                     className="block text-gray-400 hover:text-gray-300"
                   >
-                    Orderly SDKs
+                    {t("footer.orderlySdks")}
                   </a>
                 </div>
               )}
@@ -95,7 +99,7 @@ export default function Footer() {
                 className="flex justify-between items-center"
                 onClick={() => toggleSection("traders")}
               >
-                Traders
+                {t("footer.traders")}
                 <svg
                   width="24"
                   height="25"
@@ -113,28 +117,28 @@ export default function Footer() {
                     href="https://orderly.network/docs/introduction/trade-on-orderly/builders"
                     className="block text-gray-400 hover:text-gray-300"
                   >
-                    Trade on Builders
+                    {t("footer.tradeOnBuilders")}
                   </a>
                   <a
                     href="https://explorer.orderly.network/"
                     target="_blank"
                     className="block text-gray-400 hover:text-gray-300"
                   >
-                    Orderly Explorer
+                    {t("footer.orderlyExplorer")}
                   </a>
                   <a
                     href="https://orderly-dashboard.orderly.network"
                     target="_blank"
                     className="block text-gray-400 hover:text-gray-300"
                   >
-                    Orderly Dashboard
+                    {t("footer.orderlyDashboard")}
                   </a>
                   <a
                     href="https://orderly.network/docs/build-on-evm/evm-api/introduction"
                     target="_blank"
                     className="block text-gray-400 hover:text-gray-300"
                   >
-                    API Docs
+                    {t("footer.apiDocs")}
                   </a>
                 </div>
               )}
@@ -144,7 +148,7 @@ export default function Footer() {
                 className="flex justify-between items-center"
                 onClick={() => toggleSection("ecosystem")}
               >
-                Ecosystem
+                {t("footer.ecosystem")}
                 <svg
                   width="24"
                   height="25"
@@ -163,21 +167,21 @@ export default function Footer() {
                     target="_blank"
                     className="block text-gray-400 hover:text-gray-300"
                   >
-                    Partners
+                    {t("footer.partners")}
                   </a>
                   <a
                     href="https://orderly.network/blog"
                     target="_blank"
                     className="block text-gray-400 hover:text-gray-300"
                   >
-                    Blog
+                    {t("footer.blog")}
                   </a>
                   <a
                     href="https://orderly.network/listing"
                     target="_blank"
                     className="block text-gray-400 hover:text-gray-300"
                   >
-                    Listing
+                    {t("footer.listing")}
                   </a>
                 </div>
               )}
@@ -187,7 +191,7 @@ export default function Footer() {
                 className="flex justify-between items-center"
                 onClick={() => toggleSection("about")}
               >
-                About
+                {t("footer.about")}
                 <svg
                   width="24"
                   height="25"
@@ -206,28 +210,28 @@ export default function Footer() {
                     target="_blank"
                     className="block text-gray-400 hover:text-gray-300"
                   >
-                    Team
+                    {t("footer.team")}
                   </a>
                   <a
                     href="https://dune.com/orderly_network/orderly-dashboard"
                     target="_blank"
                     className="block text-gray-400 hover:text-gray-300"
                   >
-                    Analytics
+                    {t("footer.analytics")}
                   </a>
                   <a
                     href="https://coral-shark-13c.notion.site/orderly-brand-kit-2025"
                     target="_blank"
                     className="block text-gray-400 hover:text-gray-300"
                   >
-                    Press Kit
+                    {t("footer.pressKit")}
                   </a>
                   <a
                     href="https://job-boards.greenhouse.io/orderly"
                     target="_blank"
                     className="block text-gray-400 hover:text-gray-300"
                   >
-                    Careers
+                    {t("footer.careers")}
                   </a>
                 </div>
               )}
@@ -237,7 +241,7 @@ export default function Footer() {
                 className="flex justify-between items-center"
                 onClick={() => toggleSection("legal")}
               >
-                Legal
+                {t("footer.legal")}
                 <svg
                   width="24"
                   height="25"
@@ -255,7 +259,7 @@ export default function Footer() {
                     <a
                       href={item.href}
                       className="block text-gray-400 hover:text-gray-300"
-                      key={item.title}
+                      key={item.href}
                     >
                       {item.title}
                     </a>
@@ -276,130 +280,130 @@ export default function Footer() {
           </div>
           <div className="flex justify-between mt-[60px] 2xl:mt-0 2xl:w-full">
             <div className="text-sm font-bold">
-              Developers
+              {t("footer.developers")}
               <div className="flex flex-col mt-[8px] font-normal text-gray-300">
                 <a
                   href="https://orderly.network/docs/getting-started/what-is-orderly-network"
                   target="_blank"
                   className="text-gray-400 hover:text-gray-300 my-[8px]"
                 >
-                  Documentation
+                  {t("footer.documentation")}
                 </a>
                 <a
                   href="https://github.com/OrderlyNetwork"
                   target="_blank"
                   className="text-gray-400 hover:text-gray-300 my-[8px]"
                 >
-                  GitHub
+                  {t("footer.github")}
                 </a>
                 <a
                   href="https://orderly.network/docs/sdks/overview"
                   target="_blank"
                   className="text-gray-400 hover:text-gray-300 my-[8px]"
                 >
-                  Orderly SDKs
+                  {t("footer.orderlySdks")}
                 </a>
               </div>
             </div>
             <div className="text-sm font-bold">
-              Traders
+              {t("footer.traders")}
               <div className="flex flex-col mt-[8px] font-normal text-gray-300">
                 <a
                   href="https://orderly.network/docs/introduction/trade-on-orderly/builders"
                   className="text-gray-400 hover:text-gray-300 my-[8px]"
                 >
-                  Trade on Builders
+                  {t("footer.tradeOnBuilders")}
                 </a>
                 <a
                   href="https://explorer.orderly.network/"
                   target="_blank"
                   className="text-gray-400 hover:text-gray-300 my-[8px]"
                 >
-                  Orderly Explorer
+                  {t("footer.orderlyExplorer")}
                 </a>
                 <a
                   href="https://orderly-dashboard.orderly.network"
                   target="_blank"
                   className="text-gray-400 hover:text-gray-300 my-[8px]"
                 >
-                  Orderly Dashboard
+                  {t("footer.orderlyDashboard")}
                 </a>
                 <a
                   href="https://orderly.network/docs/build-on-evm/evm-api/introduction"
                   target="_blank"
                   className="text-gray-400 hover:text-gray-300 my-[8px]"
                 >
-                  API Docs
+                  {t("footer.apiDocs")}
                 </a>
               </div>
             </div>
             <div className="text-sm font-bold">
-              Ecosystem
+              {t("footer.ecosystem")}
               <div className="flex flex-col mt-[8px] font-normal text-gray-300">
                 <a
                   href="https://orderly.network/partners"
                   target="_blank"
                   className="text-gray-400 hover:text-gray-300 my-[8px]"
                 >
-                  Partners
+                  {t("footer.partners")}
                 </a>
                 <a
                   href="https://orderly.network/blog"
                   target="_blank"
                   className="text-gray-400 hover:text-gray-300 my-[8px]"
                 >
-                  Blog
+                  {t("footer.blog")}
                 </a>
                 <a
                   href="https://orderly.network/listing"
                   target="_blank"
                   className="text-gray-400 hover:text-gray-300 my-[8px]"
                 >
-                  Listing
+                  {t("footer.listing")}
                 </a>
               </div>
             </div>
             <div className="text-sm font-bold">
-              About
+              {t("footer.about")}
               <div className="flex flex-col mt-[8px] font-normal text-gray-300">
                 <a
                   href="https://orderly.network/team"
                   target="_blank"
                   className="text-gray-400 hover:text-gray-300 my-[8px]"
                 >
-                  Team
+                  {t("footer.team")}
                 </a>
                 <a
                   href="https://dune.com/orderly_network/orderly-dashboard"
                   target="_blank"
                   className="text-gray-400 hover:text-gray-300 my-[8px]"
                 >
-                  Analytics
+                  {t("footer.analytics")}
                 </a>
                 <a
                   href="https://coral-shark-13c.notion.site/orderly-brand-kit-2025"
                   target="_blank"
                   className="text-gray-400 hover:text-gray-300 my-[8px]"
                 >
-                  Press Kit
+                  {t("footer.pressKit")}
                 </a>
                 <a
                   href="https://job-boards.greenhouse.io/orderly"
                   target="_blank"
                   className="text-gray-400 hover:text-gray-300 my-[8px]"
                 >
-                  Careers
+                  {t("footer.careers")}
                 </a>
               </div>
             </div>
             <div className="text-sm font-bold">
-              Legal
+              {t("footer.legal")}
               <div className="flex flex-col mt-[8px] font-normal text-gray-300">
                 {URLS.legal.map(item => (
                   <a
                     href={item.href}
                     className="text-gray-400 hover:text-gray-300 my-[8px]"
-                    key={item.title}
+                    key={item.href}
                   >
                     {item.title}
                   </a>
@@ -411,7 +415,9 @@ export default function Footer() {
       </div>
       <div className="mt-[48px] lg:mt-[68px] border-t-[1px] border-base-contrast-12">
         <div className="flex justify-between px-4 py-8 md:max-w-[688px] lg:max-w-[904px] m-auto">
-          <div className="text-sm text-[#8C8C8C]">© 2025 Orderly.</div>
+          <div className="text-sm text-[#8C8C8C]">
+            {/* i18n-ignore */}© 2025 Orderly.
+          </div>
           <div className="flex items-center">
             <a
               className="text-gray-400 hover:text-gray-300 pl-[16px]"

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "~/i18n";
 import { Button } from "./Button";
 
 interface TradingViewLicenseAcknowledgmentModalProps {
@@ -14,6 +15,7 @@ export default function TradingViewLicenseAcknowledgmentModal({
   onAcknowledge,
   onViewGuide,
 }: TradingViewLicenseAcknowledgmentModalProps) {
+  const { t } = useTranslation();
   const [isChecked, setIsChecked] = useState(false);
 
   if (!isOpen) return null;
@@ -34,7 +36,7 @@ export default function TradingViewLicenseAcknowledgmentModal({
       <div className="relative z-[1002] w-full h-full md:h-auto md:max-w-2xl md:max-h-[90vh] overflow-y-auto p-6 md:rounded-xl bg-background-light border-0 md:border md:border-primary-light/20 shadow-2xl slide-fade-in">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-bold gradient-text">
-            Important: TradingView License Required
+            {t("tradingViewLicenseAckModal.title")}
           </h3>
           <button
             onClick={onClose}
@@ -51,13 +53,10 @@ export default function TradingViewLicenseAcknowledgmentModal({
               <div className="i-mdi:alert text-red-400 h-6 w-6 mt-0.5 flex-shrink-0"></div>
               <div>
                 <h4 className="text-base font-bold mb-2 text-red-400">
-                  Custom Domain License Requirement
+                  {t("tradingViewLicenseAckModal.customDomainRequirement")}
                 </h4>
                 <p className="text-sm text-gray-300">
-                  When using your own custom domain, you are{" "}
-                  <strong>required</strong> to apply for your own{" "}
-                  <strong>TradingView Advanced Charts license</strong>. The
-                  default license only covers the default GitHub Pages domain.
+                  {t("tradingViewLicenseAckModal.customDomainRequirementDesc")}
                 </p>
               </div>
             </div>
@@ -68,37 +67,35 @@ export default function TradingViewLicenseAcknowledgmentModal({
               <div className="i-mdi:check-circle text-success h-5 w-5 mt-0.5 flex-shrink-0"></div>
               <div>
                 <h4 className="text-base font-bold mb-1 text-success">
-                  Good News: It's Completely Free!
+                  {t("tradingViewLicenseAckModal.goodNews")}
                 </h4>
                 <p className="text-sm text-gray-300">
-                  The TradingView Advanced Charts license is free for commercial
-                  use. You just need to fill out their application form to get
-                  approved (usually takes a few business days).
+                  {t("tradingViewLicenseAckModal.goodNewsDesc")}
                 </p>
               </div>
             </div>
           </div>
 
           <div>
-            <h4 className="text-base font-bold mb-3">What You Need to Do</h4>
+            <h4 className="text-base font-bold mb-3">
+              {t("tradingViewLicenseAckModal.whatYouNeed")}
+            </h4>
             <ol className="text-sm text-gray-300 space-y-2 list-decimal list-inside">
               <li>
-                Visit the{" "}
+                {t("tradingViewLicenseAckModal.visitPagePrefix")}{" "}
                 <a
                   href="https://www.tradingview.com/advanced-charts/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary-light hover:underline inline-flex items-center"
                 >
-                  TradingView Advanced Charts page
+                  {t("tradingViewLicenseAckModal.visitPageLink")}
                   <div className="i-mdi:open-in-new h-3.5 w-3.5 ml-1"></div>
                 </a>
               </li>
-              <li>Click on "Get the library" to open the application form</li>
-              <li>
-                Fill out the form with your custom domain and business details
-              </li>
-              <li>Wait for approval (usually takes a few business days)</li>
+              <li>{t("tradingViewLicenseAckModal.clickGetLibrary")}</li>
+              <li>{t("tradingViewLicenseAckModal.fillOutForm")}</li>
+              <li>{t("tradingViewLicenseAckModal.waitForApproval")}</li>
             </ol>
           </div>
 
@@ -107,25 +104,13 @@ export default function TradingViewLicenseAcknowledgmentModal({
               <div className="i-mdi:information-outline text-info h-5 w-5 mt-0.5 flex-shrink-0"></div>
               <div>
                 <h4 className="text-base font-bold mb-2 text-info">
-                  Important Notes
+                  {t("tradingViewLicenseAckModal.importantNotes")}
                 </h4>
                 <ul className="text-sm text-gray-300 space-y-1.5 list-disc list-inside">
-                  <li>
-                    You can set up your custom domain now and apply for the
-                    license while DNS propagates
-                  </li>
-                  <li>
-                    The license application is free and typically approved
-                    within a few business days
-                  </li>
-                  <li>
-                    You must apply using your custom domain, not the GitHub
-                    Pages URL
-                  </li>
-                  <li>
-                    Once approved, your DEX will continue working normally with
-                    the TradingView charts
-                  </li>
+                  <li>{t("tradingViewLicenseAckModal.ackNote1")}</li>
+                  <li>{t("tradingViewLicenseAckModal.ackNote2")}</li>
+                  <li>{t("tradingViewLicenseAckModal.ackNote3")}</li>
+                  <li>{t("tradingViewLicenseAckModal.ackNote4")}</li>
                 </ul>
               </div>
             </div>
@@ -136,16 +121,16 @@ export default function TradingViewLicenseAcknowledgmentModal({
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="text-sm font-bold mb-1">
-                  Need Help with the Application?
+                  {t("tradingViewLicenseAckModal.needHelp")}
                 </h4>
                 <p className="text-xs text-gray-400">
-                  View our detailed guide with screenshots and form details
+                  {t("tradingViewLicenseAckModal.needHelpDesc")}
                 </p>
               </div>
               <Button onClick={onViewGuide} variant="secondary" size="sm">
                 <span className="flex items-center gap-1">
                   <div className="i-mdi:book-open-variant h-4 w-4"></div>
-                  View Guide
+                  {t("tradingViewLicenseAckModal.viewGuide")}
                 </span>
               </Button>
             </div>
@@ -161,10 +146,7 @@ export default function TradingViewLicenseAcknowledgmentModal({
                 className="mt-1 h-5 w-5 rounded border-warning/30 bg-background-dark text-primary-light focus:ring-2 focus:ring-primary-light/50 cursor-pointer"
               />
               <span className="text-sm text-gray-300 group-hover:text-white transition-colors">
-                I understand that I must apply for a TradingView Advanced Charts
-                license when using a custom domain, and that failure to do so
-                may result in the TradingView charts not working properly on my
-                custom domain.
+                {t("tradingViewLicenseAckModal.acknowledgmentText")}
               </span>
             </label>
           </div>
@@ -172,7 +154,7 @@ export default function TradingViewLicenseAcknowledgmentModal({
           {/* Action Buttons */}
           <div className="flex gap-3 justify-end pt-2">
             <Button variant="secondary" onClick={onClose}>
-              Cancel
+              {t("tradingViewLicenseAckModal.cancel")}
             </Button>
             <Button
               variant="primary"
@@ -180,7 +162,7 @@ export default function TradingViewLicenseAcknowledgmentModal({
               disabled={!isChecked}
             >
               <span className="flex items-center gap-2">
-                I Have Read and Understand
+                {t("tradingViewLicenseAckModal.iHaveRead")}
                 <div className="i-mdi:check h-4 w-4"></div>
               </span>
             </Button>

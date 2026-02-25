@@ -1,4 +1,5 @@
 import { FC, useState, useEffect } from "react";
+import { useTranslation, Trans } from "~/i18n";
 import { Button } from "./Button";
 import FormInput from "./FormInput";
 import { Card } from "./Card";
@@ -17,6 +18,7 @@ const AIThemeGeneratorModal: FC<AIThemeGeneratorModalProps> = ({
   viewMode = "desktop",
   onGenerateTheme,
 }) => {
+  const { t } = useTranslation();
   const [themePrompt, setThemePrompt] = useState("");
   const { isGeneratingTheme } = useThemeGeneration();
 
@@ -40,43 +42,46 @@ const AIThemeGeneratorModal: FC<AIThemeGeneratorModalProps> = ({
       <div className="bg-background-card border border-light/20 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
         <div className="flex items-center justify-between p-4 border-b border-light/10">
           <h2 className="text-lg font-bold text-gray-200">
-            AI Theme Generator
+            {t("aiThemeGeneratorModal.title")}
           </h2>
           <Button onClick={onClose} variant="secondary" size="sm" type="button">
-            Close
+            {t("aiThemeGeneratorModal.close")}
           </Button>
         </div>
         <div className="flex-1 overflow-auto p-4">
           <div className="flex flex-col gap-4">
             <p className="text-xs text-gray-400">
-              Describe how you want your DEX theme to look and our AI will
-              generate it for you.
+              {t("aiThemeGeneratorModal.describePrompt")}
             </p>
             <Card className="p-3" variant="default">
               <div className="flex items-start gap-2">
                 <div className="i-mdi:information-outline text-primary-light h-4 w-4 mt-0.5 flex-shrink-0"></div>
                 <div>
                   <p className="text-xs text-gray-300 mb-1">
-                    <span className="text-primary-light font-medium">
-                      Note:
-                    </span>{" "}
-                    AI-generated themes are a starting point and may not be
-                    perfect. After generating:
+                    <Trans
+                      i18nKey="aiThemeGeneratorModal.noteWithDesc"
+                      components={[
+                        <span
+                          key="0"
+                          className="text-primary-light font-medium"
+                        />,
+                      ]}
+                    />
                   </p>
                   <ul className="text-xs text-gray-300 list-disc pl-4 space-y-0.5">
-                    <li>Review the theme in the preview modal</li>
-                    <li>Make adjustments to colors as needed</li>
+                    <li>{t("aiThemeGeneratorModal.reviewInPreview")}</li>
+                    <li>{t("aiThemeGeneratorModal.adjustColors")}</li>
                   </ul>
                 </div>
               </div>
             </Card>
             <FormInput
               id="themePrompt"
-              label="Theme Description"
+              label={t("aiThemeGeneratorModal.themeDescription")}
               value={themePrompt}
               onChange={e => setThemePrompt(e.target.value)}
-              placeholder="e.g., A dark blue theme with neon green accents"
-              helpText="Describe your desired color scheme and style"
+              placeholder={t("aiThemeGeneratorModal.placeholder")}
+              helpText={t("aiThemeGeneratorModal.helpText")}
               maxLength={100}
               disabled={isGeneratingTheme}
             />
@@ -91,14 +96,15 @@ const AIThemeGeneratorModal: FC<AIThemeGeneratorModalProps> = ({
               onGenerateTheme(themePrompt, viewMode);
             }}
             isLoading={isGeneratingTheme}
-            loadingText="Generating..."
+            loadingText={t("aiThemeGeneratorModal.generating")}
             disabled={isGeneratingTheme}
             variant="primary"
             size="sm"
             type="button"
           >
             <span className="flex items-center gap-1">
-              <div className="i-mdi:magic-wand h-4 w-4"></div>Generate Theme
+              <div className="i-mdi:magic-wand h-4 w-4"></div>
+              {t("aiThemeGeneratorModal.generateTheme")}
             </span>
           </Button>
         </div>

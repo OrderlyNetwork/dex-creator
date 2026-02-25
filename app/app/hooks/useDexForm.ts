@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { post, get } from "../utils/apiClient";
 import { toast } from "react-toastify";
+import { useTranslation } from "~/i18n";
 import { defaultTheme, DexData } from "../types/dex";
 import {
   validateUrl,
@@ -315,6 +316,7 @@ const initialFormState: DexFormData = {
 };
 
 export function useDexForm(): UseDexFormReturn {
+  const { t } = useTranslation();
   const [dexData, setDexData] = useState<DexData | null>(null);
   const [showThemeEditor, setShowThemeEditor] = useState(false);
   const [viewCssCode, setViewCssCode] = useState(false);
@@ -323,16 +325,16 @@ export function useDexForm(): UseDexFormReturn {
   const { updateCssValue, updateCssColor } = useThemeCSS(defaultTheme);
 
   const brokerNameValidator = composeValidators(
-    required("Broker name"),
-    minLength(3, "Broker name"),
-    maxLength(30, "Broker name"),
-    alphanumericWithSpecialChars("Broker name")
+    required(t("dex.brokerName")),
+    minLength(3, t("dex.brokerName")),
+    maxLength(30, t("dex.brokerName")),
+    alphanumericWithSpecialChars(t("dex.brokerName"))
   );
 
   const distributorCodeValidator = composeValidators(
-    optionalMinLength(4, "Distributor code"),
-    maxLength(10, "Distributor code"),
-    alphanumeric("Distributor code")
+    optionalMinLength(4, t("dex.distributorCode")),
+    maxLength(10, t("dex.distributorCode")),
+    alphanumeric(t("dex.distributorCode"))
   );
 
   const urlValidator = validateUrl();
@@ -794,7 +796,7 @@ export function useDexForm(): UseDexFormReturn {
     ) => {
       const effectivePrompt = prompt?.trim() || themePrompt.trim();
       if (!effectivePrompt) {
-        toast.error("Please enter a theme description");
+        toast.error(t("dex.pleaseEnterThemeDescription"));
         return;
       }
 
@@ -825,9 +827,9 @@ export function useDexForm(): UseDexFormReturn {
             previewProps,
             viewMode,
           });
-          toast.success("Theme generated successfully!");
+          toast.success(t("dex.themeGeneratedSuccess"));
         } else {
-          toast.error("Failed to generate theme");
+          toast.error(t("dex.failedToGenerateTheme"));
         }
       } catch (error) {
         console.error("Error generating theme:", error);
@@ -837,19 +839,17 @@ export function useDexForm(): UseDexFormReturn {
           "status" in error &&
           error.status === 429
         ) {
-          toast.error(
-            "Rate limit exceeded. Please wait 30 seconds before generating another theme."
-          );
+          toast.error(t("dex.rateLimitExceeded"));
         } else {
           toast.error(
             error instanceof Error
               ? error.message
-              : "Error generating theme. Please try again."
+              : t("dex.errorGeneratingThemeTryAgain")
           );
         }
       }
     },
-    [themePrompt, currentTheme]
+    [themePrompt, currentTheme, t]
   );
 
   const resetTheme = useCallback(
@@ -857,17 +857,17 @@ export function useDexForm(): UseDexFormReturn {
       setCurrentTheme(originalThemeCSS ?? null);
       setTradingViewColorConfig(null);
       setThemePrompt("");
-      toast.success("Theme reset");
+      toast.success(t("dex.themeReset"));
     },
-    []
+    [t]
   );
 
   const resetThemeToDefault = useCallback(() => {
     setCurrentTheme(defaultTheme);
     setTradingViewColorConfig(null);
     setThemePrompt("");
-    toast.success("Theme reset to default");
-  }, []);
+    toast.success(t("dex.themeResetToDefault"));
+  }, [t]);
 
   const toggleThemeEditor = useCallback(() => {
     setShowThemeEditor(prev => !prev);
@@ -957,11 +957,11 @@ export function useDexForm(): UseDexFormReturn {
         return null;
       } catch (error) {
         console.error("Failed to fetch DEX data", error);
-        toast.error("Failed to load DEX configuration");
+        toast.error(t("dex.failedToLoadDexConfiguration"));
         return null;
       }
     },
-    [populateFromDexData, loadImagesFromBase64]
+    [populateFromDexData, loadImagesFromBase64, t]
   );
 
   const getSectionProps = useCallback(

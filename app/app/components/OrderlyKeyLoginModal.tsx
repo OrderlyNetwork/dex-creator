@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "~/i18n";
 import { Button } from "./Button";
 import { useAccount, useWalletClient, useChainId, useSwitchChain } from "wagmi";
 import { BrowserProvider } from "ethers";
@@ -33,6 +34,7 @@ export default function OrderlyKeyLoginModal({
   brokerId,
   accountId,
 }: OrderlyKeyLoginModalProps) {
+  const { t } = useTranslation();
   const { address } = useAccount();
   const { data: walletClient } = useWalletClient();
   const chainId = useChainId();
@@ -105,27 +107,27 @@ export default function OrderlyKeyLoginModal({
       await switchChain({ chainId: targetChainId });
     } catch (error) {
       console.error("Failed to switch chain:", error);
-      toast.error("Please switch to the required network in your wallet");
+      toast.error(t("orderlyKeyLoginModal.switchNetworkRequired"));
     }
   };
 
   const handleCreateKey = async () => {
     if (!walletClient || !address) {
-      toast.error("Please connect your wallet first");
+      toast.error(t("orderlyKeyLoginModal.connectWalletFirst"));
       return;
     }
 
     if (!isOnCorrectChain) {
       toast.error(
         isMultisig
-          ? "Please switch to the network where your multisig delegate signer link was established"
-          : "Please switch to a supported network"
+          ? t("orderlyKeyLoginModal.switchNetworkMultisigToast")
+          : t("orderlyKeyLoginModal.switchNetworkSupportedToast")
       );
       return;
     }
 
     if (!cleanAddress || !finalAccountId) {
-      toast.error("Missing required account information");
+      toast.error(t("orderlyKeyLoginModal.missingAccountInfo"));
       return;
     }
 
@@ -158,14 +160,13 @@ export default function OrderlyKeyLoginModal({
         );
       }
 
-      toast.success("Orderly key created successfully!");
+      toast.success(t("orderlyKeyLoginModal.keyCreatedSuccess"));
       onSuccess(orderlyKey);
       onClose();
     } catch (error) {
       console.error("Failed to create orderly key:", error);
       toast.error(
-        parseWalletError(error) ||
-          "Failed to create orderly key. Please try again."
+        parseWalletError(error) || t("orderlyKeyLoginModal.failedToCreateKey")
       );
     } finally {
       setIsCreating(false);
@@ -193,10 +194,10 @@ export default function OrderlyKeyLoginModal({
               <div className="i-mdi:loading text-warning w-8 h-8 animate-spin"></div>
             </div>
             <h2 className="text-xl font-bold mb-2 gradient-text">
-              Checking Admin Wallet
+              {t("orderlyKeyLoginModal.checkingAdminWallet")}
             </h2>
             <p className="text-gray-400">
-              Verifying your admin wallet configuration...
+              {t("orderlyKeyLoginModal.verifyingConfig")}
             </p>
           </div>
         ) : (
@@ -206,11 +207,10 @@ export default function OrderlyKeyLoginModal({
                 <div className="i-mdi:key text-warning w-8 h-8"></div>
               </div>
               <h2 className="text-xl font-bold mb-2 gradient-text">
-                Create Orderly Key
+                {t("orderlyKeyLoginModal.createOrderlyKey")}
               </h2>
               <p className="text-gray-300">
-                To interact with the Orderly Network API, you'll need to create
-                an Orderly API key by signing a message with your wallet.
+                {t("orderlyKeyLoginModal.createKeyDesc")}
               </p>
               {isMultisig && (
                 <div className="mt-3 bg-info/10 rounded-lg p-3 border border-info/20">
@@ -218,14 +218,15 @@ export default function OrderlyKeyLoginModal({
                     <div className="i-mdi:information-outline text-info w-4 h-4 mt-0.5 flex-shrink-0"></div>
                     <div className="text-xs text-gray-400 text-left">
                       <p className="mb-1">
-                        Creating delegate key for multisig wallet:{" "}
+                        {t("orderlyKeyLoginModal.delegateKeyForMultisig")}:{" "}
                         <span className="font-mono text-primary-light">
                           {multisigAddress}
                         </span>
                       </p>
                       {requiredChain && (
                         <p className="text-info">
-                          Required network:{" "}
+                          {t("orderlyKeyLoginModal.requiredNetwork")}
+                          {": "}
                           <span className="font-semibold">
                             {requiredChain.name}
                           </span>
@@ -239,35 +240,30 @@ export default function OrderlyKeyLoginModal({
 
             <div className="bg-background-dark/50 p-4 rounded-lg border border-secondary-light/10 mb-6">
               <h3 className="font-semibold mb-3 text-sm text-secondary-light">
-                What happens next:
+                {t("orderlyKeyLoginModal.whatHappensNext")}:
               </h3>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start gap-2">
                   <div className="i-mdi:numeric-1-circle text-primary w-4 h-4 flex-shrink-0 mt-0.5"></div>
-                  <span>Your wallet will prompt you to sign a message</span>
+                  <span>{t("orderlyKeyLoginModal.step1")}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <div className="i-mdi:numeric-2-circle text-primary w-4 h-4 flex-shrink-0 mt-0.5"></div>
-                  <span>An Orderly API key will be generated securely</span>
+                  <span>{t("orderlyKeyLoginModal.step2")}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <div className="i-mdi:numeric-3-circle text-primary w-4 h-4 flex-shrink-0 mt-0.5"></div>
-                  <span>
-                    The key will be stored locally for API interactions
-                  </span>
+                  <span>{t("orderlyKeyLoginModal.step3")}</span>
                 </li>
               </ul>
             </div>
 
             <div className="bg-background-dark/50 p-4 rounded-lg border border-secondary-light/10 mb-6">
               <h4 className="font-semibold mb-2 text-secondary-light">
-                Security Note
+                {t("orderlyKeyLoginModal.securityNote")}
               </h4>
               <p className="text-gray-400 text-sm">
-                This key allows secure API access to manage your DEX settings
-                and interact with the Orderly Network. It will be stored locally
-                in your browser and is unique to your DEX broker account. No gas
-                fees or blockchain transactions are required.
+                {t("orderlyKeyLoginModal.securityNoteDesc")}
               </p>
             </div>
 
@@ -278,10 +274,14 @@ export default function OrderlyKeyLoginModal({
                   <div className="flex-1">
                     <p className="text-warning text-sm">
                       {isMultisig && requiredChain
-                        ? `Please switch to ${requiredChain.name} where your multisig delegate signer link was established.`
+                        ? t("orderlyKeyLoginModal.switchNetworkMultisig", {
+                            networkName: requiredChain.name,
+                          })
                         : isMultisig && requiredChainId
-                          ? `Please switch to the network where your multisig delegate signer link was established (Chain ID: ${requiredChainId}).`
-                          : "Please switch to a supported network to create your Orderly key."}
+                          ? t("orderlyKeyLoginModal.switchNetworkChainId", {
+                              chainId: String(requiredChainId),
+                            })
+                          : t("orderlyKeyLoginModal.switchNetworkSupported")}
                     </p>
                   </div>
                 </div>
@@ -294,22 +294,22 @@ export default function OrderlyKeyLoginModal({
                 onClick={handleCancel}
                 disabled={isCreating}
               >
-                Cancel
+                {t("orderlyKeyLoginModal.cancel")}
               </Button>
               {isOnCorrectChain ? (
                 <Button
                   variant="primary"
                   onClick={handleCreateKey}
                   isLoading={isCreating}
-                  loadingText="Creating Key"
+                  loadingText={t("orderlyKeyLoginModal.creatingKey")}
                 >
-                  Create Key
+                  {t("orderlyKeyLoginModal.createKey")}
                 </Button>
               ) : (
                 <Button variant="primary" onClick={handleSwitchChain}>
                   <div className="flex items-center gap-2">
                     <div className="i-mdi:swap-horizontal w-4 h-4"></div>
-                    Switch Network
+                    {t("orderlyKeyLoginModal.switchNetwork")}
                   </div>
                 </Button>
               )}

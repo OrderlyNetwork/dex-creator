@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "~/i18n";
 
 interface ColorSwatchProps {
   name: string;
@@ -27,6 +28,8 @@ export default function ColorSwatch({
   handleCheckboxChange,
   handleSwatchClick,
 }: ColorSwatchProps) {
+  const { t } = useTranslation();
+
   return (
     <div key={name} className="relative flex-[0_1_200px]">
       <div
@@ -41,10 +44,10 @@ export default function ColorSwatch({
         onClick={handleSwatchClick}
         title={
           isValid
-            ? `Click to edit ${displayName} Color, use checkbox to select`
+            ? t("colorSwatch.clickToEditColor", { displayName })
             : storedValue === null
-              ? `Click to set ${displayName} Color`
-              : `Invalid CSS format for ${displayName}`
+              ? t("colorSwatch.clickToSetColor", { displayName })
+              : t("colorSwatch.invalidCssFormat", { displayName })
         }
       >
         {/* Left side: Color name and RGB value */}
@@ -70,8 +73,8 @@ export default function ColorSwatch({
             {isValid
               ? `RGB(${storedValue?.replace(/\s+/g, ", ")})`
               : storedValue === null
-                ? "Not set"
-                : "Invalid format"}
+                ? t("colorSwatch.notSet")
+                : t("colorSwatch.invalidFormat")}
           </span>
         </div>
 

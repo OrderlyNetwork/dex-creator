@@ -59,7 +59,7 @@ export const defaultLanguages: Language[] = [
 export const defaultLng = LocaleEnum.en;
 export const defaultNS = "translation";
 
-export const i18nLocalStorageKey = "orderly_i18nLng";
+export const i18nLocalStorageKey = "orderly_one_i18nLng";
 
 // preferred-language
-export const i18nCookieKey = "orderly_i18nLng";
+export const i18nCookieKey = "orderly_one_i18nLng";

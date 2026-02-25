@@ -57,6 +57,7 @@ import {
 } from "../../../config";
 import { SwapFeeWithdrawal } from "./SwapFeeWithdrawal";
 import { parseWalletError } from "../utils/wallet";
+import { Trans, useTranslation } from "~/i18n";
 
 const ERC20_ABI = [
   {
@@ -156,6 +157,7 @@ export function GraduationForm({
   onNoDexSetup,
   onGraduationSuccess,
 }: GraduationFormProps) {
+  const { t } = useTranslation();
   const { token } = useAuth();
   const { address } = useAccount();
   const [txHash, setTxHash] = useState("");
@@ -194,10 +196,10 @@ export function GraduationForm({
   const copyToClipboard = async (text: string, label: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success(`${label} copied to clipboard`);
+      toast.success(t("graduationForm.copiedToClipboard", { label }));
     } catch (error) {
       console.error("Failed to copy to clipboard:", error);
-      toast.error("Failed to copy to clipboard");
+      toast.error(t("graduationForm.failedToCopyToClipboard"));
     }
   };
 
@@ -266,26 +268,22 @@ export function GraduationForm({
 
   const handleRegisterMultisig = async () => {
     if (!multisigAddress.trim()) {
-      toast.error("Please enter your multisig address");
+      toast.error(t("graduationForm.enterMultisigAddress"));
       return;
     }
 
     if (!multisigTxHash.trim()) {
-      toast.error(
-        "Please enter the transaction hash from your Safe transaction"
-      );
+      toast.error(t("graduationForm.enterSafeTransactionHash"));
       return;
     }
 
     if (!address) {
-      toast.error("Please connect your wallet first");
+      toast.error(t("graduationForm.connectWalletFirst"));
       return;
     }
 
     if (!graduationStatus?.brokerId) {
-      toast.error(
-        "No broker ID found. Please complete the previous steps first."
-      );
+      toast.error(t("graduationForm.noBrokerIdFound"));
       return;
     }
 
@@ -296,9 +294,7 @@ export function GraduationForm({
       const extractedChain = extractChainFromAddress(multisigAddress);
       if (extractedChain && extractedChain !== connectedChainId) {
         await switchChain({ chainId: extractedChain });
-        toast.info(
-          `Switching to the correct network for this multisig address`
-        );
+        toast.info(t("graduationForm.switchingToCorrectNetworkForMultisig"));
         return;
       }
 
@@ -326,9 +322,7 @@ export function GraduationForm({
       );
 
       if (response.success) {
-        toast.success(
-          "Multisig registered and admin wallet setup completed! Your DEX has graduated successfully."
-        );
+        toast.success(t("graduationForm.multisigRegisteredSuccess"));
         const statusResponse = await get<NewGraduationStatusResponse>(
           "api/graduation/graduation-status",
           token
@@ -344,7 +338,9 @@ export function GraduationForm({
     } catch (error) {
       console.error("Error registering multisig:", error);
       toast.error(
-        error instanceof Error ? error.message : "Failed to register multisig"
+        error instanceof Error
+          ? error.message
+          : t("graduationForm.failedToRegisterMultisig")
       );
     } finally {
       setIsRegisteringMultisig(false);
@@ -470,16 +466,12 @@ export function GraduationForm({
 
     const isValidFormat = /^[a-z0-9_-]+$/.test(brokerId);
     if (!isValidFormat) {
-      setBrokerIdError(
-        "Broker ID must contain only lowercase letters, numbers, hyphens, and underscores"
-      );
+      setBrokerIdError(t("graduationForm.brokerIdFormatInvalid"));
       return;
     }
 
     if (existingBrokerIds.includes(brokerId)) {
-      setBrokerIdError(
-        "This broker ID is already taken. Please choose another one."
-      );
+      setBrokerIdError(t("graduationForm.brokerIdAlreadyTaken"));
       return;
     }
 
@@ -513,7 +505,7 @@ export function GraduationForm({
       setFeeOptions(response);
     } catch (error) {
       console.error("Error loading fee options:", error);
-      toast.error("Failed to load graduation fee options");
+      toast.error(t("graduationForm.failedToLoadFeeOptions"));
     }
   }, [token]);
 
@@ -605,21 +597,17 @@ export function GraduationForm({
 
   const handleFinalizeAdminWallet = async () => {
     if (!address) {
-      toast.error("Please connect your wallet first");
+      toast.error(t("graduationForm.connectWalletFirst"));
       return;
     }
 
     if (!graduationStatus?.brokerId) {
-      toast.error(
-        "No broker ID found. Please complete the previous steps first."
-      );
+      toast.error(t("graduationForm.noBrokerIdFound"));
       return;
     }
 
     if (!walletClient) {
-      toast.error(
-        "No wallet client available. Please ensure your wallet is connected."
-      );
+      toast.error(t("graduationForm.noWalletClientAvailable"));
       return;
     }
 
@@ -648,7 +636,7 @@ export function GraduationForm({
           1000
         );
 
-        toast.success("Account registered successfully!");
+        toast.success(t("graduationForm.accountRegisteredSuccessfully"));
       }
 
       const response = await post<{
@@ -660,9 +648,7 @@ export function GraduationForm({
       });
 
       if (response.success) {
-        toast.success(
-          "Admin wallet setup completed! Your DEX has graduated successfully."
-        );
+        toast.success(t("graduationForm.adminWalletSetupSuccess"));
         const statusResponse = await get<NewGraduationStatusResponse>(
           "api/graduation/graduation-status",
           token
@@ -678,7 +664,8 @@ export function GraduationForm({
     } catch (error) {
       console.error("Error finalizing admin wallet:", error);
       const message =
-        parseWalletError(error) || "Failed to finalize admin wallet setup";
+        parseWalletError(error) ||
+        t("graduationForm.failedToFinalizeAdminWallet");
       toast.error(message);
     } finally {
       setIsFinalizingAdminWallet(false);
@@ -687,7 +674,7 @@ export function GraduationForm({
 
   const handleTransferOrder = async () => {
     if (!address) {
-      toast.error("Please connect your wallet first");
+      toast.error(t("graduationForm.connectWalletFirst"));
       return;
     }
 
@@ -697,7 +684,7 @@ export function GraduationForm({
     }
 
     if (!brokerId) {
-      toast.error("Please enter your broker ID");
+      toast.error(t("graduationForm.enterBrokerId"));
       return;
     }
 
@@ -706,24 +693,24 @@ export function GraduationForm({
 
       if (!currentTokenAddress) {
         console.log(`Missing ORDER token address for ${chain}`);
-        toast.error("Missing token address configuration");
+        toast.error(t("graduationForm.missingTokenAddressConfig"));
         return;
       }
 
       if (!feeOptions?.receiverAddress) {
         console.log("Missing receiver address from fee options");
-        toast.error("Missing receiver address configuration");
+        toast.error(t("graduationForm.missingReceiverAddressConfig"));
         return;
       }
 
       if (tokenDecimals === undefined) {
-        toast.error("Loading token information, please try again in a moment");
+        toast.error(t("graduationForm.loadingTokenInfo"));
         return;
       }
 
       if (!validateAddress(feeOptions.receiverAddress)) {
         console.log("Invalid receiver address format");
-        toast.error("Invalid receiver address configuration");
+        toast.error(t("graduationForm.invalidReceiverAddressConfig"));
         return;
       }
 
@@ -731,14 +718,12 @@ export function GraduationForm({
         await switchChain({ chainId: currentChainId });
       } catch (error) {
         console.error("Failed to switch chain:", error);
-        toast.error(
-          "Please make sure your wallet is on the correct network before continuing"
-        );
+        toast.error(t("graduationForm.ensureCorrectNetwork"));
         return;
       }
 
       if (!feeOptions) {
-        toast.error("Fee options not loaded. Please try again.");
+        toast.error(t("graduationForm.feeOptionsNotLoaded"));
         return;
       }
 
@@ -768,9 +753,11 @@ export function GraduationForm({
     } catch (error) {
       console.log("ORDER token transfer error:", error);
 
-      let errorMessage = "Failed to initiate transfer";
+      let errorMessage = t("graduationForm.failedToInitiateTransfer");
       if (error instanceof Error) {
-        errorMessage = `Failed to initiate transfer: ${error.message}`;
+        errorMessage = t("graduationForm.failedToInitiateTransferWithReason", {
+          message: error.message,
+        });
       }
 
       toast.error(errorMessage);
@@ -781,9 +768,7 @@ export function GraduationForm({
     setResult(null);
     setIsLoading(true);
 
-    toast.info(
-      "Verifying transaction... This may take up to 1-2 minutes. Please wait."
-    );
+    toast.info(t("graduationForm.verifyingTransactionWait"));
 
     try {
       const response = await post<VerifyTxResponse>(
@@ -809,7 +794,7 @@ export function GraduationForm({
       setHasSubmitted(true);
 
       if (response.success) {
-        toast.success("Transaction verified successfully!");
+        toast.success(t("graduationForm.transactionVerifiedSuccessfully"));
         loadFeeConfiguration();
         setTxHash("");
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -818,12 +803,12 @@ export function GraduationForm({
           onGraduationSuccess();
         }
       } else {
-        toast.error(response.message || "Verification failed");
+        toast.error(response.message || t("graduationForm.verificationFailed"));
       }
     } catch (error) {
       console.log("Transaction verification error:", error);
 
-      let errorMessage = "Verification failed";
+      let errorMessage = t("graduationForm.verificationFailed");
       let is502ErrorLocal = false;
 
       if (error instanceof Error) {
@@ -836,17 +821,17 @@ export function GraduationForm({
           error.message.includes("Bad Gateway");
         setResult({ success: false, message: error.message });
       } else {
-        setResult({ success: false, message: "Unknown error occurred" });
+        setResult({
+          success: false,
+          message: t("graduationForm.unknownErrorOccurred"),
+        });
       }
 
       if (is502ErrorLocal) {
-        toast.error(
-          "Connection lost during verification. The transaction may have succeeded. Refreshing page to check status...",
-          {
-            autoClose: 3000,
-            closeButton: false,
-          }
-        );
+        toast.error(t("graduationForm.connectionLostRefreshing"), {
+          autoClose: 3000,
+          closeButton: false,
+        });
         setTimeout(() => {
           window.location.reload();
         }, 2000);
@@ -886,35 +871,41 @@ export function GraduationForm({
         <div className="text-center">
           <div className="i-mdi:account-check text-6xl text-primary-light mx-auto mb-2"></div>
           <div className="bg-primary/10 rounded-full text-primary-light px-4 py-2 inline-block text-sm font-medium mb-4">
-            Broker ID Created!
+            {t("graduationForm.brokerIdCreated")}
           </div>
-          <h2 className="text-2xl font-bold">Complete Your Graduation</h2>
+          <h2 className="text-2xl font-bold">
+            {t("graduationForm.completeYourGraduation")}
+          </h2>
           <p className="text-gray-300 mt-2 mb-6">
-            Your broker ID{" "}
-            <span className="font-mono bg-background-card px-2 py-1 rounded text-primary-light">
-              {graduationStatus.brokerId}
-            </span>{" "}
-            has been created. Complete the final step to start earning fees.
+            <Trans
+              i18nKey={"graduationForm.brokerIdCreatedDescription"}
+              values={{ brokerId: graduationStatus.brokerId }}
+              components={[
+                <span
+                  key="0"
+                  className="font-mono bg-background-card px-2 py-1 rounded text-primary-light"
+                />,
+              ]}
+            />
           </p>
 
           <div className="bg-warning/10 rounded-lg p-4 mb-6 text-left">
             <h3 className="font-medium flex items-center mb-2">
               <div className="i-mdi:alert-circle text-warning mr-2 h-5 w-5"></div>
-              Final Step Required
+              {t("graduationForm.finalStepRequired")}
             </h3>
             <p className="text-sm text-gray-400 mb-3">
               <strong className="text-warning">
-                You are not earning fees yet.
+                {t("graduationForm.notEarningFeesYet")}
               </strong>{" "}
-              Complete the admin wallet setup to start earning revenue from your
-              DEX.
+              {t("graduationForm.completeAdminWalletSetup")}
             </p>
           </div>
 
           <div className="bg-light/5 rounded-lg p-4 mb-6 text-left">
             <h3 className="text-md font-medium mb-3 flex items-center">
               <div className="i-mdi:wallet text-primary-light mr-2 h-5 w-5"></div>
-              Select Wallet Type
+              {t("graduationForm.selectWalletType")}
             </h3>
 
             <div className="flex gap-2 mb-4">
@@ -926,7 +917,7 @@ export function GraduationForm({
                     : "bg-background-card text-gray-400 hover:text-gray-300 border border-light/10"
                 }`}
               >
-                EOA Wallet
+                {t("graduationForm.eoaWallet")}
               </button>
               <button
                 onClick={() => setWalletType("multisig")}
@@ -936,7 +927,7 @@ export function GraduationForm({
                     : "bg-background-card text-gray-400 hover:text-gray-300 border border-light/10"
                 }`}
               >
-                Gnosis Safe
+                {t("graduationForm.gnosisSafe")}
               </button>
             </div>
 
@@ -945,40 +936,33 @@ export function GraduationForm({
                 <div className="bg-background-card rounded-lg p-4">
                   <h4 className="text-sm font-medium mb-2 flex items-center">
                     <div className="i-mdi:information-outline text-info mr-2 h-4 w-4"></div>
-                    What This Does
+                    {t("graduationForm.whatThisDoes")}
                   </h4>
                   <p className="text-xs text-gray-400 mb-3">
-                    This registers your connected EOA (Externally Owned Account)
-                    wallet with Orderly Network and activates your broker
-                    account. Once completed, you'll start earning fees from all
-                    trades on your DEX.
+                    {t("graduationForm.eoaDescription")}
                   </p>
                   <div className="text-xs text-gray-500 space-y-1">
-                    <p>• Registers your EVM address with Orderly Network</p>
-                    <p>• Creates your broker account for fee collection</p>
-                    <p>• Enables revenue sharing from your DEX</p>
+                    <p>{t("graduationForm.registersEvmAddress")}</p>
+                    <p>{t("graduationForm.createsBrokerAccount")}</p>
+                    <p>{t("graduationForm.enablesRevenueSharing")}</p>
                   </div>
                 </div>
 
                 <Button
                   onClick={handleFinalizeAdminWallet}
                   isLoading={isFinalizingAdminWallet}
-                  loadingText="Registering with Orderly..."
+                  loadingText={t("graduationForm.registeringWithOrderly")}
                   variant="primary"
                   className="w-full text-center"
                 >
-                  Register with Orderly & Start Earning
+                  {t("graduationForm.registerWithOrderly")}
                 </Button>
 
                 <div className="bg-light/5 rounded-lg p-3">
                   <p className="text-xs text-gray-400">
-                    When you click the button above, you'll be prompted to sign
-                    a message to register your EVM address with Orderly Network
-                    using broker ID{" "}
-                    <span className="font-mono text-primary-light">
-                      {graduationStatus.brokerId}
-                    </span>
-                    . This happens directly in your wallet.
+                    {t("graduationForm.signMessagePrompt", {
+                      brokerId: graduationStatus.brokerId,
+                    })}
                   </p>
                 </div>
               </div>
@@ -987,18 +971,15 @@ export function GraduationForm({
                 <div className="bg-background-card rounded-lg p-4">
                   <h4 className="text-sm font-medium mb-2 flex items-center">
                     <div className="i-mdi:shield-check text-info mr-2 h-4 w-4"></div>
-                    Gnosis Safe Wallet
+                    {t("graduationForm.gnosisSafeWallet")}
                   </h4>
                   <p className="text-xs text-gray-400 mb-3">
-                    Use this option if you want to register a Gnosis Safe
-                    multisig wallet as your admin wallet. This provides enhanced
-                    security through multi-signature approval for fee
-                    withdrawals and admin actions.
+                    {t("graduationForm.gnosisSafeDescription")}
                   </p>
                   <div className="text-xs text-gray-500 space-y-1 mb-4">
-                    <p>• Enhanced security with multi-signature approval</p>
-                    <p>• Share control with multiple signers</p>
-                    <p>• Perfect for teams and organizations</p>
+                    <p>{t("graduationForm.multisigEnhancedSecurity")}</p>
+                    <p>{t("graduationForm.multisigShareControl")}</p>
+                    <p>{t("graduationForm.multisigForTeams")}</p>
                   </div>
                 </div>
 
@@ -1014,37 +995,38 @@ export function GraduationForm({
                 >
                   <span className="flex items-center justify-center gap-2">
                     <div className="i-mdi:book-open-variant h-4 w-4"></div>
-                    View Setup Instructions
+                    {t("graduationForm.viewSetupInstructions")}
                   </span>
                 </Button>
 
                 <div className="bg-background-card rounded-lg p-4 border border-primary/10">
                   <h4 className="text-sm font-medium mb-3 flex items-center">
                     <div className="i-mdi:account-plus text-primary mr-2 h-4 w-4"></div>
-                    Register Your Multisig
+                    {t("graduationForm.registerYourMultisig")}
                   </h4>
 
                   <div className="space-y-4">
                     <div>
                       <label className="block text-xs font-medium text-gray-300 mb-2">
-                        Multisig Address
+                        {t("graduationForm.multisigAddress")}
                       </label>
                       <input
                         type="text"
                         value={multisigAddress}
                         onChange={e => setMultisigAddress(e.target.value)}
-                        placeholder="0x... or eth:0x... or base:0x..."
+                        placeholder={t(
+                          "graduationForm.multisigAddressPlaceholder"
+                        )}
                         className="w-full px-3 py-2 bg-background-dark border border-light/10 rounded-lg text-white placeholder-gray-400 focus:border-primary/50 focus:outline-none text-sm"
                       />
                       <p className="text-xs text-gray-400 mt-1">
-                        Enter your Gnosis Safe address. Chain prefixes (eth:,
-                        base:, arb:) are supported.
+                        {t("graduationForm.multisigAddressHelp")}
                       </p>
                     </div>
 
                     <div>
                       <label className="block text-xs font-medium text-gray-300 mb-2">
-                        Transaction Hash
+                        {t("graduationForm.transactionHash")}
                       </label>
                       <input
                         type="text"
@@ -1054,15 +1036,14 @@ export function GraduationForm({
                         className="w-full px-3 py-2 bg-background-dark border border-light/10 rounded-lg text-white placeholder-gray-400 focus:border-primary/50 focus:outline-none text-sm"
                       />
                       <p className="text-xs text-gray-400 mt-1">
-                        The transaction hash from your Safe delegateSigner
-                        transaction.
+                        {t("graduationForm.transactionHashHelp")}
                       </p>
                     </div>
 
                     <Button
                       onClick={handleRegisterMultisig}
                       isLoading={isRegisteringMultisig}
-                      loadingText="Registering multisig..."
+                      loadingText={t("graduationForm.registeringMultisig")}
                       variant="primary"
                       className="w-full"
                       disabled={
@@ -1073,13 +1054,13 @@ export function GraduationForm({
                     >
                       <span className="flex items-center justify-center gap-2">
                         <div className="i-mdi:account-plus h-4 w-4"></div>
-                        Register Multisig
+                        {t("graduationForm.registerMultisig")}
                       </span>
                     </Button>
 
                     {!address && (
                       <p className="text-xs text-warning text-center">
-                        Please connect your wallet to register your multisig
+                        {t("graduationForm.connectWalletToRegisterMultisig")}
                       </p>
                     )}
                   </div>
@@ -1090,16 +1071,12 @@ export function GraduationForm({
                     <div className="i-mdi:information-outline text-info w-4 h-4 mt-0.5 flex-shrink-0"></div>
                     <div>
                       <p className="text-xs text-info font-medium mb-1">
-                        Step-by-Step Guide
+                        {t("graduationForm.stepByStepGuide")}
                       </p>
                       <p className="text-xs text-gray-400">
-                        Click "View Setup Instructions" above to see detailed
-                        steps on how to set up your Gnosis Safe wallet with
-                        broker ID{" "}
-                        <span className="font-mono text-primary-light">
-                          {graduationStatus.brokerId}
-                        </span>
-                        .
+                        {t("graduationForm.viewSetupInstructionsHelp", {
+                          brokerId: graduationStatus.brokerId,
+                        })}
                       </p>
                     </div>
                   </div>
@@ -1118,28 +1095,25 @@ export function GraduationForm({
         <div className="text-center">
           <div className="i-mdi:check-circle text-6xl text-success mx-auto mb-2"></div>
           <div className="bg-success/10 rounded-full text-success px-4 py-2 inline-block text-sm font-medium mb-4">
-            Graduated Successfully!
+            {t("graduationForm.graduatedSuccessfully")}
           </div>
-          <h2 className="text-2xl font-bold">Congratulations!</h2>
+          <h2 className="text-2xl font-bold">
+            {t("graduationForm.congratulations")}
+          </h2>
           <p className="text-gray-300 mt-2 mb-6">
-            Your DEX has successfully graduated to the revenue-sharing tier.
-            Your custom broker ID{" "}
-            <span className="font-mono bg-background-card px-2 py-1 rounded text-primary-light">
-              {graduationStatus.brokerId}
-            </span>{" "}
-            is now active and your DEX is fully ready for users!
+            {t("graduationForm.graduationSuccessDescription", {
+              brokerId: graduationStatus.brokerId,
+            })}
           </p>
 
           {dexData?.repoUrl && (
             <div className="bg-success/10 rounded-lg p-4 mb-6 text-left">
               <h3 className="font-medium flex items-center mb-2">
                 <div className="i-mdi:check-circle text-success mr-2 h-5 w-5"></div>
-                Your DEX is Ready!
+                {t("graduationForm.yourDexIsReady")}
               </h3>
               <p className="text-sm text-gray-400 mb-3">
-                Your DEX has been deployed with your broker ID and is now fully
-                operational. Users can start trading and you'll earn fees from
-                all trades.
+                {t("graduationForm.dexReadyDescription")}
               </p>
               <a
                 href={generateDeploymentUrl(dexData.repoUrl)}
@@ -1147,7 +1121,7 @@ export function GraduationForm({
                 rel="noopener noreferrer"
                 className="text-success hover:underline font-medium"
               >
-                View Your Live DEX →
+                {t("graduationForm.viewYourLiveDex")}
               </a>
             </div>
           )}
@@ -1155,7 +1129,7 @@ export function GraduationForm({
           <div className="bg-light/5 rounded-lg p-5 mb-6 text-left">
             <h3 className="text-lg font-semibold mb-3 flex items-center">
               <div className="i-mdi:star text-warning mr-2 h-5 w-5"></div>
-              Your DEX Benefits
+              {t("graduationForm.yourDexBenefits")}
             </h3>
 
             <ul className="space-y-4">
@@ -1164,10 +1138,11 @@ export function GraduationForm({
                   <div className="i-mdi:cash-multiple text-success h-4 w-4"></div>
                 </div>
                 <div>
-                  <span className="font-medium">Fee Revenue Sharing</span>
+                  <span className="font-medium">
+                    {t("graduationForm.feeRevenueSharing")}
+                  </span>
                   <p className="text-sm text-gray-400 mt-0.5">
-                    You now earn a percentage of all trading fees generated
-                    through your DEX.
+                    {t("graduationForm.feeRevenueSharingDescription")}
                   </p>
                 </div>
               </li>
@@ -1177,10 +1152,11 @@ export function GraduationForm({
                   <div className="i-mdi:cog text-warning h-4 w-4"></div>
                 </div>
                 <div>
-                  <span className="font-medium">Custom Fee Configuration</span>
+                  <span className="font-medium">
+                    {t("graduationForm.customFeeConfiguration")}
+                  </span>
                   <p className="text-sm text-gray-400 mt-0.5">
-                    You can now customize your maker and taker fees to optimize
-                    for your trading community.
+                    {t("graduationForm.customFeeConfigurationDescription")}
                   </p>
                 </div>
               </li>
@@ -1191,41 +1167,31 @@ export function GraduationForm({
             <div className="bg-warning/10 rounded-lg p-5 mb-6 border border-warning/20 text-left">
               <h3 className="text-lg font-semibold mb-3 flex items-center">
                 <div className="i-mdi:wallet text-warning mr-2 h-5 w-5"></div>
-                Multisig Fee Withdrawal
+                {t("graduationForm.multisigFeeWithdrawalTitle")}
               </h3>
               <p className="text-sm text-gray-300 mb-4">
-                Since you're using a multisig wallet as your admin wallet, use
-                the withdrawal modal below to transfer fees from your Orderly
-                account to your Safe wallet.
+                {t("graduationForm.multisigFeeWithdrawalDescription")}
               </p>
               <div className="bg-background-card rounded-lg p-4">
                 <h4 className="font-medium mb-2 flex items-center">
                   <div className="i-mdi:shield-check text-primary mr-2 h-4 w-4"></div>
-                  How to Withdraw Fees
+                  {t("graduationForm.howToWithdrawFees")}
                 </h4>
                 <ol className="text-sm text-gray-300 space-y-2 list-decimal list-inside">
-                  <li>Click the "Withdraw Fees" button below</li>
-                  <li>Enter the amount of USDC you want to withdraw</li>
-                  <li>
-                    Sign the EIP-712 messages in your connected wallet (for PnL
-                    settlement and withdrawal)
-                  </li>
-                  <li>
-                    Fees will be transferred from your Orderly account to your
-                    Safe wallet
-                  </li>
+                  <li>{t("graduationForm.withdrawStep1")}</li>
+                  <li>{t("graduationForm.withdrawStep2")}</li>
+                  <li>{t("graduationForm.withdrawStep3")}</li>
+                  <li>{t("graduationForm.withdrawStep4")}</li>
                 </ol>
                 <div className="mt-3 p-3 bg-info/10 rounded-lg">
                   <div className="flex items-start gap-2">
                     <div className="i-mdi:information-outline text-info w-4 h-4 mt-0.5 flex-shrink-0"></div>
                     <div>
                       <p className="text-xs text-info font-medium mb-1">
-                        Important Note
+                        {t("graduationForm.importantNote")}
                       </p>
                       <p className="text-xs text-gray-400">
-                        All fee withdrawals must be approved by the required
-                        number of signers in your Safe wallet, providing
-                        enhanced security for your earnings.
+                        {t("graduationForm.multisigWithdrawalsNote")}
                       </p>
                     </div>
                   </div>
@@ -1250,7 +1216,7 @@ export function GraduationForm({
                     >
                       <span className="flex items-center justify-center w-full gap-2">
                         <div className="i-mdi:cash-multiple h-4 w-4"></div>
-                        Withdraw Fees
+                        {t("graduationForm.withdrawFeesButton")}
                       </span>
                     </Button>
                   ) : (
@@ -1270,7 +1236,7 @@ export function GraduationForm({
                     >
                       <span className="flex items-center justify-center w-full gap-2">
                         <div className="i-mdi:key-plus h-4 w-4"></div>
-                        Create Orderly Key
+                        {t("graduationForm.createOrderlyKeyButton")}
                       </span>
                     </Button>
                   )}
@@ -1278,8 +1244,7 @@ export function GraduationForm({
                   {(!graduationStatus.multisigAddress ||
                     !graduationStatus.multisigChainId) && (
                     <p className="text-xs text-warning text-center mt-2">
-                      Unable to retrieve multisig configuration. Please ensure
-                      you have completed the multisig registration.
+                      {t("graduationForm.unableToRetrieveMultisigConfig")}
                     </p>
                   )}
                 </div>
@@ -1293,7 +1258,7 @@ export function GraduationForm({
             <div className="bg-light/5 rounded-lg p-5 mb-6">
               <h3 className="text-lg font-semibold mb-3 flex items-center">
                 <div className="i-mdi:trophy text-warning mr-2 h-5 w-5"></div>
-                Your Broker Tier
+                {t("graduationForm.yourBrokerTier")}
               </h3>
               <div className="flex items-center justify-between mb-4">
                 <div>
@@ -1301,7 +1266,7 @@ export function GraduationForm({
                     {brokerTier.tier}
                   </div>
                   <div className="text-xs text-gray-400 mt-1">
-                    Current Tier Level
+                    {t("graduationForm.currentTierLevel")}
                   </div>
                 </div>
                 <div className="bg-primary/20 p-3 rounded-full">
@@ -1312,7 +1277,7 @@ export function GraduationForm({
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="bg-background-card rounded-lg p-3">
                   <div className="text-xs text-gray-400 mb-1">
-                    Staking Volume
+                    {t("graduationForm.stakingVolume")}
                   </div>
                   <div className="font-medium">
                     $
@@ -1324,7 +1289,7 @@ export function GraduationForm({
                 </div>
                 <div className="bg-background-card rounded-lg p-3">
                   <div className="text-xs text-gray-400 mb-1">
-                    Trading Volume
+                    {t("graduationForm.tradingVolume")}
                   </div>
                   <div className="font-medium">
                     $
@@ -1339,7 +1304,7 @@ export function GraduationForm({
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-success/10 rounded-lg p-3">
                   <div className="text-xs text-gray-400 mb-1">
-                    Orderly Maker Fee
+                    {t("graduationForm.orderlyMakerFee")}
                   </div>
                   <div className="font-medium text-success">
                     {new Intl.NumberFormat("en-US", {
@@ -1351,7 +1316,7 @@ export function GraduationForm({
                 </div>
                 <div className="bg-info/10 rounded-lg p-3">
                   <div className="text-xs text-gray-400 mb-1">
-                    Orderly Taker Fee
+                    {t("graduationForm.orderlyTakerFee")}
                   </div>
                   <div className="font-medium text-info">
                     {new Intl.NumberFormat("en-US", {
@@ -1364,43 +1329,52 @@ export function GraduationForm({
               </div>
 
               <div className="mt-4 text-xs text-gray-400">
-                Last updated:{" "}
+                {t("graduationForm.lastUpdated")}:{" "}
                 {new Date(brokerTier.logDate).toLocaleDateString()}
               </div>
 
               <div className="mt-4 pt-4 border-t border-light/10">
                 <p className="text-xs text-gray-400">
-                  <span className="text-primary-light font-medium">
-                    Tier Benefits:
-                  </span>{" "}
-                  Higher tiers reduce the fees Orderly charges you, allowing you
-                  to earn higher fees yourself. Stake more ORDER tokens or
-                  increase trading volume to upgrade your tier.
+                  <Trans
+                    i18nKey={
+                      "graduationForm.tierBenefitsDescription" as unknown as never
+                    }
+                    components={[
+                      <span
+                        key="0"
+                        className="text-primary-light font-medium"
+                      />,
+                    ]}
+                  />
                 </p>
                 <div className="mt-2 bg-warning/10 border border-warning/20 rounded-lg p-3">
                   <div className="flex items-start gap-2">
                     <div className="i-mdi:information-outline text-warning w-4 h-4 mt-0.5 flex-shrink-0"></div>
                     <div>
                       <p className="text-xs text-warning font-medium mb-1">
-                        Important: Admin Wallet Staking
+                        {t("graduationForm.adminWalletStakingTitle")}
                       </p>
                       <p className="text-xs text-gray-400">
-                        ORDER tokens must be staked on your admin wallet{" "}
                         {graduationStatus?.isMultisig ? (
-                          <>
-                            (your multisig:{" "}
-                            <span className="font-mono text-primary-light">
-                              {graduationStatus.multisigAddress
+                          <Trans
+                            i18nKey={
+                              "graduationForm.adminWalletStakingDescriptionMultisig"
+                            }
+                            values={{
+                              address: graduationStatus.multisigAddress
                                 ? `${graduationStatus.multisigAddress.slice(0, 6)}...${graduationStatus.multisigAddress.slice(-4)}`
-                                : "loading..."}
-                            </span>
-                            )
-                          </>
+                                : "loading...",
+                            }}
+                            components={[
+                              <span
+                                key="0"
+                                className="font-mono text-primary-light"
+                              />,
+                            ]}
+                          />
                         ) : (
-                          <>(your connected EOA wallet)</>
-                        )}{" "}
-                        to count towards your broker tier. Staking on other
-                        addresses will not improve your tier.
+                          t("graduationForm.adminWalletStakingDescriptionEoa")
+                        )}
                       </p>
                     </div>
                   </div>
@@ -1410,12 +1384,10 @@ export function GraduationForm({
                     <div className="i-mdi:clock-outline text-info w-4 h-4 mt-0.5 flex-shrink-0"></div>
                     <div>
                       <p className="text-xs text-info font-medium mb-1">
-                        Daily Tier Updates
+                        {t("graduationForm.dailyTierUpdatesTitle")}
                       </p>
                       <p className="text-xs text-gray-400">
-                        Tier information is updated once per day, so changes to
-                        your staking or trading volume may take up to 24 hours
-                        to reflect in your tier level.
+                        {t("graduationForm.dailyTierUpdatesDescription")}
                       </p>
                     </div>
                   </div>
@@ -1455,32 +1427,32 @@ export function GraduationForm({
 
   return (
     <Card className="w-full max-w-2xl mx-auto slide-fade-in">
-      <h2 className="text-xl font-bold mb-4">Graduate Your DEX</h2>
+      <h2 className="text-xl font-bold mb-4">
+        {t("graduationForm.graduateYourDex")}
+      </h2>
 
       <div className="bg-light/5 rounded-lg p-4 mb-6">
-        <h3 className="text-md font-medium mb-3">What is DEX Graduation?</h3>
+        <h3 className="text-md font-medium mb-3">
+          {t("graduationForm.whatIsDexGraduation")}
+        </h3>
         <p className="text-gray-300 text-sm mb-3">
-          Graduating your DEX enables revenue sharing and additional features:
+          {t("graduationForm.graduationIntro")}
         </p>
         <ul className="text-sm space-y-2 mb-3">
           <li className="flex items-start gap-2">
             <div className="i-mdi:cash-multiple text-success w-4 h-4 mt-0.5 flex-shrink-0"></div>
-            <span>
-              You'll earn a percentage of all trading fees generated through
-              your DEX
-            </span>
+            <span>{t("graduationForm.graduationBenefitRevenue")}</span>
           </li>
           <li className="flex items-start gap-2">
             <div className="i-mdi:cog text-warning w-4 h-4 mt-0.5 flex-shrink-0"></div>
-            <span>
-              You can customize trading fees to optimize for your community
-            </span>
+            <span>{t("graduationForm.graduationBenefitCustomFees")}</span>
           </li>
         </ul>
         <p className="text-gray-300 text-sm">
-          <span className="font-medium">Why send tokens for graduation?</span>{" "}
-          This requirement ensures DEX creators are committed to the Orderly
-          ecosystem and helps maintain quality standards.
+          <span className="font-medium">
+            {t("graduationForm.whySendTokens")}
+          </span>{" "}
+          {t("graduationForm.graduationRequirementDescription")}
         </p>
       </div>
 
@@ -1490,11 +1462,10 @@ export function GraduationForm({
         <div className="bg-light/5 rounded-xl p-4 mb-4">
           <h3 className="text-md font-medium mb-2 flex items-center">
             <div className="i-mdi:cog text-gray-400 w-5 h-5 mr-2"></div>
-            Trading Fee Configuration
+            {t("graduationForm.tradingFeeConfigurationTitle")}
           </h3>
           <p className="text-sm text-gray-300 mb-4">
-            Configure your trading fees to determine your revenue split. Default
-            values are shown below.
+            {t("graduationForm.tradingFeeConfigurationDescription")}
           </p>
 
           <FeeConfigWithCalculator
@@ -1524,23 +1495,21 @@ export function GraduationForm({
       <div className="mb-6">
         <FormInput
           id="brokerId"
-          label="Broker ID"
+          label={t("graduationForm.brokerIdLabel")}
           type="text"
           value={brokerId}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setBrokerId(e.target.value)
           }
-          placeholder="my-broker-id"
+          placeholder={t("graduationForm.brokerIdPlaceholder")}
           required
           helpText={
             <>
               <span className="text-gray-400 mb-1 block">
-                Your preferred unique broker ID (5-15 characters, lowercase
-                letters, numbers, hyphens, and underscores only)
+                {t("graduationForm.brokerIdHelp1")}
               </span>
               <span className="text-gray-400 mt-1 block">
-                This ID uniquely identifies your DEX in the Orderly ecosystem
-                and will be used for revenue tracking and user rewards.
+                {t("graduationForm.brokerIdHelp2")}
               </span>
             </>
           }
@@ -1550,14 +1519,14 @@ export function GraduationForm({
         {!brokerIdError && brokerId && (
           <div className="mt-1 text-xs text-success flex items-center">
             <span className="i-mdi:check-circle mr-1"></span>
-            Broker ID is available
+            {t("graduationForm.brokerIdAvailable")}
           </div>
         )}
 
         {feeOptions && (
           <div className="mb-6 mt-8">
             <p className="text-gray-300 mb-4">
-              Choose your graduation payment method:
+              {t("graduationForm.choosePaymentMethod")}
             </p>
 
             {/* Payment Method Selection Button */}
@@ -1638,7 +1607,7 @@ export function GraduationForm({
                               )
                             </span>
                             <div className="bg-warning/20 text-warning px-2 py-1 rounded-full text-xs font-medium">
-                              25% OFF
+                              {t("graduationForm.discount25Off")}
                             </div>
                           </div>
                         )}
@@ -1651,7 +1620,7 @@ export function GraduationForm({
                 </div>
                 {tokenBalance && (
                   <div className="mt-2 text-xs text-gray-400">
-                    Your balance:{" "}
+                    {t("graduationForm.yourBalance")}:{" "}
                     {parseFloat(tokenBalance.formatted).toFixed(2)}{" "}
                     {paymentType === "usdc" ? "USDC" : "ORDER"}
                   </div>
@@ -1664,20 +1633,17 @@ export function GraduationForm({
                 <div className="i-mdi:alert-circle text-warning w-5 h-5 mt-0.5 flex-shrink-0"></div>
                 <div>
                   <h4 className="text-warning font-medium text-sm mb-1">
-                    Do NOT send tokens manually
+                    {t("graduationForm.doNotSendTokensManuallyTitle")}
                   </h4>
                   <p className="text-xs text-gray-400">
-                    The system will handle the token transfer automatically when
-                    you click the button below. Do not send tokens to any
-                    address manually - this will not complete your graduation.
+                    {t("graduationForm.doNotSendTokensManuallyDescription")}
                   </p>
                 </div>
               </div>
             </div>
 
             <p className="text-gray-300 text-sm">
-              The system will automatically transfer the required tokens when
-              you click the button below.
+              {t("graduationForm.autoTransferDescription")}
               {paymentType === "order" && (
                 <a
                   href={getSwapUrl(preferredChain)}
@@ -1685,7 +1651,7 @@ export function GraduationForm({
                   rel="noopener noreferrer"
                   className="ml-1 text-primary-light hover:underline inline-flex items-center"
                 >
-                  Need ORDER tokens? Buy here
+                  {t("graduationForm.needOrderTokensCta")}
                   <span className="i-mdi:open-in-new w-3.5 h-3.5 ml-1"></span>
                 </a>
               )}
@@ -1697,16 +1663,21 @@ export function GraduationForm({
           <div className="border rounded-xl p-4 bg-primary/10 border-primary/20">
             <h3 className="text-md font-medium mb-2 flex items-center">
               <div className="w-5 h-5 mr-2 i-mdi:rocket-launch text-primary"></div>
-              Send {paymentType === "usdc" ? "USDC" : "ORDER"} Tokens
+              {t("graduationForm.sendTokensTitle", {
+                token: paymentType === "usdc" ? "USDC" : "ORDER",
+              })}
             </h3>
             <p className="text-sm text-gray-300 mb-4">
-              Send {paymentType === "usdc" ? "USDC" : "ORDER"} tokens and verify
-              in one step directly from your wallet.
+              {t("graduationForm.sendTokensDescription", {
+                token: paymentType === "usdc" ? "USDC" : "ORDER",
+              })}
             </p>
 
             <div className="mb-4">
               <div className="flex justify-between items-center mb-2">
-                <div className="text-xs text-gray-400">Using token:</div>
+                <div className="text-xs text-gray-400">
+                  {t("graduationForm.usingToken")}
+                </div>
                 <div className="text-xs bg-info/20 text-info px-2 py-1 rounded-full flex items-center">
                   <div className="i-mdi:information-outline mr-1 w-3.5 h-3.5"></div>
                   <span>
@@ -1719,7 +1690,9 @@ export function GraduationForm({
 
               {tokenBalance && (
                 <div className="text-xs mb-3 flex items-center">
-                  <span className="text-info">Your balance:</span>{" "}
+                  <span className="text-info">
+                    {t("graduationForm.yourBalance")}:
+                  </span>{" "}
                   <span className="font-medium ml-1">
                     {new Intl.NumberFormat("en-US", {
                       minimumFractionDigits: 2,
@@ -1733,7 +1706,7 @@ export function GraduationForm({
                         ? feeOptions.usdc.amount
                         : feeOptions.order.amount) && (
                       <div className="ml-2 text-warning flex items-center">
-                        (Insufficient for graduation)
+                        {t("graduationForm.insufficientForGraduation")}
                         {paymentType === "order" && (
                           <a
                             href={getSwapUrl(preferredChain)}
@@ -1741,7 +1714,7 @@ export function GraduationForm({
                             rel="noopener noreferrer"
                             className="ml-2 text-primary-light hover:underline inline-flex items-center"
                           >
-                            Buy ORDER
+                            {t("graduationForm.buyOrderCta")}
                             <span className="i-mdi:open-in-new w-3 h-3 ml-0.5"></span>
                           </a>
                         )}
@@ -1756,23 +1729,24 @@ export function GraduationForm({
                 <div className="flex items-center gap-2">
                   <div className="i-mdi:tag text-warning w-4 h-4"></div>
                   <span className="text-warning font-medium text-sm">
-                    Save 25% by paying with ORDER tokens!
+                    {t("graduationForm.saveWithOrderTitle")}
                   </span>
                 </div>
                 <div className="text-xs text-gray-400 mt-1">
-                  Instead of ${feeOptions?.usdc.amount.toLocaleString()} USDC,
-                  pay only {feeOptions?.order.amount.toLocaleString()} ORDER (~$
-                  {(
-                    (feeOptions?.order.amount || 0) *
-                    (feeOptions?.order.currentPrice || 0)
-                  ).toFixed(2)}
-                  )
+                  {t("graduationForm.saveWithOrderDescription", {
+                    usdcAmount: feeOptions?.usdc.amount.toLocaleString(),
+                    orderAmount: feeOptions?.order.amount.toLocaleString(),
+                    orderValue: (
+                      (feeOptions?.order.amount || 0) *
+                      (feeOptions?.order.currentPrice || 0)
+                    ).toFixed(2),
+                  })}
                 </div>
               </div>
             )}
 
             <div className="flex items-center gap-2 mb-4">
-              <div className="text-sm">Amount:</div>
+              <div className="text-sm">{t("graduationForm.amount")}:</div>
               <div className="font-medium flex items-center gap-2">
                 {feeOptions ? (
                   paymentType === "usdc" ? (
@@ -1781,12 +1755,12 @@ export function GraduationForm({
                     <>
                       {feeOptions.order.amount.toLocaleString()} ORDER
                       <div className="bg-warning/20 text-warning px-2 py-1 rounded-full text-xs font-medium">
-                        25% OFF
+                        {t("graduationForm.discount25Off")}
                       </div>
                     </>
                   )
                 ) : (
-                  "Loading..."
+                  t("graduationForm.loading")
                 )}
               </div>
             </div>
@@ -1800,10 +1774,10 @@ export function GraduationForm({
               isLoading={isPending || isConfirming || isLoading}
               loadingText={
                 isPending
-                  ? "Confirm in wallet..."
+                  ? t("graduationForm.confirmInWallet")
                   : isConfirming
-                    ? "Confirming..."
-                    : "Verifying transaction... This may take 1-2 minutes"
+                    ? t("graduationForm.confirming")
+                    : t("graduationForm.verifyingTransactionLoading")
               }
               disabled={
                 isCorrectChain &&
@@ -1823,15 +1797,17 @@ export function GraduationForm({
             >
               {isCorrectChain
                 ? !brokerId
-                  ? "Enter Broker ID to Continue"
-                  : `Transfer ${paymentType === "usdc" ? "USDC" : "ORDER"} Tokens`
-                : "Switch Chain"}
+                  ? t("graduationForm.enterBrokerIdToContinue")
+                  : t("graduationForm.transferTokensCta", {
+                      token: paymentType === "usdc" ? "USDC" : "ORDER",
+                    })
+                : t("graduationForm.switchChainCta")}
             </Button>
 
             {isConfirmed && hash && !result && (
               <div className="mt-3 bg-success/10 text-success text-sm p-2 rounded">
                 <div className="flex items-center justify-between">
-                  <span>Transfer successful! Verifying transaction...</span>
+                  <span>{t("graduationForm.transferSuccessfulVerifying")}</span>
                   {getBlockExplorerUrl(hash, preferredChain) && (
                     <a
                       href={getBlockExplorerUrl(hash, preferredChain)!}
@@ -1839,7 +1815,7 @@ export function GraduationForm({
                       rel="noopener noreferrer"
                       className="text-primary-light hover:text-primary text-xs flex items-center ml-2"
                     >
-                      View on Explorer
+                      {t("graduationForm.viewOnExplorer")}
                       <span className="i-mdi:open-in-new w-3 h-3 ml-1"></span>
                     </a>
                   )}
@@ -1863,8 +1839,10 @@ export function GraduationForm({
                 <div className="i-mdi:chevron-right w-4 h-4"></div>
               </div>
               {showManualInput
-                ? "Hide manual option"
-                : `I already sent ${paymentType === "usdc" ? "USDC" : "ORDER"} tokens`}
+                ? t("graduationForm.hideManualOption")
+                : t("graduationForm.showManualOption", {
+                    token: paymentType === "usdc" ? "USDC" : "ORDER",
+                  })}
             </button>
           </div>
 
@@ -1873,28 +1851,30 @@ export function GraduationForm({
             <div className="border rounded-xl p-4 bg-background-card border-base-contrast-12">
               <h3 className="text-md font-medium mb-2 flex items-center">
                 <div className="w-5 h-5 mr-2 i-mdi:file-document text-base-contrast-12"></div>
-                Manual Transaction Verification
+                {t("graduationForm.manualVerificationTitle")}
               </h3>
               <p className="text-sm text-gray-300 mb-4">
-                If you've already sent{" "}
-                {paymentType === "usdc" ? "USDC" : "ORDER"} tokens, enter the
-                transaction hash to verify and complete your graduation.
+                {t("graduationForm.manualVerificationDescription", {
+                  token: paymentType === "usdc" ? "USDC" : "ORDER",
+                })}
               </p>
 
               <div className="mb-4">
                 <div className="flex justify-between items-center mb-1">
-                  <p className="text-xs text-gray-400">Recipient Address:</p>
+                  <p className="text-xs text-gray-400">
+                    {t("graduationForm.recipientAddress")}
+                  </p>
                   <button
                     onClick={() =>
                       copyToClipboard(
                         feeOptions?.receiverAddress || "",
-                        "Recipient Address"
+                        t("graduationForm.recipientAddress")
                       )
                     }
                     className="text-primary-light hover:text-primary text-xs flex items-center"
                   >
                     <div className="i-mdi:content-copy w-3 h-3 mr-1"></div>
-                    Copy
+                    {t("graduationForm.copy")}
                   </button>
                 </div>
                 <div className="bg-background-dark/70 p-2 rounded overflow-hidden">
@@ -1907,7 +1887,9 @@ export function GraduationForm({
               <div className="mt-3">
                 <div className="flex justify-between items-center mb-1">
                   <p className="text-xs text-gray-400">
-                    {paymentType === "usdc" ? "USDC" : "ORDER"} Token Address:
+                    {t("graduationForm.tokenAddressLabel", {
+                      token: paymentType === "usdc" ? "USDC" : "ORDER",
+                    })}
                   </p>
                   <a
                     href={getSwapUrl(preferredChain)}
@@ -1916,7 +1898,9 @@ export function GraduationForm({
                     className="text-primary-light hover:text-primary text-xs flex items-center"
                   >
                     <div className="i-mdi:cart w-3 h-3 mr-1"></div>
-                    Buy {paymentType === "usdc" ? "USDC" : "ORDER"}
+                    {t("graduationForm.buyTokenCta", {
+                      token: paymentType === "usdc" ? "USDC" : "ORDER",
+                    })}
                   </a>
                 </div>
                 <div className="bg-background-dark/70 p-2 rounded overflow-hidden">
@@ -1931,12 +1915,10 @@ export function GraduationForm({
                   <div className="i-mdi:information-outline text-blue-400 mt-0.5 h-5 w-5 flex-shrink-0"></div>
                   <div>
                     <h4 className="text-sm font-medium text-blue-400 mb-1">
-                      Transaction Verification
+                      {t("graduationForm.transactionVerificationTitle")}
                     </h4>
                     <p className="text-xs text-gray-300">
-                      Verification involves checking the blockchain transaction
-                      and may take 1-2 minutes to complete. Please be patient
-                      and do not refresh the page during this process.
+                      {t("graduationForm.transactionVerificationDescription")}
                     </p>
                   </div>
                 </div>
@@ -1945,7 +1927,7 @@ export function GraduationForm({
               <form onSubmit={handleSubmit} className="space-y-4">
                 <FormInput
                   id="txHash"
-                  label="Transaction Hash"
+                  label={t("graduationForm.transactionHash")}
                   type="text"
                   value={txHash}
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -1953,30 +1935,32 @@ export function GraduationForm({
                   }
                   placeholder="0x..."
                   required
-                  helpText={`The transaction hash of your ${paymentType === "usdc" ? "USDC" : "ORDER"} token transfer`}
+                  helpText={t("graduationForm.txHashHelpText", {
+                    token: paymentType === "usdc" ? "USDC" : "ORDER",
+                  })}
                 />
 
                 <Button
                   type="submit"
                   variant="secondary"
                   isLoading={isLoading}
-                  loadingText="Verifying transaction... This may take 1-2 minutes"
+                  loadingText={t("graduationForm.verifyingTransactionLoading")}
                   className="w-full justify-center"
                   disabled={!txHash || !!brokerIdError || !brokerId}
                 >
-                  Verify Transaction
+                  {t("graduationForm.verifyTransactionButton")}
                 </Button>
 
                 {(!txHash || !!brokerIdError || !brokerId) && (
                   <div className="mt-2 text-xs text-gray-400 text-center">
                     {!brokerId && (
-                      <span>Please enter your broker ID to continue</span>
+                      <span>{t("graduationForm.enterBrokerIdToContinue")}</span>
                     )}
                     {brokerId && brokerIdError && (
-                      <span>Please fix the broker ID error above</span>
+                      <span>{t("graduationForm.fixBrokerIdError")}</span>
                     )}
                     {brokerId && !brokerIdError && !txHash && (
-                      <span>Please enter the transaction hash to verify</span>
+                      <span>{t("graduationForm.enterTxHashToVerify")}</span>
                     )}
                   </div>
                 )}
@@ -1995,8 +1979,10 @@ export function GraduationForm({
           </p>
           {result.success && result.amount && (
             <p className="text-gray-300 text-sm mt-2">
-              Verified transfer of {result.amount}{" "}
-              {paymentType === "usdc" ? "USDC" : "ORDER"} tokens
+              {t("graduationForm.verifiedTransfer", {
+                amount: result.amount,
+                token: paymentType === "usdc" ? "USDC" : "ORDER",
+              })}
             </p>
           )}
         </div>

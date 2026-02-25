@@ -4,6 +4,7 @@ import FormInput from "./FormInput";
 import { Card } from "./Card";
 import { post } from "../utils/apiClient";
 import { toast } from "react-toastify";
+import { useTranslation } from "~/i18n";
 import { useAuth } from "../context/useAuth";
 import { useModal } from "../context/ModalContext";
 import { DexPreviewProps } from "./DexPreview";
@@ -135,6 +136,7 @@ const AIFineTuneModal: FC<AIFineTuneModalProps> = ({
   previewProps,
   viewMode = "desktop",
 }) => {
+  const { t } = useTranslation();
   const { token: authToken } = useAuth();
   const { openModal } = useModal();
   const token = authToken;
@@ -304,17 +306,17 @@ const AIFineTuneModal: FC<AIFineTuneModalProps> = ({
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
-      toast.error("Please enter a description");
+      toast.error(t("aiFineTuneModal.pleaseEnterDescription"));
       return;
     }
 
     if (!token) {
-      toast.error("Authentication required");
+      toast.error(t("aiFineTuneModal.authenticationRequired"));
       return;
     }
 
     if (!element) {
-      toast.error("No element selected");
+      toast.error(t("aiFineTuneModal.noElementSelected"));
       return;
     }
 
@@ -378,11 +380,11 @@ const AIFineTuneModal: FC<AIFineTuneModalProps> = ({
         } else {
           // If no preview, apply the first variant
           onApplyOverrides(response.overrides[0]);
-          toast.success("CSS overrides generated successfully!");
+          toast.success(t("aiFineTuneModal.overridesGeneratedSuccess"));
           onClose();
         }
       } else {
-        toast.error("Failed to generate CSS overrides");
+        toast.error(t("aiFineTuneModal.failedToGenerateOverrides"));
       }
     } catch (error) {
       console.error("Error fine-tuning element:", error);
@@ -392,11 +394,9 @@ const AIFineTuneModal: FC<AIFineTuneModalProps> = ({
         "status" in error &&
         error.status === 429
       ) {
-        toast.error(
-          "Rate limit exceeded. Please wait 30 seconds before trying again."
-        );
+        toast.error(t("aiFineTuneModal.rateLimitExceeded"));
       } else {
-        toast.error("Error generating CSS overrides. Please try again.");
+        toast.error(t("aiFineTuneModal.errorGeneratingOverrides"));
       }
     } finally {
       setIsGenerating(false);
@@ -417,17 +417,16 @@ const AIFineTuneModal: FC<AIFineTuneModalProps> = ({
       <div className="bg-background-card border border-light/20 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
         <div className="flex items-center justify-between p-4 border-b border-light/10">
           <h2 className="text-lg font-bold text-gray-200">
-            AI Fine-Tune Element
+            {t("aiFineTuneModal.title")}
           </h2>
           <Button onClick={onClose} variant="secondary" size="sm" type="button">
-            Close
+            {t("aiFineTuneModal.close")}
           </Button>
         </div>
         <div className="flex-1 overflow-auto p-4">
           <div className="flex flex-col gap-4">
             <p className="text-xs text-gray-400">
-              Describe how you want this element and its children to look. The
-              AI will generate CSS overrides for the entire HTML structure.
+              {t("aiFineTuneModal.describePrompt")}
             </p>
             <Card className="p-3" variant="default">
               <div className="flex items-start gap-2">
@@ -435,31 +434,32 @@ const AIFineTuneModal: FC<AIFineTuneModalProps> = ({
                 <div>
                   <p className="text-xs text-gray-300 mb-1">
                     <span className="text-primary-light font-medium">
-                      Note:
+                      {t("aiFineTuneModal.note")}:
                     </span>{" "}
-                    This will generate CSS overrides for the selected element
-                    and all its child elements. The changes will be applied as
-                    CSS classes or selectors targeting the structure.
+                    {t("aiFineTuneModal.noteDesc")}
                   </p>
                 </div>
               </div>
             </Card>
             {elements.length > 0 && (
               <div className="text-xs text-gray-400">
-                <span className="font-medium">Elements:</span>{" "}
+                <span className="font-medium">
+                  {t("aiFineTuneModal.elements")}:
+                </span>{" "}
                 <code className="bg-background-dark/50 px-1.5 py-0.5 rounded">
-                  {elements.length} element{elements.length > 1 ? "s" : ""}{" "}
-                  {"(depth 0-3)"}
+                  {t("aiFineTuneModal.elementsCount", {
+                    count: elements.length,
+                  })}
                 </code>
               </div>
             )}
             <FormInput
               id="fineTunePrompt"
-              label="Description"
+              label={t("aiFineTuneModal.description")}
               value={prompt}
               onChange={e => setPrompt(e.target.value)}
-              placeholder="e.g., Make this button bright neon green with rounded corners and a glow effect"
-              helpText="Describe the visual changes you want for this element"
+              placeholder={t("aiFineTuneModal.placeholder")}
+              helpText={t("aiFineTuneModal.helpText")}
               maxLength={200}
               disabled={isGenerating}
             />
@@ -469,14 +469,15 @@ const AIFineTuneModal: FC<AIFineTuneModalProps> = ({
           <Button
             onClick={handleGenerate}
             isLoading={isGenerating}
-            loadingText="Generating..."
+            loadingText={t("aiFineTuneModal.generating")}
             disabled={!prompt.trim() || isGenerating || !element}
             variant="primary"
             size="sm"
             type="button"
           >
             <span className="flex items-center gap-1">
-              <div className="i-mdi:magic-wand h-4 w-4"></div>Generate Overrides
+              <div className="i-mdi:magic-wand h-4 w-4"></div>
+              {t("aiFineTuneModal.generateOverrides")}
             </span>
           </Button>
         </div>

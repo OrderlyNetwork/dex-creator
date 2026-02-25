@@ -55,7 +55,7 @@ export const DistributorNameCard = (props: DistributorNameCardProps) => {
   const disabled = !!error || !distributorName.trim() || isMutating;
 
   return (
-    <Card className="flex flex-col gap-5 p-4 md:p-6">
+    <Card className="flex flex-col gap-5 p-4 md:p-6 w-full">
       {/* Header */}
       <p className="text-lg text-base-contrast">
         {t("distributor.distributorDetails")}

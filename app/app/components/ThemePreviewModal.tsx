@@ -5,6 +5,7 @@ import DexPreview, { DexPreviewProps } from "./DexPreview";
 import ThemeEditingTabs from "./ThemeEditingTabs";
 import { useThemeEditor } from "../hooks/useThemeEditor";
 import { extractFontValues } from "../utils/cssParser";
+import { useTranslation } from "~/i18n";
 
 /**
  * Transforms CSS to scope :root selectors to a specific container using data attribute.
@@ -41,6 +42,7 @@ export default function ThemePreviewModal({
   previewProps,
   viewMode = "desktop",
 }: ThemePreviewModalProps) {
+  const { t } = useTranslation();
   const hasMultipleThemes =
     themes && Array.isArray(themes) && themes.length === 3;
   const [selectedVariant, setSelectedVariant] = useState<"old" | 0 | 1 | 2>(
@@ -176,7 +178,7 @@ export default function ThemePreviewModal({
       >
         <div className="flex items-center justify-between p-4 border-b border-light/10">
           <h2 className="text-lg font-bold text-gray-200">
-            Preview Theme Changes
+            {t("themePreviewModal.previewThemeChanges")}
           </h2>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 bg-background-card border border-light/20 rounded-lg p-1">
@@ -189,7 +191,7 @@ export default function ThemePreviewModal({
                 }`}
                 type="button"
               >
-                Old
+                {t("themePreviewModal.old")}
               </button>
               {[0, 1, 2].map(index => (
                 <button
@@ -212,7 +214,7 @@ export default function ThemePreviewModal({
               size="md"
               type="button"
             >
-              Cancel
+              {t("themePreviewModal.cancel")}
             </Button>
             <Button
               onClick={handleApply}
@@ -221,7 +223,9 @@ export default function ThemePreviewModal({
               type="button"
               disabled={selectedVariant === "old"}
             >
-              {selectedVariant === "old" ? "Select a Variant" : "Accept Theme"}
+              {selectedVariant === "old"
+                ? t("themePreviewModal.selectVariant")
+                : t("themePreviewModal.acceptTheme")}
             </Button>
           </div>
         </div>
@@ -273,7 +277,9 @@ export default function ThemePreviewModal({
 
       <div className="relative z-[1002] w-full max-w-3xl p-6 rounded-xl bg-background-light border border-light/10 shadow-2xl slide-fade-in max-h-[90vh] overflow-auto">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold">Theme Preview</h3>
+          <h3 className="text-xl font-bold">
+            {t("themePreviewModal.themePreview")}
+          </h3>
           {hasMultipleThemes && (
             <div className="flex items-center gap-2 bg-background-card border border-light/20 rounded-lg p-1">
               <button
@@ -285,7 +291,7 @@ export default function ThemePreviewModal({
                 }`}
                 type="button"
               >
-                Old
+                {t("themePreviewModal.old")}
               </button>
               {[0, 1, 2].map(index => (
                 <button
@@ -309,25 +315,22 @@ export default function ThemePreviewModal({
           <div className="flex items-start gap-3">
             <div className="i-mdi:robot text-primary-light h-5 w-5 mt-0.5 flex-shrink-0"></div>
             <div>
-              <h4 className="text-sm font-medium mb-1">AI-Generated Theme</h4>
+              <h4 className="text-sm font-medium mb-1">
+                {t("themePreviewModal.aiGeneratedTheme")}
+              </h4>
               <p className="text-xs text-gray-300 mb-2">
-                This theme was created by an AI based on your description. While
-                we strive for quality results:
+                {t("themePreviewModal.aiGeneratedThemeDesc")}
               </p>
               <ul className="text-xs text-gray-300 list-disc pl-4 space-y-1 mb-2">
-                <li>Colors may not always perfectly match your description</li>
-                <li>Contrast ratios between elements might need adjustment</li>
-                <li>
-                  Some color combinations might not look ideal in all contexts
-                </li>
+                <li>{t("themePreviewModal.colorsMayNotMatch")}</li>
+                <li>{t("themePreviewModal.contrastMayNeedAdjustments")}</li>
+                <li>{t("themePreviewModal.combinationsMayNotLookIdeal")}</li>
               </ul>
               <p className="text-xs text-gray-300">
                 <span className="text-primary-light font-medium">
-                  Recommendation:
+                  {t("themePreviewModal.recommendation")}
                 </span>{" "}
-                Use the preview functionality to see how your theme looks in a
-                real DEX environment, and make adjustments as needed using the
-                color editor below.
+                {t("themePreviewModal.recommendationDesc")}
               </p>
             </div>
           </div>
@@ -343,7 +346,7 @@ export default function ThemePreviewModal({
 
         <div className="flex gap-3 justify-end">
           <Button variant="ghost" onClick={handleCancel}>
-            Cancel
+            {t("themePreviewModal.cancel")}
           </Button>
           <Button
             variant="primary"
@@ -351,8 +354,8 @@ export default function ThemePreviewModal({
             disabled={hasMultipleThemes && selectedVariant === "old"}
           >
             {hasMultipleThemes && selectedVariant === "old"
-              ? "Select a Variant"
-              : "Apply Theme"}
+              ? t("themePreviewModal.selectVariant")
+              : t("themePreviewModal.applyTheme")}
           </Button>
         </div>
       </div>

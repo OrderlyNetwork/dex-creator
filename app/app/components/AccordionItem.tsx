@@ -1,5 +1,6 @@
 import React from "react";
 import { toast } from "react-toastify";
+import { useTranslation } from "~/i18n";
 import { Card } from "./Card";
 import { Button } from "./Button";
 import clsx from "clsx";
@@ -37,6 +38,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
   value,
   isValidating,
 }) => {
+  const { t } = useTranslation();
   return (
     <Card
       id={`step-${stepNumber}`}
@@ -55,7 +57,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
             stepNumber > 1 &&
             !allRequiredPreviousStepsCompleted(stepNumber)
           ) {
-            toast.error("Please complete the previous required steps first.");
+            toast.error(t("accordionItem.completePreviousSteps"));
           }
         }}
       >
@@ -70,7 +72,10 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
           >
             {title}
             {isOptional && (
-              <span className="text-sm text-gray-500"> (Optional)</span>
+              <span className="text-sm text-gray-500">
+                {" "}
+                ({t("accordionItem.optional")})
+              </span>
             )}
           </h3>
         </div>
@@ -102,7 +107,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
                 type="button"
                 size="sm"
               >
-                Skip
+                {t("accordionItem.skip")}
               </Button>
             )}
             <Button
@@ -113,7 +118,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
               disabled={!isOptional && !isStepContentValidTest}
               isLoading={isValidating}
             >
-              Next
+              {t("accordionItem.next")}
             </Button>
           </div>
         </div>

@@ -10,7 +10,7 @@ import Form from "../components/Form";
 import { useNavigate, Link } from "@remix-run/react";
 import DexSectionRenderer, {
   DEX_SECTION_KEYS,
-  DEX_SECTIONS,
+  getDexSections,
 } from "../components/DexSectionRenderer";
 import { useDexForm } from "../hooks/useDexForm";
 import { DexData, defaultTheme } from "../types/dex";
@@ -43,31 +43,33 @@ export default function DexConfigRoute() {
   const { distributorInfo } = useDistributor();
 
   const dexSections = useMemo(() => {
-    return DEX_SECTIONS.filter(section => {
-      // when the DEX is graduated and the distributor code is not bound, we need to hide the distributor code section because it is not allowed to change the distributor code after the DEX is graduated
-      if (
-        section.key === DEX_SECTION_KEYS.DistributorCode &&
-        isGraduated &&
-        !distributorInfo?.exist
-      ) {
-        return false;
-      }
+    return getDexSections()
+      .filter(section => {
+        // when the DEX is graduated and the distributor code is not bound, we need to hide the distributor code section because it is not allowed to change the distributor code after the DEX is graduated
+        if (
+          section.key === DEX_SECTION_KEYS.DistributorCode &&
+          isGraduated &&
+          !distributorInfo?.exist
+        ) {
+          return false;
+        }
 
-      // when the DEX is not configured with a custom domain, we need to hide the analytics configuration section
-      if (
-        section.key === DEX_SECTION_KEYS.AnalyticsConfiguration &&
-        !(form.dexData?.customDomain || form.dexData?.customDomainOverride)
-      ) {
-        return false;
-      }
+        // when the DEX is not configured with a custom domain, we need to hide the analytics configuration section
+        if (
+          section.key === DEX_SECTION_KEYS.AnalyticsConfiguration &&
+          !(form.dexData?.customDomain || form.dexData?.customDomainOverride)
+        ) {
+          return false;
+        }
 
-      return true;
-    }).map((section, index) => ({
-      ...section,
-      // reset the id to the index + 1, others the progress tracker percentage will calculate incorrectly
-      id: index + 1,
-    }));
-  }, [isGraduated, distributorInfo?.exist, form.dexData]);
+        return true;
+      })
+      .map((section, index) => ({
+        ...section,
+        // reset the id to the index + 1, others the progress tracker percentage will calculate incorrectly
+        id: index + 1,
+      }));
+  }, [isGraduated, distributorInfo?.exist, form.dexData, t]);
 
   useEffect(() => {
     if (!isAuthenticated || !token) return;

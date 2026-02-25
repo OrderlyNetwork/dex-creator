@@ -9,6 +9,7 @@ import {
 import { useAuth } from "./useAuth";
 import { get } from "../utils/apiClient";
 import { DexData } from "../types/dex";
+import { useTranslation } from "~/i18n";
 
 interface DexContextType {
   dexData: DexData | null;
@@ -30,6 +31,7 @@ const DexContext = createContext<DexContextType | undefined>(undefined);
 export { DexContext };
 
 export function DexProvider({ children }: { children: ReactNode }) {
+  const { t } = useTranslation();
   const { isAuthenticated, token } = useAuth();
   const [dexData, setDexData] = useState<DexData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -57,12 +59,16 @@ export function DexProvider({ children }: { children: ReactNode }) {
       }
     } catch (err) {
       console.error("Failed to fetch DEX data", err);
-      setError(err instanceof Error ? err.message : "Failed to fetch DEX data");
+      setError(
+        err instanceof Error
+          ? err.message
+          : t("dexContext.failedToFetchDexData")
+      );
       setDexData(null);
     } finally {
       setIsLoading(false);
     }
-  }, [isAuthenticated, token]);
+  }, [isAuthenticated, token, t]);
 
   const updateDexData = useCallback((newData: Partial<DexData>) => {
     setDexData(prev => (prev ? { ...prev, ...newData } : null));

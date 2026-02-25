@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "~/i18n";
 import { MLRUpgradeWarning } from "~/routes/_layout.referral/MultiLevelSettings";
 import { CloseIcon } from "~/routes/_layout.distributor/vanguard/icons";
 import { Button } from "./Button";
@@ -14,6 +15,7 @@ export default function MLRConfirmModal({
   onClose,
   onConfirm,
 }: MLRConfirmModalProps) {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleConfirm = async () => {
@@ -49,7 +51,7 @@ export default function MLRConfirmModal({
         {/* Header */}
         <div className="flex items-center justify-between p-5">
           <h2 className="flex-1 text-base font-medium leading-normal text-base-contrast">
-            Upgrade to Multi-Level Referral?
+            {t("mlrConfirmModal.title")}
           </h2>
           <button
             onClick={onClose}
@@ -79,7 +81,7 @@ export default function MLRConfirmModal({
             className="flex-1 h-10 px-5 py-3 rounded-[46px] border border-[#9c75ff] text-base font-medium leading-[1.2] text-base-contrast-80 hover:text-base-contrast hover:border-base-contrast transition-colors inline-flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
             type="button"
           >
-            Cancel
+            {t("mlrConfirmModal.cancel")}
           </button>
           <Button
             variant="primary"
@@ -88,7 +90,7 @@ export default function MLRConfirmModal({
             isLoading={isLoading}
             className="h-10 px-5 py-3 rounded-[46px] text-base font-medium leading-[1.2]"
           >
-            Confirm & Upgrade
+            {t("mlrConfirmModal.confirmUpgrade")}
           </Button>
         </div>
       </div>

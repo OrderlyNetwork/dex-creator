@@ -5,6 +5,7 @@ import { themePresets, ThemePreset } from "../types/dex";
 import { extractFontValues } from "../utils/cssParser";
 import ThemeEditingTabs from "./ThemeEditingTabs";
 import { useThemeEditor } from "../hooks/useThemeEditor";
+import { Trans, useTranslation } from "~/i18n";
 
 export interface ThemePresetPreviewModalProps {
   isOpen: boolean;
@@ -25,6 +26,7 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
   currentTheme,
   onPreviewChange,
 }) => {
+  const { t } = useTranslation();
   const [selectedPreset, setSelectedPreset] = useState<ThemePreset>("1");
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const selectedPresetTheme =
@@ -147,7 +149,7 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
       >
         <div className="flex items-center justify-between p-4 border-b border-light/10">
           <h2 className="text-lg font-bold text-gray-200">
-            Select Theme Preset
+            {t("themePresetPreviewModal.selectThemePreset")}
           </h2>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 bg-background-card border border-light/20 rounded-lg p-1">
@@ -172,7 +174,7 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
               size="md"
               type="button"
             >
-              Cancel
+              {t("themePresetPreviewModal.cancel")}
             </Button>
             <Button
               onClick={handleApplyClick}
@@ -180,7 +182,7 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
               size="md"
               type="button"
             >
-              Apply Preset
+              {t("themePresetPreviewModal.applyPreset")}
             </Button>
           </div>
         </div>
@@ -228,25 +230,27 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
                 <div className="i-mdi:alert-circle text-warning h-6 w-6 flex-shrink-0 mt-0.5"></div>
                 <div className="flex-1">
                   <h3 className="text-lg font-bold text-gray-200 mb-2">
-                    Apply Theme Preset?
+                    {t("themePresetPreviewModal.applyThemePresetTitle")}
                   </h3>
                   <p className="text-sm text-gray-300">
-                    Applying this preset will{" "}
-                    <strong>
-                      overwrite all your current theme customizations
-                    </strong>
-                    , including:
+                    <Trans
+                      i18nKey="themePresetPreviewModal.applyThemePresetDesc"
+                      components={[<strong key="0" />]}
+                    />
                   </p>
                   <ul className="text-sm text-gray-300 list-disc list-inside mt-2 space-y-1">
-                    <li>All color customizations</li>
-                    <li>Font settings</li>
-                    <li>Border radius adjustments</li>
-                    <li>Spacing modifications</li>
-                    <li>Any AI fine-tune overrides</li>
+                    <li>
+                      {t("themePresetPreviewModal.allColorCustomizations")}
+                    </li>
+                    <li>{t("themePresetPreviewModal.fontSettings")}</li>
+                    <li>
+                      {t("themePresetPreviewModal.borderRadiusAdjustments")}
+                    </li>
+                    <li>{t("themePresetPreviewModal.spacingModifications")}</li>
+                    <li>{t("themePresetPreviewModal.aiFineTuneOverrides")}</li>
                   </ul>
                   <p className="text-sm text-gray-300 mt-3">
-                    This action cannot be undone. Are you sure you want to
-                    continue?
+                    {t("themePresetPreviewModal.actionCannotBeUndone")}
                   </p>
                 </div>
               </div>
@@ -257,7 +261,7 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
                   size="md"
                   type="button"
                 >
-                  Cancel
+                  {t("themePresetPreviewModal.cancel")}
                 </Button>
                 <Button
                   onClick={handleConfirmApply}
@@ -265,7 +269,7 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
                   size="md"
                   type="button"
                 >
-                  Yes, Apply Preset
+                  {t("themePresetPreviewModal.yesApplyPreset")}
                 </Button>
               </div>
             </div>
@@ -287,7 +291,9 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
       {/* Modal */}
       <div className="relative z-[1002] w-full max-w-3xl p-6 rounded-xl bg-background-light border border-light/10 shadow-2xl slide-fade-in max-h-[90vh] overflow-auto">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold">Select Theme Preset</h3>
+          <h3 className="text-xl font-bold">
+            {t("themePresetPreviewModal.selectThemePreset")}
+          </h3>
           <div className="flex items-center gap-2 bg-background-card border border-light/20 rounded-lg p-1">
             {themePresets.map(preset => (
               <button
@@ -316,10 +322,10 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
 
         <div className="flex gap-3 justify-end">
           <Button variant="ghost" onClick={handleClose}>
-            Cancel
+            {t("themePresetPreviewModal.cancel")}
           </Button>
           <Button variant="primary" onClick={handleApplyClick}>
-            Apply Preset
+            {t("themePresetPreviewModal.applyPreset")}
           </Button>
         </div>
       </div>
@@ -341,25 +347,25 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
               <div className="i-mdi:alert-circle text-warning h-6 w-6 flex-shrink-0 mt-0.5"></div>
               <div className="flex-1">
                 <h3 className="text-lg font-bold text-gray-200 mb-2">
-                  Apply Theme Preset?
+                  {t("themePresetPreviewModal.applyThemePresetTitle")}
                 </h3>
                 <p className="text-sm text-gray-300">
-                  Applying this preset will{" "}
-                  <strong>
-                    overwrite all your current theme customizations
-                  </strong>
-                  , including:
+                  <Trans
+                    i18nKey="themePresetPreviewModal.applyThemePresetDesc"
+                    components={[<strong key="0" />]}
+                  />
                 </p>
                 <ul className="text-sm text-gray-300 list-disc list-inside mt-2 space-y-1">
-                  <li>All color customizations</li>
-                  <li>Font settings</li>
-                  <li>Border radius adjustments</li>
-                  <li>Spacing modifications</li>
-                  <li>Any AI fine-tune overrides</li>
+                  <li>{t("themePresetPreviewModal.allColorCustomizations")}</li>
+                  <li>{t("themePresetPreviewModal.fontSettings")}</li>
+                  <li>
+                    {t("themePresetPreviewModal.borderRadiusAdjustments")}
+                  </li>
+                  <li>{t("themePresetPreviewModal.spacingModifications")}</li>
+                  <li>{t("themePresetPreviewModal.aiFineTuneOverrides")}</li>
                 </ul>
                 <p className="text-sm text-gray-300 mt-3">
-                  This action cannot be undone. Are you sure you want to
-                  continue?
+                  {t("themePresetPreviewModal.actionCannotBeUndone")}
                 </p>
               </div>
             </div>
@@ -370,7 +376,7 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
                 size="md"
                 type="button"
               >
-                Cancel
+                {t("themePresetPreviewModal.cancel")}
               </Button>
               <Button
                 onClick={handleConfirmApply}
@@ -378,7 +384,7 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
                 size="md"
                 type="button"
               >
-                Yes, Apply Preset
+                {t("themePresetPreviewModal.yesApplyPreset")}
               </Button>
             </div>
           </div>

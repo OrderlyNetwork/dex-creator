@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { useTranslation, i18n } from "~/i18n";
 import { get } from "../utils/apiClient";
 import { Button } from "./Button";
 import Pagination from "./Pagination";
@@ -8,10 +9,10 @@ import { generateDeploymentUrl } from "../utils/deploymentUrl";
 const copyToClipboard = async (text: string, label: string) => {
   try {
     await navigator.clipboard.writeText(text);
-    toast.success(`${label} copied to clipboard`);
+    toast.success(i18n.t("allDexesList.labelCopiedToClipboard", { label }));
   } catch (error) {
     console.error("Failed to copy to clipboard:", error);
-    toast.error(`Failed to copy ${label}`);
+    toast.error(i18n.t("allDexesList.failedToCopyLabel", { label }));
   }
 };
 
@@ -56,6 +57,7 @@ export default function AllDexesList({
   isUpdatingCustomDomainOverride,
   redeployingDexes,
 }: AllDexesListProps) {
+  const { t } = useTranslation();
   const [allDexes, setAllDexes] = useState<Dex[]>([]);
   const [loadingDexes, setLoadingDexes] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
@@ -118,7 +120,7 @@ export default function AllDexesList({
       setSearchTerm(targetSearch);
     } catch (error) {
       console.error("Error loading DEXs:", error);
-      toast.error("Failed to load DEXs");
+      toast.error(t("allDexesList.failedToLoadDexes"));
     } finally {
       if (isSearch) {
         setSearchLoading(false);
@@ -163,14 +165,16 @@ export default function AllDexesList({
   return (
     <div className="bg-light/5 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-light/10 md:col-span-2">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-medium">Browse All DEXs</h2>
+        <h2 className="text-xl font-medium">
+          {t("allDexesList.browseAllDexes")}
+        </h2>
         <button
           onClick={() => {
             loadAllDexes(currentPage, pageSize, searchTerm);
           }}
           disabled={loadingDexes}
           className="p-1 rounded hover:bg-dark/50"
-          title="Refresh DEX list"
+          title={t("allDexesList.refreshDexList")}
         >
           <div
             className={`i-mdi:refresh h-5 w-5 ${loadingDexes ? "animate-spin" : ""} `}
@@ -178,7 +182,7 @@ export default function AllDexesList({
         </button>
       </div>
       <p className="text-gray-400 text-sm mb-4">
-        A comprehensive list of all DEXs and their database values.
+        {t("allDexesList.comprehensiveListDesc")}
       </p>
 
       {/* Search Input */}
@@ -186,7 +190,7 @@ export default function AllDexesList({
         <div className="relative">
           <input
             type="text"
-            placeholder="Search by broker name or broker ID..."
+            placeholder={t("allDexesList.searchPlaceholder")}
             value={searchInput}
             onChange={e => handleSearch(e.target.value)}
             className="w-full bg-dark border border-light/20 rounded px-4 py-2 text-sm focus:border-primary-light outline-none placeholder:text-gray-500"
@@ -195,7 +199,7 @@ export default function AllDexesList({
             <button
               onClick={() => handleSearch("")}
               className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 p-1"
-              title="Clear search"
+              title={t("allDexesList.clearSearch")}
             >
               <div className="i-mdi:close h-4 w-4"></div>
             </button>
@@ -206,10 +210,14 @@ export default function AllDexesList({
       {loadingDexes ? (
         <div className="text-center py-4">
           <div className="i-svg-spinners:pulse-rings h-8 w-8 mx-auto text-primary-light mb-2"></div>
-          <p className="text-sm text-gray-400">Loading DEXs...</p>
+          <p className="text-sm text-gray-400">
+            {t("allDexesList.loadingDexes")}
+          </p>
         </div>
       ) : allDexes.length === 0 ? (
-        <p className="text-gray-400 text-sm italic">No DEXs found.</p>
+        <p className="text-gray-400 text-sm italic">
+          {t("allDexesList.noDexesFound")}
+        </p>
       ) : (
         <div className="relative space-y-4 max-h-[600px] overflow-y-auto">
           {/* Search Loading Overlay */}
@@ -217,7 +225,9 @@ export default function AllDexesList({
             <div className="absolute inset-0 bg-dark/50 backdrop-blur-sm rounded-lg z-10 flex items-center justify-center min-h-[200px]">
               <div className="text-center p-4">
                 <div className="i-svg-spinners:pulse-rings h-6 w-6 mx-auto text-primary-light mb-2"></div>
-                <p className="text-xs text-gray-300">Searching...</p>
+                <p className="text-xs text-gray-300">
+                  {t("allDexesList.searching")}
+                </p>
               </div>
             </div>
           )}
@@ -228,13 +238,15 @@ export default function AllDexesList({
             >
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-medium text-primary-light">
-                  {dex.brokerName || "Unnamed DEX"} (ID:{" "}
+                  {dex.brokerName || t("allDexesList.unnamedDex")} (ID:{" "}
                   {dex.id.substring(0, 8)}...)
                 </h3>
                 <button
-                  onClick={() => copyToClipboard(dex.id, "DEX ID")}
+                  onClick={() =>
+                    copyToClipboard(dex.id, t("allDexesList.dexIdLabel"))
+                  }
                   className="text-gray-400 hover:text-primary-light p-1 rounded"
-                  title="Copy full DEX ID"
+                  title={t("allDexesList.copyDexId")}
                 >
                   <div className="i-mdi:content-copy h-4 w-4"></div>
                 </button>
@@ -243,12 +255,18 @@ export default function AllDexesList({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-xs">
                 <div className="flex items-center justify-between">
                   <div>
-                    <strong>Broker ID:</strong> {dex.brokerId}
+                    <strong>{t("allDexesList.brokerIdLabel")}:</strong>{" "}
+                    {dex.brokerId}
                   </div>
                   <button
-                    onClick={() => copyToClipboard(dex.brokerId, "Broker ID")}
+                    onClick={() =>
+                      copyToClipboard(
+                        dex.brokerId,
+                        t("allDexesList.brokerIdLabel")
+                      )
+                    }
                     className="text-gray-400 hover:text-primary-light p-1 rounded ml-2"
-                    title="Copy Broker ID"
+                    title={t("allDexesList.copyBrokerId")}
                   >
                     <div className="i-mdi:content-copy h-3 w-3"></div>
                   </button>
@@ -257,7 +275,7 @@ export default function AllDexesList({
                 {dex.repoUrl && (
                   <div className="md:col-span-2 flex items-center justify-between">
                     <div className="flex-1 min-w-0">
-                      <strong>Repo URL:</strong>{" "}
+                      <strong>{t("allDexesList.repoUrlHeading")}</strong>{" "}
                       <a
                         href={dex.repoUrl}
                         target="_blank"
@@ -269,10 +287,13 @@ export default function AllDexesList({
                     </div>
                     <button
                       onClick={() =>
-                        copyToClipboard(dex.repoUrl!, "Repository URL")
+                        copyToClipboard(
+                          dex.repoUrl!,
+                          t("allDexesList.repoUrlLabel")
+                        )
                       }
                       className="text-gray-400 hover:text-primary-light p-1 rounded ml-2 flex-shrink-0"
-                      title="Copy Repository URL"
+                      title={t("allDexesList.copyRepoUrl")}
                     >
                       <div className="i-mdi:content-copy h-3 w-3"></div>
                     </button>
@@ -282,7 +303,7 @@ export default function AllDexesList({
                 {dex.customDomain && (
                   <div className="md:col-span-2 flex items-center justify-between">
                     <div className="flex-1 min-w-0">
-                      <strong>Custom Domain:</strong>{" "}
+                      <strong>{t("allDexesList.customDomainHeading")}</strong>{" "}
                       <a
                         href={`https://${dex.customDomain}`}
                         target="_blank"
@@ -296,11 +317,11 @@ export default function AllDexesList({
                       onClick={() =>
                         copyToClipboard(
                           `https://${dex.customDomain}`,
-                          "Custom Domain URL"
+                          t("allDexesList.customDomainUrlLabel")
                         )
                       }
                       className="text-gray-400 hover:text-primary-light p-1 rounded ml-2 flex-shrink-0"
-                      title="Copy Custom Domain URL"
+                      title={t("allDexesList.copyCustomDomainUrl")}
                     >
                       <div className="i-mdi:content-copy h-3 w-3"></div>
                     </button>
@@ -310,7 +331,9 @@ export default function AllDexesList({
                 {/* Custom Domain Override Section */}
                 <div className="md:col-span-2">
                   <div className="flex items-center justify-between mb-2">
-                    <strong className="text-xs">Custom Domain Override:</strong>
+                    <strong className="text-xs">
+                      {t("allDexesList.customDomainOverride")}:
+                    </strong>
                     <div className="flex items-center gap-2">
                       <input
                         type="text"
@@ -351,12 +374,12 @@ export default function AllDexesList({
                         customDomainOverrideDexId === dex.id ? (
                           <>
                             <div className="i-svg-spinners:pulse-rings h-3 w-3"></div>
-                            Updating...
+                            {t("allDexesList.updating")}
                           </>
                         ) : (
                           <>
                             <div className="i-mdi:check h-3 w-3"></div>
-                            Update
+                            {t("allDexesList.update")}
                           </>
                         )}
                       </Button>
@@ -365,7 +388,7 @@ export default function AllDexesList({
                   {dex.customDomainOverride && (
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">
-                        <strong>Override URL:</strong>{" "}
+                        <strong>{t("allDexesList.overrideUrlHeading")}</strong>{" "}
                         <a
                           href={dex.customDomainOverride}
                           target="_blank"
@@ -379,11 +402,11 @@ export default function AllDexesList({
                         onClick={() =>
                           copyToClipboard(
                             dex.customDomainOverride!,
-                            "Custom Domain Override URL"
+                            t("allDexesList.overrideUrlLabel")
                           )
                         }
                         className="text-gray-400 hover:text-primary-light p-1 rounded ml-2 flex-shrink-0"
-                        title="Copy Override URL"
+                        title={t("allDexesList.copyOverrideUrl")}
                       >
                         <div className="i-mdi:content-copy h-3 w-3"></div>
                       </button>
@@ -394,7 +417,7 @@ export default function AllDexesList({
                 {dex.repoUrl && (
                   <div className="md:col-span-2 flex items-center justify-between">
                     <div className="flex-1 min-w-0">
-                      <strong>Deployment URL:</strong>{" "}
+                      <strong>{t("allDexesList.deploymentUrlHeading")}</strong>{" "}
                       <a
                         href={generateDeploymentUrl(dex.repoUrl)}
                         target="_blank"
@@ -411,11 +434,11 @@ export default function AllDexesList({
                       onClick={() =>
                         copyToClipboard(
                           generateDeploymentUrl(dex.repoUrl!),
-                          "Deployment URL"
+                          t("allDexesList.deploymentUrlLabel")
                         )
                       }
                       className="text-gray-400 hover:text-primary-light p-1 rounded ml-2 flex-shrink-0"
-                      title="Copy Deployment URL"
+                      title={t("allDexesList.copyDeploymentUrl")}
                     >
                       <div className="i-mdi:content-copy h-3 w-3"></div>
                     </button>
@@ -428,7 +451,9 @@ export default function AllDexesList({
                 <div className="mt-3 pt-3 border-t border-light/10">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <strong className="text-xs">Actions:</strong>
+                      <strong className="text-xs">
+                        {t("allDexesList.actions")}:
+                      </strong>
                     </div>
                     <Button
                       onClick={() => onRedeployment(dex.id, dex.brokerName)}
@@ -440,12 +465,12 @@ export default function AllDexesList({
                       {redeployingDexes.has(dex.id) ? (
                         <>
                           <div className="i-svg-spinners:pulse-rings h-3 w-3"></div>
-                          Deploying...
+                          {t("allDexesList.deploying")}
                         </>
                       ) : (
                         <>
                           <div className="i-mdi:rocket-launch h-3 w-3"></div>
-                          Redeploy
+                          {t("allDexesList.redeploy")}
                         </>
                       )}
                     </Button>
@@ -458,14 +483,16 @@ export default function AllDexesList({
                 <div className="mt-3 pt-3 border-t border-light/10">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <strong className="text-xs">CSS Theme:</strong>
+                      <strong className="text-xs">
+                        {t("allDexesList.cssTheme")}:
+                      </strong>
                       <button
                         onClick={() => toggleThemeVisibility(dex.id)}
                         className="text-gray-400 hover:text-primary-light p-1 rounded"
                         title={
                           expandedThemes.has(dex.id)
-                            ? "Hide theme"
-                            : "Show theme"
+                            ? t("allDexesList.hideTheme")
+                            : t("allDexesList.showTheme")
                         }
                       >
                         <div
@@ -479,10 +506,13 @@ export default function AllDexesList({
                     </div>
                     <button
                       onClick={() =>
-                        copyToClipboard(dex.themeCSS!, "CSS Theme")
+                        copyToClipboard(
+                          dex.themeCSS!,
+                          t("allDexesList.cssThemeLabel")
+                        )
                       }
                       className="text-gray-400 hover:text-primary-light p-1 rounded"
-                      title="Copy CSS Theme"
+                      title={t("allDexesList.copyCssTheme")}
                     >
                       <div className="i-mdi:content-copy h-3 w-3"></div>
                     </button>
@@ -510,7 +540,7 @@ export default function AllDexesList({
           totalItems={totalDexes}
           onPageChange={page => loadAllDexes(page, pageSize, searchTerm)}
           onPageSizeChange={size => loadAllDexes(1, size, searchTerm)}
-          itemName="DEXs"
+          itemName={t("allDexesList.itemName")}
         />
       )}
     </div>

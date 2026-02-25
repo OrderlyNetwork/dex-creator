@@ -3,6 +3,7 @@ import { WagmiProvider, useChainId } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { wagmiAdapter } from "../utils/wagmiConfig";
 import { toast } from "react-toastify";
+import { i18n } from "~/i18n";
 import { getChainById } from "../../../config";
 
 const queryClient = new QueryClient({
@@ -35,7 +36,7 @@ function ChainWatcher({ children }: { children: ReactNode }) {
     ) {
       const chainName = getChainName(chainId);
       const toastId = `chain-switched-success`;
-      toast.info(`Switched to ${chainName}`, {
+      toast.info(i18n.t("appKitProvider.switchedToChain", { chainName }), {
         toastId,
         // avoid show multiple toast notifications
         updateId: toastId,

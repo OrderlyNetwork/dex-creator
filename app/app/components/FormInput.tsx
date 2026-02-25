@@ -6,6 +6,7 @@ import {
   useEffect,
   useId,
 } from "react";
+import { useTranslation } from "~/i18n";
 
 export type ValidationFunction = (value: string) => string | null;
 
@@ -52,6 +53,10 @@ export default function FormInput({
   const id = providedId || generatedId;
   const [error, setError] = useState<string | null>(null);
   const [touched, setTouched] = useState(false);
+  const { t } = useTranslation();
+
+  const getLabelText = () =>
+    typeof label === "string" ? label : t("formInput.field");
 
   // Notify parent form about validation errors when they change
   useEffect(() => {
@@ -61,23 +66,21 @@ export default function FormInput({
   }, [error, onError]);
 
   const validateInput = (value: string): string | null => {
+    const labelText = getLabelText();
+
     // Check required first
     if (required && value.trim() === "") {
-      return `${typeof label === "string" ? label : "Field"} is required`;
+      return t("formInput.required", { label: labelText });
     }
 
     // Check min length
     if (minLength && value.trim().length < minLength) {
-      return `${
-        typeof label === "string" ? label : "Field"
-      } must be at least ${minLength} characters`;
+      return t("formInput.minLength", { label: labelText, minLength });
     }
 
     // Check max length
     if (maxLength && value.trim().length > maxLength) {
-      return `${
-        typeof label === "string" ? label : "Field"
-      } cannot exceed ${maxLength} characters`;
+      return t("formInput.maxLength", { label: labelText, maxLength });
     }
 
     // Run custom validator if provided
@@ -86,7 +89,7 @@ export default function FormInput({
     }
 
     if (pattern && !new RegExp(pattern).test(value)) {
-      return `${typeof label === "string" ? label : "Field"} format is invalid`;
+      return t("formInput.invalidFormat", { label: labelText });
     }
 
     return null;
@@ -113,7 +116,7 @@ export default function FormInput({
     if (touched && showValidation) {
       setError(validateInput(value));
     }
-  }, [value, touched]);
+  }, [value, touched, t]);
 
   return (
     <div className={`mb-4 ${className}`}>

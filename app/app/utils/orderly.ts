@@ -7,6 +7,7 @@ import {
   JsonRpcSigner,
 } from "ethers";
 import { Address, parseUnits } from "viem";
+import { i18n } from "~/i18n";
 
 export type BrokerInfo = {
   broker_id: string;
@@ -16,7 +17,7 @@ export type BrokerInfo = {
 export async function getBrokers(): Promise<BrokerInfo[]> {
   const res = await fetch(`${getBaseUrl()}/v1/public/broker/name`);
   if (!res.ok) {
-    throw new Error("Failed to fetch brokers");
+    throw new Error(i18n.t("orderly.failedToFetchBrokers"));
   }
   const json = await res.json();
   if (!json.success) {
@@ -129,7 +130,7 @@ export async function checkAccountRegistration(
   );
 
   if (!response.ok) {
-    throw new Error("Failed to check account registration status");
+    throw new Error(i18n.t("orderly.failedToCheckAccountRegistration"));
   }
 
   const json = await response.json();
@@ -172,9 +173,7 @@ export async function pollAccountRegistration(
     }
   }
 
-  throw new Error(
-    "Account registration polling timed out. Please try again later."
-  );
+  throw new Error(i18n.t("orderly.accountRegistrationPollingTimeout"));
 }
 
 export async function registerAccount(
@@ -463,7 +462,7 @@ export async function withdraw(
 
   const json = await response.json();
   if (!json.success) {
-    throw new Error(json.message || "Withdraw request failed");
+    throw new Error(json.message || i18n.t("orderly.withdrawRequestFailed"));
   }
 }
 
@@ -479,7 +478,7 @@ export async function getClientHolding(
 
   const data = await response.json();
   if (!data.success) {
-    throw new Error(data.message || "Failed to fetch holdings");
+    throw new Error(data.message || i18n.t("orderly.failedToFetchHoldings"));
   }
   return data.data?.holding || [];
 }
@@ -563,7 +562,9 @@ export async function updateAutoReferral(
 
   const json = await response.json();
   if (!json.success) {
-    throw new Error(json.message || "Failed to update auto referral settings");
+    throw new Error(
+      json.message || i18n.t("orderly.failedToUpdateAutoReferralSettings")
+    );
   }
 }
 
@@ -605,7 +606,7 @@ export async function updateBrokerFees(
 
   const json = await response.json();
   if (!json.success) {
-    throw new Error(json.message || "Failed to update broker fees");
+    throw new Error(json.message || i18n.t("orderly.failedToUpdateBrokerFees"));
   }
 }
 
@@ -621,7 +622,9 @@ export async function getAutoReferralInfo(
 
   const json = await response.json();
   if (!json.success) {
-    throw new Error(json.message || "Failed to get auto referral info");
+    throw new Error(
+      json.message || i18n.t("orderly.failedToGetAutoReferralInfo")
+    );
   }
   return json.data || null;
 }
@@ -761,7 +764,9 @@ export async function enableMultiLevelReferral(
 
   const json = await response.json();
   if (!json.success) {
-    throw new Error(json.message || "Failed to enable multi-level referral");
+    throw new Error(
+      json.message || i18n.t("orderly.failedToEnableMultiLevelReferral")
+    );
   }
 
   return json;
@@ -789,7 +794,9 @@ export async function getMultiLevelReferralInfo(
 
   const json = await response.json();
   if (!json.success) {
-    throw new Error(json.message || "Failed to get multi-level referral info");
+    throw new Error(
+      json.message || i18n.t("orderly.failedToGetMultiLevelReferralInfo")
+    );
   }
 
   return {
@@ -821,7 +828,7 @@ export async function updateMultiLevelReferralConfig(
   const json = await response.json();
   if (!json.success) {
     throw new Error(
-      json.message || "Failed to update multi-level referral config"
+      json.message || i18n.t("orderly.failedToUpdateMultiLevelReferralConfig")
     );
   }
 }
@@ -876,7 +883,9 @@ export async function getReferralAdminInfo(
 
   const json = await response.json();
   if (!json.success) {
-    throw new Error(json.message || "Failed to get referral admin info");
+    throw new Error(
+      json.message || i18n.t("orderly.failedToGetReferralAdminInfo")
+    );
   }
 
   return json;

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "~/i18n";
 import { useAccount, useWalletClient, useChainId, useSwitchChain } from "wagmi";
 import { BrowserProvider } from "ethers";
 import { toast } from "react-toastify";
@@ -27,6 +28,7 @@ export function FeeWithdrawalModal({
   multisigAddress,
   multisigChainId,
 }: FeeWithdrawalModalProps) {
+  const { t } = useTranslation();
   const { address } = useAccount();
   const { data: walletClient } = useWalletClient();
   const chainId = useChainId();
@@ -49,7 +51,7 @@ export function FeeWithdrawalModal({
       if (savedKey) {
         setOrderlyKey(savedKey);
       } else {
-        toast.error("No Orderly key found. Please create one first.");
+        toast.error(t("feeWithdrawalModal.noOrderlyKey"));
         onClose();
       }
     }
@@ -87,25 +89,29 @@ export function FeeWithdrawalModal({
       await switchChain({ chainId: multisigChainId });
     } catch (error) {
       console.error("Failed to switch chain:", error);
-      toast.error("Please switch to the required network in your wallet");
+      toast.error(t("feeWithdrawalModal.switchToRequiredNetwork"));
     }
   };
 
   const handleWithdraw = async () => {
     if (!walletClient || !accountId || !orderlyKey || !address) {
-      toast.error("Missing required data for withdrawal");
+      toast.error(t("feeWithdrawalModal.missingData"));
       return;
     }
 
     if (!isOnCorrectChain) {
       toast.error(
-        `Please switch to ${requiredChain?.name || "the correct network"} to withdraw`
+        t("feeWithdrawalModal.pleaseSwitchToWithdraw", {
+          chainName:
+            requiredChain?.name ||
+            t("feeWithdrawalModal.switchToCorrectNetwork"),
+        })
       );
       return;
     }
 
     if (!amount.trim() || parseFloat(amount) <= 0) {
-      toast.error("Please enter valid amount");
+      toast.error(t("feeWithdrawalModal.enterValidAmount"));
       return;
     }
 
@@ -126,19 +132,21 @@ export function FeeWithdrawalModal({
         orderlyKey
       );
 
-      toast.success("Withdrawal request submitted successfully!");
+      toast.success(t("feeWithdrawalModal.withdrawalSuccess"));
       onClose();
     } catch (error) {
       console.error("Error withdrawing:", error);
       toast.error(
-        error instanceof Error ? error.message : "Failed to withdraw"
+        error instanceof Error
+          ? error.message
+          : t("feeWithdrawalModal.withdrawalFailed")
       );
     }
   };
 
   const handleFullWithdrawal = async () => {
     if (!amount.trim() || parseFloat(amount) <= 0) {
-      toast.error("Please enter valid amount");
+      toast.error(t("feeWithdrawalModal.enterValidAmount"));
       return;
     }
 
@@ -164,7 +172,9 @@ export function FeeWithdrawalModal({
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-4 border-b border-light/10">
-          <h2 className="text-lg font-semibold text-white">Withdraw Fees</h2>
+          <h2 className="text-lg font-semibold text-white">
+            {t("feeWithdrawalModal.title")}
+          </h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-200 transition-colors"
@@ -179,11 +189,10 @@ export function FeeWithdrawalModal({
               <div className="i-mdi:information-outline text-info w-4 h-4 mt-0.5 flex-shrink-0"></div>
               <div>
                 <p className="text-xs text-info font-medium mb-1">
-                  Multisig Withdrawal Process
+                  {t("feeWithdrawalModal.multisigProcess")}
                 </p>
                 <p className="text-xs text-gray-400">
-                  This will withdraw fees to your multisig wallet. The operation
-                  requires a signature from your connected EOA wallet.
+                  {t("feeWithdrawalModal.multisigDesc")}
                 </p>
               </div>
             </div>
@@ -191,7 +200,7 @@ export function FeeWithdrawalModal({
 
           <div className="bg-background-card rounded-lg p-3 border border-light/10">
             <label className="block text-xs font-medium text-gray-400 mb-1">
-              Withdrawal Address (Multisig)
+              {t("feeWithdrawalModal.withdrawalAddress")}
             </label>
             <div className="font-mono text-sm text-gray-300 break-all">
               {multisigAddress}
@@ -201,23 +210,24 @@ export function FeeWithdrawalModal({
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-sm font-medium text-gray-300">
-                Amount (USDC)
+                {t("feeWithdrawalModal.amountUsdc")}
               </label>
               <div className="flex items-center gap-2">
                 {isLoadingBalance ? (
                   <span className="text-xs text-gray-400">
-                    Loading balance...
+                    {t("feeWithdrawalModal.loadingBalance")}
                   </span>
                 ) : usdcBalance !== null ? (
                   <>
                     <span className="text-xs text-gray-400">
-                      Available: {usdcBalance.toFixed(2)} USDC
+                      {t("feeWithdrawalModal.available")}:{" "}
+                      {usdcBalance.toFixed(2)} USDC
                     </span>
                     <button
                       onClick={handleSetMaxAmount}
                       className="text-xs text-primary-light hover:text-primary font-medium"
                     >
-                      MAX
+                      {t("feeWithdrawalModal.max")}
                     </button>
                   </>
                 ) : null}
@@ -240,14 +250,13 @@ export function FeeWithdrawalModal({
                 <div className="i-mdi:alert text-warning w-5 h-5 mt-0.5 flex-shrink-0"></div>
                 <div className="flex-1">
                   <p className="text-xs text-warning font-medium mb-1">
-                    Wrong Network
+                    {t("feeWithdrawalModal.wrongNetwork")}
                   </p>
                   <p className="text-xs text-gray-400">
-                    Please switch to{" "}
-                    <span className="font-semibold text-white">
-                      {requiredChain?.name || `Chain ID ${multisigChainId}`}
-                    </span>{" "}
-                    where your multisig delegate signer link was established.
+                    {t("feeWithdrawalModal.switchNetworkDesc", {
+                      chainName:
+                        requiredChain?.name || `Chain ID ${multisigChainId}`,
+                    })}
                   </p>
                 </div>
               </div>
@@ -260,10 +269,10 @@ export function FeeWithdrawalModal({
               variant="primary"
               className="w-full"
               isLoading={isProcessing}
-              loadingText="Processing..."
+              loadingText={t("feeWithdrawalModal.processing")}
               disabled={!amount.trim() || !orderlyKey}
             >
-              Withdraw Fees
+              {t("feeWithdrawalModal.withdrawFees")}
             </Button>
           ) : (
             <Button
@@ -273,7 +282,11 @@ export function FeeWithdrawalModal({
             >
               <div className="flex items-center justify-center gap-2">
                 <div className="i-mdi:swap-horizontal w-4 h-4"></div>
-                Switch to {requiredChain?.name || "Correct Network"}
+                {t("feeWithdrawalModal.switchToNetwork", {
+                  chainName:
+                    requiredChain?.name ||
+                    t("feeWithdrawalModal.switchToCorrectNetwork"),
+                })}
               </div>
             </Button>
           )}

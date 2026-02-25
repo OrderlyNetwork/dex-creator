@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "~/i18n";
 import { DexSectionConfig } from "./DexSectionRenderer";
 
 interface ProgressTrackerProps {
@@ -12,6 +13,7 @@ const ProgressTracker: React.FC<ProgressTrackerProps> = ({
   currentSection,
   onSectionClick,
 }) => {
+  const { t } = useTranslation();
   const [visibleSections, setVisibleSections] = useState<Set<number>>(
     new Set()
   );
@@ -79,7 +81,7 @@ const ProgressTracker: React.FC<ProgressTrackerProps> = ({
     <div className="w-64 flex-shrink-0 hidden md:block">
       <div className="sticky top-26 bg-background-dark/50 backdrop-blur-sm rounded-lg border border-light/10 p-3 max-h-[calc(100vh-120px)] overflow-y-auto progress-tracker-scrollbar">
         <h3 className="text-sm font-semibold text-white mb-4">
-          Configuration Progress
+          {t("progressTracker.configurationProgress")}
         </h3>
 
         <div className="space-y-1">
@@ -138,7 +140,7 @@ const ProgressTracker: React.FC<ProgressTrackerProps> = ({
 
         <div className="mt-4 pt-3 border-t border-light/10">
           <div className="flex justify-between text-xs text-gray-400 mb-2">
-            <span>Progress</span>
+            <span>{t("progressTracker.progress")}</span>
             <span>{getProgressPercentage()}%</span>
           </div>
           <div className="w-full bg-gray-700 rounded-full h-2">

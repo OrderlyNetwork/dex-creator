@@ -1,5 +1,7 @@
 import { useState, FormEvent, useEffect } from "react";
 import { toast } from "react-toastify";
+import { useTranslation, Trans } from "~/i18n";
+import { i18n } from "~/i18n";
 import { del, get, post } from "../utils/apiClient";
 import { useAuth } from "../context/useAuth";
 import { useModal } from "../context/ModalContext";
@@ -110,10 +112,11 @@ interface ManualBrokerCreationResponse {
 
 const getChainName = (chainId: number): string => {
   const chain = getChainById(chainId);
-  return chain ? chain.name : "Unknown";
+  return chain ? chain.name : i18n.t("admin.unknownChain");
 };
 
 export default function AdminRoute() {
+  const { t } = useTranslation();
   const [dexStats, setDexStats] = useState<DexStatsResponse | null>(null);
 
   const [dexToDeleteId, setDexToDeleteId] = useState("");
@@ -174,23 +177,24 @@ export default function AdminRoute() {
 
   const handleRedeployment = async (dexId: string, brokerName: string) => {
     openModal("confirmation", {
-      title: "Redeploy DEX",
-      message: `Are you sure you want to trigger a redeployment for "${brokerName}"?`,
-      warningMessage:
-        "This will redeploy the DEX to GitHub Pages. The process may take several minutes to complete, but the current version will remain available during deployment.",
-      confirmButtonText: "Redeploy",
+      title: t("admin.redeployModal.title"),
+      message: t("admin.redeployModal.message", { brokerName }),
+      warningMessage: t("admin.redeployModal.warningMessage"),
+      confirmButtonText: t("admin.redeployModal.confirmButtonText"),
       confirmButtonVariant: "primary",
       onConfirm: async () => {
         setRedeployingDexes(prev => new Set(prev).add(dexId));
         try {
           await post(`api/admin/dex/${dexId}/redeploy`, {}, token);
-          toast.success(`Redeployment triggered for ${brokerName}`);
+          toast.success(t("admin.redeploySuccess", { brokerName }));
         } catch (error) {
           console.error("Error triggering redeployment:", error);
           if (error instanceof Error) {
-            toast.error(`Failed to trigger redeployment: ${error.message}`);
+            toast.error(
+              t("admin.redeployErrorWithMessage", { message: error.message })
+            );
           } else {
-            toast.error("Failed to trigger redeployment");
+            toast.error(t("admin.redeployError"));
           }
         } finally {
           setRedeployingDexes(prev => {
@@ -222,10 +226,12 @@ export default function AdminRoute() {
       console.error("Error updating custom domain override:", error);
       if (error instanceof Error) {
         toast.error(
-          `Failed to update custom domain override: ${error.message}`
+          t("admin.customDomainOverrideErrorWithMessage", {
+            message: error.message,
+          })
         );
       } else {
-        toast.error("Failed to update custom domain override");
+        toast.error(t("admin.customDomainOverrideError"));
       }
     } finally {
       setIsUpdatingCustomDomainOverride(false);
@@ -269,7 +275,7 @@ export default function AdminRoute() {
       setAdminUsers(response.admins);
     } catch (error) {
       console.error("Error loading admin users:", error);
-      toast.error("Failed to load admin users");
+      toast.error(t("admin.loadAdminUsersError"));
     } finally {
       setIsLoadingAdmins(false);
     }
@@ -408,7 +414,7 @@ export default function AdminRoute() {
 
   const handleSelectManualDex = (dex: Dex) => {
     setManualDexId(dex.id);
-    setSelectedDexName(dex.brokerName || "Unknown DEX");
+    setSelectedDexName(dex.brokerName || t("admin.unknownDex"));
     setFilteredManualDexes([]);
     setManualSearchQuery("");
   };
@@ -417,7 +423,7 @@ export default function AdminRoute() {
     try {
       const response = await fetch(`${getBaseUrl()}/v1/public/broker/name`);
       if (!response.ok) {
-        throw new Error("Failed to fetch broker IDs");
+        throw new Error(t("admin.fetchBrokerIdsError"));
       }
 
       const data = await response.json();
@@ -441,26 +447,22 @@ export default function AdminRoute() {
 
     const isValidFormat = /^[a-z0-9_-]+$/.test(manualBrokerId);
     if (!isValidFormat) {
-      setManualBrokerIdError(
-        "Broker ID must contain only lowercase letters, numbers, hyphens, and underscores"
-      );
+      setManualBrokerIdError(t("admin.brokerIdFormatError"));
       return;
     }
 
     if (manualBrokerId.includes("orderly")) {
-      setManualBrokerIdError("Broker ID cannot contain 'orderly'");
+      setManualBrokerIdError(t("admin.brokerIdCannotOrderly"));
       return;
     }
 
     if (manualBrokerId.length < 5 || manualBrokerId.length > 15) {
-      setManualBrokerIdError("Broker ID must be between 5-15 characters");
+      setManualBrokerIdError(t("admin.brokerIdLengthError"));
       return;
     }
 
     if (existingBrokerIds.includes(manualBrokerId)) {
-      setManualBrokerIdError(
-        "This broker ID is already taken. Please choose another one."
-      );
+      setManualBrokerIdError(t("admin.brokerIdAlreadyTaken"));
       return;
     }
 
@@ -475,18 +477,17 @@ export default function AdminRoute() {
     e.preventDefault();
 
     if (!dexToDeleteId.trim()) {
-      toast.error("Please select a DEX to delete");
+      toast.error(t("admin.selectDexToDelete"));
       return;
     }
 
-    const dexName = "Selected DEX";
+    const dexName = t("admin.selectedDex");
 
     openModal("confirmation", {
-      title: "Delete DEX",
-      message: `Are you sure you want to delete "${dexName}"? This action cannot be undone.`,
-      warningMessage:
-        "Deleting this DEX will permanently remove all associated data from the system, including the GitHub repository. However, any deployed instances on GitHub Pages will remain active and must be manually disabled through GitHub.",
-      confirmButtonText: "Delete DEX",
+      title: t("admin.deleteModal.title"),
+      message: t("admin.deleteModal.message", { dexName }),
+      warningMessage: t("admin.deleteModal.warningMessage"),
+      confirmButtonText: t("admin.deleteModal.confirmButtonText"),
       confirmButtonVariant: "danger",
       isDestructive: true,
       onConfirm: async () => {
@@ -499,7 +500,7 @@ export default function AdminRoute() {
             { showToastOnError: false }
           );
 
-          toast.success("DEX deleted successfully");
+          toast.success(t("admin.deleteSuccess"));
           loadDexStats();
           setDexToDeleteId("");
         } catch (error) {
@@ -507,7 +508,7 @@ export default function AdminRoute() {
           if (error instanceof Error) {
             toast.error(error.message);
           } else {
-            toast.error("An unknown error occurred");
+            toast.error(t("admin.unknownError"));
           }
         } finally {
           setIsDeleting(false);
@@ -520,24 +521,27 @@ export default function AdminRoute() {
     e.preventDefault();
 
     if (!dexId.trim()) {
-      toast.error("Please enter a DEX ID");
+      toast.error(t("admin.enterDexId"));
       return;
     }
 
     if (!brokerId.trim()) {
-      toast.error("Please enter a Broker ID");
+      toast.error(t("admin.enterBrokerId"));
       return;
     }
 
-    const dexName = "Selected DEX";
-    const currentBrokerId = "Current";
+    const dexName = t("admin.selectedDex");
+    const currentBrokerId = t("admin.currentLabel");
 
     openModal("confirmation", {
-      title: "Update Broker ID",
-      message: `Are you sure you want to update the broker ID for "${dexName}" from "${currentBrokerId}" to "${brokerId.trim()}"?`,
-      warningMessage:
-        "Updating the broker ID will affect the DEX's integration with the Orderly Network. This change will be immediate and may impact trading functionality.",
-      confirmButtonText: "Update Broker ID",
+      title: t("admin.updateBrokerModal.title"),
+      message: t("admin.updateBrokerModal.message", {
+        dexName,
+        currentBrokerId,
+        newBrokerId: brokerId.trim(),
+      }),
+      warningMessage: t("admin.updateBrokerModal.warningMessage"),
+      confirmButtonText: t("admin.updateBrokerModal.confirmButtonText"),
       confirmButtonVariant: "warning",
       onConfirm: async () => {
         setIsUpdatingBrokerId(true);
@@ -549,14 +553,14 @@ export default function AdminRoute() {
             { showToastOnError: false }
           );
 
-          toast.success("Broker ID updated successfully");
+          toast.success(t("admin.brokerUpdatedSuccess"));
           loadDexStats();
         } catch (error) {
           console.error("Error updating broker ID:", error);
           if (error instanceof Error) {
             toast.error(error.message);
           } else {
-            toast.error("An unknown error occurred");
+            toast.error(t("admin.unknownError"));
           }
         } finally {
           setIsUpdatingBrokerId(false);
@@ -569,24 +573,27 @@ export default function AdminRoute() {
     e.preventDefault();
 
     if (!repoDexId.trim()) {
-      toast.error("Please enter a DEX ID");
+      toast.error(t("admin.enterDexId"));
       return;
     }
 
     if (!newRepoName.trim()) {
-      toast.error("Please enter a new repository name");
+      toast.error(t("admin.enterNewRepoName"));
       return;
     }
 
-    const dexName = "Selected DEX";
-    const currentRepoName = "Current Repository";
+    const dexName = t("admin.selectedDex");
+    const currentRepoName = t("admin.currentRepository");
 
     openModal("confirmation", {
-      title: "Rename Repository",
-      message: `Are you sure you want to rename the repository for "${dexName}" from "${currentRepoName}" to "${newRepoName.trim()}"?`,
-      warningMessage:
-        "Renaming the repository will update all references including the deployment URL. This may cause temporary downtime during the transition.",
-      confirmButtonText: "Rename Repository",
+      title: t("admin.renameRepoModal.title"),
+      message: t("admin.renameRepoModal.message", {
+        dexName,
+        currentRepoName,
+        newRepoName: newRepoName.trim(),
+      }),
+      warningMessage: t("admin.renameRepoModal.warningMessage"),
+      confirmButtonText: t("admin.renameRepoModal.confirmButtonText"),
       confirmButtonVariant: "warning",
       onConfirm: async () => {
         setIsRenamingRepo(true);
@@ -598,14 +605,14 @@ export default function AdminRoute() {
             { showToastOnError: false }
           );
 
-          toast.success("Repository renamed successfully");
+          toast.success(t("admin.renameRepoSuccess"));
           loadDexStats();
         } catch (error) {
           console.error("Error renaming repository:", error);
           if (error instanceof Error) {
             toast.error(error.message);
           } else {
-            toast.error("An unknown error occurred");
+            toast.error(t("admin.unknownError"));
           }
         } finally {
           setIsRenamingRepo(false);
@@ -618,28 +625,30 @@ export default function AdminRoute() {
     e.preventDefault();
 
     if (!manualDexId.trim()) {
-      toast.error("Please select a DEX");
+      toast.error(t("admin.selectDex"));
       return;
     }
 
     if (!manualBrokerId.trim()) {
-      toast.error("Please enter a broker ID");
+      toast.error(t("admin.enterBrokerIdLower"));
       return;
     }
 
     if (!manualTxHash.trim()) {
-      toast.error("Please enter a transaction hash");
+      toast.error(t("admin.enterTxHash"));
       return;
     }
 
-    const dexName = selectedDexName || "Selected DEX";
+    const dexName = selectedDexName || t("admin.selectedDex");
 
     openModal("confirmation", {
-      title: "Create Broker ID Manually",
-      message: `Are you sure you want to manually create broker ID "${manualBrokerId.trim()}" for "${dexName}"?`,
-      warningMessage:
-        "This will create the broker ID on-chain without requiring payment verification. The DEX will be graduated automatically and fees will be set as specified.",
-      confirmButtonText: "Create Broker ID",
+      title: t("admin.createBrokerModal.title"),
+      message: t("admin.createBrokerModal.message", {
+        brokerId: manualBrokerId.trim(),
+        dexName,
+      }),
+      warningMessage: t("admin.createBrokerModal.warningMessage"),
+      confirmButtonText: t("admin.createBrokerModal.confirmButtonText"),
       confirmButtonVariant: "primary",
       onConfirm: async () => {
         setIsCreatingManualBroker(true);
@@ -681,7 +690,7 @@ export default function AdminRoute() {
           if (error instanceof Error) {
             toast.error(error.message);
           } else {
-            toast.error("An unknown error occurred");
+            toast.error(t("admin.unknownError"));
           }
         } finally {
           setIsCreatingManualBroker(false);
@@ -694,7 +703,7 @@ export default function AdminRoute() {
     return (
       <div className="w-full max-w-3xl mx-auto px-4 py-6 md:py-10 text-center mt-26 pb-52">
         <div className="i-svg-spinners:pulse-rings-multiple h-12 w-12 mx-auto text-primary-light mb-4"></div>
-        <p>Checking admin status...</p>
+        <p>{t("admin.checkingAdminStatus")}</p>
       </div>
     );
   }
@@ -702,11 +711,15 @@ export default function AdminRoute() {
   if (!isAdmin) {
     return (
       <div className="w-full max-w-3xl mx-auto px-4 py-6 md:py-10 mt-26 pb-52">
-        <h1 className="text-2xl md:text-3xl font-bold mb-6">Admin Tools</h1>
+        <h1 className="text-2xl md:text-3xl font-bold mb-6">
+          {t("admin.adminTools")}
+        </h1>
         <div className="bg-error/10 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-error/20">
-          <p className="text-error font-medium mb-2">⚠️ Access Denied</p>
+          <p className="text-error font-medium mb-2">
+            {t("admin.accessDenied")}
+          </p>
           <p className="text-gray-300 text-sm">
-            You don't have admin privileges to access this page.
+            {t("admin.noAdminPrivileges")}
           </p>
         </div>
       </div>
@@ -715,14 +728,15 @@ export default function AdminRoute() {
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-6 md:py-10 mt-26 pb-52">
-      <h1 className="text-2xl md:text-3xl font-bold mb-6">Admin Tools</h1>
+      <h1 className="text-2xl md:text-3xl font-bold mb-6">
+        {t("admin.adminTools")}
+      </h1>
       <div className="bg-warning/10 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-warning/20 mb-6">
         <p className="text-warning font-medium mb-2">
-          ⚠️ Warning: Admin Only Area
+          {t("admin.adminOnlyWarning")}
         </p>
         <p className="text-gray-300 text-sm">
-          This page contains tools for administrators only. Improper use can
-          result in data loss.
+          {t("admin.adminOnlyDescription")}
         </p>
       </div>
 
@@ -730,12 +744,12 @@ export default function AdminRoute() {
         {/* Admin Users Section */}
         <div className="bg-light/5 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-light/10">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-medium">Admin Users</h2>
+            <h2 className="text-xl font-medium">{t("admin.adminUsers")}</h2>
             <button
               onClick={loadAdminUsers}
               disabled={isLoadingAdmins}
               className="p-1 rounded hover:bg-dark/50"
-              title="Refresh admin list"
+              title={t("admin.refreshAdminList")}
             >
               <div
                 className={`i-mdi:refresh h-5 w-5 ${isLoadingAdmins ? "animate-spin" : ""}`}
@@ -743,13 +757,15 @@ export default function AdminRoute() {
             </button>
           </div>
           <p className="text-gray-400 text-sm mb-4">
-            List of users with admin privileges.
+            {t("admin.adminUsersDescription")}
           </p>
 
           {isLoadingAdmins ? (
             <div className="text-center py-4">
               <div className="i-svg-spinners:pulse-rings h-8 w-8 mx-auto text-primary-light mb-2"></div>
-              <p className="text-sm text-gray-400">Loading admins...</p>
+              <p className="text-sm text-gray-400">
+                {t("admin.loadingAdmins")}
+              </p>
             </div>
           ) : (
             <>
@@ -758,8 +774,8 @@ export default function AdminRoute() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="text-left border-b border-light/10">
-                        <th className="px-2 py-2">Address</th>
-                        <th className="px-2 py-2">Added On</th>
+                        <th className="px-2 py-2">{t("admin.address")}</th>
+                        <th className="px-2 py-2">{t("admin.addedOn")}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -779,7 +795,7 @@ export default function AdminRoute() {
                 </div>
               ) : (
                 <p className="text-gray-400 text-sm italic">
-                  No admin users found.
+                  {t("admin.noAdminUsersFound")}
                 </p>
               )}
             </>
@@ -789,35 +805,35 @@ export default function AdminRoute() {
         {/* Broker ID Management */}
         <div className="bg-primary/5 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-primary/10">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-medium">Broker ID Management</h2>
+            <h2 className="text-xl font-medium">
+              {t("admin.brokerIdManagement")}
+            </h2>
             <button
               onClick={() => {
                 loadDexStats();
               }}
               className="p-1 rounded hover:bg-dark/50"
-              title="Refresh stats"
+              title={t("admin.refreshStats")}
             >
               <div className="i-mdi:refresh h-5 w-5"></div>
             </button>
           </div>
           <p className="text-gray-400 text-sm mb-4">
-            Manage broker ID configurations and fee settings for DEXs.
-            Graduation is now automated - users can graduate their DEX by
-            sending ORDER tokens.
+            {t("admin.brokerIdManagementDescription")}
           </p>
 
           {/* Quick Stats */}
           <div className="mb-6">
             <h3 className="text-sm font-medium mb-2 flex items-center">
               <div className="i-mdi:chart-box text-primary-light mr-1.5 h-4 w-4"></div>
-              Quick Stats
+              {t("admin.quickStats")}
             </h3>
 
             <div className="grid grid-cols-1 gap-4">
               <div className="bg-success/10 rounded-lg p-3">
                 <div className="flex flex-col">
                   <span className="text-xs text-gray-400">
-                    Active Broker IDs
+                    {t("admin.activeBrokerIds")}
                   </span>
                   <span className="text-2xl font-medium text-success">
                     {dexStats?.graduated?.allTime || 0}
@@ -831,11 +847,10 @@ export default function AdminRoute() {
         {/* Update Broker ID Section */}
         <div className="bg-light/5 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-light/10">
           <h2 className="text-xl font-medium mb-4" id="update-broker-id">
-            Update Broker ID
+            {t("admin.updateBrokerId")}
           </h2>
           <p className="text-gray-400 text-sm mb-4">
-            Update the broker ID for a specific DEX. This affects the DEX's
-            integration with the Orderly Network.
+            {t("admin.updateBrokerIdDescription")}
           </p>
 
           <form onSubmit={handleUpdateBrokerId}>
@@ -844,10 +859,10 @@ export default function AdminRoute() {
                 htmlFor="brokerSearch"
                 className="block text-sm font-medium mb-1"
               >
-                Search DEX
+                {t("admin.searchDex")}
               </label>
               <FuzzySearchInput
-                placeholder="Search by DEX ID, broker name, or broker ID..."
+                placeholder={t("admin.searchPlaceholderBroker")}
                 onSearch={handleBrokerSearch}
                 initialValue={brokerSearchQuery}
                 className="mb-2"
@@ -864,13 +879,13 @@ export default function AdminRoute() {
                       >
                         <div>
                           <div className="font-medium">
-                            {dex.brokerName || "Unnamed DEX"}
+                            {dex.brokerName || t("admin.unnamedDex")}
                           </div>
                           <div className="text-xs text-gray-400">
-                            ID: {dex.id.substring(0, 8)}...
+                            {t("admin.idLabel")}: {dex.id.substring(0, 8)}...
                           </div>
                           <div className="text-xs text-gray-400">
-                            Current Broker ID: {dex.brokerId}
+                            {t("admin.currentBrokerIdLabel")}: {dex.brokerId}
                           </div>
                         </div>
                         <div className="text-xs text-gray-500">
@@ -886,35 +901,37 @@ export default function AdminRoute() {
                 filteredBrokerDexes.length === 0 &&
                 !isSearchingBroker && (
                   <div className="text-sm text-gray-400 p-2">
-                    No DEXs found matching your search.
+                    {t("admin.noDexsFound")}
                   </div>
                 )}
 
               {isSearchingBroker && (
                 <div className="text-center py-2">
                   <div className="i-svg-spinners:pulse-rings h-6 w-6 mx-auto text-primary-light/80"></div>
-                  <p className="text-xs text-gray-300 mt-1">Searching...</p>
+                  <p className="text-xs text-gray-300 mt-1">
+                    {t("admin.searching")}
+                  </p>
                 </div>
               )}
             </div>
 
             <FormInput
               id="dexId"
-              label="DEX ID"
+              label={t("admin.dexIdLabel")}
               value={dexId}
               onChange={e => setDexId(e.target.value)}
-              placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-              helpText="Enter the UUID of the DEX to update"
+              placeholder={t("admin.dexIdPlaceholder")}
+              helpText={t("admin.dexIdHelp")}
               required
             />
 
             <FormInput
               id="brokerId"
-              label="New Broker ID"
+              label={t("admin.newBrokerIdLabel")}
               value={brokerId}
               onChange={e => setBrokerId(e.target.value)}
-              placeholder="new-broker-id"
-              helpText="Enter the new broker ID (1-50 characters)"
+              placeholder={t("admin.newBrokerIdPlaceholder")}
+              helpText={t("admin.newBrokerIdHelp")}
               required
               minLength={1}
               maxLength={50}
@@ -924,20 +941,21 @@ export default function AdminRoute() {
               type="submit"
               variant="primary"
               isLoading={isUpdatingBrokerId}
-              loadingText="Updating..."
+              loadingText={t("admin.updating")}
               className="mt-2"
             >
-              Update Broker ID
+              {t("admin.updateBrokerId")}
             </Button>
           </form>
         </div>
 
         {/* Rename Repository Section */}
         <div className="bg-light/5 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-light/10">
-          <h2 className="text-xl font-medium mb-4">Rename Repository</h2>
+          <h2 className="text-xl font-medium mb-4">
+            {t("admin.renameRepository")}
+          </h2>
           <p className="text-gray-400 text-sm mb-4">
-            Rename the GitHub repository for a DEX. This will update all
-            references including the deployment URL.
+            {t("admin.renameRepoDescription")}
           </p>
 
           <form onSubmit={handleRenameRepo}>
@@ -946,10 +964,10 @@ export default function AdminRoute() {
                 htmlFor="repoSearch"
                 className="block text-sm font-medium mb-1"
               >
-                Search DEX
+                {t("admin.searchDex")}
               </label>
               <FuzzySearchInput
-                placeholder="Search by DEX ID, broker name, or repository URL..."
+                placeholder={t("admin.searchPlaceholderRepo")}
                 onSearch={handleRepoSearch}
                 initialValue={repoSearchQuery}
                 className="mb-2"
@@ -966,14 +984,14 @@ export default function AdminRoute() {
                       >
                         <div>
                           <div className="font-medium">
-                            {dex.brokerName || "Unnamed DEX"}
+                            {dex.brokerName || t("admin.unnamedDex")}
                           </div>
                           <div className="text-xs text-gray-400">
-                            ID: {dex.id.substring(0, 8)}...
+                            {t("admin.idLabel")}: {dex.id.substring(0, 8)}...
                           </div>
                           {dex.repoUrl && (
                             <div className="text-xs text-gray-400 truncate max-w-xs">
-                              Repo:{" "}
+                              {t("admin.repoLabel")}:{" "}
                               {dex.repoUrl.replace("https://github.com/", "")}
                             </div>
                           )}
@@ -991,35 +1009,37 @@ export default function AdminRoute() {
                 filteredRepoDexes.length === 0 &&
                 !isSearchingRepo && (
                   <div className="text-sm text-gray-400 p-2">
-                    No DEXs found matching your search.
+                    {t("admin.noDexsFound")}
                   </div>
                 )}
 
               {isSearchingRepo && (
                 <div className="text-center py-2">
                   <div className="i-svg-spinners:pulse-rings h-6 w-6 mx-auto text-primary-light/80"></div>
-                  <p className="text-xs text-gray-300 mt-1">Searching...</p>
+                  <p className="text-xs text-gray-300 mt-1">
+                    {t("admin.searching")}
+                  </p>
                 </div>
               )}
             </div>
 
             <FormInput
               id="repoDexId"
-              label="DEX ID"
+              label={t("admin.dexIdLabel")}
               value={repoDexId}
               onChange={e => setRepoDexId(e.target.value)}
-              placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-              helpText="Enter the UUID of the DEX to update"
+              placeholder={t("admin.dexIdPlaceholder")}
+              helpText={t("admin.dexIdHelp")}
               required
             />
 
             <FormInput
               id="newRepoName"
-              label="New Repository Name"
+              label={t("admin.newRepositoryName")}
               value={newRepoName}
               onChange={e => setNewRepoName(e.target.value)}
-              placeholder="new-repo-name"
-              helpText="Lowercase letters, numbers, and hyphens only"
+              placeholder={t("admin.newRepoNamePlaceholder")}
+              helpText={t("admin.newRepoNameHelp")}
               required
               pattern="^[a-z0-9-]+$"
               minLength={1}
@@ -1030,10 +1050,10 @@ export default function AdminRoute() {
               type="submit"
               variant="primary"
               isLoading={isRenamingRepo}
-              loadingText="Renaming..."
+              loadingText={t("admin.renaming")}
               className="mt-2"
             >
-              Rename Repository
+              {t("admin.renameRepository")}
             </Button>
           </form>
         </div>
@@ -1042,15 +1062,18 @@ export default function AdminRoute() {
         <div className="bg-error/10 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-error/20">
           <div className="flex items-center mb-4">
             <div className="i-mdi:alert-octagon text-error mr-2 h-6 w-6" />
-            <h2 className="text-xl font-medium text-error">Delete DEX</h2>
+            <h2 className="text-xl font-medium text-error">
+              {t("admin.deleteDex")}
+            </h2>
           </div>
           <p className="text-gray-400 text-sm mb-6">
-            Danger zone! This tool will{" "}
-            <span className="text-error font-semibold">
-              permanently delete a DEX
-            </span>{" "}
-            and all associated data. This action{" "}
-            <span className="font-semibold">cannot be undone</span>.
+            <Trans
+              i18nKey="admin.dangerZoneDescription"
+              components={[
+                <span key="0" className="text-error font-semibold" />,
+                <span key="1" className="font-semibold" />,
+              ]}
+            />
           </p>
 
           <form onSubmit={handleDeleteDex}>
@@ -1059,10 +1082,10 @@ export default function AdminRoute() {
                 htmlFor="dexSearch"
                 className="block text-sm font-medium mb-1 text-error"
               >
-                Search DEX
+                {t("admin.searchDex")}
               </label>
               <FuzzySearchInput
-                placeholder="Search by wallet address, broker name, broker ID, or DEX ID..."
+                placeholder={t("admin.searchPlaceholderDelete")}
                 onSearch={handleDeleteDexSearch}
                 initialValue=""
                 className="mb-2"
@@ -1079,13 +1102,14 @@ export default function AdminRoute() {
                       >
                         <div>
                           <div className="font-medium">
-                            {dex.brokerName || "Unnamed DEX"}
+                            {dex.brokerName || t("admin.unnamedDex")}
                           </div>
                           <div className="text-xs font-mono text-gray-400">
-                            ID: {dex.id.substring(0, 8)}...
+                            {t("admin.idLabel")}: {dex.id.substring(0, 8)}...
                           </div>
                           <div className="text-xs font-mono text-gray-400">
-                            Wallet: {dex.user.address.substring(0, 8)}...
+                            {t("admin.walletLabel")}:{" "}
+                            {dex.user.address.substring(0, 8)}...
                             {dex.user.address.substring(
                               dex.user.address.length - 6
                             )}
@@ -1102,14 +1126,16 @@ export default function AdminRoute() {
 
               {filteredDeleteDexes.length === 0 && !isSearchingDelete && (
                 <div className="text-sm text-gray-400 p-2">
-                  No DEXs found matching your search.
+                  {t("admin.noDexsFound")}
                 </div>
               )}
 
               {isSearchingDelete && (
                 <div className="text-center py-2">
                   <div className="i-svg-spinners:pulse-rings h-6 w-6 mx-auto text-primary-light/80"></div>
-                  <p className="text-xs text-gray-300 mt-1">Searching...</p>
+                  <p className="text-xs text-gray-300 mt-1">
+                    {t("admin.searching")}
+                  </p>
                 </div>
               )}
             </div>
@@ -1119,18 +1145,18 @@ export default function AdminRoute() {
                 htmlFor="dexToDeleteId"
                 className="block text-sm font-medium mb-1 text-error"
               >
-                DEX ID
+                {t("admin.dexIdLabel")}
               </label>
               <input
                 type="text"
                 id="dexToDeleteId"
                 value={dexToDeleteId}
                 onChange={e => setDexToDeleteId(e.target.value)}
-                placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                placeholder={t("admin.dexIdPlaceholder")}
                 className="w-full bg-dark rounded px-4 py-3 text-base border border-error/30 focus:border-error outline-none placeholder:text-gray-500"
               />
               <div className="text-xs text-gray-400 mt-1">
-                Enter the DEX ID or use the search above to find a DEX
+                {t("admin.dexIdOrSearchHelp")}
               </div>
             </div>
 
@@ -1138,10 +1164,10 @@ export default function AdminRoute() {
               type="submit"
               variant="danger"
               isLoading={isDeleting}
-              loadingText="Deleting..."
+              loadingText={t("admin.deleting")}
               className="mt-4 text-base font-semibold py-3"
             >
-              Delete DEX
+              {t("admin.deleteDex")}
             </Button>
           </form>
         </div>
@@ -1151,13 +1177,11 @@ export default function AdminRoute() {
           <div className="flex items-center mb-4">
             <div className="i-mdi:plus-circle text-success mr-2 h-6 w-6" />
             <h2 className="text-xl font-medium text-success">
-              Manual Broker Creation
+              {t("admin.manualBrokerCreation")}
             </h2>
           </div>
           <p className="text-gray-400 text-sm mb-6">
-            Create a broker ID manually for any user without requiring payment
-            verification. A transaction hash must be provided as proof of some
-            transaction, but it won't be validated.
+            {t("admin.manualBrokerDescription")}
           </p>
 
           <form onSubmit={handleManualBrokerCreation} className="space-y-4">
@@ -1166,10 +1190,10 @@ export default function AdminRoute() {
                 htmlFor="manualSearch"
                 className="block text-sm font-medium mb-1"
               >
-                Search DEX
+                {t("admin.searchDex")}
               </label>
               <FuzzySearchInput
-                placeholder="Search by DEX ID, broker name, or wallet address..."
+                placeholder={t("admin.searchPlaceholderManual")}
                 onSearch={handleManualSearch}
                 initialValue={manualSearchQuery}
                 className="mb-2"
@@ -1186,19 +1210,21 @@ export default function AdminRoute() {
                       >
                         <div>
                           <div className="font-medium">
-                            {dex.brokerName || "Unnamed DEX"}
+                            {dex.brokerName || t("admin.unnamedDex")}
                           </div>
                           <div className="text-xs text-gray-400">
-                            DEX ID: {dex.id.substring(0, 8)}...
+                            {t("admin.dexIdLabel")}: {dex.id.substring(0, 8)}...
                           </div>
                           <div className="text-xs text-gray-400">
-                            Wallet: {dex.user.address.substring(0, 8)}...
+                            {t("admin.walletLabel")}:{" "}
+                            {dex.user.address.substring(0, 8)}...
                             {dex.user.address.substring(
                               dex.user.address.length - 6
                             )}
                           </div>
                           <div className="text-xs text-gray-400">
-                            Broker ID: {dex.brokerId || "None"}
+                            {t("admin.brokerIdLabel")}:{" "}
+                            {dex.brokerId || t("admin.noneLabel")}
                           </div>
                         </div>
                         <div className="text-xs text-gray-500">
@@ -1214,40 +1240,42 @@ export default function AdminRoute() {
                 filteredManualDexes.length === 0 &&
                 !isSearchingManual && (
                   <div className="text-sm text-gray-400 p-2">
-                    No eligible DEXs found. DEX must have a repository and no
-                    existing broker ID.
+                    {t("admin.noEligibleDexsFound")}
                   </div>
                 )}
 
               {isSearchingManual && (
                 <div className="text-center py-2">
                   <div className="i-svg-spinners:pulse-rings h-6 w-6 mx-auto text-success/80"></div>
-                  <p className="text-xs text-gray-300 mt-1">Searching...</p>
+                  <p className="text-xs text-gray-300 mt-1">
+                    {t("admin.searching")}
+                  </p>
                 </div>
               )}
             </div>
 
             <FormInput
               id="manualDexId"
-              label="DEX ID"
+              label={t("admin.dexIdLabel")}
               value={manualDexId}
               onChange={e => setManualDexId(e.target.value)}
+              // i18n-ignore
               placeholder="dex-..."
               helpText={
                 selectedDexName
-                  ? `DEX ID for: ${selectedDexName}`
-                  : "DEX ID (auto-filled when selecting a DEX from search)"
+                  ? t("admin.dexIdForHelp", { selectedDexName })
+                  : t("admin.dexIdAutoFilledHelp")
               }
               required
             />
 
             <FormInput
               id="manualBrokerId"
-              label="Broker ID"
+              label={t("admin.brokerIdLabel")}
               value={manualBrokerId}
               onChange={e => setManualBrokerId(e.target.value)}
-              placeholder="new-broker-id"
-              helpText="5-15 characters, lowercase letters, numbers, hyphens, and underscores only. Cannot contain 'orderly'"
+              placeholder={t("admin.newBrokerIdPlaceholder")}
+              helpText={t("admin.brokerIdHelp")}
               required
               minLength={5}
               maxLength={15}
@@ -1264,17 +1292,17 @@ export default function AdminRoute() {
             {!manualBrokerIdError && manualBrokerId && (
               <div className="mt-1 text-xs text-success flex items-center">
                 <span className="i-mdi:check-circle mr-1"></span>
-                Broker ID is available
+                {t("admin.brokerIdAvailable")}
               </div>
             )}
 
             <FormInput
               id="manualTxHash"
-              label="Transaction Hash"
+              label={t("admin.transactionHash")}
               value={manualTxHash}
               onChange={e => setManualTxHash(e.target.value)}
-              placeholder="0x..."
-              helpText="Transaction hash as proof (will not be validated for payment)"
+              placeholder={t("admin.txHashPlaceholder")}
+              helpText={t("admin.txHashHelp")}
               required
               minLength={10}
               maxLength={100}
@@ -1285,7 +1313,7 @@ export default function AdminRoute() {
                 htmlFor="manualChainId"
                 className="block text-sm font-medium mb-1"
               >
-                Chain (Optional)
+                {t("admin.chainOptional")}
               </label>
               <select
                 id="manualChainId"
@@ -1297,8 +1325,8 @@ export default function AdminRoute() {
                 }
                 className="w-full bg-dark rounded px-4 py-3 text-base border border-light/10 focus:border-primary-light outline-none"
               >
-                <option value="">Select chain (optional)</option>
-                <optgroup label="Mainnet">
+                <option value="">{t("admin.selectChainOptional")}</option>
+                <optgroup label={t("admin.mainnet")}>
                   {Object.values(ALL_CHAINS)
                     .filter(
                       chain =>
@@ -1318,7 +1346,7 @@ export default function AdminRoute() {
                       </option>
                     ))}
                 </optgroup>
-                <optgroup label="Testnet">
+                <optgroup label={t("admin.testnet")}>
                   {Object.values(ALL_CHAINS)
                     .filter(
                       chain =>
@@ -1340,47 +1368,48 @@ export default function AdminRoute() {
                 </optgroup>
               </select>
               <div className="text-xs text-gray-400 mt-1">
-                Select the chain where the transaction occurred (ORDER/USDC
-                available chains)
+                {t("admin.chainHelp")}
               </div>
             </div>
 
             <div className="bg-light/5 rounded-xl p-4 mb-4">
               <h3 className="text-md font-medium mb-2 flex items-center">
                 <div className="i-mdi:cog text-gray-400 w-5 h-5 mr-2"></div>
-                Trading Fee Configuration
+                {t("admin.tradingFeeConfig")}
               </h3>
               <p className="text-sm text-gray-300 mb-4">
-                Configure the trading fees for this DEX.
+                {t("admin.configureFeesDescription")}
               </p>
 
               <div className="mb-4">
                 <h4 className="text-sm font-semibold mb-2 text-gray-200">
-                  Standard Fees
+                  {t("admin.standardFees")}
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormInput
                     id="manualMakerFee"
-                    label="Maker Fee (bps)"
+                    label={`${t("admin.makerFee")} (bps)`}
                     type="number"
                     value={manualMakerFee.toString()}
                     onChange={e =>
                       setManualMakerFee(parseInt(e.target.value) || 0)
                     }
                     placeholder="3"
+                    // i18n-ignore
                     helpText="0-15 bps"
                     required
                   />
 
                   <FormInput
                     id="manualTakerFee"
-                    label="Taker Fee (bps)"
+                    label={`${t("admin.takerFee")} (bps)`}
                     type="number"
                     value={manualTakerFee.toString()}
                     onChange={e =>
                       setManualTakerFee(parseInt(e.target.value) || 0)
                     }
                     placeholder="6"
+                    // i18n-ignore
                     helpText="3-15 bps"
                     required
                   />
@@ -1389,33 +1418,35 @@ export default function AdminRoute() {
 
               <div className="mb-4">
                 <h4 className="text-sm font-semibold mb-2 text-gray-200">
-                  RWA Asset Fees
+                  {t("admin.rwaAssetFees")}
                 </h4>
                 <p className="text-xs text-gray-400 mb-3">
-                  Configure separate fees for Real World Asset (RWA) trading.
+                  {t("admin.rwaFeesDescription")}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormInput
                     id="manualRwaMakerFee"
-                    label="RWA Maker Fee (bps)"
+                    label={`${t("admin.rwaMakerFee")} (bps)`}
                     type="number"
                     value={manualRwaMakerFee.toString()}
                     onChange={e =>
                       setManualRwaMakerFee(parseInt(e.target.value) || 0)
                     }
                     placeholder="0"
+                    // i18n-ignore
                     helpText="0-15 bps"
                   />
 
                   <FormInput
                     id="manualRwaTakerFee"
-                    label="RWA Taker Fee (bps)"
+                    label={`${t("admin.rwaTakerFee")} (bps)`}
                     type="number"
                     value={manualRwaTakerFee.toString()}
                     onChange={e =>
                       setManualRwaTakerFee(parseInt(e.target.value) || 0)
                     }
                     placeholder="5"
+                    // i18n-ignore
                     helpText="0-15 bps"
                   />
                 </div>
@@ -1426,27 +1457,37 @@ export default function AdminRoute() {
                   <div className="i-mdi:information-outline text-info mt-0.5 h-4 w-4 flex-shrink-0"></div>
                   <div className="text-xs text-gray-300">
                     <p className="font-medium text-info mb-1">
-                      Fee Calculation:
+                      {t("admin.feeCalculation")}:
                     </p>
                     <p className="font-medium text-gray-200 mt-2 mb-1">
-                      Standard:
+                      {t("admin.standardLabel")}:
                     </p>
                     <p>
-                      • Maker Fee: {manualMakerFee} bps ({manualMakerFee * 0.01}
-                      %)
+                      {t("admin.makerFeeLine", {
+                        makerFee: manualMakerFee,
+                        makerFeePct: manualMakerFee * 0.01,
+                      })}
                     </p>
                     <p>
-                      • Taker Fee: {manualTakerFee} bps ({manualTakerFee * 0.01}
-                      %)
+                      {t("admin.takerFeeLine", {
+                        takerFee: manualTakerFee,
+                        takerFeePct: manualTakerFee * 0.01,
+                      })}
                     </p>
-                    <p className="font-medium text-gray-200 mt-2 mb-1">RWA:</p>
-                    <p>
-                      • RWA Maker Fee: {manualRwaMakerFee} bps (
-                      {manualRwaMakerFee * 0.01}%)
+                    <p className="font-medium text-gray-200 mt-2 mb-1">
+                      {t("admin.rwaLabel")}:
                     </p>
                     <p>
-                      • RWA Taker Fee: {manualRwaTakerFee} bps (
-                      {manualRwaTakerFee * 0.01}%)
+                      {t("admin.rwaMakerFeeLine", {
+                        rwaMakerFee: manualRwaMakerFee,
+                        rwaMakerFeePct: manualRwaMakerFee * 0.01,
+                      })}
+                    </p>
+                    <p>
+                      {t("admin.rwaTakerFeeLine", {
+                        rwaTakerFee: manualRwaTakerFee,
+                        rwaTakerFeePct: manualRwaTakerFee * 0.01,
+                      })}
                     </p>
                   </div>
                 </div>
@@ -1457,7 +1498,7 @@ export default function AdminRoute() {
               type="submit"
               variant="primary"
               isLoading={isCreatingManualBroker}
-              loadingText="Creating broker ID..."
+              loadingText={t("admin.creatingBrokerId")}
               className="mt-2 text-base font-semibold py-3"
               disabled={
                 !manualDexId ||
@@ -1470,7 +1511,7 @@ export default function AdminRoute() {
                 manualTakerFee > 15
               }
             >
-              Create Broker ID Manually
+              {t("admin.createBrokerModal.title")}
             </Button>
           </form>
 
@@ -1479,19 +1520,20 @@ export default function AdminRoute() {
               <div className="flex items-center mb-2">
                 <div className="i-mdi:check-circle text-success mr-2 h-5 w-5" />
                 <span className="text-success font-medium">
-                  Broker ID created successfully
+                  {t("admin.brokerIdCreatedSuccess")}
                 </span>
               </div>
               <div className="text-xs text-gray-300 mb-1">
-                <strong>Broker ID:</strong>{" "}
+                <strong>{t("admin.brokerIdLabel")}:</strong>{" "}
                 {manualBrokerResult.brokerCreationData.brokerId}
               </div>
               <div className="text-xs text-gray-300 mb-1">
+                {/* i18n-ignore */}
                 <strong>DEX:</strong> {manualBrokerResult.dex.brokerName} (ID:{" "}
                 {manualBrokerResult.dex.id})
               </div>
               <div className="text-xs text-gray-300">
-                <strong>Transaction Hashes:</strong>
+                <strong>{t("admin.transactionHashesLabel")}:</strong>
                 <ul className="list-disc ml-6 mt-1">
                   {Object.entries(
                     manualBrokerResult.brokerCreationData.transactionHashes

@@ -25,9 +25,7 @@ export function useDeleteStages(props: UseDeleteStagesProps) {
         );
         props.onSuccess();
       } else {
-        toast.error(
-          res?.message || i18n.t("points.delete.toast.error")
-        );
+        toast.error(res?.message || i18n.t("points.delete.toast.error"));
       }
     } catch (err: any) {
       console.error("Error deleting campaign:", err);

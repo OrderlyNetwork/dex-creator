@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "~/i18n";
 import FormInput from "./FormInput";
 
 export interface BrokerDetailsProps {
@@ -13,19 +14,22 @@ const BrokerDetailsSection: React.FC<BrokerDetailsProps> = ({
   brokerName,
   handleInputChange,
   brokerNameValidator,
-}) => (
-  <FormInput
-    id="brokerName"
-    label="Broker Name"
-    value={brokerName}
-    onChange={handleInputChange("brokerName")}
-    placeholder="Enter your broker name"
-    helpText="This name will be used in the HTML metadata, environment configuration, and other places throughout your DEX. Must be 3-30 characters and can only contain letters, numbers, spaces, dots, hyphens, and underscores."
-    required={true}
-    minLength={3}
-    maxLength={30}
-    validator={brokerNameValidator}
-  />
-);
+}) => {
+  const { t } = useTranslation();
+  return (
+    <FormInput
+      id="brokerName"
+      label={t("brokerDetailsSection.label")}
+      value={brokerName}
+      onChange={handleInputChange("brokerName")}
+      placeholder={t("brokerDetailsSection.placeholder")}
+      helpText={t("brokerDetailsSection.helpText")}
+      required={true}
+      minLength={3}
+      maxLength={30}
+      validator={brokerNameValidator}
+    />
+  );
+};
 
 export default BrokerDetailsSection;

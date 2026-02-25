@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { useTranslation } from "~/i18n";
 import { getBaseUrl } from "../utils/orderly";
 
 interface AssetInfo {
@@ -51,6 +52,7 @@ const AssetFilterSection: React.FC<AssetFilterSectionProps> = ({
   symbolList,
   onSymbolListChange,
 }) => {
+  const { t } = useTranslation();
   const [availableAssets, setAvailableAssets] = useState<AssetInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -144,7 +146,7 @@ const AssetFilterSection: React.FC<AssetFilterSectionProps> = ({
   if (loading) {
     return (
       <div className="text-center py-8 text-gray-400">
-        Loading available assets...
+        {t("assetFilterSection.loadingAssets")}
       </div>
     );
   }
@@ -153,10 +155,11 @@ const AssetFilterSection: React.FC<AssetFilterSectionProps> = ({
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h4 className="text-base font-bold mb-1">Asset Filtering</h4>
+          <h4 className="text-base font-bold mb-1">
+            {t("assetFilterSection.title")}
+          </h4>
           <p className="text-xs text-gray-400">
-            Select which trading pairs will be displayed in your DEX. Leave
-            empty to show all available assets.
+            {t("assetFilterSection.description")}
           </p>
         </div>
         <div className="flex gap-2">
@@ -165,7 +168,7 @@ const AssetFilterSection: React.FC<AssetFilterSectionProps> = ({
             onClick={handleClearFilter}
             className="text-xs px-3 py-1 bg-gray-500/20 hover:bg-gray-500/30 text-gray-300 rounded-full transition-all duration-200 ease-in-out"
           >
-            Clear Filter
+            {t("assetFilterSection.clearFilter")}
           </button>
         </div>
       </div>
@@ -173,12 +176,12 @@ const AssetFilterSection: React.FC<AssetFilterSectionProps> = ({
       {selectedSymbols.length === 0 && (
         <div className="text-center py-4 px-2 text-sm bg-blue-500/10 border border-blue-500/20 rounded-lg slide-fade-in">
           <div className="text-blue-300 font-medium mb-1">
-            🌐 All Assets Mode (Default)
+            {t("assetFilterSection.allAssetsMode")}
           </div>
           <div className="text-gray-400 text-xs leading-relaxed">
-            No specific assets selected. Your DEX will display{" "}
-            <strong>all available trading pairs</strong> from the Orderly
-            Network.
+            {t("assetFilterSection.noSpecificAssetsDesc")}
+            <strong>{t("assetFilterSection.allAvailableTradingPairs")}</strong>
+            {t("assetFilterSection.fromOrderlyNetwork")}
           </div>
         </div>
       )}
@@ -186,7 +189,9 @@ const AssetFilterSection: React.FC<AssetFilterSectionProps> = ({
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h5 className="text-sm font-semibold text-white">
-            Available Assets ({availableAssets.length})
+            {t("assetFilterSection.availableAssetsCount", {
+              count: availableAssets.length,
+            })}
           </h5>
           <div className="flex gap-2">
             <button
@@ -194,14 +199,14 @@ const AssetFilterSection: React.FC<AssetFilterSectionProps> = ({
               onClick={handleSelectAll}
               className="text-xs px-3 py-1 bg-primary/20 hover:bg-primary/30 text-primary-light rounded-full transition-all duration-200 ease-in-out"
             >
-              Select All Filtered
+              {t("assetFilterSection.selectAllFiltered")}
             </button>
             <button
               type="button"
               onClick={handleClearAll}
               className="text-xs px-3 py-1 bg-gray-500/20 hover:bg-gray-500/30 text-gray-300 rounded-full transition-all duration-200 ease-in-out"
             >
-              Clear Filtered
+              {t("assetFilterSection.clearFiltered")}
             </button>
           </div>
         </div>
@@ -209,7 +214,7 @@ const AssetFilterSection: React.FC<AssetFilterSectionProps> = ({
         <div className="mb-3">
           <input
             type="text"
-            placeholder="Search assets (e.g., BTC, ETH, SOL)..."
+            placeholder={t("assetFilterSection.searchPlaceholder")}
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             className="w-full px-3 py-2 bg-background-card border border-light/10 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -219,7 +224,9 @@ const AssetFilterSection: React.FC<AssetFilterSectionProps> = ({
         <div className="max-h-96 overflow-y-auto">
           {filteredAssets.length === 0 ? (
             <div className="text-center py-8 text-gray-400 text-sm">
-              No assets found matching "{searchQuery}"
+              {t("assetFilterSection.noAssetsMatching", {
+                searchQuery,
+              })}
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
@@ -277,7 +284,8 @@ const AssetFilterSection: React.FC<AssetFilterSectionProps> = ({
                       {formatPrice(asset.index_price)}
                     </div>
                     <div className="text-[10px] text-gray-500 text-center mt-0.5 truncate w-full">
-                      Vol:{" "}
+                      {t("assetFilterSection.vol")}
+                      {": "}
                       {formatVolume(
                         (typeof asset["24h_volume"] === "number"
                           ? asset["24h_volume"]

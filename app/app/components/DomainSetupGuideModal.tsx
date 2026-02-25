@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { i18n, useTranslation } from "~/i18n";
 import { Button } from "./Button";
 
 interface DomainSetupGuideModalProps {
@@ -21,102 +22,92 @@ type Step = {
 const cloudflareSteps: Step[] = [
   {
     id: 1,
-    title: "Create CloudFlare Account",
-    description:
-      "Visit the CloudFlare signup page to create a new account. Use your email address and create a strong password.",
+    title: i18n.t("domainSetupGuideModal.cloudflare.step1.title"),
+    description: i18n.t("domainSetupGuideModal.cloudflare.step1.description"),
     imageUrl: "/cloudflare-signup.webp",
-    imageAlt: "CloudFlare sign up page",
+    imageAlt: i18n.t("domainSetupGuideModal.cloudflare.step1.imageAlt"),
     link: "https://dash.cloudflare.com/sign-up",
-    linkText: "CloudFlare Sign Up",
+    linkText: i18n.t("domainSetupGuideModal.cloudflare.step1.linkText"),
   },
   {
     id: 2,
-    title: "Search and Select Domain",
-    description:
-      "Visit the CloudFlare registrar to search for your desired domain name. Choose your domain and TLD, review pricing, and select registration period.",
+    title: i18n.t("domainSetupGuideModal.cloudflare.step2.title"),
+    description: i18n.t("domainSetupGuideModal.cloudflare.step2.description"),
     imageUrl: "/cloudflare-registrar.webp",
-    imageAlt: "Domain search and selection",
+    imageAlt: i18n.t("domainSetupGuideModal.cloudflare.step2.imageAlt"),
     link: "https://domains.cloudflare.com/",
-    linkText: "CloudFlare Domain Registration",
+    linkText: i18n.t("domainSetupGuideModal.cloudflare.step2.linkText"),
   },
   {
     id: 3,
-    title: "Complete Registration and Payment",
-    description:
-      "Fill in your contact information, complete the registration form, and proceed to payment. CloudFlare accepts major credit cards and PayPal.",
+    title: i18n.t("domainSetupGuideModal.cloudflare.step3.title"),
+    description: i18n.t("domainSetupGuideModal.cloudflare.step3.description"),
     imageUrl: "/cloudflare-registration.webp",
-    imageAlt: "Domain registration and payment",
+    imageAlt: i18n.t("domainSetupGuideModal.cloudflare.step3.imageAlt"),
   },
   {
     id: 4,
-    title: "Access DNS Management",
-    description:
-      "After purchase, your domain will appear in your CloudFlare dashboard. Click on your domain, then select 'DNS' > 'Records' in the sidebar to access DNS management.",
+    title: i18n.t("domainSetupGuideModal.cloudflare.step4.title"),
+    description: i18n.t("domainSetupGuideModal.cloudflare.step4.description"),
     imageUrl: "/cloudflare-domain.webp",
-    imageAlt: "CloudFlare DNS management navigation",
+    imageAlt: i18n.t("domainSetupGuideModal.cloudflare.step4.imageAlt"),
     link: "https://dash.cloudflare.com",
-    linkText: "CloudFlare Dashboard",
+    linkText: i18n.t("domainSetupGuideModal.cloudflare.step4.linkText"),
   },
   {
     id: 5,
-    title: "Configure DNS Records",
-    description:
-      "In the DNS tab, add the required A records and CNAME record. Most importantly, ensure the 'Proxy status' (orange cloud icon) is enabled for all records. This provides instant SSL/TLS encryption and better performance than waiting for GitHub Pages certificates.",
+    title: i18n.t("domainSetupGuideModal.cloudflare.step5.title"),
+    description: i18n.t("domainSetupGuideModal.cloudflare.step5.description"),
     imageUrl: "/cloudflare-dns.webp",
-    imageAlt: "DNS configuration interface in CloudFlare",
+    imageAlt: i18n.t("domainSetupGuideModal.cloudflare.step5.imageAlt"),
     link: "https://dash.cloudflare.com",
-    linkText: "CloudFlare DNS Management",
+    linkText: i18n.t("domainSetupGuideModal.cloudflare.step5.linkText"),
   },
 ];
 
 const namecheapSteps: Step[] = [
   {
     id: 1,
-    title: "Create Namecheap Account",
-    description:
-      "Visit the Namecheap signup page to create a new account. You can also sign up using your Google or Facebook account for faster registration.",
+    title: i18n.t("domainSetupGuideModal.namecheap.step1.title"),
+    description: i18n.t("domainSetupGuideModal.namecheap.step1.description"),
     imageUrl: "/namecheap-signup.webp",
-    imageAlt: "Namecheap sign up page",
+    imageAlt: i18n.t("domainSetupGuideModal.namecheap.step1.imageAlt"),
     link: "https://www.namecheap.com/myaccount/signup",
-    linkText: "Namecheap Sign Up",
+    linkText: i18n.t("domainSetupGuideModal.namecheap.step1.linkText"),
   },
   {
     id: 2,
-    title: "Search and Select Domain",
-    description:
-      "Use the domain search bar to find your desired domain name. Choose your domain and TLD, review pricing, and add to cart.",
+    title: i18n.t("domainSetupGuideModal.namecheap.step2.title"),
+    description: i18n.t("domainSetupGuideModal.namecheap.step2.description"),
     imageUrl: "/namecheap-registrar.webp",
-    imageAlt: "Namecheap domain search and selection",
+    imageAlt: i18n.t("domainSetupGuideModal.namecheap.step2.imageAlt"),
     link: "https://namecheap.com",
-    linkText: "Namecheap Homepage",
+    linkText: i18n.t("domainSetupGuideModal.namecheap.step2.linkText"),
   },
   {
     id: 3,
-    title: "Configure Settings and Complete Purchase",
-    description:
-      "Configure additional services like WHOIS privacy protection, auto-renewal, and domain locking. Fill in your contact information, complete the registration form, and proceed to payment.",
+    title: i18n.t("domainSetupGuideModal.namecheap.step3.title"),
+    description: i18n.t("domainSetupGuideModal.namecheap.step3.description"),
     imageUrl: "/namecheap-registration.webp",
-    imageAlt: "Domain configuration and payment",
+    imageAlt: i18n.t("domainSetupGuideModal.namecheap.step3.imageAlt"),
   },
   {
     id: 4,
-    title: "Access Domain Management",
-    description:
-      "Log into your Namecheap account and go to 'Domain List'. Click 'Manage' next to your domain to access DNS settings, contact information, and other domain management options.",
+    title: i18n.t("domainSetupGuideModal.namecheap.step4.title"),
+    description: i18n.t("domainSetupGuideModal.namecheap.step4.description"),
     imageUrl: "/namecheap-domain.webp",
-    imageAlt: "Namecheap domain management dashboard",
+    imageAlt: i18n.t("domainSetupGuideModal.namecheap.step4.imageAlt"),
     link: "https://ap.www.namecheap.com/domains/",
-    linkText: "Namecheap Domain Management",
+    linkText: i18n.t("domainSetupGuideModal.namecheap.step4.linkText"),
   },
   {
     id: 5,
-    title: "Configure DNS Records",
-    description:
-      "In the 'Advanced DNS' tab, first remove the default DNS setup (one redirect and a CNAME www record). Then add the required A records and CNAME record for your DEX.",
+    title: i18n.t("domainSetupGuideModal.namecheap.step5.title"),
+    description: i18n.t("domainSetupGuideModal.namecheap.step5.description"),
     imageUrl: "/namecheap-dns.webp",
-    imageAlt: "Namecheap DNS management interface",
+    imageAlt: i18n.t("domainSetupGuideModal.namecheap.step5.imageAlt"),
     link: "https://ap.www.namecheap.com/domains/",
-    linkText: "Namecheap DNS Management",
+    linkText: i18n.t("domainSetupGuideModal.namecheap.step5.linkText"),
   },
 ];
 
@@ -125,6 +116,7 @@ export default function DomainSetupGuideModal({
   onClose,
   customDomain,
 }: DomainSetupGuideModalProps) {
+  const { t } = useTranslation();
   const [selectedProvider, setSelectedProvider] =
     useState<Provider>("cloudflare");
   const [currentStep, setCurrentStep] = useState(1);
@@ -169,11 +161,10 @@ export default function DomainSetupGuideModal({
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-light/10">
           <div className="flex-1 min-w-0">
             <h2 className="text-lg sm:text-xl font-bold">
-              Domain Purchase & Setup Guide
+              {t("domainSetupGuideModal.title")}
             </h2>
             <p className="text-sm text-gray-300 mt-1 hidden sm:block">
-              Step-by-step instructions for purchasing and configuring your
-              custom domain
+              {t("domainSetupGuideModal.subtitle")}
             </p>
           </div>
           <button
@@ -191,8 +182,14 @@ export default function DomainSetupGuideModal({
               className="flex items-center gap-2 text-sm font-medium"
             >
               <div className="i-mdi:menu h-4 w-4"></div>
-              {selectedProvider === "cloudflare" ? "CloudFlare" : "Namecheap"} -
-              Step {currentStep} of {steps.length}
+              {selectedProvider === "cloudflare"
+                ? t("domainSetupGuideModal.cloudflare")
+                : t("domainSetupGuideModal.namecheap")}{" "}
+              -{" "}
+              {t("domainSetupGuideModal.stepOf", {
+                current: currentStep,
+                total: steps.length,
+              })}
             </button>
           </div>
 
@@ -203,7 +200,9 @@ export default function DomainSetupGuideModal({
                 : "hidden lg:block"
             }`}
           >
-            <h3 className="text-lg font-bold mb-4">Choose Your Provider</h3>
+            <h3 className="text-lg font-bold mb-4">
+              {t("domainSetupGuideModal.chooseProvider")}
+            </h3>
             <div className="space-y-3 mb-6">
               <button
                 onClick={() => handleProviderChange("cloudflare")}
@@ -213,9 +212,11 @@ export default function DomainSetupGuideModal({
                     : "border-light/20 hover:border-light/40"
                 }`}
               >
-                <div className="font-bold mb-1">CloudFlare</div>
+                <div className="font-bold mb-1">
+                  {t("domainSetupGuideModal.cloudflare")}
+                </div>
                 <div className="text-sm text-gray-300">
-                  Integrated DNS management, competitive pricing, fast setup
+                  {t("domainSetupGuideModal.cloudflareDesc")}
                 </div>
               </button>
               <button
@@ -226,16 +227,19 @@ export default function DomainSetupGuideModal({
                     : "border-light/20 hover:border-light/40"
                 }`}
               >
-                <div className="font-bold mb-1">Namecheap</div>
+                <div className="font-bold mb-1">
+                  {t("domainSetupGuideModal.namecheap")}
+                </div>
                 <div className="text-sm text-gray-300">
-                  Affordable domains, excellent support, user-friendly interface
+                  {t("domainSetupGuideModal.namecheapDesc")}
                 </div>
               </button>
             </div>
 
             <div>
               <h4 className="text-sm font-bold mb-2">
-                Steps ({currentStep}/{steps.length})
+                {t("domainSetupGuideModal.steps")} ({currentStep}/{steps.length}
+                )
               </h4>
               <div className="space-y-1 max-h-64 overflow-y-auto">
                 {steps.map(step => (
@@ -267,12 +271,12 @@ export default function DomainSetupGuideModal({
                   <div className="mb-4">
                     <div className="flex items-center gap-2 mb-2">
                       <span className="bg-primary-light/20 text-primary-light px-2 py-1 rounded text-sm font-bold">
-                        Step {currentStepData.id}
+                        {t("domainSetupGuideModal.step")} {currentStepData.id}
                       </span>
                       <span className="text-sm text-gray-400">
                         {selectedProvider === "cloudflare"
-                          ? "CloudFlare"
-                          : "Namecheap"}
+                          ? t("domainSetupGuideModal.cloudflare")
+                          : t("domainSetupGuideModal.namecheap")}
                       </span>
                     </div>
                     <h3 className="text-xl font-bold mb-2">
@@ -285,7 +289,10 @@ export default function DomainSetupGuideModal({
                       <div className="bg-base-8/50 border border-light/10 rounded-lg overflow-hidden">
                         <img
                           src={currentStepData.imageUrl}
-                          alt={currentStepData.imageAlt || "Step illustration"}
+                          alt={
+                            currentStepData.imageAlt ||
+                            t("domainSetupGuideModal.stepIllustration")
+                          }
                           className="w-full h-auto object-contain max-h-96"
                         />
                       </div>
@@ -293,10 +300,11 @@ export default function DomainSetupGuideModal({
                       <div className="bg-base-8/50 border border-light/10 rounded-lg p-8 text-center">
                         <div className="i-mdi:image-outline h-16 w-16 mx-auto text-gray-400 mb-4"></div>
                         <div className="text-sm text-gray-400 mb-2">
-                          {currentStepData.imageAlt || "Step illustration"}
+                          {currentStepData.imageAlt ||
+                            t("domainSetupGuideModal.stepIllustration")}
                         </div>
                         <div className="text-xs text-gray-500">
-                          Image will be added here (16:9 aspect ratio)
+                          {t("domainSetupGuideModal.imagePlaceholder")}
                         </div>
                       </div>
                     )}
@@ -328,18 +336,22 @@ export default function DomainSetupGuideModal({
                       <h4 className="text-sm font-bold mb-3 flex items-center">
                         <div className="i-mdi:dns h-4 w-4 mr-2 text-success"></div>
                         {customDomain
-                          ? `Required DNS Records for ${customDomain}`
-                          : "Required DNS Records"}
+                          ? t("domainSetupGuideModal.requiredDnsRecordsFor", {
+                              domain: customDomain,
+                            })
+                          : t("domainSetupGuideModal.requiredDnsRecords")}
                       </h4>
 
                       {customDomain ? (
                         customDomain.split(".").length === 2 ? (
                           <div className="space-y-4">
                             <div>
+                              {/* i18n-ignore */}
                               <h5 className="text-xs font-bold mb-2 text-success">
                                 A Records (4 required):
                               </h5>
                               <div className="bg-base-9/70 rounded p-3 font-mono text-xs">
+                                {/* i18n-ignore */}
                                 <div className="space-y-1">
                                   <div>
                                     Type: A | Name: @ | Value: 185.199.108.153
@@ -358,6 +370,7 @@ export default function DomainSetupGuideModal({
                             </div>
 
                             <div>
+                              {/* i18n-ignore */}
                               <h5 className="text-xs font-bold mb-2 text-success">
                                 CNAME Record (required for SSL):
                               </h5>
@@ -373,21 +386,35 @@ export default function DomainSetupGuideModal({
                               <div className="mt-4 p-3 bg-primary-light/10 rounded-lg border border-primary-light/20">
                                 <h6 className="text-xs font-bold mb-2 flex items-center">
                                   <div className="i-mdi:shield-check h-3.5 w-3.5 mr-1.5 text-primary-light"></div>
-                                  CloudFlare Proxy Setup (Important!)
+                                  {t(
+                                    "domainSetupGuideModal.cloudflareProxyTitle"
+                                  )}
                                 </h6>
                                 <div className="text-xs text-gray-300 space-y-1">
                                   <div>
-                                    • Enable the orange cloud icon (Proxy
-                                    status) for ALL records
+                                    •{" "}
+                                    {t(
+                                      "domainSetupGuideModal.cloudflareProxyEnableAll"
+                                    )}
                                   </div>
                                   <div>
-                                    • This provides instant SSL/TLS encryption
+                                    •{" "}
+                                    {t(
+                                      "domainSetupGuideModal.cloudflareProxyInstantSsl"
+                                    )}
                                   </div>
                                   <div>
-                                    • Much faster than waiting for GitHub Pages
-                                    certificates
+                                    •{" "}
+                                    {t(
+                                      "domainSetupGuideModal.cloudflareProxyFaster"
+                                    )}
                                   </div>
-                                  <div>• Better performance and security</div>
+                                  <div>
+                                    •{" "}
+                                    {t(
+                                      "domainSetupGuideModal.cloudflareProxyBetter"
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                             )}
@@ -395,31 +422,33 @@ export default function DomainSetupGuideModal({
                             <div className="mt-4 p-3 bg-warning/10 rounded-lg border border-warning/20">
                               <h6 className="text-xs font-bold mb-2 flex items-center">
                                 <div className="i-mdi:security h-3.5 w-3.5 mr-1.5 text-warning"></div>
-                                Recommended: Email Security Records
+                                {t(
+                                  "domainSetupGuideModal.recommendedEmailSecurity"
+                                )}
                               </h6>
                               <p className="text-xs text-gray-300 mb-3">
-                                Add these TXT records to protect your domain
-                                from email spoofing attacks. Without these,
-                                attackers could send phishing emails appearing
-                                to come from your domain, which may cause your
-                                site to be flagged by Google Safe Browsing.
+                                {t("domainSetupGuideModal.emailSecurityDesc")}
                               </p>
                               <div className="space-y-3">
                                 <div>
+                                  {/* i18n-ignore */}
                                   <div className="text-xs font-semibold mb-1 text-warning">
                                     SPF Record:
                                   </div>
                                   <div className="bg-base-9/70 rounded p-2 font-mono text-xs">
+                                    {/* i18n-ignore */}
                                     <div>
                                       Type: TXT | Name: @ | Value: v=spf1 -all
                                     </div>
                                   </div>
                                 </div>
                                 <div>
+                                  {/* i18n-ignore */}
                                   <div className="text-xs font-semibold mb-1 text-warning">
                                     DMARC Record:
                                   </div>
                                   <div className="bg-base-9/70 rounded p-2 font-mono text-xs">
+                                    {/* i18n-ignore */}
                                     <div>
                                       Type: TXT | Name: _dmarc | Value:
                                       v=DMARC1; p=reject; sp=reject; aspf=s;
@@ -429,19 +458,19 @@ export default function DomainSetupGuideModal({
                                 </div>
                               </div>
                               <p className="text-xs text-gray-400 mt-2">
-                                These records tell email servers that your
-                                domain doesn't send emails and to reject any
-                                emails claiming to be from your domain.
+                                {t("domainSetupGuideModal.recordsTellServers")}
                               </p>
                             </div>
                           </div>
                         ) : (
                           <div className="space-y-4">
                             <div>
+                              {/* i18n-ignore */}
                               <h5 className="text-xs font-bold mb-2 text-success">
                                 CNAME Record:
                               </h5>
                               <div className="bg-base-9/70 rounded p-3 font-mono text-xs">
+                                {/* i18n-ignore */}
                                 <div>
                                   Type: CNAME | Name:{" "}
                                   {customDomain.split(".")[0]} | Value:
@@ -454,21 +483,35 @@ export default function DomainSetupGuideModal({
                               <div className="p-3 bg-primary-light/10 rounded-lg border border-primary-light/20">
                                 <h6 className="text-xs font-bold mb-2 flex items-center">
                                   <div className="i-mdi:shield-check h-3.5 w-3.5 mr-1.5 text-primary-light"></div>
-                                  CloudFlare Proxy Setup (Important!)
+                                  {t(
+                                    "domainSetupGuideModal.cloudflareProxyTitle"
+                                  )}
                                 </h6>
                                 <div className="text-xs text-gray-300 space-y-1">
                                   <div>
-                                    • Enable the orange cloud icon (Proxy
-                                    status) for the CNAME record
+                                    •{" "}
+                                    {t(
+                                      "domainSetupGuideModal.cloudflareProxyEnableCname"
+                                    )}
                                   </div>
                                   <div>
-                                    • This provides instant SSL/TLS encryption
+                                    •{" "}
+                                    {t(
+                                      "domainSetupGuideModal.cloudflareProxyInstantSsl"
+                                    )}
                                   </div>
                                   <div>
-                                    • Much faster than waiting for GitHub Pages
-                                    certificates
+                                    •{" "}
+                                    {t(
+                                      "domainSetupGuideModal.cloudflareProxyFaster"
+                                    )}
                                   </div>
-                                  <div>• Better performance and security</div>
+                                  <div>
+                                    •{" "}
+                                    {t(
+                                      "domainSetupGuideModal.cloudflareProxyBetter"
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                             )}
@@ -476,31 +519,32 @@ export default function DomainSetupGuideModal({
                             <div className="mt-4 p-3 bg-warning/10 rounded-lg border border-warning/20">
                               <h6 className="text-xs font-bold mb-2 flex items-center">
                                 <div className="i-mdi:security h-3.5 w-3.5 mr-1.5 text-warning"></div>
-                                Recommended: Email Security Records
+                                {t(
+                                  "domainSetupGuideModal.recommendedEmailSecurity"
+                                )}
                               </h6>
                               <p className="text-xs text-gray-300 mb-3">
-                                Add these TXT records to your root domain to
-                                protect it from email spoofing attacks. Without
-                                these, attackers could send phishing emails
-                                appearing to come from your domain, which may
-                                cause your site to be flagged by Google Safe
-                                Browsing.
+                                {t("domainSetupGuideModal.emailSecurityDesc")}
                               </p>
                               <div className="space-y-3">
+                                {/* i18n-ignore */}
                                 <div>
                                   <div className="text-xs font-semibold mb-1 text-warning">
                                     SPF Record:
                                   </div>
                                   <div className="bg-base-9/70 rounded p-2 font-mono text-xs">
+                                    {/* i18n-ignore */}
                                     <div>
                                       Type: TXT | Name: @ | Value: v=spf1 -all
                                     </div>
                                   </div>
                                 </div>
                                 <div>
+                                  {/* i18n-ignore */}
                                   <div className="text-xs font-semibold mb-1 text-warning">
                                     DMARC Record:
                                   </div>
+                                  {/* i18n-ignore */}
                                   <div className="bg-base-9/70 rounded p-2 font-mono text-xs">
                                     <div>
                                       Type: TXT | Name: _dmarc | Value:
@@ -511,9 +555,7 @@ export default function DomainSetupGuideModal({
                                 </div>
                               </div>
                               <p className="text-xs text-gray-400 mt-2">
-                                These records tell email servers that your
-                                domain doesn't send emails and to reject any
-                                emails claiming to be from your domain.
+                                {t("domainSetupGuideModal.recordsTellServers")}
                               </p>
                             </div>
                           </div>
@@ -521,11 +563,12 @@ export default function DomainSetupGuideModal({
                       ) : (
                         <div className="space-y-4">
                           <div>
+                            {/* i18n-ignore */}
                             <h5 className="text-xs font-bold mb-2 text-success">
                               For Apex Domains (example.com):
                             </h5>
                             <div className="bg-base-9/70 rounded p-3 font-mono text-xs">
-                              <div className="space-y-1">
+                              <div className="space-y-1" data-i18n-ignore>
                                 <div>
                                   Type: A | Name: @ | Value: 185.199.108.153
                                 </div>
@@ -538,7 +581,7 @@ export default function DomainSetupGuideModal({
                                 <div>
                                   Type: A | Name: @ | Value: 185.199.111.153
                                 </div>
-                                <div className="mt-2">
+                                <div className="mt-2" data-i18n-ignore>
                                   Type: CNAME | Name: www | Value:
                                   orderlynetworkdexcreator.github.io
                                 </div>
@@ -551,7 +594,7 @@ export default function DomainSetupGuideModal({
                               For Subdomains (dex.example.com):
                             </h5>
                             <div className="bg-base-9/70 rounded p-3 font-mono text-xs">
-                              <div>
+                              <div data-i18n-ignore>
                                 Type: CNAME | Name: dex | Value:
                                 orderlynetworkdexcreator.github.io
                               </div>
@@ -562,21 +605,35 @@ export default function DomainSetupGuideModal({
                             <div className="mt-4 p-3 bg-primary-light/10 rounded-lg border border-primary-light/20">
                               <h6 className="text-xs font-bold mb-2 flex items-center">
                                 <div className="i-mdi:shield-check h-3.5 w-3.5 mr-1.5 text-primary-light"></div>
-                                CloudFlare Proxy Setup (Important!)
+                                {t(
+                                  "domainSetupGuideModal.cloudflareProxyTitle"
+                                )}
                               </h6>
                               <div className="text-xs text-gray-300 space-y-1">
                                 <div>
-                                  • Enable the orange cloud icon (Proxy status)
-                                  for ALL records
+                                  •{" "}
+                                  {t(
+                                    "domainSetupGuideModal.cloudflareProxyEnableAll"
+                                  )}
                                 </div>
                                 <div>
-                                  • This provides instant SSL/TLS encryption
+                                  •{" "}
+                                  {t(
+                                    "domainSetupGuideModal.cloudflareProxyInstantSsl"
+                                  )}
                                 </div>
                                 <div>
-                                  • Much faster than waiting for GitHub Pages
-                                  certificates
+                                  •{" "}
+                                  {t(
+                                    "domainSetupGuideModal.cloudflareProxyFaster"
+                                  )}
                                 </div>
-                                <div>• Better performance and security</div>
+                                <div>
+                                  •{" "}
+                                  {t(
+                                    "domainSetupGuideModal.cloudflareProxyBetter"
+                                  )}
+                                </div>
                               </div>
                             </div>
                           )}
@@ -584,31 +641,33 @@ export default function DomainSetupGuideModal({
                           <div className="mt-4 p-3 bg-warning/10 rounded-lg border border-warning/20">
                             <h6 className="text-xs font-bold mb-2 flex items-center">
                               <div className="i-mdi:security h-3.5 w-3.5 mr-1.5 text-warning"></div>
-                              Recommended: Email Security Records
+                              {t(
+                                "domainSetupGuideModal.recommendedEmailSecurity"
+                              )}
                             </h6>
                             <p className="text-xs text-gray-300 mb-3">
-                              Add these TXT records to protect your domain from
-                              email spoofing attacks. Without these, attackers
-                              could send phishing emails appearing to come from
-                              your domain, which may cause your site to be
-                              flagged by Google Safe Browsing.
+                              {t("domainSetupGuideModal.emailSecurityDesc")}
                             </p>
                             <div className="space-y-3">
                               <div>
+                                {/* i18n-ignore */}
                                 <div className="text-xs font-semibold mb-1 text-warning">
                                   SPF Record:
                                 </div>
                                 <div className="bg-base-9/70 rounded p-2 font-mono text-xs">
+                                  {/* i18n-ignore */}
                                   <div>
                                     Type: TXT | Name: @ | Value: v=spf1 -all
                                   </div>
                                 </div>
                               </div>
                               <div>
+                                {/* i18n-ignore */}
                                 <div className="text-xs font-semibold mb-1 text-warning">
                                   DMARC Record:
                                 </div>
                                 <div className="bg-base-9/70 rounded p-2 font-mono text-xs">
+                                  {/* i18n-ignore */}
                                   <div>
                                     Type: TXT | Name: _dmarc | Value: v=DMARC1;
                                     p=reject; sp=reject; aspf=s; adkim=s
@@ -617,9 +676,7 @@ export default function DomainSetupGuideModal({
                               </div>
                             </div>
                             <p className="text-xs text-gray-400 mt-2">
-                              These records tell email servers that your domain
-                              doesn't send emails and to reject any emails
-                              claiming to be from your domain.
+                              {t("domainSetupGuideModal.recordsTellServers")}
                             </p>
                           </div>
                         </div>
@@ -629,8 +686,7 @@ export default function DomainSetupGuideModal({
                         <div className="flex items-start gap-1">
                           <div className="i-mdi:information-outline h-3.5 w-3.5 mt-0.5 flex-shrink-0"></div>
                           <span>
-                            Copy these exact values to your DNS provider.
-                            Changes may take up to 24 hours to propagate.
+                            {t("domainSetupGuideModal.copyExactValues")}
                           </span>
                         </div>
                       </div>
@@ -650,7 +706,7 @@ export default function DomainSetupGuideModal({
                 >
                   <span className="flex items-center gap-1">
                     <div className="i-mdi:chevron-left h-4 w-4"></div>
-                    Previous
+                    {t("domainSetupGuideModal.previous")}
                   </span>
                 </Button>
 
@@ -662,7 +718,7 @@ export default function DomainSetupGuideModal({
                   >
                     <span className="flex items-center gap-1">
                       <div className="i-mdi:check h-4 w-4"></div>
-                      Complete Guide
+                      {t("domainSetupGuideModal.completeGuide")}
                     </span>
                   </Button>
                 ) : (
@@ -672,7 +728,7 @@ export default function DomainSetupGuideModal({
                     className="flex-1 sm:flex-none"
                   >
                     <span className="flex items-center gap-1">
-                      Next
+                      {t("domainSetupGuideModal.next")}
                       <div className="i-mdi:chevron-right h-4 w-4"></div>
                     </span>
                   </Button>

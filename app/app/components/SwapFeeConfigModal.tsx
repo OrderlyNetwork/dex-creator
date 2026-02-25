@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation, Trans } from "~/i18n";
 import { Button } from "./Button";
 
 interface SwapFeeConfigModalProps {
@@ -14,6 +15,7 @@ export default function SwapFeeConfigModal({
   onSave,
   currentFeeBps,
 }: SwapFeeConfigModalProps) {
+  const { t } = useTranslation();
   const [feeBps, setFeeBps] = useState<string>(
     currentFeeBps !== null ? String(currentFeeBps) : ""
   );
@@ -35,18 +37,18 @@ export default function SwapFeeConfigModal({
 
   const handleSave = () => {
     if (feeBps.trim() === "") {
-      setError("Swap fee is required when Swap page is enabled");
+      setError(t("swapFeeConfigModal.feeRequired"));
       return;
     }
 
     const parsed = parseInt(feeBps, 10);
     if (isNaN(parsed)) {
-      setError("Please enter a valid number");
+      setError(t("swapFeeConfigModal.enterValidNumber"));
       return;
     }
 
     if (parsed < 0 || parsed > 100) {
-      setError("Fee must be between 0 and 100 bps (maximum 1%)");
+      setError(t("swapFeeConfigModal.feeMustBeBetween"));
       return;
     }
 
@@ -74,17 +76,17 @@ export default function SwapFeeConfigModal({
             <div className="i-mdi:swap-horizontal text-blue-400 w-8 h-8"></div>
           </div>
           <h2 className="text-xl font-bold mb-2 gradient-text">
-            Configure Swap Fee
+            {t("swapFeeConfigModal.configureSwapFee")}
           </h2>
           <p className="text-gray-300 text-sm">
-            Set up your fee for the WOOFi-powered swap integration
+            {t("swapFeeConfigModal.setupFeeDesc")}
           </p>
         </div>
 
         <div className="space-y-4 mb-6">
           <div className="space-y-2">
             <label htmlFor="swapFeeBps" className="block text-sm font-medium">
-              Swap Fee (in basis points)
+              {t("swapFeeConfigModal.swapFeeBps")}
               <span className="text-danger ml-1">*</span>
             </label>
             <input
@@ -92,7 +94,7 @@ export default function SwapFeeConfigModal({
               id="swapFeeBps"
               value={feeBps}
               onChange={e => handleInputChange(e.target.value)}
-              placeholder="e.g., 20 (0.2%)"
+              placeholder={t("swapFeeConfigModal.placeholder")}
               min="0"
               max="100"
               step="1"
@@ -103,8 +105,7 @@ export default function SwapFeeConfigModal({
               }`}
             />
             <p className="text-xs text-gray-400">
-              Enter fee in basis points (bps). Maximum: 100 bps (1%). Example:
-              20 bps = 0.2%
+              {t("swapFeeConfigModal.enterFeeHelp")}
             </p>
             {error && (
               <p className="text-xs text-danger flex items-center gap-1">
@@ -117,22 +118,28 @@ export default function SwapFeeConfigModal({
           {parsedFee !== null && !error && (
             <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 slide-fade-in">
               <div className="text-sm font-medium text-primary-light mb-2">
-                Fee Breakdown:
+                {t("swapFeeConfigModal.feeBreakdown")}:
               </div>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-300">Total swap fee:</span>
+                  <span className="text-gray-300">
+                    {t("swapFeeConfigModal.totalSwapFee")}:
+                  </span>
                   <span className="font-mono text-white">{feePercentage}%</span>
                 </div>
                 <div className="border-t border-light/10 my-2"></div>
                 <div className="flex justify-between">
-                  <span className="text-gray-300">Your earnings (70%):</span>
+                  <span className="text-gray-300">
+                    {t("swapFeeConfigModal.yourEarnings")}:
+                  </span>
                   <span className="font-mono text-success">
                     {userEarnings}%
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-300">WooFi share (30%):</span>
+                  <span className="text-gray-300">
+                    {t("swapFeeConfigModal.woofiShare")}:
+                  </span>
                   <span className="font-mono text-gray-400">{woofiShare}%</span>
                 </div>
               </div>
@@ -145,27 +152,52 @@ export default function SwapFeeConfigModal({
             <div className="i-mdi:information-outline h-5 w-5 text-blue-300 mt-0.5"></div>
             <div>
               <h4 className="text-sm font-bold text-blue-300 mb-2">
-                About Swap Integration
+                {t("swapFeeConfigModal.aboutSwapIntegration")}
               </h4>
               <div className="text-xs text-gray-300 space-y-2">
                 <p>
-                  The Swap page is powered by{" "}
-                  <span className="text-blue-300 font-medium">WOOFi</span>,
-                  providing efficient token swapping with competitive rates and
-                  deep liquidity.
+                  <Trans
+                    i18nKey="swapFeeConfigModal.swapPoweredByWoofi"
+                    components={[
+                      <span key="0" className="font-semibold text-primary" />,
+                    ]}
+                  />
                 </p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
                   <li>
-                    <strong>EVM only:</strong> Swap supports EVM chains only (no
-                    Solana)
+                    <Trans
+                      i18nKey="swapFeeConfigModal.evmOnly"
+                      components={[
+                        <span
+                          key="0"
+                          className="font-semibold text-blue-300"
+                        />,
+                      ]}
+                    />
                   </li>
                   <li>
-                    <strong>Fixed blockchain support:</strong> Blockchain
-                    configuration doesn't affect the Swap page
+                    <Trans
+                      i18nKey="swapFeeConfigModal.fixedBlockchainSupport"
+                      components={[
+                        <span
+                          key="0"
+                          className="font-semibold text-blue-300"
+                        />,
+                      ]}
+                    />
                   </li>
                   <li>
-                    <strong>Fee split:</strong> Fees are shared 70% (you) / 30%
-                    (WOOFi)
+                    <Trans
+                      i18nKey="swapFeeConfigModal.feeSplit"
+                      components={[
+                        <span
+                          key="0"
+                          className="font-semibold text-blue-300"
+                        />,
+                        <span key="1" className="font-medium text-success" />,
+                        <span key="2" className="font-medium text-primary" />,
+                      ]}
+                    />
                   </li>
                 </ul>
               </div>
@@ -179,28 +211,34 @@ export default function SwapFeeConfigModal({
             <div className="i-mdi:alert-outline h-5 w-5 text-warning mt-0.5 flex-shrink-0"></div>
             <div>
               <h4 className="text-sm font-medium text-warning mb-2">
-                Important: Graduation & Fee Claiming
+                {t("swapFeeConfigModal.importantGraduation")}
               </h4>
               <div className="text-xs text-gray-300 space-y-2">
                 <p>
-                  <strong className="text-warning">Graduation Required:</strong>{" "}
-                  Your DEX must be graduated before you can earn swap fees.
-                  After graduation, it may take <strong>up to 24 hours</strong>{" "}
-                  for the fee system to be fully activated.
+                  <Trans
+                    i18nKey="swapFeeConfigModal.graduationRequired"
+                    components={[
+                      <span key="0" className="font-semibold text-warning" />,
+                    ]}
+                  />
                 </p>
                 <p>
-                  <strong className="text-warning">
-                    Manual Fee Claiming Required:
-                  </strong>{" "}
-                  Swap fees are <strong>NOT automatically transferred</strong>{" "}
-                  to your wallet. You must manually claim accumulated fees using
-                  a claiming process.
+                  <Trans
+                    i18nKey="swapFeeConfigModal.manualFeeClaiming"
+                    components={[
+                      <span key="0" className="font-semibold text-warning" />,
+                      <span key="1" className="font-semibold text-warning" />,
+                    ]}
+                  />
                 </p>
                 <p>
-                  <strong className="text-warning">EOA Wallet Only:</strong>{" "}
-                  Fees can only be claimed with the <strong>EOA wallet</strong>{" "}
-                  you used to initially set up your DEX. Fees will NOT accrue in
-                  your admin wallet (which may be a multisig).
+                  <Trans
+                    i18nKey="swapFeeConfigModal.eoaWalletOnly"
+                    components={[
+                      <span key="0" className="font-semibold text-warning" />,
+                      <span key="1" className="font-semibold text-warning" />,
+                    ]}
+                  />
                 </p>
               </div>
             </div>
@@ -209,10 +247,10 @@ export default function SwapFeeConfigModal({
 
         <div className="flex gap-3 justify-end">
           <Button variant="secondary" onClick={onClose}>
-            Cancel
+            {t("swapFeeConfigModal.cancel")}
           </Button>
           <Button variant="primary" onClick={handleSave}>
-            Save Configuration
+            {t("swapFeeConfigModal.saveConfiguration")}
           </Button>
         </div>
       </div>

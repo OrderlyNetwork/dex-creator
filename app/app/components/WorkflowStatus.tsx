@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "~/i18n";
 import { get } from "../utils/apiClient";
 import { useAuth } from "../context/useAuth";
 import { toast } from "react-toastify";
@@ -62,6 +63,7 @@ export default function WorkflowStatus({
   autoRefresh = true,
   onSuccessfulDeployment,
 }: WorkflowStatusProps) {
+  const { t } = useTranslation();
   const { token } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
@@ -108,7 +110,7 @@ export default function WorkflowStatus({
         });
       } catch (error) {
         console.error("Error fetching run details:", error);
-        toast.error("Could not fetch workflow run details");
+        toast.error(t("workflowStatus.couldNotFetchDetails"));
         setSelectedRunId(null);
       } finally {
         if (showLoading) {
@@ -153,12 +155,15 @@ export default function WorkflowStatus({
       }
     } catch (error) {
       console.error("Error fetching workflow status:", error);
-      const message = error instanceof Error ? error.message : "Unknown error";
-      setError(`Failed to fetch workflow status: ${message}`);
+      const message =
+        error instanceof Error
+          ? error.message
+          : t("workflowStatus.unknownError");
+      setError(t("workflowStatus.fetchError", { message }));
     } finally {
       setIsLoading(false);
     }
-  }, [token, dexId, workflowName, selectedRunId, fetchRunDetails]);
+  }, [token, dexId, workflowName, selectedRunId, fetchRunDetails, t]);
 
   useEffect(() => {
     fetchWorkflowStatus();
@@ -280,13 +285,13 @@ export default function WorkflowStatus({
     if (status === "completed") {
       switch (conclusion) {
         case "success":
-          return "Success";
+          return t("workflowStatus.success");
         case "failure":
-          return "Failed";
+          return t("workflowStatus.failed");
         case "cancelled":
-          return "Cancelled";
+          return t("workflowStatus.cancelled");
         default:
-          return conclusion || "Completed";
+          return conclusion || t("workflowStatus.completed");
       }
     }
     return status.replace("_", " ");
@@ -296,7 +301,9 @@ export default function WorkflowStatus({
     return (
       <div className={`p-4 ${className}`}>
         <div className="i-svg-spinners:pulse-rings-multiple h-6 w-6 mx-auto text-primary-light"></div>
-        <p className="text-center text-sm mt-2">Loading workflow status...</p>
+        <p className="text-center text-sm mt-2">
+          {t("workflowStatus.loading")}
+        </p>
       </div>
     );
   }
@@ -304,13 +311,15 @@ export default function WorkflowStatus({
   if (error) {
     return (
       <Card variant="error" className={className}>
-        <h3 className="text-md font-medium mb-2">Workflow Status Error</h3>
+        <h3 className="text-md font-medium mb-2">
+          {t("workflowStatus.errorTitle")}
+        </h3>
         <p className="text-sm">{error}</p>
         <button
           onClick={fetchWorkflowStatus}
           className="mt-3 px-3 py-1 text-xs bg-dark/50 hover:bg-dark/70 rounded-md"
         >
-          Retry
+          {t("workflowStatus.retry")}
         </button>
       </Card>
     );
@@ -321,7 +330,7 @@ export default function WorkflowStatus({
       <div className={`p-4 ${className}`}>
         <div className="i-svg-spinners:pulse-rings-multiple h-6 w-6 mx-auto text-primary-light"></div>
         <p className="text-center text-sm mt-2">
-          Waiting for workflows to start...
+          {t("workflowStatus.waitingForWorkflows")}
         </p>
       </div>
     );
@@ -333,14 +342,14 @@ export default function WorkflowStatus({
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-md font-medium">
             {workflowName
-              ? `"${workflowName}" Workflow Status`
-              : "Workflow Status"}
+              ? t("workflowStatus.workflowStatusNamed", { workflowName })
+              : t("workflowStatus.workflowStatus")}
           </h3>
           <button
             onClick={fetchWorkflowStatus}
             disabled={isLoading}
             className="p-1 rounded hover:bg-dark/50"
-            title="Refresh"
+            title={t("workflowStatus.refresh")}
           >
             <div
               className={`i-mdi:refresh h-5 w-5 ${isLoading ? "animate-spin" : ""}`}
@@ -349,7 +358,9 @@ export default function WorkflowStatus({
         </div>
 
         {workflowStatus.workflowRuns.length === 0 ? (
-          <p className="text-sm text-gray-400">No recent workflow runs found</p>
+          <p className="text-sm text-gray-400">
+            {t("workflowStatus.noRecentRuns")}
+          </p>
         ) : (
           <div className="space-y-4">
             {/* List of workflow runs - limit to 5 most recent */}
@@ -384,20 +395,21 @@ export default function WorkflowStatus({
                     </div>
                     <span className="text-xs text-gray-400">
                       {isLoadingDetails && selectedRunId === run.id
-                        ? "Loading..."
+                        ? t("workflowStatus.loadingDetails")
                         : getStatusText(run.status, run.conclusion)}
                     </span>
                   </div>
                   <div className="mt-1 text-xs text-gray-400 flex justify-between">
-                    <span>Run #{run.id}</span>
+                    <span>{t("workflowStatus.runId", { runId: run.id })}</span>
                     <span>{formatDate(run.updatedAt)}</span>
                   </div>
                 </div>
               ))}
               {workflowStatus.workflowRuns.length > 5 && (
                 <div className="text-xs text-gray-400 text-center mt-2 slide-fade-in-delayed">
-                  Showing 5 most recent of {workflowStatus.workflowRuns.length}{" "}
-                  total runs
+                  {t("workflowStatus.showingRecent", {
+                    total: workflowStatus.workflowRuns.length,
+                  })}
                 </div>
               )}
             </div>
@@ -409,14 +421,14 @@ export default function WorkflowStatus({
                   <div className="py-4">
                     <div className="i-svg-spinners:pulse-rings-multiple h-6 w-6 mx-auto text-primary-light mb-2"></div>
                     <p className="text-center text-sm text-gray-400">
-                      Loading workflow details...
+                      {t("workflowStatus.loadingWorkflowDetails")}
                     </p>
                   </div>
                 ) : selectedRun ? (
                   <>
                     <div className="flex justify-between items-center mb-2">
                       <h4 className="font-medium">
-                        Run Details: {selectedRun.name}
+                        {t("workflowStatus.runDetails")}: {selectedRun.name}
                       </h4>
                       <div className="flex items-center space-x-2">
                         <a
@@ -425,7 +437,7 @@ export default function WorkflowStatus({
                           rel="noopener noreferrer"
                           className="text-xs text-primary-light hover:underline flex items-center"
                         >
-                          <span>View on GitHub</span>
+                          <span>{t("workflowStatus.viewOnGitHub")}</span>
                           <div className="i-mdi:open-in-new h-3 w-3 ml-1"></div>
                         </a>
                         <button
@@ -434,7 +446,7 @@ export default function WorkflowStatus({
                             setSelectedRunId(null);
                           }}
                           className="p-1 rounded hover:bg-dark/50 ml-2"
-                          title="Close details"
+                          title={t("workflowStatus.closeDetails")}
                         >
                           <div className="i-mdi:close h-4 w-4"></div>
                         </button>
@@ -442,7 +454,9 @@ export default function WorkflowStatus({
                     </div>
                     <div className="my-2 text-xs">
                       <div className="flex justify-between mb-1">
-                        <span className="text-gray-400">Status</span>
+                        <span className="text-gray-400">
+                          {t("workflowStatus.status")}
+                        </span>
                         <span className="font-medium">
                           {getStatusText(
                             selectedRun.status,
@@ -451,18 +465,24 @@ export default function WorkflowStatus({
                         </span>
                       </div>
                       <div className="flex justify-between mb-1">
-                        <span className="text-gray-400">Started</span>
+                        <span className="text-gray-400">
+                          {t("workflowStatus.started")}
+                        </span>
                         <span>{formatDate(selectedRun.createdAt)}</span>
                       </div>
                       <div className="flex justify-between mb-1">
-                        <span className="text-gray-400">Last updated</span>
+                        <span className="text-gray-400">
+                          {t("workflowStatus.lastUpdated")}
+                        </span>
                         <span>{formatDate(selectedRun.updatedAt)}</span>
                       </div>
                     </div>
 
                     {selectedRun.jobs.length > 0 && (
                       <div className="mt-3 slide-fade-in-delayed">
-                        <h5 className="text-sm font-bold mb-2">Jobs</h5>
+                        <h5 className="text-sm font-bold mb-2">
+                          {t("workflowStatus.jobs")}
+                        </h5>
                         <div className="space-y-2">
                           {selectedRun.jobs.map((job, index) => (
                             <div
@@ -497,10 +517,10 @@ export default function WorkflowStatus({
                                     {/* Icons remain the same */}
                                   </span>
                                   {job.conclusion === "success"
-                                    ? "Success"
+                                    ? t("workflowStatus.success")
                                     : job.conclusion === "failure"
-                                      ? "Failed"
-                                      : "In Progress"}
+                                      ? t("workflowStatus.failed")
+                                      : t("workflowStatus.inProgress")}
                                 </div>
                               </div>
 
@@ -540,7 +560,7 @@ export default function WorkflowStatus({
                   </>
                 ) : (
                   <p className="text-sm text-gray-400 text-center py-2">
-                    Failed to load workflow details
+                    {t("workflowStatus.failedToLoadDetails")}
                   </p>
                 )}
               </div>

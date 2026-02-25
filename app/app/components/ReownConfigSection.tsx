@@ -1,6 +1,7 @@
 import React from "react";
 import FormInput from "./FormInput";
 import { Card } from "./Card";
+import { Trans, useTranslation } from "~/i18n";
 
 export interface ReownConfigProps {
   walletConnectProjectId: string;
@@ -14,179 +15,184 @@ const ReownConfigSection: React.FC<ReownConfigProps> = ({
   walletConnectProjectId,
   handleInputChange,
   idPrefix = "",
-}) => (
-  <>
-    <Card className="mb-4 p-4 slide-fade-in" variant="default">
-      <div className="flex items-start gap-3">
-        <div className="i-mdi:wallet-outline text-primary-light h-5 w-5 mt-0.5 flex-shrink-0"></div>
-        <div>
-          <p className="text-sm text-primary-light font-medium mb-2">
-            Enhanced Wallet Connectivity with Reown
-          </p>
-          <p className="text-sm text-gray-300 mb-3">
-            <span className="text-primary-light font-medium">
-              What is Reown?
-            </span>{" "}
-            Reown (formerly WalletConnect) provides a superior wallet connection
-            experience that goes far beyond basic browser wallet integration.
-          </p>
+}) => {
+  const { t } = useTranslation();
 
-          <div className="space-y-3">
-            <div>
-              <h4 className="text-base font-bold text-secondary-light mb-1">
-                🚀 Key Benefits for Your DEX Users:
-              </h4>
-              <ul className="text-sm text-gray-300 list-disc pl-4 space-y-1">
-                <li>
-                  <strong>Mobile Wallet Support:</strong> Users can connect
-                  mobile wallets like MetaMask Mobile, Trust Wallet, and 300+
-                  others via QR code scanning
-                </li>
-                <li>
-                  <strong>Cross-Platform Access:</strong> Desktop users can
-                  connect to mobile wallets seamlessly, and mobile users get
-                  native app connections
-                </li>
-                <li>
-                  <strong>Universal Compatibility:</strong> Works with virtually
-                  every major wallet, not just browser extensions
-                </li>
-                <li>
-                  <strong>Better UX:</strong> Clean, modern connection modal
-                  with wallet detection and connection status
-                </li>
-                <li>
-                  <strong>Secure Connections:</strong> Encrypted peer-to-peer
-                  connections between your DEX and user wallets
-                </li>
-              </ul>
-            </div>
+  return (
+    <>
+      <Card className="mb-4 p-4 slide-fade-in" variant="default">
+        <div className="flex items-start gap-3">
+          <div className="i-mdi:wallet-outline text-primary-light h-5 w-5 mt-0.5 flex-shrink-0"></div>
+          <div>
+            <p className="text-sm text-primary-light font-medium mb-2">
+              {t("reownConfigSection.enhancedWalletConnectivity")}
+            </p>
+            <p className="text-sm text-gray-300 mb-3">
+              <Trans
+                i18nKey="reownConfigSection.whatIsReown"
+                components={[
+                  <span key="0" className="text-primary-light font-medium" />,
+                ]}
+              />
+            </p>
 
-            <div className="bg-background-dark/50 p-3 rounded-lg border border-secondary-light/10">
-              <h4 className="text-base font-bold text-warning mb-1">
-                💡 Why This Matters:
-              </h4>
-              <p className="text-sm text-gray-400">
-                Without Reown, your DEX can only connect to browser extension
-                wallets (like MetaMask desktop). With Reown, mobile users can
-                scan a QR code to connect their mobile wallets, dramatically
-                expanding your potential user base and improving accessibility.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Card>
+            <div className="space-y-3">
+              <div>
+                <h4 className="text-base font-bold text-secondary-light mb-1">
+                  {t("reownConfigSection.keyBenefits")}
+                </h4>
+                <ul className="text-sm text-gray-300 list-disc pl-4 space-y-1">
+                  <li>
+                    <Trans
+                      i18nKey="reownConfigSection.mobileWalletSupport"
+                      components={[<strong key="0" />]}
+                    />
+                  </li>
+                  <li>
+                    <Trans
+                      i18nKey="reownConfigSection.crossPlatformAccess"
+                      components={[<strong key="0" />]}
+                    />
+                  </li>
+                  <li>
+                    <Trans
+                      i18nKey="reownConfigSection.universalCompatibility"
+                      components={[<strong key="0" />]}
+                    />
+                  </li>
+                  <li>
+                    <Trans
+                      i18nKey="reownConfigSection.betterUx"
+                      components={[<strong key="0" />]}
+                    />
+                  </li>
+                  <li>
+                    <Trans
+                      i18nKey="reownConfigSection.secureConnections"
+                      components={[<strong key="0" />]}
+                    />
+                  </li>
+                </ul>
+              </div>
 
-    <FormInput
-      id={`${idPrefix}walletConnectProjectId`}
-      label="Reown Project ID"
-      value={walletConnectProjectId}
-      onChange={handleInputChange("walletConnectProjectId")}
-      placeholder="Enter your Reown Project ID"
-      helpText={
-        <>
-          <div className="space-y-3">
-            <div>
-              <strong className="text-primary-light">
-                How to get your free Project ID:
-              </strong>
-              <ol className="list-decimal pl-4 mt-1 space-y-1 text-sm">
-                <li>
-                  Visit{" "}
-                  <a
-                    href="https://dashboard.reown.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary-light hover:underline"
-                  >
-                    Reown Dashboard
-                  </a>{" "}
-                  and create a free account
-                </li>
-                <li>Set up your project following their setup wizard</li>
-                <li>
-                  Copy the Project ID from the top header of your project
-                  dashboard
-                </li>
-              </ol>
-            </div>
-
-            <div className="bg-background-dark/30 p-3 rounded-lg border border-primary-light/10">
-              <h4 className="text-base font-bold text-primary-light mb-1">
-                🔗 Integration Notes:
-              </h4>
-              <ul className="text-sm text-gray-400 space-y-1">
-                <li>
-                  • Your DEX will work perfectly fine without this - it's purely
-                  an enhancement
-                </li>
-                <li>
-                  • If you enable Privy integration, Privy will automatically
-                  use this Project ID
-                </li>
-                <li>
-                  • Free tier includes 10,000 monthly active wallets - more than
-                  enough for most DEXs
-                </li>
-                <li>
-                  • No additional configuration needed - just paste your Project
-                  ID and you're done!
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-warning/10 p-3 rounded-lg border border-warning/20">
-              <h4 className="text-base font-bold text-warning mb-1">
-                ⚠️ Important: Domain Allowlist Configuration Required
-              </h4>
-              <p className="text-sm text-gray-300 mb-2">
-                After creating your project, you <strong>MUST</strong> configure
-                the domain allowlist in your Reown dashboard for your DEX to
-                work properly.
-              </p>
-              <div className="space-y-2">
+              <div className="bg-background-dark/50 p-3 rounded-lg border border-secondary-light/10">
+                <h4 className="text-base font-bold text-warning mb-1">
+                  {t("reownConfigSection.whyThisMatters")}
+                </h4>
                 <p className="text-sm text-gray-400">
-                  <strong>How to configure domains:</strong>
+                  {t("reownConfigSection.whyThisMattersDesc")}
                 </p>
-                <ol className="list-decimal pl-4 space-y-1 text-sm text-gray-400">
-                  <li>
-                    Go to your project dashboard at{" "}
-                    <a
-                      href="https://dashboard.reown.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary-light hover:underline"
-                    >
-                      dashboard.reown.com
-                    </a>
-                  </li>
-                  <li>Navigate to the "Domain" section</li>
-                  <li>Click "Domain" to add your DEX domain</li>
-                  <li>
-                    Add your domain (e.g.,{" "}
-                    <code className="bg-background-dark px-1 rounded">
-                      https://yourdex.com
-                    </code>
-                    )
-                  </li>
-                </ol>
-                <div className="mt-2 p-2 bg-background-dark/50 rounded border border-gray-600/30">
-                  <p className="text-xs text-gray-400">
-                    <strong>💡 Pro tip:</strong> You can use wildcards like{" "}
-                    <code className="bg-background-dark px-1 rounded">
-                      https://*.subdomain.com
-                    </code>{" "}
-                    to allow all subdomains.
-                  </p>
-                </div>
               </div>
             </div>
           </div>
-        </>
-      }
-    />
-  </>
-);
+        </div>
+      </Card>
+
+      <FormInput
+        id={`${idPrefix}walletConnectProjectId`}
+        label={t("reownConfigSection.reownProjectId")}
+        value={walletConnectProjectId}
+        onChange={handleInputChange("walletConnectProjectId")}
+        placeholder={t("reownConfigSection.placeholderProjectId")}
+        helpText={
+          <>
+            <div className="space-y-3">
+              <div>
+                <strong className="text-primary-light">
+                  {t("reownConfigSection.howToGetProjectId")}
+                </strong>
+                <ol className="list-decimal pl-4 mt-1 space-y-1 text-sm">
+                  <li>
+                    <Trans
+                      i18nKey="reownConfigSection.step1CreateAccount"
+                      components={[
+                        <a
+                          key="0"
+                          href="https://dashboard.reown.com"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary-light hover:underline"
+                        />,
+                      ]}
+                    />
+                  </li>
+                  <li>{t("reownConfigSection.step2SetupWizard")}</li>
+                  <li>{t("reownConfigSection.step3CopyId")}</li>
+                </ol>
+              </div>
+
+              <div className="bg-background-dark/30 p-3 rounded-lg border border-primary-light/10">
+                <h4 className="text-base font-bold text-primary-light mb-1">
+                  {t("reownConfigSection.integrationNotes")}
+                </h4>
+                <ul className="text-sm text-gray-400 space-y-1">
+                  <li>{t("reownConfigSection.note1")}</li>
+                  <li>{t("reownConfigSection.note2")}</li>
+                  <li>{t("reownConfigSection.note3")}</li>
+                  <li>{t("reownConfigSection.note4")}</li>
+                </ul>
+              </div>
+
+              <div className="bg-warning/10 p-3 rounded-lg border border-warning/20">
+                <h4 className="text-base font-bold text-warning mb-1">
+                  {t("reownConfigSection.domainAllowlistRequired")}
+                </h4>
+                <p className="text-sm text-gray-300 mb-2">
+                  {t("reownConfigSection.domainAllowlistDesc")}
+                </p>
+                <div className="space-y-2">
+                  <p className="text-sm text-gray-400">
+                    <strong>
+                      {t("reownConfigSection.howToConfigureDomains")}
+                    </strong>
+                  </p>
+                  <ol className="list-decimal pl-4 space-y-1 text-sm text-gray-400">
+                    <li>
+                      <Trans
+                        i18nKey="reownConfigSection.domainStep1"
+                        components={[
+                          <code
+                            key="0"
+                            className="bg-background-dark px-1 rounded"
+                          />,
+                        ]}
+                      />
+                    </li>
+                    <li>{t("reownConfigSection.domainStep2")}</li>
+                    <li>{t("reownConfigSection.domainStep3")}</li>
+                    <li>
+                      <Trans
+                        i18nKey="reownConfigSection.domainStep4"
+                        components={[
+                          <code
+                            key="0"
+                            className="bg-background-dark px-1 rounded"
+                          />,
+                        ]}
+                      />
+                    </li>
+                  </ol>
+                  <div className="mt-2 p-2 bg-background-dark/50 rounded border border-gray-600/30">
+                    <p className="text-xs text-gray-400">
+                      <Trans
+                        i18nKey="reownConfigSection.proTip"
+                        components={[
+                          <code
+                            key="0"
+                            className="bg-background-dark px-1 rounded"
+                          />,
+                        ]}
+                      />
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        }
+      />
+    </>
+  );
+};
 
 export default ReownConfigSection;

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "~/i18n";
 import FormInput from "./FormInput";
 import { useDistributorCode } from "../hooks/useDistrubutorInfo";
 import clsx from "clsx";
@@ -12,6 +13,7 @@ export interface BrokerDetailsProps {
 }
 
 const DistributorCodeSection: React.FC<BrokerDetailsProps> = props => {
+  const { t } = useTranslation();
   const { distributorCode, handleInputChange, distributorCodeValidator } =
     props;
   const distributorCodeFromUrl = useDistributorCode();
@@ -45,11 +47,11 @@ const DistributorCodeSection: React.FC<BrokerDetailsProps> = props => {
     } as React.ChangeEvent<HTMLInputElement>);
   };
 
-  const label = isBound ? "Your distributor" : "Distributor code";
+  const label = isBound
+    ? t("distributorCodeSection.yourDistributor")
+    : t("distributorCodeSection.distributorCode");
   const value = distributorInfo?.distributor_name || distributorCode;
-  const helpText = isBound
-    ? ""
-    : "Alphanumeric characters only. Other special characters and spaces are not permitted.";
+  const helpText = isBound ? "" : t("distributorCodeSection.helpText");
 
   return (
     <FormInput
@@ -57,7 +59,7 @@ const DistributorCodeSection: React.FC<BrokerDetailsProps> = props => {
       label={label}
       value={value}
       onChange={handleInputChange("distributorCode")}
-      placeholder="Distributor code"
+      placeholder={t("distributorCodeSection.placeholder")}
       helpText={helpText}
       maxLength={isBound ? undefined : 10}
       validator={isBound ? undefined : distributorCodeValidator}

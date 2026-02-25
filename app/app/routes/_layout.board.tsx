@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { MetaFunction } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 import { Icon } from "@iconify/react";
@@ -80,13 +80,6 @@ interface DexStats {
 
 type SortOption = "volume" | "pnl" | "fee";
 
-const periods = [
-  { label: i18n.t("board.period.daily"), value: "daily" },
-  { label: i18n.t("board.period.weekly"), value: "weekly" },
-  { label: i18n.t("board.period.30d"), value: "30d" },
-  { label: i18n.t("board.period.90d"), value: "90d" },
-];
-
 const filterTabs = ["volume", "fee"];
 
 export default function BoardRoute() {
@@ -101,6 +94,15 @@ export default function BoardRoute() {
   const [totalItems, setTotalItems] = useState(0);
   const [dexStats, setDexStats] = useState<DexStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
+
+  const periods = useMemo(() => {
+    return [
+      { label: t("board.period.daily"), value: "daily" },
+      { label: t("board.period.weekly"), value: "weekly" },
+      { label: t("board.period.30d"), value: "30d" },
+      { label: t("board.period.90d"), value: "90d" },
+    ];
+  }, [t]);
 
   const fetchLeaderboard = async (
     sort: SortOption = "volume",

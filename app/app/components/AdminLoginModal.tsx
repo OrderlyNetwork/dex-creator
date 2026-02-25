@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "./Button";
 import { toast } from "react-toastify";
+import { useTranslation, i18n } from "~/i18n";
 import { getPublicKeyAsync } from "@noble/ed25519";
 import { encodeBase58 } from "ethers";
 
@@ -17,6 +18,7 @@ export default function AdminLoginModal({
   orderlyKey,
   accountId,
 }: AdminLoginModalProps) {
+  const { t } = useTranslation();
   const [showPrivateKey, setShowPrivateKey] = useState(false);
 
   if (!isOpen) return null;
@@ -29,7 +31,7 @@ export default function AdminLoginModal({
       return `ed25519:${encodeBase58(publicKeyBytes)}`;
     } catch (error) {
       console.error("Failed to get public key:", error);
-      return "Error generating public key";
+      return i18n.t("adminLoginModal.errorGeneratingPublicKey");
     }
   };
 
@@ -42,10 +44,10 @@ export default function AdminLoginModal({
   const copyToClipboard = async (text: string, label: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success(`${label} copied to clipboard!`);
+      toast.success(t("adminLoginModal.labelCopiedToClipboard", { label }));
     } catch (error) {
       console.error("Failed to copy:", error);
-      toast.error("Failed to copy to clipboard");
+      toast.error(t("adminLoginModal.failedToCopy"));
     }
   };
 
@@ -58,19 +60,18 @@ export default function AdminLoginModal({
 
       <div className="relative z-[1002] w-full h-full md:h-auto md:max-w-lg md:max-h-[90vh] overflow-y-auto p-6 md:rounded-xl bg-background-light border-0 md:border md:border-primary-light/20 shadow-2xl slide-fade-in">
         <h3 className="text-xl font-bold mb-4 gradient-text">
-          Admin Dashboard Login
+          {t("adminLoginModal.title")}
         </h3>
 
         <div className="mb-6 space-y-4">
           <p className="text-gray-300">
-            Copy these credentials to log into the Orderly Admin Dashboard. Keep
-            your private key secure!
+            {t("adminLoginModal.copyCredentialsDesc")}
           </p>
 
           {/* Account ID */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-secondary-light">
-              Account ID
+              {t("adminLoginModal.accountId")}
             </label>
             <div className="flex gap-2">
               <input
@@ -81,7 +82,9 @@ export default function AdminLoginModal({
               />
               <Button
                 variant="secondary"
-                onClick={() => copyToClipboard(accountId, "Account ID")}
+                onClick={() =>
+                  copyToClipboard(accountId, t("adminLoginModal.accountId"))
+                }
                 className="flex-shrink-0"
               >
                 <div className="i-mdi:content-copy w-4 h-4"></div>
@@ -91,7 +94,7 @@ export default function AdminLoginModal({
 
           <div className="space-y-2">
             <label className="block text-sm font-medium text-secondary-light">
-              Public Key (Orderly Key)
+              {t("adminLoginModal.publicKey")}
             </label>
             <div className="flex gap-2">
               <input
@@ -102,7 +105,9 @@ export default function AdminLoginModal({
               />
               <Button
                 variant="secondary"
-                onClick={() => copyToClipboard(publicKey, "Public Key")}
+                onClick={() =>
+                  copyToClipboard(publicKey, t("adminLoginModal.publicKey"))
+                }
                 className="flex-shrink-0"
               >
                 <div className="i-mdi:content-copy w-4 h-4"></div>
@@ -112,7 +117,7 @@ export default function AdminLoginModal({
 
           <div className="space-y-2">
             <label className="block text-sm font-medium text-secondary-light">
-              Private Key (Secret Key)
+              {t("adminLoginModal.privateKey")}
             </label>
             <div className="flex gap-2">
               <input
@@ -132,34 +137,39 @@ export default function AdminLoginModal({
               </Button>
               <Button
                 variant="secondary"
-                onClick={() => copyToClipboard(privateKeyHex, "Private Key")}
+                onClick={() =>
+                  copyToClipboard(
+                    privateKeyHex,
+                    t("adminLoginModal.privateKey")
+                  )
+                }
                 className="flex-shrink-0"
               >
                 <div className="i-mdi:content-copy w-4 h-4"></div>
               </Button>
             </div>
             <p className="text-xs text-gray-400">
-              ⚠️ Never share your private key with anyone!
+              {t("adminLoginModal.neverSharePrivateKey")}
             </p>
           </div>
         </div>
 
         <div className="bg-background-dark/50 p-4 rounded-lg border border-secondary-light/10 text-sm mb-6">
           <h4 className="font-semibold mb-2 text-secondary-light">
-            How to log in:
+            {t("adminLoginModal.howToLogIn")}
           </h4>
           <ol className="text-gray-400 space-y-1 list-decimal list-inside">
-            <li>Open the Admin Dashboard link</li>
-            <li>Paste your Account ID in the first field</li>
-            <li>Paste your Public Key in the second field</li>
-            <li>Paste your Private Key in the third field</li>
-            <li>Click "Sign In" to access your broker settings</li>
+            <li>{t("adminLoginModal.step1")}</li>
+            <li>{t("adminLoginModal.step2")}</li>
+            <li>{t("adminLoginModal.step3")}</li>
+            <li>{t("adminLoginModal.step4")}</li>
+            <li>{t("adminLoginModal.step5")}</li>
           </ol>
         </div>
 
         <div className="flex gap-3 justify-end">
           <Button variant="secondary" onClick={onClose}>
-            Close
+            {t("adminLoginModal.close")}
           </Button>
           <Button
             variant="primary"
@@ -167,7 +177,7 @@ export default function AdminLoginModal({
               window.open("https://admin.orderly.network/", "_blank")
             }
           >
-            Open Admin Dashboard
+            {t("adminLoginModal.openAdminDashboard")}
           </Button>
         </div>
       </div>

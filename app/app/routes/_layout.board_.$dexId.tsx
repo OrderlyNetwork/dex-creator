@@ -352,7 +352,9 @@ export default function DexDetailRoute() {
                 />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-white">{t("board.volume")}</h3>
+                <h3 className="text-lg font-semibold text-white">
+                  {t("board.volume")}
+                </h3>
                 <p className="text-sm text-gray-400">({timePeriodString})</p>
               </div>
             </div>
@@ -372,7 +374,9 @@ export default function DexDetailRoute() {
                 />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-white">{t("board.fees")}</h3>
+                <h3 className="text-lg font-semibold text-white">
+                  {t("board.fees")}
+                </h3>
                 <p className="text-sm text-gray-400">({timePeriodString})</p>
               </div>
             </div>
@@ -392,7 +396,9 @@ export default function DexDetailRoute() {
                 />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-white">{t("board.revenue")}</h3>
+                <h3 className="text-lg font-semibold text-white">
+                  {t("board.revenue")}
+                </h3>
                 <p className="text-sm text-gray-400">({timePeriodString})</p>
               </div>
             </div>

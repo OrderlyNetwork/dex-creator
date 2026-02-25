@@ -1,4 +1,5 @@
 import { Link, useLocation } from "@remix-run/react";
+import { useTranslation } from "~/i18n";
 import { Icon } from "@iconify/react";
 import { isPathActive, getPathWithSearch } from "../utils/navigation";
 import { useNavigationMenu } from "../hooks/useNavigationMenu";
@@ -12,6 +13,7 @@ export default function MobileNavigation({
   isOpen,
   setIsOpen,
 }: MobileNavigationProps) {
+  const { t } = useTranslation();
   const location = useLocation();
 
   const menuItems = useNavigationMenu();
@@ -58,7 +60,9 @@ export default function MobileNavigation({
         </div>
 
         <div className="px-6 py-4 overflow-y-auto flex-1">
-          <h2 className="text-xl font-bold gradient-text mb-6">Menu</h2>
+          <h2 className="text-xl font-bold gradient-text mb-6">
+            {t("mobileNavigation.menu")}
+          </h2>
           <nav className="flex flex-col gap-4">
             {menuItems.map(item => {
               const isActive = isPathActive(

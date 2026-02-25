@@ -295,21 +295,15 @@ export default function ReferralRoute() {
                 <ul className="space-y-2 text-sm text-gray-400">
                   <li className="flex items-start gap-2">
                     <div className="i-mdi:cash-multiple text-primary w-4 h-4 flex-shrink-0 mt-0.5"></div>
-                    <span>
-                      {t("referral.graduationRequired.reason1")}
-                    </span>
+                    <span>{t("referral.graduationRequired.reason1")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <div className="i-mdi:account-group text-primary w-4 h-4 flex-shrink-0 mt-0.5"></div>
-                    <span>
-                      {t("referral.graduationRequired.reason2")}
-                    </span>
+                    <span>{t("referral.graduationRequired.reason2")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <div className="i-mdi:shield-check text-primary w-4 h-4 flex-shrink-0 mt-0.5"></div>
-                    <span>
-                      {t("referral.graduationRequired.reason3")}
-                    </span>
+                    <span>{t("referral.graduationRequired.reason3")}</span>
                   </li>
                 </ul>
               </div>
@@ -330,9 +324,7 @@ export default function ReferralRoute() {
           <h3 className="text-lg font-medium mb-4">
             {t("referral.preview.title")}
           </h3>
-          <p className="text-gray-300 mb-4">
-            {t("referral.preview.intro")}
-          </p>
+          <p className="text-gray-300 mb-4">{t("referral.preview.intro")}</p>
 
           <div className="grid md:grid-cols-2 gap-4 text-sm">
             <div className="space-y-3">

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "~/i18n";
 import { Icon } from "@iconify/react";
 import { Button } from "./Button";
 
@@ -18,6 +19,7 @@ const CustomMenuEditor: React.FC<CustomMenuEditorProps> = ({
   onChange,
   className = "",
 }) => {
+  const { t } = useTranslation();
   const [menuItems, setMenuItems] = useState<MenuItemData[]>([]);
   const [draggedItem, setDraggedItem] = useState<number | null>(null);
   const [draggedOverItem, setDraggedOverItem] = useState<number | null>(null);
@@ -114,18 +116,18 @@ const CustomMenuEditor: React.FC<CustomMenuEditorProps> = ({
     const errors: string[] = [];
 
     if (item.name.trim() && !item.url.trim()) {
-      errors.push("URL is required when name is provided");
+      errors.push(t("customMenuEditor.urlRequired"));
     }
 
     if (item.url.trim() && !item.name.trim()) {
-      errors.push("Name is required when URL is provided");
+      errors.push(t("customMenuEditor.nameRequired"));
     }
 
     if (item.url.trim()) {
       try {
         new URL(item.url);
       } catch {
-        errors.push("Invalid URL format");
+        errors.push(t("customMenuEditor.invalidUrlFormat"));
       }
     }
 
@@ -144,14 +146,21 @@ const CustomMenuEditor: React.FC<CustomMenuEditorProps> = ({
     ) {
       return {
         type: "error" as const,
-        message: "Please complete all menu items with valid names and URLs",
+        message: t("customMenuEditor.completeAllItems"),
       };
     }
 
     if (validItems.length > 0) {
       return {
         type: "success" as const,
-        message: `${validItems.length} custom menu${validItems.length === 1 ? "" : "s"} configured`,
+        message:
+          validItems.length === 1
+            ? t("customMenuEditor.menusConfigured", {
+                count: validItems.length,
+              })
+            : t("customMenuEditor.menusConfiguredPlural", {
+                count: validItems.length,
+              }),
       };
     }
 
@@ -167,12 +176,11 @@ const CustomMenuEditor: React.FC<CustomMenuEditorProps> = ({
         <div className="flex items-center gap-2">
           <Icon icon="mdi:link-variant" className="w-5 h-5 text-primary" />
           <label className="text-sm font-medium text-gray-200">
-            Custom Navigation Menus
+            {t("customMenuEditor.title")}
           </label>
         </div>
         <p className="text-xs text-gray-400 pl-7">
-          Add custom navigation links that will appear in your DEX's navigation
-          bar
+          {t("customMenuEditor.description")}
         </p>
       </div>
 
@@ -185,10 +193,10 @@ const CustomMenuEditor: React.FC<CustomMenuEditorProps> = ({
               <Icon icon="mdi:link-variant" className="w-6 h-6 text-gray-400" />
             </div>
             <h4 className="text-base font-bold text-gray-300 mb-1">
-              No custom menus yet
+              {t("customMenuEditor.noMenusYet")}
             </h4>
             <p className="text-xs text-gray-500 mb-4">
-              Add your first custom navigation link to get started
+              {t("customMenuEditor.addFirstLink")}
             </p>
             <Button
               type="button"
@@ -197,7 +205,7 @@ const CustomMenuEditor: React.FC<CustomMenuEditorProps> = ({
               className="text-sm px-4 py-2 flex items-center flex-wrap"
               leftIcon={<Icon icon="mdi:plus" className="w-4 h-4" />}
             >
-              Add First Menu
+              {t("customMenuEditor.addFirstMenu")}
             </Button>
           </div>
         ) : (
@@ -206,9 +214,11 @@ const CustomMenuEditor: React.FC<CustomMenuEditorProps> = ({
             {/* Menu Order Header */}
             <div className="flex items-center justify-between">
               <div className="text-base font-bold text-gray-300">
-                Menu Order
+                {t("customMenuEditor.menuOrder")}
               </div>
-              <div className="text-xs text-gray-400">Drag items to reorder</div>
+              <div className="text-xs text-gray-400">
+                {t("customMenuEditor.dragToReorder")}
+              </div>
             </div>
 
             {menuItems.map((item, index) => {
@@ -263,7 +273,7 @@ const CustomMenuEditor: React.FC<CustomMenuEditorProps> = ({
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
                           <label className="block text-xs font-medium text-gray-400 mb-2">
-                            Menu Name
+                            {t("customMenuEditor.menuName")}
                           </label>
                           <input
                             type="text"
@@ -271,14 +281,16 @@ const CustomMenuEditor: React.FC<CustomMenuEditorProps> = ({
                             onChange={e =>
                               updateMenuItem(index, "name", e.target.value)
                             }
-                            placeholder="e.g., Documentation"
+                            placeholder={t(
+                              "customMenuEditor.menuNamePlaceholder"
+                            )}
                             className="w-full px-3 py-2.5 bg-gray-900/50 border border-gray-600/50 rounded-lg text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-colors"
                           />
                         </div>
 
                         <div>
                           <label className="block text-xs font-medium text-gray-400 mb-2">
-                            URL
+                            {t("customMenuEditor.url")}
                           </label>
                           <input
                             type="url"
@@ -313,7 +325,7 @@ const CustomMenuEditor: React.FC<CustomMenuEditorProps> = ({
                         type="button"
                         onClick={() => removeMenuItem(index)}
                         className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
-                        title="Remove menu item"
+                        title={t("customMenuEditor.removeMenuItem")}
                       >
                         <Icon icon="heroicons:trash" className="w-4 h-4" />
                       </button>
@@ -332,7 +344,7 @@ const CustomMenuEditor: React.FC<CustomMenuEditorProps> = ({
                 className="text-sm slide-fade-in-delayed flex items-center flex-wrap"
                 leftIcon={<Icon icon="mdi:plus" className="w-4 h-4" />}
               >
-                Add Another Menu
+                {t("customMenuEditor.addAnotherMenu")}
               </Button>
             </div>
           </div>
@@ -367,21 +379,27 @@ const CustomMenuEditor: React.FC<CustomMenuEditorProps> = ({
             icon="heroicons:light-bulb"
             className="w-4 h-4 text-yellow-400"
           />
-          <span className="text-xs font-medium text-gray-300">Examples</span>
+          <span className="text-xs font-medium text-gray-300">
+            {t("customMenuEditor.examples")}
+          </span>
         </div>
         <div className="space-y-2 text-xs text-gray-400">
           <div className="flex items-center gap-2">
             <span className="text-gray-500">•</span>
             <span>
-              <strong className="text-gray-300">Help Center</strong> →
-              https://help.mydex.com
+              <strong className="text-gray-300">
+                {t("customMenuEditor.helpCenterExample")}
+              </strong>{" "}
+              → https://help.mydex.com
             </span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-gray-500">•</span>
             <span>
-              <strong className="text-gray-300">API Documentation</strong> →
-              https://docs.mydex.com
+              <strong className="text-gray-300">
+                {t("customMenuEditor.apiDocsExample")}
+              </strong>{" "}
+              → https://docs.mydex.com
             </span>
           </div>
         </div>

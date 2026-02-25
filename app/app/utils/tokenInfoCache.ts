@@ -1,3 +1,5 @@
+import { i18n } from "~/i18n";
+
 interface CachedTokenInfo {
   price: number | null;
   logo: string | null;
@@ -47,7 +49,7 @@ async function fetchWithRetry(
     }
   }
 
-  throw lastError || new Error("Max retries exceeded");
+  throw lastError || new Error(i18n.t("error.maxRetriesExceeded"));
 }
 
 function getCacheKey(

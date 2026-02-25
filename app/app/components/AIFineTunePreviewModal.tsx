@@ -1,4 +1,5 @@
 import { FC, useState, useEffect, useRef } from "react";
+import { useTranslation } from "~/i18n";
 import { Button } from "./Button";
 import DexPreview, { DexPreviewProps } from "./DexPreview";
 
@@ -23,6 +24,7 @@ const AIFineTunePreviewModal: FC<AIFineTunePreviewModalProps> = ({
   previewProps,
   viewMode = "desktop",
 }) => {
+  const { t } = useTranslation();
   const [selectedVariant, setSelectedVariant] = useState<"old" | 0 | 1 | 2>(0);
   const originalMatchMediaRef = useRef<typeof window.matchMedia | null>(null);
 
@@ -98,7 +100,7 @@ const AIFineTunePreviewModal: FC<AIFineTunePreviewModalProps> = ({
     >
       <div className="flex items-center justify-between p-4 border-b border-light/10">
         <h2 className="text-lg font-bold text-gray-200">
-          Preview Fine-Tune Changes
+          {t("aiFineTunePreviewModal.title")}
         </h2>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 bg-background-card border border-light/20 rounded-lg p-1">
@@ -111,7 +113,7 @@ const AIFineTunePreviewModal: FC<AIFineTunePreviewModalProps> = ({
               }`}
               type="button"
             >
-              Old
+              {t("aiFineTunePreviewModal.old")}
             </button>
             {[0, 1, 2].map(index => (
               <button
@@ -134,7 +136,7 @@ const AIFineTunePreviewModal: FC<AIFineTunePreviewModalProps> = ({
             size="md"
             type="button"
           >
-            Reject
+            {t("aiFineTunePreviewModal.reject")}
           </Button>
           <Button
             onClick={handleApply}
@@ -143,7 +145,9 @@ const AIFineTunePreviewModal: FC<AIFineTunePreviewModalProps> = ({
             type="button"
             disabled={selectedVariant === "old"}
           >
-            {selectedVariant === "old" ? "Select a Variant" : "Accept Changes"}
+            {selectedVariant === "old"
+              ? t("aiFineTunePreviewModal.selectVariant")
+              : t("aiFineTunePreviewModal.acceptChanges")}
           </Button>
         </div>
       </div>

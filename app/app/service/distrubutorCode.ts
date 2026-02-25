@@ -1,8 +1,9 @@
 import { get, post } from "../net/fetch";
+import { i18n } from "~/i18n";
 
 /** verify distributor code from api */
 export async function verifyDistributorCodeMessage(distributorCode: string) {
-  const message = "Distributor code is not exists.";
+  const message = i18n.t("distributor.codeNotExists");
   try {
     const res = await verifyDistributorCode(distributorCode);
     if (res) {

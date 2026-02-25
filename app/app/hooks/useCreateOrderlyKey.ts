@@ -2,8 +2,10 @@ import { useState } from "react";
 import { useOrderlyKey } from "../context/OrderlyKeyContext";
 import { toast } from "react-toastify";
 import { useModal } from "../context/ModalContext";
+import { useTranslation } from "~/i18n";
 
 export function useCreateOrderlyKey() {
+  const { t } = useTranslation();
   const [isCreatingKey, setIsCreatingKey] = useState(false);
   const { openModal } = useModal();
 
@@ -31,7 +33,7 @@ export function useCreateOrderlyKey() {
       });
     } catch (error) {
       console.error("Failed to create orderly key:", error);
-      toast.error("Failed to create orderly key");
+      toast.error(t("orderlyKey.createFailed"));
     } finally {
       setIsCreatingKey(false);
     }

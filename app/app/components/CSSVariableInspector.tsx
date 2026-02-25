@@ -1,4 +1,5 @@
 import { FC, useState, useEffect, useRef, useCallback } from "react";
+import { useTranslation } from "~/i18n";
 import {
   extractCSSVariablesFromElement,
   getElementPath,
@@ -44,6 +45,7 @@ const CSSVariableInspector: FC<CSSVariableInspectorProps> = ({
   previewProps,
   viewMode = "desktop",
 }) => {
+  const { t } = useTranslation();
   const { openModal } = useModal();
   const [variables, setVariables] = useState<
     ReturnType<typeof extractCSSVariablesFromElement>
@@ -397,7 +399,9 @@ const CSSVariableInspector: FC<CSSVariableInspectorProps> = ({
         className="flex items-center justify-between mb-4 cursor-grab active:cursor-grabbing"
         onMouseDown={handleMouseDown}
       >
-        <h3 className="text-sm font-bold text-gray-200">CSS Variables</h3>
+        <h3 className="text-sm font-bold text-gray-200">
+          {t("cssVariableInspector.title")}
+        </h3>
         <button
           onClick={onClose}
           className="text-gray-400 hover:text-gray-200 transition-colors"
@@ -449,7 +453,7 @@ const CSSVariableInspector: FC<CSSVariableInspectorProps> = ({
         <div className="mb-3 pt-3 border-t border-light/10">
           <h4 className="text-xs font-semibold text-gray-300 mb-2 flex items-center gap-1">
             <div className="i-mdi:magic-wand h-3 w-3 text-primary-light"></div>
-            AI Fine-Tune Overrides
+            {t("cssVariableInspector.aiFineTuneOverrides")}
           </h4>
           <div className="space-y-2 max-h-48 overflow-y-auto">
             {aiFineTuneRules.map((rule, index) => {
@@ -474,14 +478,14 @@ const CSSVariableInspector: FC<CSSVariableInspectorProps> = ({
                           className="text-xs text-primary-light hover:text-primary-light/80 transition-colors"
                           type="button"
                         >
-                          Edit
+                          {t("cssVariableInspector.edit")}
                         </button>
                         <button
                           onClick={() => handleRuleDelete(index)}
                           className="text-xs text-red-400 hover:text-red-300 transition-colors"
                           type="button"
                         >
-                          Delete
+                          {t("cssVariableInspector.delete")}
                         </button>
                       </div>
                     )}
@@ -492,7 +496,9 @@ const CSSVariableInspector: FC<CSSVariableInspectorProps> = ({
                         value={propertiesToShow}
                         onChange={e => setEditRuleProperties(e.target.value)}
                         className="w-full bg-background-dark border border-light/20 rounded px-2 py-1 text-xs text-gray-200 font-mono min-h-[60px] resize-y"
-                        placeholder="CSS properties..."
+                        placeholder={t(
+                          "cssVariableInspector.cssPropertiesPlaceholder"
+                        )}
                       />
                       <div className="flex gap-2">
                         <Button
@@ -501,7 +507,7 @@ const CSSVariableInspector: FC<CSSVariableInspectorProps> = ({
                           size="xs"
                           type="button"
                         >
-                          Save
+                          {t("cssVariableInspector.save")}
                         </Button>
                         <Button
                           onClick={handleCancel}
@@ -509,7 +515,7 @@ const CSSVariableInspector: FC<CSSVariableInspectorProps> = ({
                           size="xs"
                           type="button"
                         >
-                          Cancel
+                          {t("cssVariableInspector.cancel")}
                         </Button>
                       </div>
                     </div>
@@ -544,17 +550,17 @@ const CSSVariableInspector: FC<CSSVariableInspectorProps> = ({
             data-modal-header-button="true"
           >
             <div className="i-mdi:magic-wand h-4 w-4"></div>
-            <span>AI Fine-Tune This Element</span>
+            <span>{t("cssVariableInspector.aiFineTuneButton")}</span>
           </button>
           <p className="text-xs text-gray-400 mt-2 text-center">
-            Use AI to customize this element and its children
+            {t("cssVariableInspector.aiFineTuneHint")}
           </p>
         </div>
       )}
 
       {variables.length === 0 ? (
         <div className="text-xs text-gray-400 text-center py-4">
-          No CSS variables found for this element
+          {t("cssVariableInspector.noVariablesFound")}
         </div>
       ) : (
         <div className="space-y-2">
@@ -581,7 +587,7 @@ const CSSVariableInspector: FC<CSSVariableInspectorProps> = ({
                       className="text-xs text-primary-light hover:text-primary-light/80 transition-colors"
                       type="button"
                     >
-                      Edit
+                      {t("cssVariableInspector.edit")}
                     </button>
                   )}
                 </div>
@@ -608,6 +614,7 @@ const CSSVariableInspector: FC<CSSVariableInspectorProps> = ({
                           type="text"
                           value={editValue}
                           onChange={e => setEditValue(e.target.value)}
+                          // i18n-ignore
                           placeholder="R G B"
                           className="flex-1 bg-background-dark border border-light/20 rounded px-2 py-1 text-xs text-gray-200 font-mono"
                         />
@@ -627,7 +634,7 @@ const CSSVariableInspector: FC<CSSVariableInspectorProps> = ({
                         size="xs"
                         type="button"
                       >
-                        Save
+                        {t("cssVariableInspector.save")}
                       </Button>
                       <Button
                         onClick={handleCancel}
@@ -635,7 +642,7 @@ const CSSVariableInspector: FC<CSSVariableInspectorProps> = ({
                         size="xs"
                         type="button"
                       >
-                        Cancel
+                        {t("cssVariableInspector.cancel")}
                       </Button>
                     </div>
                   </div>

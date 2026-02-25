@@ -98,16 +98,13 @@ export const referral = {
     "Orderly key required to update settings",
   "referral.multiLevel.validVolume":
     "Please enter a valid minimum trading volume",
-  "referral.multiLevel.validCommission":
-    "Please enter a valid commission rate",
-  "referral.multiLevel.commissionMax100":
-    "Commission rate cannot exceed 100%",
+  "referral.multiLevel.validCommission": "Please enter a valid commission rate",
+  "referral.multiLevel.commissionMax100": "Commission rate cannot exceed 100%",
   "referral.multiLevel.saved": "Referral settings updated successfully",
   "referral.multiLevel.saveFailed": "Failed to save multi-level settings",
   "referral.multiLevel.protectUsersNotice":
     "To protect existing users, you can only increase the default commission rate once referral codes are generated.",
-  "referral.multiLevel.minVolumeLabel":
-    "Minimum trading volume (USDC)",
+  "referral.multiLevel.minVolumeLabel": "Minimum trading volume (USDC)",
   "referral.multiLevel.minVolumeHint":
     "Users must meet this volume requirement to generate referral codes. Set to 0 to allow all users.",
   "referral.multiLevel.defaultCommissionLabel": "Default commission rate",
@@ -143,8 +140,7 @@ export const referral = {
   "referral.singleLevel.autoProgram.title": "Auto Referral Program",
   "referral.singleLevel.autoProgram.hint":
     "Enable automatic enrollment for users who meet trading requirements",
-  "referral.singleLevel.requiredVolumeLabel":
-    "Required Trading Volume (USDC)",
+  "referral.singleLevel.requiredVolumeLabel": "Required Trading Volume (USDC)",
   "referral.singleLevel.requiredVolumeHint":
     "Minimum trading volume required to join referral program",
   "referral.singleLevel.maxRebateLabel": "Max Rebate (%)",
@@ -166,6 +162,5 @@ export const referral = {
   "referral.singleLevel.status": "Status:",
   "referral.singleLevel.statusEnabled": "Enabled",
   "referral.singleLevel.statusDisabled": "Disabled",
-  "referral.singleLevel.mlrActivatedBanner":
-    "Multi-Level Referral activated.",
+  "referral.singleLevel.mlrActivatedBanner": "Multi-Level Referral activated.",
 };

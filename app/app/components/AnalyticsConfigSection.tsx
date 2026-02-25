@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation, Trans } from "~/i18n";
 
 interface AnalyticsConfigSectionProps {
   analyticsScript: string;
@@ -13,6 +14,7 @@ const AnalyticsConfigSection: React.FC<AnalyticsConfigSectionProps> = ({
   handleInputChange,
   idPrefix = "",
 }) => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
@@ -20,14 +22,14 @@ const AnalyticsConfigSection: React.FC<AnalyticsConfigSectionProps> = ({
           htmlFor={`${idPrefix}analyticsScript`}
           className="text-sm font-medium text-gray-200"
         >
-          Analytics Script
+          {t("analyticsConfigSection.label")}
         </label>
         <textarea
           id={`${idPrefix}analyticsScript`}
           name="analyticsScript"
           value={analyticsScript}
           onChange={handleInputChange("analyticsScript")}
-          placeholder="Paste your analytics script here (including <script> tags)&#10;&#10;Example:&#10;<script async src='https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX'></script>&#10;<script>&#10;  window.dataLayer = window.dataLayer || [];&#10;  function gtag(){dataLayer.push(arguments);}&#10;  gtag('js', new Date());&#10;  gtag('config', 'G-XXXXXXXXXX');&#10;</script>"
+          placeholder={t("analyticsConfigSection.placeholder")}
           className="w-full px-3 py-2 bg-background-light/30 border border-light/20 rounded-lg text-sm font-mono resize-y min-h-[160px] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50"
           maxLength={2000}
         />
@@ -36,20 +38,19 @@ const AnalyticsConfigSection: React.FC<AnalyticsConfigSectionProps> = ({
             <div className="i-heroicons:information-circle w-4 h-4" />
           </div>
           <div className="flex-1">
-            <p className="mb-2">
-              Add your analytics tracking script from any provider that uses
-              script tags. The script will be securely injected into your DEX.
-            </p>
+            <p className="mb-2">{t("analyticsConfigSection.addScriptDesc")}</p>
             <p>
-              <strong>Note:</strong> Include the complete script tags exactly as
-              provided by your analytics service. The script will be placed in
-              the DEX's HTML head section.
+              <Trans
+                i18nKey="analyticsConfigSection.noteDesc"
+                components={[<strong key="0" />]}
+              />
             </p>
           </div>
         </div>
         {analyticsScript && (
           <p className="text-xs text-gray-500">
-            {analyticsScript.length} / 2,000 characters
+            {analyticsScript.length} / 2,000{" "}
+            {t("analyticsConfigSection.characters")}
           </p>
         )}
       </div>

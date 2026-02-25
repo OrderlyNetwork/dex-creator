@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "~/i18n";
 import { useWalletClient, useChainId, useSwitchChain } from "wagmi";
 import { formatUnits } from "viem";
 import { BrowserProvider, ethers, JsonRpcProvider } from "ethers";
@@ -42,6 +43,7 @@ export function SwapFeeWithdrawalModal({
   onClose,
   address,
 }: SwapFeeWithdrawalModalProps) {
+  const { t } = useTranslation();
   const { data: walletClient } = useWalletClient();
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
@@ -224,17 +226,17 @@ export function SwapFeeWithdrawalModal({
             tokens: [],
             totalUsd: 0,
             isLoading: false,
-            error: "Failed to load fees",
+            error: t("swapFeeWithdrawalModal.failedToLoadFees"),
           },
         }));
       }
     },
-    [address]
+    [address, t]
   );
 
   const handleClaimFees = async (chainName: SwapFeeSupportedChainName) => {
     if (!walletClient || !address) {
-      toast.error("Please connect your wallet first");
+      toast.error(t("swapFeeWithdrawalModal.pleaseConnectWallet"));
       return;
     }
 
@@ -242,18 +244,24 @@ export function SwapFeeWithdrawalModal({
     const chainData = chainFeesData[chainName];
 
     if (!chainData || chainData.tokens.length === 0) {
-      toast.error("No fees available to claim on this chain");
+      toast.error(t("swapFeeWithdrawalModal.noFeesAvailableToClaim"));
       return;
     }
 
     if (chainId !== chainConfig.chainId) {
       try {
         await switchChain({ chainId: chainConfig.chainId });
-        toast.info(`Switched to ${chainConfig.name}. Please claim again.`);
+        toast.info(
+          t("swapFeeWithdrawalModal.switchedToChainPleaseClaimAgain", {
+            chainName: chainConfig.name,
+          })
+        );
       } catch (error) {
         console.error("Failed to switch chain:", error);
         toast.error(
-          `Please switch to ${chainConfig.name} in your wallet to claim`
+          t("swapFeeWithdrawalModal.pleaseSwitchToChainToClaim", {
+            chainName: chainConfig.name,
+          })
         );
       }
       return;
@@ -271,17 +279,23 @@ export function SwapFeeWithdrawalModal({
 
       const tokenAddresses = chainData.tokens.map(t => t.address);
       const tx = await contract.claimBrokerFee(tokenAddresses);
-      toast.info("Transaction submitted. Waiting for confirmation...");
+      toast.info(t("swapFeeWithdrawalModal.transactionSubmittedWaiting"));
 
       await tx.wait();
 
-      toast.success(`Swap fees claimed successfully on ${chainConfig.name}!`);
+      toast.success(
+        t("swapFeeWithdrawalModal.swapFeesClaimedSuccessfully", {
+          chainName: chainConfig.name,
+        })
+      );
 
       await loadFeesForChain(chainName);
     } catch (error) {
       console.error("Error claiming swap fees:", error);
       toast.error(
-        error instanceof Error ? error.message : "Failed to claim swap fees"
+        error instanceof Error
+          ? error.message
+          : t("swapFeeWithdrawalModal.failedToClaimSwapFees")
       );
     } finally {
       setIsClaimingOnChain(null);
@@ -314,7 +328,7 @@ export function SwapFeeWithdrawalModal({
         <div className="flex items-center justify-between p-4 border-b border-light/10">
           <h2 className="text-lg font-semibold text-white flex items-center gap-2">
             <div className="i-mdi:swap-horizontal text-blue-400 h-6 w-6"></div>
-            Swap Fee Revenue
+            {t("swapFeeWithdrawalModal.swapFeeRevenue")}
           </h2>
           <button
             onClick={onClose}
@@ -330,12 +344,10 @@ export function SwapFeeWithdrawalModal({
               <div className="i-mdi:information-outline text-info w-4 h-4 mt-0.5 flex-shrink-0"></div>
               <div>
                 <p className="text-xs text-info font-medium mb-1">
-                  Multi-Chain Swap Fees
+                  {t("swapFeeWithdrawalModal.multiChainSwapFees")}
                 </p>
                 <p className="text-xs text-gray-400">
-                  Your swap fees are tracked separately on each chain. You need
-                  to claim fees on each chain individually by switching to that
-                  network.
+                  {t("swapFeeWithdrawalModal.swapFeesTrackedPerChain")}
                 </p>
               </div>
             </div>
@@ -361,7 +373,7 @@ export function SwapFeeWithdrawalModal({
                     <div className="flex items-center gap-2">
                       <div className="i-mdi:cash-multiple text-success h-5 w-5"></div>
                       <span className="text-sm font-medium text-success">
-                        Total Claimable
+                        {t("swapFeeWithdrawalModal.totalClaimable")}
                       </span>
                     </div>
                     <div className="text-2xl font-bold text-success">
@@ -393,7 +405,7 @@ export function SwapFeeWithdrawalModal({
                       </div>
                       {isOnThisChain && (
                         <div className="bg-success/20 text-success text-xs px-2 py-0.5 rounded-full">
-                          Connected
+                          {t("swapFeeWithdrawalModal.connected")}
                         </div>
                       )}
                     </div>
@@ -408,7 +420,7 @@ export function SwapFeeWithdrawalModal({
                     <div className="flex items-center justify-center py-4">
                       <div className="i-mdi:loading text-primary animate-spin mr-2 h-5 w-5"></div>
                       <span className="text-sm text-gray-400">
-                        Loading fees...
+                        {t("swapFeeWithdrawalModal.loadingFees")}
                       </span>
                     </div>
                   ) : chainData?.error ? (
@@ -459,7 +471,7 @@ export function SwapFeeWithdrawalModal({
                                   </div>
                                   {token.isNative ? (
                                     <div className="text-xs text-gray-500">
-                                      Native Token
+                                      {t("swapFeeWithdrawalModal.nativeToken")}
                                     </div>
                                   ) : (
                                     <a
@@ -495,13 +507,13 @@ export function SwapFeeWithdrawalModal({
                         variant={isOnThisChain ? "primary" : "secondary"}
                         className="w-full"
                         isLoading={isClaimingOnChain === chainName}
-                        loadingText="Claiming..."
+                        loadingText={t("swapFeeWithdrawalModal.claiming")}
                       >
                         <span className="flex items-center justify-center gap-2">
                           {isOnThisChain ? (
                             <>
                               <div className="i-mdi:cash-multiple h-4 w-4"></div>
-                              Claim Fees
+                              {t("swapFeeWithdrawalModal.claimFees")}
                               {chainData.totalUsd > 0 && (
                                 <span className="text-xs opacity-80">
                                   (${chainData.totalUsd.toFixed(2)})
@@ -511,7 +523,7 @@ export function SwapFeeWithdrawalModal({
                           ) : (
                             <>
                               <div className="i-mdi:swap-horizontal h-4 w-4"></div>
-                              Switch & Claim
+                              {t("swapFeeWithdrawalModal.switchAndClaim")}
                               {chainData.totalUsd > 0 && (
                                 <span className="text-xs opacity-80">
                                   (${chainData.totalUsd.toFixed(2)})
@@ -526,7 +538,9 @@ export function SwapFeeWithdrawalModal({
                     <div className="text-center py-3">
                       <div className="i-mdi:information-outline text-gray-500 h-6 w-6 mx-auto mb-1"></div>
                       <p className="text-xs text-gray-500">
-                        No fees available to claim
+                        {t(
+                          "swapFeeWithdrawalModal.noFeesAvailableToClaimShort"
+                        )}
                       </p>
                     </div>
                   )}
@@ -545,12 +559,12 @@ export function SwapFeeWithdrawalModal({
                 <div className="i-mdi:alert text-warning w-5 h-5 mt-0.5 flex-shrink-0"></div>
                 <div>
                   <p className="text-xs text-warning font-medium mb-1">
-                    Unsupported Network
+                    {t("swapFeeWithdrawalModal.unsupportedNetwork")}
                   </p>
                   <p className="text-xs text-gray-400">
-                    You're currently on {currentChainConfig.name}. To claim
-                    fees, please switch to one of the supported chains:
-                    Ethereum, Arbitrum, or Base.
+                    {t("swapFeeWithdrawalModal.unsupportedNetworkDesc", {
+                      chainName: currentChainConfig.name,
+                    })}
                   </p>
                 </div>
               </div>

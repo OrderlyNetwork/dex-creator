@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useTranslation } from "~/i18n";
 import FuzzySearchInput from "./FuzzySearchInput";
 import { ALL_REGIONS } from "../utils/regions";
 
@@ -15,6 +16,7 @@ export default function ServiceRestrictionsSection({
   whitelistedIps,
   onWhitelistedIpsChange,
 }: ServiceRestrictionsSectionProps) {
+  const { t } = useTranslation();
   const [regionSearchQuery, setRegionSearchQuery] = useState("");
   const [filteredRegions, setFilteredRegions] = useState<string[]>([]);
   // const [ipInput, setIpInput] = useState("");
@@ -120,14 +122,14 @@ export default function ServiceRestrictionsSection({
     >
       <div>
         <label className={`block text-sm font-bold mb-2`}>
-          Restricted Regions
+          {t("serviceRestrictionsSection.restrictedRegions")}
         </label>
         <p className="text-xs text-gray-400 mb-2">
-          Select regions that should be restricted from accessing your DEX.
+          {t("serviceRestrictionsSection.restrictedRegionsDesc")}
         </p>
 
         <FuzzySearchInput
-          placeholder="Search for a region..."
+          placeholder={t("serviceRestrictionsSection.searchForRegion")}
           value={regionSearchQuery}
           onSearch={handleRegionSearch}
           className="mb-2"

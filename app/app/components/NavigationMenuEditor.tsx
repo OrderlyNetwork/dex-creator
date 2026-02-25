@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { cn } from "~/utils/css";
+import { i18n, useTranslation } from "~/i18n";
 
 interface NavigationMenuEditorProps {
   value: string;
@@ -9,81 +10,59 @@ interface NavigationMenuEditorProps {
   onOpenSwapFeeConfig: () => void;
 }
 
-export const AVAILABLE_MENUS = [
-  {
-    id: "Trading",
-    label: "Trading",
-    icon: "i-mdi:chart-line",
-    isDefault: true,
-  },
-  {
-    id: "Portfolio",
-    label: "Portfolio",
-    icon: "i-mdi:wallet-outline",
-    isDefault: true,
-  },
-  {
-    id: "Markets",
-    label: "Markets",
-    icon: "i-mdi:chart-box-outline",
-    isDefault: true,
-  },
-  {
-    id: "Leaderboard",
-    label: "Leaderboard",
-    icon: "i-mdi:trophy-outline",
-    isDefault: true,
-  },
-  {
-    id: "Swap",
-    label: "Swap",
-    icon: "i-mdi:swap-horizontal",
-    isDefault: false,
-  },
-  {
-    id: "Rewards",
-    label: "Rewards",
-    icon: "i-mdi:gift-outline",
-    isDefault: false,
-  },
-  {
-    id: "Vaults",
-    label: "Vaults",
-    icon: "i-mdi:shield-outline",
-    isDefault: false,
-  },
-  {
-    id: "Points",
-    label: "Points",
-    icon: "i-mdi:trophy",
-    isDefault: false,
-    editable: false,
-  },
-];
-
-const MENU_INFO: Record<
-  string,
-  { title: string; description: string; color: string }
-> = {
-  Swap: {
-    title: "Swap Page Features:",
-    description:
-      "The Swap page allows users to exchange tokens seamlessly across multiple chains. Powered by WOOFi, this feature provides efficient token swapping with competitive rates and deep liquidity across supported networks.",
-    color: "blue",
-  },
-  Rewards: {
-    title: "Rewards Page Requirement:",
-    description:
-      "The Rewards page (which includes referral management) can only be fully utilized after your DEX has been graduated. You can enable the Rewards menu now, but referral features will only become active once you graduate your DEX and start earning fee splits.",
-    color: "warning",
-  },
-  Vaults: {
-    title: "Vaults Page Features:",
-    description:
-      "The Vaults page enables users to earn passive yield through automated trading strategies and yield farming. Users can deposit USDC into curated vault strategies that deploy market-making strategies, handle liquidations, and accrue platform fees. This feature works across multiple blockchains with no gas fees for deposits from your DEX account.",
-    color: "success",
-  },
-};
+export function getAvailableMenus() {
+  return [
+    {
+      id: "Trading",
+      label: i18n.t("navigationMenuEditor.menuTrading"),
+      icon: "i-mdi:chart-line",
+      isDefault: true,
+    },
+    {
+      id: "Portfolio",
+      label: i18n.t("navigationMenuEditor.menuPortfolio"),
+      icon: "i-mdi:wallet-outline",
+      isDefault: true,
+    },
+    {
+      id: "Markets",
+      label: i18n.t("navigationMenuEditor.menuMarkets"),
+      icon: "i-mdi:chart-box-outline",
+      isDefault: true,
+    },
+    {
+      id: "Leaderboard",
+      label: i18n.t("navigationMenuEditor.menuLeaderboard"),
+      icon: "i-mdi:trophy-outline",
+      isDefault: true,
+    },
+    {
+      id: "Swap",
+      label: i18n.t("navigationMenuEditor.menuSwap"),
+      icon: "i-mdi:swap-horizontal",
+      isDefault: false,
+    },
+    {
+      id: "Rewards",
+      label: i18n.t("navigationMenuEditor.menuRewards"),
+      icon: "i-mdi:gift-outline",
+      isDefault: false,
+    },
+    {
+      id: "Vaults",
+      label: i18n.t("navigationMenuEditor.menuVaults"),
+      icon: "i-mdi:shield-outline",
+      isDefault: false,
+    },
+    {
+      id: "Points",
+      label: i18n.t("navigationMenuEditor.menuPoints"),
+      icon: "i-mdi:trophy",
+      isDefault: false,
+      editable: false,
+    },
+  ];
+}
 
 const NavigationMenuEditor: React.FC<NavigationMenuEditorProps> = ({
   value,
@@ -92,6 +71,7 @@ const NavigationMenuEditor: React.FC<NavigationMenuEditorProps> = ({
   swapFeeBps,
   onOpenSwapFeeConfig,
 }) => {
+  const { t } = useTranslation();
   const parseMenus = useCallback((menuString: string): string[] => {
     if (!menuString) return [];
     return menuString
@@ -99,6 +79,28 @@ const NavigationMenuEditor: React.FC<NavigationMenuEditorProps> = ({
       .map(item => item.trim())
       .filter(Boolean);
   }, []);
+
+  const AVAILABLE_MENUS = useMemo(() => getAvailableMenus(), [t]);
+
+  const MENU_INFO = useMemo(() => {
+    return {
+      Swap: {
+        title: t("navigationMenuEditor.swapPageFeatures"),
+        description: t("navigationMenuEditor.swapPageFeaturesDesc"),
+        color: "blue",
+      },
+      Rewards: {
+        title: t("navigationMenuEditor.rewardsPageRequirement"),
+        description: t("navigationMenuEditor.rewardsPageRequirementDesc"),
+        color: "warning",
+      },
+      Vaults: {
+        title: t("navigationMenuEditor.vaultsPageFeatures"),
+        description: t("navigationMenuEditor.vaultsPageFeaturesDesc"),
+        color: "success",
+      },
+    } as Record<string, { title: string; description: string; color: string }>;
+  }, [t]);
 
   // save initial menus, used to prevent editing disabled menus, don't add "value" to the dependency array
   const initialMenus = useMemo(() => parseMenus(value), [parseMenus]);
@@ -194,14 +196,10 @@ const NavigationMenuEditor: React.FC<NavigationMenuEditorProps> = ({
         <div className="i-mdi:information-outline h-5 w-5 mr-2 text-primary-light flex-shrink-0 mt-0.5"></div>
         <div className="text-gray-300">
           <p className="mb-1">
-            Configuring navigation menus is{" "}
-            <span className="text-primary-light font-medium">optional</span>. If
-            you don't select any menus, the default menus will be displayed.
+            {t("navigationMenuEditor.configuringOptional")}
           </p>
           <p className="text-xs text-gray-400">
-            Default navigation includes: Trading, Portfolio, Markets, and
-            Leaderboard pages. The Rewards page includes referral management and
-            trader incentives.
+            {t("navigationMenuEditor.defaultNavigationIncludes")}
           </p>
         </div>
       </div>
@@ -248,7 +246,8 @@ const NavigationMenuEditor: React.FC<NavigationMenuEditorProps> = ({
                 <div className="flex items-center space-x-2">
                   <div className={`${menu.icon} h-5 w-5`}></div>
                   <span>
-                    {menu.label} {menu.isDefault && "(Default)"}
+                    {menu.label}{" "}
+                    {menu.isDefault && `(${t("navigationMenuEditor.default")})`}
                   </span>
                 </div>
               </label>
@@ -263,7 +262,7 @@ const NavigationMenuEditor: React.FC<NavigationMenuEditorProps> = ({
                       ? "bg-primary/20 text-primary-light"
                       : "bg-dark/50 hover:bg-dark/70 text-gray-400"
                   }`}
-                  title="Show information"
+                  title={t("navigationMenuEditor.showInformation")}
                 >
                   <div className="i-mdi:information-outline h-5 w-5"></div>
                 </button>
@@ -314,8 +313,12 @@ const NavigationMenuEditor: React.FC<NavigationMenuEditorProps> = ({
       {enabledMenus.length > 0 && (
         <>
           <div className="flex items-center justify-between">
-            <div className="text-base font-bold">Menu Order</div>
-            <div className="text-xs text-gray-400">Drag items to reorder</div>
+            <div className="text-base font-bold">
+              {t("navigationMenuEditor.menuOrder")}
+            </div>
+            <div className="text-xs text-gray-400">
+              {t("navigationMenuEditor.dragItemsToReorder")}
+            </div>
           </div>
 
           <div className="border border-light/10 rounded-lg p-2 bg-dark/30">
@@ -369,7 +372,9 @@ const NavigationMenuEditor: React.FC<NavigationMenuEditorProps> = ({
                               : "bg-warning text-dark hover:bg-warning/90 animate-pulse"
                           }`}
                         >
-                          {swapFeeBps !== null ? "Edit Fee" : "⚠️ Set Fee"}
+                          {swapFeeBps !== null
+                            ? t("navigationMenuEditor.editFee")
+                            : t("navigationMenuEditor.setFee")}
                         </button>
                       )}
                       <div className="text-xs px-2 py-1 rounded-full bg-dark/50 text-gray-400">
@@ -387,7 +392,7 @@ const NavigationMenuEditor: React.FC<NavigationMenuEditorProps> = ({
       {enabledMenus.length === 0 && (
         <div className="text-sm text-warning border border-warning/20 bg-warning/10 p-3 rounded flex items-center">
           <div className="i-mdi:alert-circle-outline h-5 w-5 mr-2"></div>
-          <span>No menu items selected. Default menus will be displayed.</span>
+          <span>{t("navigationMenuEditor.noMenuItemsSelected")}</span>
         </div>
       )}
     </div>

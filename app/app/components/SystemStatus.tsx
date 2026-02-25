@@ -1,15 +1,17 @@
 import React from "react";
 import { clsx } from "clsx";
+import { useTranslation } from "~/i18n";
 
 interface SystemStatusProps {
   isMaintenance: boolean;
 }
 
 const SystemStatus: React.FC<SystemStatusProps> = props => {
+  const { t } = useTranslation();
   const { isMaintenance } = props;
   const statusText = isMaintenance
-    ? "System under maintenance."
-    : "All systems operational.";
+    ? t("systemStatus.maintenance")
+    : t("systemStatus.operational");
 
   return (
     <div

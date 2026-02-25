@@ -1,4 +1,5 @@
 import { ValidationFunction } from "../components/FormInput";
+import { i18n } from "~/i18n";
 
 /**
  * Interface for Zod error structure
@@ -18,7 +19,9 @@ interface ZodError {
 export const required =
   (fieldName: string): ValidationFunction =>
   (value: string) => {
-    return value.trim() === "" ? `${fieldName} is required` : null;
+    return value.trim() === ""
+      ? i18n.t("validation.required", { fieldName })
+      : null;
   };
 
 /**
@@ -38,7 +41,7 @@ export const validateUrl =
       new URL(value);
       return null;
     } catch {
-      return "Please enter a valid URL";
+      return i18n.t("validation.urlInvalid");
     }
   };
 
@@ -52,7 +55,7 @@ export const minLength =
   (length: number, fieldName: string): ValidationFunction =>
   (value: string) => {
     return value.trim().length < length
-      ? `${fieldName} must be at least ${length} characters`
+      ? i18n.t("validation.minLength", { fieldName, length })
       : null;
   };
 
@@ -66,7 +69,7 @@ export const maxLength =
   (length: number, fieldName: string): ValidationFunction =>
   (value: string) => {
     return value.trim().length > length
-      ? `${fieldName} cannot exceed ${length} characters`
+      ? i18n.t("validation.maxLength", { fieldName, length })
       : null;
   };
 
@@ -80,7 +83,7 @@ export const alphanumericWithSpecialChars =
   (value: string) => {
     const regex = /^[a-zA-Z0-9 .\-_]*$/;
     return !regex.test(value.trim())
-      ? `${fieldName} can only contain letters, numbers, spaces, dots, hyphens, and underscores`
+      ? i18n.t("validation.alphanumericWithSpecialChars", { fieldName })
       : null;
   };
 
@@ -95,23 +98,23 @@ export const validateBrokerId =
     const trimmedValue = value.trim();
 
     if (trimmedValue.length < 5) {
-      return "Broker ID must be at least 5 characters";
+      return i18n.t("validation.brokerIdMinLength");
     }
 
     if (trimmedValue.length > 15) {
-      return "Broker ID cannot exceed 15 characters";
+      return i18n.t("validation.brokerIdMaxLength");
     }
 
     if (!/^[a-z0-9_-]+$/.test(trimmedValue)) {
-      return "Broker ID must contain only lowercase letters, numbers, hyphens, and underscores";
+      return i18n.t("validation.brokerIdFormat");
     }
 
     if (trimmedValue.includes("orderly")) {
-      return "Broker ID cannot contain 'orderly'";
+      return i18n.t("validation.brokerIdNoOrderly");
     }
 
     if (existingBrokerIds.includes(trimmedValue)) {
-      return "This broker ID is already taken. Please choose another one.";
+      return i18n.t("validation.brokerIdTaken");
     }
 
     return null;
@@ -142,7 +145,7 @@ export const parseZodError = (errorResponse: any): string => {
     }
   }
 
-  return errorResponse.message || "An error occurred";
+  return errorResponse.message || i18n.t("validation.errorOccurred");
 };
 
 /**
@@ -170,7 +173,7 @@ export const optionalMinLength =
   (length: number, fieldName: string): ValidationFunction =>
   (value: string) => {
     if (value && value.trim().length < length) {
-      return `${fieldName} must be at least ${length} characters`;
+      return i18n.t("validation.minLength", { fieldName, length });
     }
     return null;
   };
@@ -185,6 +188,6 @@ export const alphanumeric =
   (value: string) => {
     const regex = /^[a-zA-Z0-9]*$/;
     return !regex.test(value.trim())
-      ? `${fieldName} can only contain letters, numbers`
+      ? i18n.t("validation.alphanumeric", { fieldName })
       : null;
   };

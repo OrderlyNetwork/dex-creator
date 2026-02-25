@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { i18n, useTranslation } from "~/i18n";
 import { extractFontValues as extractFontValuesUtil } from "../utils/cssParser";
 
 interface ThemeFontControlsProps {
@@ -16,67 +17,67 @@ const FONT_FAMILIES = [
     name: "Manrope",
     value: "'Manrope', sans-serif",
     preview: "Manrope",
-    category: "Default",
+    category: i18n.t("themeFontControls.category.default"),
   },
   {
     name: "Roboto",
     value: "'Roboto', sans-serif",
     preview: "Roboto",
-    category: "Modern",
+    category: i18n.t("themeFontControls.category.modern"),
   },
   {
     name: "Open Sans",
     value: "'Open Sans', sans-serif",
     preview: "Open Sans",
-    category: "Readable",
+    category: i18n.t("themeFontControls.category.readable"),
   },
   {
     name: "Lato",
     value: "'Lato', sans-serif",
     preview: "Lato",
-    category: "Readable",
+    category: i18n.t("themeFontControls.category.readable"),
   },
   {
     name: "Poppins",
     value: "'Poppins', sans-serif",
     preview: "Poppins",
-    category: "Modern",
+    category: i18n.t("themeFontControls.category.modern"),
   },
   {
     name: "Source Sans Pro",
     value: "'Source Sans Pro', sans-serif",
     preview: "Source Sans Pro",
-    category: "Readable",
+    category: i18n.t("themeFontControls.category.readable"),
   },
   {
     name: "Nunito",
     value: "'Nunito', sans-serif",
     preview: "Nunito",
-    category: "Friendly",
+    category: i18n.t("themeFontControls.category.friendly"),
   },
   {
     name: "Montserrat",
     value: "'Montserrat', sans-serif",
     preview: "Montserrat",
-    category: "Modern",
+    category: i18n.t("themeFontControls.category.modern"),
   },
   {
     name: "Raleway",
     value: "'Raleway', sans-serif",
     preview: "Raleway",
-    category: "Elegant",
+    category: i18n.t("themeFontControls.category.elegant"),
   },
   {
     name: "Ubuntu",
     value: "'Ubuntu', sans-serif",
     preview: "Ubuntu",
-    category: "Modern",
+    category: i18n.t("themeFontControls.category.modern"),
   },
   {
     name: "Fira Sans",
     value: "'Fira Sans', sans-serif",
     preview: "Fira Sans",
-    category: "Technical",
+    category: i18n.t("themeFontControls.category.technical"),
   },
 ];
 
@@ -152,6 +153,7 @@ export default function ThemeFontControls({
   css,
   onValueChange,
 }: ThemeFontControlsProps) {
+  const { t } = useTranslation();
   const [fontValues, setFontValues] = useState<FontValues>({
     fontFamily: "'Manrope', sans-serif",
     fontSize: "16px",
@@ -241,10 +243,7 @@ export default function ThemeFontControls({
       {/* Help text */}
       <div className="text-xs text-gray-400 flex items-center gap-1.5 mb-2">
         <span className="i-mdi:format-font text-primary text-sm"></span>
-        <span>
-          Customize the font family and base font size used throughout your DEX
-          interface
-        </span>
+        <span>{t("themeFontControls.helpText")}</span>
       </div>
 
       {/* Font Family Selection */}
@@ -259,7 +258,9 @@ export default function ThemeFontControls({
             </span>
           </div>
           <div className="flex flex-col">
+            {/* i18n-ignore */}
             <span className="text-sm font-medium">Font Family</span>
+            {/* i18n-ignore */}
             <span className="text-xs text-gray-400">--oui-font-family</span>
           </div>
         </div>
@@ -288,7 +289,9 @@ export default function ThemeFontControls({
             </span>
           </div>
           <div className="flex flex-col">
+            {/* i18n-ignore */}
             <span className="text-sm font-medium">Font Size</span>
+            {/* i18n-ignore */}
             <span className="text-xs text-gray-400">--oui-font-size-base</span>
           </div>
         </div>
@@ -309,6 +312,7 @@ export default function ThemeFontControls({
               value={fontValues.fontSize}
               onChange={handleFontSizeInputChange}
               className="w-16 sm:w-20 px-2 py-1 bg-background-dark/80 border border-light/20 rounded text-sm text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+              // i18n-ignore
               aria-label="Font size value"
             />
           </div>
@@ -318,7 +322,9 @@ export default function ThemeFontControls({
       {/* Preview Text */}
       <div className="border-t border-light/10 pt-4">
         <div className="mb-2">
-          <span className="text-sm font-medium text-gray-300">Preview</span>
+          <span className="text-sm font-medium text-gray-300">
+            {t("themeFontControls.preview")}
+          </span>
         </div>
         <div
           className="p-4 bg-background-dark/50 border border-light/10 rounded-lg"
@@ -328,12 +334,10 @@ export default function ThemeFontControls({
           }}
         >
           <p className="text-white mb-2">
-            This is how your DEX interface text will look with the selected font
-            and size.
+            {t("themeFontControls.previewDesc")}
           </p>
           <p className="text-gray-300 text-sm">
-            Trading pairs, prices, and all interface elements will use this
-            styling.
+            {t("themeFontControls.previewNote")}
           </p>
         </div>
       </div>

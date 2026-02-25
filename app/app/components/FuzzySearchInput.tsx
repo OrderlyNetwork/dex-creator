@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
+import { useTranslation } from "~/i18n";
 
 interface FuzzySearchInputProps {
   placeholder?: string;
@@ -15,7 +16,7 @@ interface FuzzySearchInputProps {
  * A fuzzy search input component with debouncing
  */
 export default function FuzzySearchInput({
-  placeholder = "Search...",
+  placeholder,
   initialValue = "",
   value,
   onSearch,
@@ -27,9 +28,11 @@ export default function FuzzySearchInput({
   const [internalValue, setInternalValue] = useState(initialValue);
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { t } = useTranslation();
 
   // Allow controlled usage with external value prop
   const currentValue = value !== undefined ? value : internalValue;
+  const resolvedPlaceholder = placeholder ?? t("fuzzySearchInput.placeholder");
 
   // Update internal value when external value changes
   useEffect(() => {
@@ -92,7 +95,7 @@ export default function FuzzySearchInput({
         ref={inputRef}
         type="text"
         className="border-light/10 bg-dark/20 backdrop-blur-sm text-white placeholder-gray-400 text-sm rounded-lg block w-full pl-10 pr-10 p-2.5 focus:ring-primary-light focus:border-primary-light focus:outline-none border"
-        placeholder={placeholder}
+        placeholder={resolvedPlaceholder}
         value={currentValue}
         onChange={handleChange}
         onKeyDown={handleKeyDown}

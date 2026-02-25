@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useMemo, useState, useEffect } from "react";
+import { useTranslation } from "~/i18n";
 import { NetworkId } from "@orderly.network/types";
 import { Button } from "./Button";
 import { Card } from "./Card";
@@ -92,6 +93,7 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
   setTradingViewColorConfig,
   idPrefix = "",
 }) => {
+  const { t } = useTranslation();
   const [activeThemeTab, setActiveThemeTab] = useState<ThemeTabType>("colors");
   const [primaryLogoUrl, setPrimaryLogoUrl] = useState<string | null>(null);
   const [secondaryLogoUrl, setSecondaryLogoUrl] = useState<string | null>(null);
@@ -235,7 +237,7 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
           <div className="mb-4 pb-4 border-b border-light/10">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-gray-300">
-                Theme Presets
+                {t("themeCustomizationSection.themePresets")}
               </span>
             </div>
             <Button
@@ -259,7 +261,7 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
             >
               <span className="flex items-center gap-1 justify-center">
                 <div className="i-mdi:swatch h-3.5 w-3.5"></div>
-                Select Preset
+                {t("themeCustomizationSection.selectPreset")}
               </span>
             </Button>
           </div>
@@ -267,7 +269,7 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
           {/* Current Theme */}
           <div className="flex justify-between mb-2 flex-col sm:flex-row gap-2 sm:gap-0">
             <span className="text-sm font-medium mb-2 text-gray-300">
-              Current Theme
+              {t("themeCustomizationSection.currentTheme")}
             </span>
             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
               <Button
@@ -285,7 +287,9 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
                         : "i-mdi:pencil h-3.5 w-3.5"
                     }
                   ></div>
-                  {showThemeEditor ? "Hide Editor" : "Edit CSS"}
+                  {showThemeEditor
+                    ? t("themeCustomizationSection.hideEditor")
+                    : t("themeCustomizationSection.editCss")}
                 </span>
               </Button>
               <Button
@@ -295,7 +299,7 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
                 className="w-full sm:w-auto"
                 type="button"
               >
-                Reset
+                {t("themeCustomizationSection.reset")}
               </Button>
             </div>
           </div>
@@ -307,7 +311,7 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
                   handleThemeEditorChange(e.target.value)
                 }
                 className="w-full h-80 bg-black/80 text-xs text-gray-300 font-mono p-3 rounded border border-light/10"
-                placeholder="Edit your CSS theme here..."
+                placeholder={t("themeCustomizationSection.editCssPlaceholder")}
               />
             </div>
           )}
@@ -319,7 +323,11 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
                   className="cursor-pointer text-gray-400 hover:text-gray-300 transition-colors flex items-center"
                   type="button"
                 >
-                  <span>{viewCssCode ? "Hide" : "View"} CSS code</span>
+                  <span>
+                    {viewCssCode
+                      ? t("themeCustomizationSection.hideCssCode")
+                      : t("themeCustomizationSection.viewCssCode")}
+                  </span>
                   <div
                     className={`i-mdi:chevron-down h-4 w-4 ml-1 transition-transform ${viewCssCode ? "rotate-180" : ""}`}
                   ></div>
@@ -349,10 +357,11 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
       {isMobile && (
         <div className="flex flex-col space-y-4 mt-6">
           <div className="flex flex-col gap-2">
-            <h4 className="text-base font-bold mb-1">AI Theme Generator</h4>
+            <h4 className="text-base font-bold mb-1">
+              {t("themeCustomizationSection.aiThemeGenerator")}
+            </h4>
             <p className="text-xs text-gray-400 mb-2">
-              Describe how you want your DEX theme to look and our AI will
-              generate it for you.
+              {t("themeCustomizationSection.aiThemeGeneratorDesc")}
             </p>
             <Card className="mb-3 p-3 slide-fade-in" variant="default">
               <div className="flex items-start gap-2">
@@ -360,25 +369,26 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
                 <div>
                   <p className="text-xs text-gray-300 mb-1">
                     <span className="text-primary-light font-medium">
-                      Note:
+                      {t("themeCustomizationSection.note")}:
                     </span>{" "}
-                    AI-generated themes are a starting point and may not be
-                    perfect. After generating:
+                    {t("themeCustomizationSection.aiNoteDesc")}:
                   </p>
                   <ul className="text-xs text-gray-300 list-disc pl-4 space-y-0.5">
-                    <li>Review the theme in the preview modal</li>
-                    <li>Make adjustments to colors as needed</li>
+                    <li>{t("themeCustomizationSection.reviewInPreview")}</li>
+                    <li>{t("themeCustomizationSection.adjustColors")}</li>
                   </ul>
                 </div>
               </div>
             </Card>
             <FormInput
               id={`${idPrefix}themePrompt`}
-              label="Theme Description"
+              label={t("themeCustomizationSection.themeDescription")}
               value={themePrompt}
               onChange={handleInputChange("themePrompt")}
-              placeholder="e.g., A dark blue theme with neon green accents"
-              helpText="Describe your desired color scheme and style"
+              placeholder={t(
+                "themeCustomizationSection.themeDescriptionPlaceholder"
+              )}
+              helpText={t("themeCustomizationSection.themeDescriptionHelp")}
               maxLength={100}
               disabled={isGeneratingTheme}
             />
@@ -389,14 +399,15 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
                 handleGenerateTheme(themePrompt, undefined, "mobile")
               }
               isLoading={isGeneratingTheme}
-              loadingText="Generating..."
+              loadingText={t("themeCustomizationSection.generating")}
               disabled={!themePrompt.trim() || isGeneratingTheme}
               variant="secondary"
               size="sm"
               type="button"
             >
               <span className="flex items-center gap-1">
-                <div className="i-mdi:magic-wand h-4 w-4"></div>Generate Theme
+                <div className="i-mdi:magic-wand h-4 w-4"></div>{" "}
+                {t("themeCustomizationSection.generateTheme")}
               </span>
             </Button>
           </div>

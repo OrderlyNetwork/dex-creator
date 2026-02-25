@@ -196,4 +196,9 @@ export const distributor = {
   "distributor.editTier": "Edit tier",
   "distributor.previousPage": "Previous page",
   "distributor.nextPage": "Next page",
+
+  // useBindDistrubutorCode / distrubutorCode service
+  "distributor.failedToBindCode": "Failed to bind distributor code",
+  "distributor.addressAlreadyBound": "Address is already bound",
+  "distributor.codeNotExists": "Distributor code is not exists.",
 };

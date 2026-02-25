@@ -1,3 +1,4 @@
+import { useTranslation, Trans } from "~/i18n";
 import { Button } from "./Button";
 
 interface TradingViewLicenseModalProps {
@@ -9,6 +10,7 @@ export default function TradingViewLicenseModal({
   isOpen,
   onClose,
 }: TradingViewLicenseModalProps) {
+  const { t } = useTranslation();
   if (!isOpen) return null;
 
   return (
@@ -22,7 +24,9 @@ export default function TradingViewLicenseModal({
       {/* Modal */}
       <div className="relative z-[1002] w-full max-w-2xl p-6 rounded-xl bg-background-light border border-light/10 shadow-2xl slide-fade-in max-h-[90vh] overflow-auto">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold">TradingView License Guide</h3>
+          <h3 className="text-xl font-bold">
+            {t("tradingViewLicenseModal.title")}
+          </h3>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-white transition-colors"
@@ -39,12 +43,10 @@ export default function TradingViewLicenseModal({
               <div className="i-mdi:check-circle text-success h-5 w-5 mt-0.5 flex-shrink-0"></div>
               <div>
                 <h4 className="text-base font-bold mb-1 text-success">
-                  Good News: It's Completely Free!
+                  {t("tradingViewLicenseModal.goodNews")}
                 </h4>
                 <p className="text-xs text-gray-300">
-                  The TradingView Advanced Charts license is free for commercial
-                  use. You just need to fill out their application form to get
-                  approved.
+                  {t("tradingViewLicenseModal.freeLicenseDesc")}
                 </p>
               </div>
             </div>
@@ -52,28 +54,35 @@ export default function TradingViewLicenseModal({
 
           {/* What You Need */}
           <div>
-            <h4 className="text-base font-bold mb-3">What You Need to Do</h4>
+            <h4 className="text-base font-bold mb-3">
+              {t("tradingViewLicenseModal.whatYouNeed")}
+            </h4>
             <ol className="text-sm text-gray-300 space-y-2 list-decimal list-inside">
               <li>
-                Visit the{" "}
-                <a
-                  href="https://www.tradingview.com/advanced-charts/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary-light hover:underline"
-                >
-                  TradingView Advanced Charts page
-                </a>
+                <Trans
+                  i18nKey="tradingViewLicenseModal.visitTradingViewPage"
+                  components={[
+                    <a
+                      key="0"
+                      href="https://www.tradingview.com/advanced-charts/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary-light hover:underline"
+                    />,
+                  ]}
+                />
               </li>
-              <li>Click on "Get the library" to open the application form</li>
-              <li>Fill out the form with the details provided below</li>
-              <li>Wait for approval (usually takes a few business days)</li>
+              <li>{t("tradingViewLicenseModal.clickGetLibrary")}</li>
+              <li>{t("tradingViewLicenseModal.fillOutForm")}</li>
+              <li>{t("tradingViewLicenseModal.waitForApproval")}</li>
             </ol>
           </div>
 
           {/* Where to Click Image */}
           <div>
-            <h4 className="text-base font-bold mb-3">Where to Click</h4>
+            <h4 className="text-base font-bold mb-3">
+              {t("tradingViewLicenseModal.whereToClick")}
+            </h4>
             <div className="bg-background-dark/50 rounded-lg p-4 border border-light/10">
               <img
                 src="/advanced-charts.webp"
@@ -81,8 +90,7 @@ export default function TradingViewLicenseModal({
                 className="w-full rounded border border-light/20"
               />
               <p className="text-xs text-gray-400 mt-2 text-center">
-                Look for the "Get the library" button on the TradingView
-                Advanced Charts page
+                {t("tradingViewLicenseModal.lookForGetLibrary")}
               </p>
             </div>
           </div>
@@ -90,60 +98,62 @@ export default function TradingViewLicenseModal({
           {/* Application Details */}
           <div>
             <h4 className="text-base font-bold mb-3">
-              Application Form Details
+              {t("tradingViewLicenseModal.applicationFormDetails")}
             </h4>
             <div className="bg-background-dark/50 rounded-lg p-4 border border-light/10 space-y-3">
               <div>
                 <span className="text-xs font-medium text-primary-light">
-                  Website URL:
+                  {t("tradingViewLicenseModal.websiteUrl")}
                 </span>
                 <p className="text-xs text-gray-300 mt-1">
-                  Use your custom domain (the one you're setting up in the
-                  Custom Domain section)
+                  {t("tradingViewLicenseModal.websiteUrlDesc")}
                 </p>
               </div>
 
               <div>
                 <span className="text-xs font-medium text-primary-light">
-                  GitHub Profile:
+                  {t("tradingViewLicenseModal.githubProfile")}:
                 </span>
                 <p className="text-xs text-gray-300 mt-1">
-                  You'll need to create a personal{" "}
-                  <a
-                    href="https://github.com/signup"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary-light hover:underline"
-                  >
-                    GitHub account
-                  </a>
-                  . Even though you won't need direct access to their library
-                  (we've already handled that), it's required for the
-                  application process.
+                  <Trans
+                    i18nKey="tradingViewLicenseModal.githubProfileDesc"
+                    components={[
+                      <a
+                        key="0"
+                        href="https://github.com/signup"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary-light hover:underline"
+                      />,
+                    ]}
+                  />
                 </p>
               </div>
 
               <div>
                 <span className="text-xs font-medium text-primary-light">
-                  Company Profile:
-                </span>
-                <p className="text-xs text-gray-300 mt-1">"Crypto Exchange"</p>
-              </div>
-
-              <div>
-                <span className="text-xs font-medium text-primary-light">
-                  Own Data Feed:
-                </span>
-                <p className="text-xs text-gray-300 mt-1">Yes</p>
-              </div>
-
-              <div>
-                <span className="text-xs font-medium text-primary-light">
-                  Reason for Request:
+                  {t("tradingViewLicenseModal.companyProfile")}
                 </span>
                 <p className="text-xs text-gray-300 mt-1">
-                  Mention that this is for a perpetual futures decentralized
-                  exchange
+                  {t("tradingViewLicenseModal.companyProfileValue")}
+                </p>
+              </div>
+
+              <div>
+                <span className="text-xs font-medium text-primary-light">
+                  {t("tradingViewLicenseModal.ownDataFeed")}
+                </span>
+                <p className="text-xs text-gray-300 mt-1">
+                  {t("tradingViewLicenseModal.ownDataFeedValue")}
+                </p>
+              </div>
+
+              <div>
+                <span className="text-xs font-medium text-primary-light">
+                  {t("tradingViewLicenseModal.reasonForRequest")}
+                </span>
+                <p className="text-xs text-gray-300 mt-1">
+                  {t("tradingViewLicenseModal.reasonForRequestDesc")}
                 </p>
               </div>
             </div>
@@ -155,25 +165,13 @@ export default function TradingViewLicenseModal({
               <div className="i-mdi:information-outline text-warning h-5 w-5 mt-0.5 flex-shrink-0"></div>
               <div>
                 <h4 className="text-base font-bold mb-2 text-warning">
-                  Important Notes
+                  {t("tradingViewLicenseModal.importantNotes")}
                 </h4>
                 <ul className="text-xs text-gray-300 space-y-1 list-disc list-inside">
-                  <li>
-                    The license application is free and typically approved
-                    within a few business days
-                  </li>
-                  <li>
-                    You must apply using your custom domain, not the GitHub
-                    Pages URL
-                  </li>
-                  <li>
-                    The GitHub account requirement is just for their application
-                    process
-                  </li>
-                  <li>
-                    Once approved, your DEX will continue working normally with
-                    the TradingView charts
-                  </li>
+                  <li>{t("tradingViewLicenseModal.note1")}</li>
+                  <li>{t("tradingViewLicenseModal.note2")}</li>
+                  <li>{t("tradingViewLicenseModal.note3")}</li>
+                  <li>{t("tradingViewLicenseModal.note4")}</li>
                 </ul>
               </div>
             </div>
@@ -189,7 +187,7 @@ export default function TradingViewLicenseModal({
               variant="primary"
             >
               <span className="flex items-center gap-2">
-                Apply for TradingView License
+                {t("tradingViewLicenseModal.applyForLicense")}
                 <div className="i-mdi:open-in-new h-4 w-4"></div>
               </span>
             </Button>

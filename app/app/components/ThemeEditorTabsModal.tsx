@@ -1,4 +1,5 @@
 import { FC, useEffect } from "react";
+import { useTranslation } from "~/i18n";
 import { Button } from "./Button";
 import ThemeEditingTabs from "./ThemeEditingTabs";
 import { useThemeEditor } from "../hooks/useThemeEditor";
@@ -18,6 +19,7 @@ const ThemeEditorTabsModal: FC<ThemeEditorTabsModalProps> = ({
   defaultTheme,
   onThemeChange,
 }) => {
+  const { t } = useTranslation();
   const {
     css,
     activeTab,
@@ -51,9 +53,11 @@ const ThemeEditorTabsModal: FC<ThemeEditorTabsModalProps> = ({
     >
       <div className="bg-background-card border border-light/20 rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
         <div className="flex items-center justify-between p-4 border-b border-light/10">
-          <h2 className="text-lg font-bold text-gray-200">Theme Editor</h2>
+          <h2 className="text-lg font-bold text-gray-200">
+            {t("themeEditorTabsModal.title")}
+          </h2>
           <Button onClick={onClose} variant="secondary" size="sm" type="button">
-            Close
+            {t("themeEditorTabsModal.close")}
           </Button>
         </div>
         <div className="flex-1 overflow-auto p-4">
@@ -76,7 +80,7 @@ const ThemeEditorTabsModal: FC<ThemeEditorTabsModalProps> = ({
             size="sm"
             type="button"
           >
-            Reset to Default
+            {t("themeEditorTabsModal.resetToDefault")}
           </Button>
           <Button
             onClick={handleApply}
@@ -84,7 +88,7 @@ const ThemeEditorTabsModal: FC<ThemeEditorTabsModalProps> = ({
             size="sm"
             type="button"
           >
-            Apply Changes
+            {t("themeEditorTabsModal.applyChanges")}
           </Button>
         </div>
       </div>

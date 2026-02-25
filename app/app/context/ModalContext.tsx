@@ -29,6 +29,7 @@ import AIFineTuneModal from "../components/AIFineTuneModal";
 import AIFineTunePreviewModal from "../components/AIFineTunePreviewModal";
 import ThemePresetPreviewModal from "../components/ThemePresetPreviewModal";
 import MLRConfirmModal from "../components/MLRConfirmModal";
+import { useTranslation } from "~/i18n";
 
 export type ModalType =
   | "login"
@@ -128,6 +129,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
 }
 
 function ModalManager() {
+  const { t } = useTranslation();
   const { isModalOpen, currentModalType, currentModalProps, closeModal } =
     useModal();
 
@@ -148,6 +150,7 @@ function ModalManager() {
           isOpen={isModalOpen}
           onClose={closeModal}
           onConfirm={currentModalProps.onConfirm}
+          // i18n-ignore
           entityName={currentModalProps.entityName || "Item"}
         />
       );
@@ -157,16 +160,25 @@ function ModalManager() {
           isOpen={isModalOpen}
           onClose={closeModal}
           onConfirm={currentModalProps.onConfirm}
-          title={currentModalProps.title || "Confirm Action"}
+          title={
+            currentModalProps.title || t("modalContext.defaultConfirmTitle")
+          }
           message={
-            currentModalProps.message || "Are you sure you want to proceed?"
+            currentModalProps.message || t("modalContext.defaultConfirmMessage")
           }
           warningMessage={currentModalProps.warningMessage}
-          confirmButtonText={currentModalProps.confirmButtonText || "Confirm"}
+          confirmButtonText={
+            currentModalProps.confirmButtonText ||
+            t("modalContext.defaultConfirmButtonText")
+          }
           confirmButtonVariant={
+            // i18n-ignore
             currentModalProps.confirmButtonVariant || "primary"
           }
-          cancelButtonText={currentModalProps.cancelButtonText || "Cancel"}
+          cancelButtonText={
+            currentModalProps.cancelButtonText ||
+            t("modalContext.defaultCancelButtonText")
+          }
           isDestructive={currentModalProps.isDestructive || false}
         />
       );

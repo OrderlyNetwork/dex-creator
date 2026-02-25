@@ -198,8 +198,8 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
         <div className="h-px bg-base-contrast-12" />
 
         {/* Wallet and Network Section */}
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-base-contrast-36">
               {t("distributor.wallet")}
             </span>

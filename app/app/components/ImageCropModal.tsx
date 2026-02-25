@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "./Button";
 import { CropParams } from "../utils/imageUtils";
+import { useTranslation } from "~/i18n";
 
 interface ImageCropModalProps {
   isOpen: boolean;
@@ -49,6 +50,7 @@ export default function ImageCropModal({
   const [isDragging, setIsDragging] = useState(false);
   const [activeHandle, setActiveHandle] = useState<HandlePosition | null>(null);
   const [scale, setScale] = useState(1);
+  const { t } = useTranslation();
 
   const cropDimensionsRef = useRef<CropParams>(cropDimensions);
   const dragStartPosRef = useRef({ x: 0, y: 0 });
@@ -843,7 +845,9 @@ export default function ImageCropModal({
       <div className="relative z-[1002] min-h-screen flex items-center justify-center p-2 sm:p-4">
         {/* Modal */}
         <div className="w-full max-w-4xl p-4 sm:p-6 rounded-xl bg-background-light border border-light/10 shadow-2xl slide-fade-in my-4 sm:my-8 max-h-[calc(100vh-2rem)] overflow-y-auto">
-          <h3 className="text-xl font-bold mb-4">Crop Image</h3>
+          <h3 className="text-xl font-bold mb-4">
+            {t("imageCropModal.title")}
+          </h3>
 
           <div className="flex flex-col md:flex-row gap-4 lg:gap-6">
             {/* Crop preview */}
@@ -858,7 +862,7 @@ export default function ImageCropModal({
                   style={{ cursor: getCursor() }}
                 ></canvas>
                 <div className="text-xs text-gray-400 text-center mt-2">
-                  Drag to move, handles to resize
+                  {t("imageCropModal.dragHint")}
                 </div>
               </div>
             </div>
@@ -866,7 +870,9 @@ export default function ImageCropModal({
             {/* Crop controls */}
             <div className="flex flex-col gap-3 min-w-[150px] lg:min-w-[200px]">
               <div className="space-y-2">
-                <label className="text-xs text-gray-400">Position</label>
+                <label className="text-xs text-gray-400">
+                  {t("imageCropModal.position")}
+                </label>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <label className="text-xs text-gray-400 block">X</label>
@@ -894,10 +900,14 @@ export default function ImageCropModal({
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs text-gray-400">Size</label>
+                <label className="text-xs text-gray-400">
+                  {t("imageCropModal.size")}
+                </label>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-xs text-gray-400 block">Width</label>
+                    <label className="text-xs text-gray-400 block">
+                      {t("imageCropModal.width")}
+                    </label>
                     <input
                       type="number"
                       value={cropDimensions.width}
@@ -909,7 +919,7 @@ export default function ImageCropModal({
                   </div>
                   <div>
                     <label className="text-xs text-gray-400 block">
-                      Height
+                      {t("imageCropModal.height")}
                     </label>
                     <input
                       type="number"
@@ -924,25 +934,27 @@ export default function ImageCropModal({
                 </div>
                 {enforceSquare && (
                   <p className="text-xs text-gray-400">
-                    This image type requires a square aspect ratio
+                    {t("imageCropModal.squareAspectRatioNote")}
                   </p>
                 )}
               </div>
 
               <div className="text-xs text-gray-400 mt-3">
                 <p>
-                  Original size: {originalDimensions.width}x
-                  {originalDimensions.height}px
+                  {t("imageCropModal.originalSize")}: {originalDimensions.width}
+                  x{originalDimensions.height}px
                 </p>
                 <p>
-                  Crop size: {cropDimensions.width}x{cropDimensions.height}px
+                  {t("imageCropModal.cropSize")}: {cropDimensions.width}x
+                  {cropDimensions.height}px
                 </p>
                 <p>
-                  Final output size: {finalDimensions.width}x
-                  {finalDimensions.height}px
+                  {t("imageCropModal.finalOutputSize")}: {finalDimensions.width}
+                  x{finalDimensions.height}px
                 </p>
                 <p className="text-xs text-gray-500 mt-1">
-                  Max size: {targetDimensions.width}x{targetDimensions.height}px
+                  {t("imageCropModal.maxSize")}: {targetDimensions.width}x
+                  {targetDimensions.height}px
                 </p>
               </div>
             </div>
@@ -950,15 +962,15 @@ export default function ImageCropModal({
 
           <div className="flex gap-3 justify-end mt-6">
             <Button variant="ghost" onClick={onClose} disabled={isLoading}>
-              Cancel
+              {t("imageCropModal.cancel")}
             </Button>
             <Button
               variant="primary"
               onClick={handleApply}
               isLoading={isLoading}
-              loadingText="Applying"
+              loadingText={t("imageCropModal.applying")}
             >
-              Apply Crop
+              {t("imageCropModal.applyCrop")}
             </Button>
           </div>
         </div>

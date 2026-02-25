@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "~/i18n";
 import { Button } from "./Button";
 
 interface LoginModalProps {
@@ -12,6 +13,7 @@ export default function LoginModal({
   onClose,
   onLogin,
 }: LoginModalProps) {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
 
   if (!isOpen) return null;
@@ -36,38 +38,31 @@ export default function LoginModal({
       {/* Modal */}
       <div className="relative z-[1002] max-w-md p-6 rounded-xl bg-background-light border border-primary-light/20 shadow-2xl slide-fade-in">
         <h3 className="text-xl font-bold mb-4 gradient-text">
-          Complete Your Login
+          {t("loginModal.title")}
         </h3>
 
         <div className="mb-6 space-y-4">
-          <p className="text-gray-300">
-            You're almost there! To secure your session, you'll need to sign a
-            message with your wallet.
-          </p>
+          <p className="text-gray-300">{t("loginModal.description")}</p>
 
           <div className="bg-background-dark/50 p-4 rounded-lg border border-secondary-light/10 text-sm">
             <h4 className="font-semibold mb-2 text-secondary-light">
-              Why do I need to sign?
+              {t("loginModal.whySign")}
             </h4>
-            <p className="text-gray-400">
-              Signing a message proves you own this wallet without sharing your
-              private keys. This is a secure method that doesn't cost any gas
-              fees or involve blockchain transactions.
-            </p>
+            <p className="text-gray-400">{t("loginModal.whySignDesc")}</p>
           </div>
         </div>
 
         <div className="flex gap-3 justify-end">
           <Button variant="secondary" onClick={onClose} disabled={isLoading}>
-            Later
+            {t("loginModal.later")}
           </Button>
           <Button
             variant="primary"
             onClick={handleLogin}
             isLoading={isLoading}
-            loadingText="Signing"
+            loadingText={t("loginModal.signing")}
           >
-            Sign Message
+            {t("loginModal.signMessage")}
           </Button>
         </div>
       </div>

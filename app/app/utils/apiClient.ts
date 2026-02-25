@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { toast } from "react-toastify";
+import { i18n } from "~/i18n";
 import { API_BASE_URL } from "./wagmiConfig";
 import { parseZodError } from "./validation";
 import { disconnectWallet } from "./globalDisconnect";
@@ -60,9 +61,9 @@ export async function apiClient<T = any>({
     if (response.status === 401) {
       disconnectWallet();
       if (showToastOnError) {
-        toast.error("Your session has expired. Please reconnect your wallet.");
+        toast.error(i18n.t("apiClient.sessionExpiredReconnect"));
       }
-      throw new Error("Unauthorized: Your session has expired");
+      throw new Error(i18n.t("apiClient.unauthorizedSessionExpired"));
     }
 
     let data;
@@ -74,7 +75,7 @@ export async function apiClient<T = any>({
     }
 
     if (!response.ok) {
-      let errorMessage = "An error occurred";
+      let errorMessage = i18n.t("apiClient.errorOccurred");
 
       if (typeof data === "object") {
         errorMessage = parseZodError(data);
@@ -95,16 +96,16 @@ export async function apiClient<T = any>({
     return data as T;
   } catch (error) {
     const errorMessage =
-      error instanceof Error ? error.message : "Unknown error occurred";
+      error instanceof Error ? error.message : i18n.t("apiClient.unknownError");
 
     const isRateLimitError = (error as any)?.status === 429;
 
     if (
       showToastOnError &&
-      !errorMessage.includes("Unauthorized: Your session has expired") &&
+      !errorMessage.includes(i18n.t("apiClient.unauthorizedSessionExpired")) &&
       !isRateLimitError
     ) {
-      toast.error(`Request failed: ${errorMessage}`);
+      toast.error(i18n.t("apiClient.requestFailed", { errorMessage }));
     }
 
     console.error("API request failed:", error);
@@ -153,9 +154,9 @@ export async function apiClientFormData<T = any>({
     if (response.status === 401) {
       disconnectWallet();
       if (showToastOnError) {
-        toast.error("Your session has expired. Please reconnect your wallet.");
+        toast.error(i18n.t("apiClient.sessionExpiredReconnect"));
       }
-      throw new Error("Unauthorized: Your session has expired");
+      throw new Error(i18n.t("apiClient.unauthorizedSessionExpired"));
     }
 
     let data;
@@ -167,14 +168,14 @@ export async function apiClientFormData<T = any>({
     }
 
     if (!response.ok) {
-      let errorMessage = "An error occurred";
+      let errorMessage = i18n.t("apiClient.errorOccurred");
 
       if (typeof data === "object") {
         errorMessage = parseZodError(data);
       }
 
       if (showToastOnError) {
-        toast.error(`API Error: ${errorMessage}`);
+        toast.error(i18n.t("apiClient.apiError", { errorMessage }));
       }
 
       throw new Error(errorMessage);
@@ -183,16 +184,16 @@ export async function apiClientFormData<T = any>({
     return data as T;
   } catch (error) {
     const errorMessage =
-      error instanceof Error ? error.message : "Unknown error occurred";
+      error instanceof Error ? error.message : i18n.t("apiClient.unknownError");
 
     const isRateLimitError = (error as any)?.status === 429;
 
     if (
       showToastOnError &&
-      !errorMessage.includes("Unauthorized: Your session has expired") &&
+      !errorMessage.includes(i18n.t("apiClient.unauthorizedSessionExpired")) &&
       !isRateLimitError
     ) {
-      toast.error(`Request failed: ${errorMessage}`);
+      toast.error(i18n.t("apiClient.requestFailed", { errorMessage }));
     }
 
     console.error("API request failed:", error);

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "~/i18n";
 
 interface ThemeColorSwatchesProps {
   css: string;
@@ -9,6 +10,7 @@ export default function ThemeColorSwatches({
   css,
   onColorChange,
 }: ThemeColorSwatchesProps) {
+  const { t } = useTranslation();
   const [syncBrandWithPrimary, setSyncBrandWithPrimary] = useState(true);
 
   const extractRgbValues = (cssText: string) => {
@@ -58,7 +60,7 @@ export default function ThemeColorSwatches({
 
   const colorCategories = [
     {
-      title: "Primary Colors",
+      title: t("themeColorSwatches.primaryColors"),
       colors: allColorKeys.filter(
         key =>
           key.includes("primary") ||
@@ -69,7 +71,7 @@ export default function ThemeColorSwatches({
       ),
     },
     {
-      title: "Status Colors",
+      title: t("themeColorSwatches.statusColors"),
       colors: allColorKeys.filter(
         key =>
           key.includes("success") ||
@@ -78,25 +80,25 @@ export default function ThemeColorSwatches({
       ),
     },
     {
-      title: "Base Colors",
+      title: t("themeColorSwatches.baseColors"),
       colors: allColorKeys.filter(key => key.includes("base")),
     },
     {
-      title: "Trading Colors",
+      title: t("themeColorSwatches.tradingColors"),
       colors: allColorKeys.filter(key => key.includes("trading")),
     },
     {
-      title: "Fill Colors",
+      title: t("themeColorSwatches.fillColors"),
       colors: allColorKeys.filter(key => key.includes("fill")),
     },
     {
-      title: "Line Colors",
+      title: t("themeColorSwatches.lineColors"),
       colors: allColorKeys.filter(
         key => key.includes("line") && !key.includes("trading")
       ),
     },
     {
-      title: "Other Colors",
+      title: t("themeColorSwatches.otherColors"),
       colors: allColorKeys.filter(
         key =>
           !key.includes("primary") &&
@@ -160,10 +162,10 @@ export default function ThemeColorSwatches({
           }}
           title={
             isValid
-              ? `Click to edit ${displayName} Color, use checkbox to select`
+              ? t("themeColorSwatches.clickToEditColor", { displayName })
               : storedValue === null
-                ? `Click to set ${displayName} Color`
-                : `Invalid CSS format for ${displayName}`
+                ? t("themeColorSwatches.clickToSetColor", { displayName })
+                : t("themeColorSwatches.invalidCssFormat", { displayName })
           }
         >
           <div className="flex flex-col items-start">
@@ -186,10 +188,12 @@ export default function ThemeColorSwatches({
               }}
             >
               {isValid
-                ? `RGB(${storedValue?.replace(/\s+/g, ", ")})`
+                ? t("themeColorSwatches.rgbValue", {
+                    rgbValue: storedValue?.replace(/\s+/g, ", "),
+                  })
                 : storedValue === null
-                  ? "Not set"
-                  : "Invalid format"}
+                  ? t("themeColorSwatches.notSet")
+                  : t("themeColorSwatches.invalidFormat")}
             </span>
           </div>
 
@@ -223,7 +227,9 @@ export default function ThemeColorSwatches({
     return (
       <div className="mb-4">
         <div className="flex justify-between items-center mb-2">
-          <h5 className="text-sm font-medium text-gray-300">Brand Gradient</h5>
+          <h5 className="text-sm font-medium text-gray-300">
+            {t("themeColorSwatches.brandGradient")}
+          </h5>
           <label className="flex items-center cursor-pointer relative">
             <input
               type="checkbox"
@@ -238,7 +244,9 @@ export default function ThemeColorSwatches({
                 className={`w-4 h-4 rounded-full bg-white transition-transform duration-200 ease-in-out ${syncBrandWithPrimary ? "transform translate-x-5" : "transform translate-x-0"}`}
               ></div>
             </div>
-            <span className="text-xs text-gray-300">Sync with primary</span>
+            <span className="text-xs text-gray-300">
+              {t("themeColorSwatches.syncWithPrimary")}
+            </span>
           </label>
         </div>
 
@@ -252,13 +260,13 @@ export default function ThemeColorSwatches({
         ) : (
           <div className="w-full h-16 rounded-md border border-error/50 bg-background-dark/50 flex items-center justify-center">
             <span className="text-xs text-gray-400">
-              Invalid gradient format
+              {t("themeColorSwatches.invalidGradientFormat")}
             </span>
           </div>
         )}
 
         <div className="text-xs text-gray-400 mt-1">
-          Brand gradient is used for primary buttons and important UI elements
+          {t("themeColorSwatches.brandGradientUsedFor")}
         </div>
       </div>
     );

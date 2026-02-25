@@ -1,4 +1,5 @@
 import { Card } from "./Card";
+import { useTranslation } from "~/i18n";
 
 export const AVAILABLE_LANGUAGES = [
   { code: "en", name: "English", flag: "🇺🇸" },
@@ -29,6 +30,8 @@ export default function LanguageSupportSection({
   availableLanguages,
   onAvailableLanguagesChange,
 }: LanguageSupportSectionProps) {
+  const { t } = useTranslation();
+
   const handleLanguageToggle = (languageCode: string) => {
     const isSelected = availableLanguages.includes(languageCode);
 
@@ -59,12 +62,16 @@ export default function LanguageSupportSection({
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-2">
         <div>
-          <h4 className="text-base font-bold mb-1">Available Languages</h4>
+          <h4 className="text-base font-bold mb-1">
+            {t("languageSupportSection.title")}
+          </h4>
           <p className="text-xs text-gray-400">
-            Select the languages you want to support in your DEX interface.
+            {t("languageSupportSection.description")}
             {selectedCount > 0 && (
               <span className="text-primary-light ml-1">
-                ({selectedCount} selected)
+                {t("languageSupportSection.selectedCountLabel", {
+                  count: selectedCount,
+                })}
               </span>
             )}
           </p>
@@ -74,7 +81,9 @@ export default function LanguageSupportSection({
           onClick={handleToggleAll}
           className="px-3 py-1 text-xs rounded-md transition-all bg-primary/20 text-primary-light hover:bg-primary/30 border border-primary/30"
         >
-          {allSelected ? "Unselect All" : "Select All"}
+          {allSelected
+            ? t("languageSupportSection.unselectAll")
+            : t("languageSupportSection.selectAll")}
         </button>
       </div>
 
@@ -109,28 +118,20 @@ export default function LanguageSupportSection({
       {availableLanguages.length === 0 && (
         <div className="text-center py-4 text-gray-400 text-sm">
           <div className="i-mdi:information-outline h-5 w-5 mx-auto mb-2"></div>
-          No languages selected. Your DEX will default to English only.
+          {t("languageSupportSection.noLanguagesSelected")}
         </div>
       )}
 
       <Card>
         <h5 className="text-sm font-bold mb-1 flex items-center">
           <div className="i-mdi:information-outline text-info mr-2 h-4 w-4"></div>
-          Language Support Information
+          {t("languageSupportSection.infoTitle")}
         </h5>
         <ul className="text-xs text-gray-300 space-y-1">
-          <li>
-            • If no languages are selected, your DEX will default to English
-            only
-          </li>
-          <li>
-            • Users will see a language selector in your DEX interface when
-            multiple languages are selected
-          </li>
-          <li>
-            • The interface will automatically adapt to the selected language
-          </li>
-          <li>• You can add or remove languages at any time</li>
+          <li>{t("languageSupportSection.info1")}</li>
+          <li>{t("languageSupportSection.info2")}</li>
+          <li>{t("languageSupportSection.info3")}</li>
+          <li>{t("languageSupportSection.info4")}</li>
         </ul>
       </Card>
     </div>

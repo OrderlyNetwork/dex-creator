@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "~/i18n";
 import ImagePaste from "./ImagePaste";
 
 export interface BrandingProps {
@@ -15,58 +16,61 @@ const BrandingSection: React.FC<BrandingProps> = ({
   favicon,
   handleImageChange,
   idPrefix = "",
-}) => (
-  <>
-    <div className="mb-6">
-      <ImagePaste
-        id={`${idPrefix}primaryLogo`}
-        label={
-          <>
-            Primary Logo{" "}
-            <span className="text-gray-400 text-sm font-normal">
-              (optional)
-            </span>
-          </>
-        }
-        value={primaryLogo || undefined}
-        onChange={handleImageChange("primaryLogo")}
-        imageType="primaryLogo"
-        helpText="This will be used as the main logo in your DEX, typically displayed prominently on desktop views."
-      />
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <ImagePaste
-        id={`${idPrefix}secondaryLogo`}
-        label={
-          <>
-            Secondary Logo{" "}
-            <span className="text-gray-400 text-sm font-normal">
-              (optional)
-            </span>
-          </>
-        }
-        value={secondaryLogo || undefined}
-        onChange={handleImageChange("secondaryLogo")}
-        imageType="secondaryLogo"
-        helpText="This will be used in other areas like the footer, on mobile views, and in some dialogs."
-      />
-      <ImagePaste
-        id={`${idPrefix}favicon`}
-        label={
-          <>
-            Favicon{" "}
-            <span className="text-gray-400 text-sm font-normal">
-              (optional)
-            </span>
-          </>
-        }
-        value={favicon || undefined}
-        onChange={handleImageChange("favicon")}
-        imageType="favicon"
-        helpText="This is the small icon that appears next to your website's name in a browser tab or in a list of bookmarks, helping users easily identify your DEX."
-      />
-    </div>
-  </>
-);
+}) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <div className="mb-6">
+        <ImagePaste
+          id={`${idPrefix}primaryLogo`}
+          label={
+            <>
+              {t("brandingSection.primaryLogo")}{" "}
+              <span className="text-gray-400 text-sm font-normal">
+                {t("brandingSection.optional")}
+              </span>
+            </>
+          }
+          value={primaryLogo || undefined}
+          onChange={handleImageChange("primaryLogo")}
+          imageType="primaryLogo"
+          helpText={t("brandingSection.primaryLogoHelp")}
+        />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <ImagePaste
+          id={`${idPrefix}secondaryLogo`}
+          label={
+            <>
+              {t("brandingSection.secondaryLogo")}{" "}
+              <span className="text-gray-400 text-sm font-normal">
+                {t("brandingSection.optional")}
+              </span>
+            </>
+          }
+          value={secondaryLogo || undefined}
+          onChange={handleImageChange("secondaryLogo")}
+          imageType="secondaryLogo"
+          helpText={t("brandingSection.secondaryLogoHelp")}
+        />
+        <ImagePaste
+          id={`${idPrefix}favicon`}
+          label={
+            <>
+              {t("brandingSection.favicon")}{" "}
+              <span className="text-gray-400 text-sm font-normal">
+                {t("brandingSection.optional")}
+              </span>
+            </>
+          }
+          value={favicon || undefined}
+          onChange={handleImageChange("favicon")}
+          imageType="favicon"
+          helpText={t("brandingSection.faviconHelp")}
+        />
+      </div>
+    </>
+  );
+};
 
 export default BrandingSection;

@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { useAccount } from "wagmi";
 import { toast } from "react-toastify";
+import { useTranslation } from "~/i18n";
 import { useSignatureService } from "./useSignatureService";
 import {
   checkAddressIsBound,
@@ -8,17 +9,18 @@ import {
 } from "../service/distrubutorCode";
 
 export function useBindDistrubutorCode() {
+  const { t } = useTranslation();
   const { address } = useAccount();
   const signatureService = useSignatureService();
 
   const bindDistributorCode = useCallback(
     async (distributorCode: string) => {
-      const errorMessage = "Failed to bind distributor code";
+      const errorMessage = t("distributor.failedToBindCode");
 
       try {
         const isBound = await checkAddressIsBound(address!);
         if (isBound) {
-          toast.error("Address is already bound");
+          toast.error(t("distributor.addressAlreadyBound"));
           return false;
         }
 
@@ -41,7 +43,7 @@ export function useBindDistrubutorCode() {
 
       return false;
     },
-    [address, signatureService]
+    [address, signatureService, t]
   );
 
   return { bindDistributorCode };

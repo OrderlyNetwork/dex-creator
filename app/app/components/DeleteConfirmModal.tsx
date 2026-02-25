@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "~/i18n";
 import { Button } from "./Button";
 
 interface DeleteConfirmModalProps {
@@ -14,6 +15,7 @@ export default function DeleteConfirmModal({
   onConfirm,
   entityName,
 }: DeleteConfirmModalProps) {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
 
   if (!isOpen) return null;
@@ -41,37 +43,39 @@ export default function DeleteConfirmModal({
       {/* Modal */}
       <div className="relative z-[1002] max-w-md p-6 rounded-xl bg-background-light border border-red-500/20 shadow-2xl slide-fade-in">
         <h3 className="text-xl font-bold mb-4 text-red-500">
-          Delete {entityName}
+          {t("deleteConfirmModal.title", { entityName })}
         </h3>
 
         <div className="mb-6 space-y-4">
           <p className="text-gray-300">
-            Are you sure you want to delete this {entityName.toLowerCase()}?
-            This action cannot be undone.
+            {t("deleteConfirmModal.confirmMessage", {
+              entityNameLower: entityName.toLowerCase(),
+            })}
           </p>
 
           <div className="bg-background-dark/50 p-4 rounded-lg border border-red-500/10 text-sm">
-            <h4 className="font-semibold mb-2 text-red-400">Warning</h4>
+            <h4 className="font-semibold mb-2 text-red-400">
+              {t("deleteConfirmModal.warningTitle")}
+            </h4>
             <p className="text-gray-400">
-              Deleting your {entityName.toLowerCase()} will permanently remove
-              all associated data from the system, including the GitHub
-              repository. However, any deployed instances on GitHub Pages will
-              remain active and must be manually disabled through GitHub.
+              {t("deleteConfirmModal.warningDesc", {
+                entityNameLower: entityName.toLowerCase(),
+              })}
             </p>
           </div>
         </div>
 
         <div className="flex gap-3 justify-end">
           <Button variant="ghost" onClick={onClose} disabled={isLoading}>
-            Cancel
+            {t("deleteConfirmModal.cancel")}
           </Button>
           <Button
             variant="danger"
             onClick={handleConfirm}
             isLoading={isLoading}
-            loadingText="Deleting"
+            loadingText={t("deleteConfirmModal.deleting")}
           >
-            Delete {entityName}
+            {t("deleteConfirmModal.deleteButton", { entityName })}
           </Button>
         </div>
       </div>

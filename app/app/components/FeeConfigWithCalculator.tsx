@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./select";
+import { i18n, Trans, useTranslation } from "~/i18n";
 
 const MIN_MAKER_FEE = 0;
 const MIN_TAKER_FEE = 3;
@@ -65,6 +66,7 @@ export const FeeConfigWithCalculator: React.FC<
   useOrderlyApi = false,
   brokerId,
 }) => {
+  const { t } = useTranslation();
   const { orderlyKey, accountId, hasValidKey, setOrderlyKey } = useOrderlyKey();
   const { openModal } = useModal();
   const { token } = useAuth();
@@ -104,10 +106,14 @@ export const FeeConfigWithCalculator: React.FC<
   ) => {
     if (type === "maker") {
       if (value < MIN_MAKER_FEE) {
-        setMakerFeeError(`Maker fee must be at least ${MIN_MAKER_FEE} bps`);
+        setMakerFeeError(
+          `${i18n.t("feeConfigWithCalculator.makerFeeMin", { min: MIN_MAKER_FEE })} bps`
+        );
         return false;
       } else if (value > MAX_FEE) {
-        setMakerFeeError(`Maker fee cannot exceed ${MAX_FEE} bps`);
+        setMakerFeeError(
+          `${i18n.t("feeConfigWithCalculator.makerFeeMax", { max: MAX_FEE })} bps`
+        );
         return false;
       } else {
         setMakerFeeError(null);
@@ -115,10 +121,14 @@ export const FeeConfigWithCalculator: React.FC<
       }
     } else if (type === "taker") {
       if (value < MIN_TAKER_FEE) {
-        setTakerFeeError(`Taker fee must be at least ${MIN_TAKER_FEE} bps`);
+        setTakerFeeError(
+          `${i18n.t("feeConfigWithCalculator.takerFeeMin", { min: MIN_TAKER_FEE })} bps`
+        );
         return false;
       } else if (value > MAX_FEE) {
-        setTakerFeeError(`Taker fee cannot exceed ${MAX_FEE} bps`);
+        setTakerFeeError(
+          `${i18n.t("feeConfigWithCalculator.takerFeeMax", { max: MAX_FEE })} bps`
+        );
         return false;
       } else {
         setTakerFeeError(null);
@@ -127,11 +137,17 @@ export const FeeConfigWithCalculator: React.FC<
     } else if (type === "rwaMaker") {
       if (value < MIN_RWA_MAKER_FEE) {
         setRwaMakerFeeError(
-          `RWA Maker fee must be at least ${MIN_RWA_MAKER_FEE} bps`
+          `${i18n.t("feeConfigWithCalculator.rwaMakerFeeMin", {
+            min: MIN_RWA_MAKER_FEE,
+          })} bps`
         );
         return false;
       } else if (value > MAX_RWA_FEE) {
-        setRwaMakerFeeError(`RWA Maker fee cannot exceed ${MAX_RWA_FEE} bps`);
+        setRwaMakerFeeError(
+          `${i18n.t("feeConfigWithCalculator.rwaMakerFeeMax", {
+            max: MAX_RWA_FEE,
+          })} bps`
+        );
         return false;
       } else {
         setRwaMakerFeeError(null);
@@ -140,11 +156,17 @@ export const FeeConfigWithCalculator: React.FC<
     } else {
       if (value < MIN_RWA_TAKER_FEE) {
         setRwaTakerFeeError(
-          `RWA Taker fee must be at least ${MIN_RWA_TAKER_FEE} bps`
+          `${i18n.t("feeConfigWithCalculator.rwaTakerFeeMin", {
+            min: MIN_RWA_TAKER_FEE,
+          })} bps`
         );
         return false;
       } else if (value > MAX_RWA_FEE) {
-        setRwaTakerFeeError(`RWA Taker fee cannot exceed ${MAX_RWA_FEE} bps`);
+        setRwaTakerFeeError(
+          `${i18n.t("feeConfigWithCalculator.rwaTakerFeeMax", {
+            max: MAX_RWA_FEE,
+          })} bps`
+        );
         return false;
       } else {
         setRwaTakerFeeError(null);
@@ -168,7 +190,7 @@ export const FeeConfigWithCalculator: React.FC<
     }
 
     if (value.includes(".") && value.split(".")[1].length > 1) {
-      setMakerFeeError("Please enter only one decimal place (e.g., 3.5)");
+      setMakerFeeError(t("feeConfigWithCalculator.oneDecimalPlace"));
       return;
     }
 
@@ -195,7 +217,7 @@ export const FeeConfigWithCalculator: React.FC<
     }
 
     if (value.includes(".") && value.split(".")[1].length > 1) {
-      setTakerFeeError("Please enter only one decimal place (e.g., 6.5)");
+      setTakerFeeError(t("feeConfigWithCalculator.oneDecimalPlace65"));
       return;
     }
 
@@ -260,7 +282,7 @@ export const FeeConfigWithCalculator: React.FC<
     }
 
     if (value.includes(".") && value.split(".")[1].length > 1) {
-      setRwaMakerFeeError("Please enter only one decimal place (e.g., 3.5)");
+      setRwaMakerFeeError(t("feeConfigWithCalculator.oneDecimalPlace"));
       return;
     }
 
@@ -287,7 +309,7 @@ export const FeeConfigWithCalculator: React.FC<
     }
 
     if (value.includes(".") && value.split(".")[1].length > 1) {
-      setRwaTakerFeeError("Please enter only one decimal place (e.g., 5.0)");
+      setRwaTakerFeeError(t("feeConfigWithCalculator.oneDecimalPlace50"));
       return;
     }
 
@@ -347,7 +369,7 @@ export const FeeConfigWithCalculator: React.FC<
       rwaMakerFeeError ||
       rwaTakerFeeError
     ) {
-      setFeeError("Please correct the errors before saving");
+      setFeeError(t("feeConfigWithCalculator.correctErrors"));
       return;
     }
 
@@ -362,13 +384,13 @@ export const FeeConfigWithCalculator: React.FC<
       !isRwaMakerValid ||
       !isRwaTakerValid
     ) {
-      setFeeError("Fee values are outside of allowed range");
+      setFeeError(t("feeConfigWithCalculator.feeValuesOutsideRange"));
       return;
     }
 
     if (useOrderlyApi) {
       if (!hasValidKey || !orderlyKey || !accountId) {
-        toast.error("Orderly key required to update fees");
+        toast.error(t("feeConfigWithCalculator.orderlyKeyRequired"));
         return;
       }
 
@@ -388,7 +410,7 @@ export const FeeConfigWithCalculator: React.FC<
           rwaMakerFeeRate,
           rwaTakerFeeRate
         );
-        toast.success("Fees updated successfully!");
+        toast.success(t("feeConfigWithCalculator.feesUpdatedSuccess"));
 
         try {
           await post("api/graduation/fees/invalidate-cache", {}, token);
@@ -402,7 +424,9 @@ export const FeeConfigWithCalculator: React.FC<
       } catch (error) {
         console.error("Error updating fees:", error);
         toast.error(
-          error instanceof Error ? error.message : "Failed to update fees"
+          error instanceof Error
+            ? error.message
+            : t("feeConfigWithCalculator.failedToUpdateFees")
         );
       } finally {
         setIsUpdatingFees(false);
@@ -419,25 +443,29 @@ export const FeeConfigWithCalculator: React.FC<
   };
 
   const tierInfo = {
-    public: { name: "Public", requirement: "No requirement", fee: "3.00 bps" },
+    public: {
+      name: i18n.t("feeConfigWithCalculator.tier.public"),
+      requirement: i18n.t("feeConfigWithCalculator.tier.publicRequirement"),
+      fee: "3.00 bps",
+    },
     silver: {
-      name: "Silver",
-      requirement: "100K $ORDER or ≥$30M volume",
+      name: i18n.t("feeConfigWithCalculator.tier.silver"),
+      requirement: i18n.t("feeConfigWithCalculator.tier.silverRequirement"),
       fee: "2.75 bps",
     },
     gold: {
-      name: "Gold",
-      requirement: "250K $ORDER or ≥$90M volume",
+      name: i18n.t("feeConfigWithCalculator.tier.gold"),
+      requirement: i18n.t("feeConfigWithCalculator.tier.goldRequirement"),
       fee: "2.50 bps",
     },
     platinum: {
-      name: "Platinum",
-      requirement: "2M $ORDER or ≥$1B volume",
+      name: i18n.t("feeConfigWithCalculator.tier.platinum"),
+      requirement: i18n.t("feeConfigWithCalculator.tier.platinumRequirement"),
       fee: "2.00 bps",
     },
     diamond: {
-      name: "Diamond",
-      requirement: "7M $ORDER or ≥$10B volume",
+      name: i18n.t("feeConfigWithCalculator.tier.diamond"),
+      requirement: i18n.t("feeConfigWithCalculator.tier.diamondRequirement"),
       fee: "1.00 bps",
     },
   };
@@ -502,14 +530,18 @@ export const FeeConfigWithCalculator: React.FC<
       {/* Fee Configuration Section */}
       <div className="bg-light/5 rounded-lg p-4">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">Fee Configuration</h3>
+          <h3 className="text-lg font-semibold">
+            {t("feeConfigWithCalculator.feeConfiguration")}
+          </h3>
           {!readOnly && !alwaysShowConfig && (
             <button
               type="button"
               onClick={() => setShowFeeConfig(!showFeeConfig)}
               className="text-primary-light hover:text-primary flex items-center gap-1 text-sm"
             >
-              {showFeeConfig ? "Hide" : "Configure"}
+              {showFeeConfig
+                ? t("feeConfigWithCalculator.hide")
+                : t("feeConfigWithCalculator.configure")}
               <div
                 className={`i-mdi:chevron-right w-4 h-4 transition-transform ${showFeeConfig ? "rotate-90" : ""}`}
               ></div>
@@ -521,28 +553,21 @@ export const FeeConfigWithCalculator: React.FC<
           <form onSubmit={handleSaveFees} className="slide-fade-in">
             <div className="mb-4">
               <p className="text-sm text-gray-300 mb-4">
-                Configure the trading fees for your DEX. Maker fees apply to
-                limit orders that provide liquidity, while taker fees apply to
-                market orders that take liquidity.
+                {t("feeConfigWithCalculator.feeConfigDesc")}
               </p>
 
               <div className="bg-warning/10 rounded-lg p-3 mb-4">
                 <div className="text-sm flex items-start gap-2">
                   <span className="i-mdi:alert-circle text-warning w-5 h-5 flex-shrink-0 mt-0.5"></span>
                   <span>
-                    <span className="font-medium text-warning">
-                      Important Fee Note:
-                    </span>{" "}
-                    The fees you configure here are the{" "}
-                    <span className="underline">total fees</span> that traders
-                    will pay. This includes the Orderly base fee (varies by tier
-                    - see calculator below).
-                    <br />
-                    Your revenue will be:{" "}
-                    <span className="font-medium">
-                      Your Custom Fee - Orderly Base Fee
-                    </span>
-                    .
+                    <Trans
+                      i18nKey="feeConfigWithCalculator.importantFeeNoteBlock"
+                      components={[
+                        <span key="0" className="font-medium text-warning" />,
+                        <span key="1" className="underline" />,
+                        <span key="2" className="font-medium" />,
+                      ]}
+                    />
                   </span>
                 </div>
               </div>
@@ -553,7 +578,7 @@ export const FeeConfigWithCalculator: React.FC<
                     htmlFor="makerFee"
                     className="block text-sm font-bold mb-1"
                   >
-                    Maker Fee (bps)
+                    {t("feeConfigWithCalculator.makerFeeLabel")} (bps)
                   </label>
                   <div className="flex items-center">
                     <input
@@ -573,8 +598,13 @@ export const FeeConfigWithCalculator: React.FC<
                     </span>
                   </div>
                   <p className="text-xs text-gray-400 mt-1">
-                    Minimum: {MIN_MAKER_FEE} bps (0.00%), Maximum: {MAX_FEE} bps
-                    ({(MAX_FEE * 0.01).toFixed(2)}%)
+                    {t("feeConfigWithCalculator.feeRange", {
+                      min: MIN_MAKER_FEE,
+                      minPercent: (MIN_MAKER_FEE * 0.01).toFixed(2),
+                      max: MAX_FEE,
+                      maxPercent: (MAX_FEE * 0.01).toFixed(2),
+                      unit: "bps",
+                    })}
                   </p>
                   {makerFeeError && (
                     <p className="text-xs text-error mt-1">{makerFeeError}</p>
@@ -586,7 +616,7 @@ export const FeeConfigWithCalculator: React.FC<
                     htmlFor="takerFee"
                     className="block text-sm font-bold mb-1"
                   >
-                    Taker Fee (bps)
+                    {t("feeConfigWithCalculator.takerFeeLabel")} (bps)
                   </label>
                   <div className="flex items-center">
                     <input
@@ -606,8 +636,13 @@ export const FeeConfigWithCalculator: React.FC<
                     </span>
                   </div>
                   <p className="text-xs text-gray-400 mt-1">
-                    Minimum: {MIN_TAKER_FEE} bps (0.03%), Maximum: {MAX_FEE} bps
-                    ({(MAX_FEE * 0.01).toFixed(2)}%)
+                    {t("feeConfigWithCalculator.feeRange", {
+                      min: MIN_TAKER_FEE,
+                      minPercent: (MIN_TAKER_FEE * 0.01).toFixed(2),
+                      max: MAX_FEE,
+                      maxPercent: (MAX_FEE * 0.01).toFixed(2),
+                      unit: "bps",
+                    })}
                   </p>
                   {takerFeeError && (
                     <p className="text-xs text-error mt-1">{takerFeeError}</p>
@@ -617,10 +652,10 @@ export const FeeConfigWithCalculator: React.FC<
 
               <div className="mb-4">
                 <h4 className="text-sm font-semibold mb-2 text-gray-200">
-                  RWA Asset Fees
+                  {t("feeConfigWithCalculator.rwaAssetFees")}
                 </h4>
                 <p className="text-xs text-gray-400 mb-3">
-                  Configure separate fees for Real World Asset (RWA) trading.
+                  {t("feeConfigWithCalculator.rwaAssetFeesDesc")}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -628,7 +663,7 @@ export const FeeConfigWithCalculator: React.FC<
                       htmlFor="rwaMakerFee"
                       className="block text-sm font-bold mb-1"
                     >
-                      RWA Maker Fee (bps)
+                      {t("feeConfigWithCalculator.rwaMakerFeeLabel")} (bps)
                     </label>
                     <div className="flex items-center">
                       <input
@@ -648,8 +683,13 @@ export const FeeConfigWithCalculator: React.FC<
                       </span>
                     </div>
                     <p className="text-xs text-gray-400 mt-1">
-                      Minimum: {MIN_RWA_MAKER_FEE} bps (0.00%), Maximum:{" "}
-                      {MAX_RWA_FEE} bps ({(MAX_RWA_FEE * 0.01).toFixed(2)}%)
+                      {t("feeConfigWithCalculator.feeRange", {
+                        min: MIN_RWA_MAKER_FEE,
+                        minPercent: (MIN_RWA_MAKER_FEE * 0.01).toFixed(2),
+                        max: MAX_RWA_FEE,
+                        maxPercent: (MAX_RWA_FEE * 0.01).toFixed(2),
+                        unit: "bps",
+                      })}
                     </p>
                     {rwaMakerFeeError && (
                       <p className="text-xs text-error mt-1">
@@ -663,7 +703,7 @@ export const FeeConfigWithCalculator: React.FC<
                       htmlFor="rwaTakerFee"
                       className="block text-sm font-bold mb-1"
                     >
-                      RWA Taker Fee (bps)
+                      {t("feeConfigWithCalculator.rwaTakerFeeLabel")} (bps)
                     </label>
                     <div className="flex items-center">
                       <input
@@ -683,8 +723,13 @@ export const FeeConfigWithCalculator: React.FC<
                       </span>
                     </div>
                     <p className="text-xs text-gray-400 mt-1">
-                      Minimum: {MIN_RWA_TAKER_FEE} bps (0.00%), Maximum:{" "}
-                      {MAX_RWA_FEE} bps ({(MAX_RWA_FEE * 0.01).toFixed(2)}%)
+                      {t("feeConfigWithCalculator.feeRange", {
+                        min: MIN_RWA_TAKER_FEE,
+                        minPercent: (MIN_RWA_TAKER_FEE * 0.01).toFixed(2),
+                        max: MAX_RWA_FEE,
+                        maxPercent: (MAX_RWA_FEE * 0.01).toFixed(2),
+                        unit: "bps",
+                      })}
                     </p>
                     {rwaTakerFeeError && (
                       <p className="text-xs text-error mt-1">
@@ -702,9 +747,7 @@ export const FeeConfigWithCalculator: React.FC<
               <div className="flex items-center gap-2 text-sm bg-info/10 rounded p-3 mb-4">
                 <span className="i-mdi:information-outline text-info w-5 h-5 flex-shrink-0"></span>
                 <span>
-                  Setting competitive fees can attract more traders to your DEX.
-                  The fee split you receive will be based on the fees your
-                  traders pay.
+                  {t("feeConfigWithCalculator.settingCompetitiveFees")}
                 </span>
               </div>
 
@@ -716,11 +759,14 @@ export const FeeConfigWithCalculator: React.FC<
                         <div className="i-mdi:key text-warning w-5 h-5 mt-0.5 flex-shrink-0"></div>
                         <div className="flex-1">
                           <h4 className="text-warning font-medium text-sm mb-1">
-                            Orderly Key Required
+                            {t(
+                              "feeConfigWithCalculator.orderlyKeyRequiredTitle"
+                            )}
                           </h4>
                           <p className="text-xs text-gray-400 mb-2">
-                            To update fees directly via Orderly API, you need to
-                            create an Orderly key first.
+                            {t(
+                              "feeConfigWithCalculator.orderlyKeyRequiredDesc"
+                            )}
                           </p>
                           <Button
                             type="button"
@@ -739,7 +785,7 @@ export const FeeConfigWithCalculator: React.FC<
                             className="flex items-center gap-2"
                           >
                             <div className="i-mdi:key-plus w-4 h-4"></div>
-                            Create Orderly Key
+                            {t("feeConfigWithCalculator.createOrderlyKey")}
                           </Button>
                         </div>
                       </div>
@@ -750,7 +796,7 @@ export const FeeConfigWithCalculator: React.FC<
                     type="submit"
                     variant="primary"
                     isLoading={isSavingFees || isUpdatingFees}
-                    loadingText="Saving..."
+                    loadingText={t("feeConfigWithCalculator.saving")}
                     className="w-full"
                     disabled={
                       !!makerFeeError ||
@@ -760,7 +806,7 @@ export const FeeConfigWithCalculator: React.FC<
                       (useOrderlyApi && !hasValidKey)
                     }
                   >
-                    Save Fee Configuration
+                    {t("feeConfigWithCalculator.saveFeeConfiguration")}
                   </Button>
                 </>
               )}
@@ -770,16 +816,20 @@ export const FeeConfigWithCalculator: React.FC<
           <div>
             <div className="flex justify-between items-center mb-2">
               <span className="text-gray-300">
-                {readOnly ? "Current Fee Structure" : "Current Fee Structure:"}
+                {readOnly
+                  ? t("feeConfigWithCalculator.currentFeeStructure")
+                  : t("feeConfigWithCalculator.currentFeeStructureColon")}
               </span>
             </div>
             <div className="mb-3">
               <div className="text-xs font-semibold text-gray-400 mb-2">
-                Standard Fees
+                {t("feeConfigWithCalculator.standardFees")}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-background-dark/50 p-3 rounded">
-                  <div className="text-sm text-gray-400">Maker Fee</div>
+                  <div className="text-sm text-gray-400">
+                    {t("feeConfigWithCalculator.makerFee")}
+                  </div>
                   <div className="text-xl font-semibold">
                     {formatNumber(makerFee)}{" "}
                     <span className="text-sm font-normal text-gray-400">
@@ -791,7 +841,9 @@ export const FeeConfigWithCalculator: React.FC<
                   </div>
                 </div>
                 <div className="bg-background-dark/50 p-3 rounded">
-                  <div className="text-sm text-gray-400">Taker Fee</div>
+                  <div className="text-sm text-gray-400">
+                    {t("feeConfigWithCalculator.takerFee")}
+                  </div>
                   <div className="text-xl font-semibold">
                     {formatNumber(takerFee)}{" "}
                     <span className="text-sm font-normal text-gray-400">
@@ -807,11 +859,13 @@ export const FeeConfigWithCalculator: React.FC<
 
             <div>
               <div className="text-xs font-semibold text-gray-400 mb-2">
-                RWA Asset Fees
+                {t("feeConfigWithCalculator.rwaAssetFees")}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-background-dark/50 p-3 rounded">
-                  <div className="text-sm text-gray-400">RWA Maker Fee</div>
+                  <div className="text-sm text-gray-400">
+                    {t("feeConfigWithCalculator.rwaMakerFee")}
+                  </div>
                   <div className="text-xl font-semibold">
                     {formatNumber(rwaMakerFee)}{" "}
                     <span className="text-sm font-normal text-gray-400">
@@ -823,7 +877,9 @@ export const FeeConfigWithCalculator: React.FC<
                   </div>
                 </div>
                 <div className="bg-background-dark/50 p-3 rounded">
-                  <div className="text-sm text-gray-400">RWA Taker Fee</div>
+                  <div className="text-sm text-gray-400">
+                    {t("feeConfigWithCalculator.rwaTakerFee")}
+                  </div>
                   <div className="text-xl font-semibold">
                     {formatNumber(rwaTakerFee)}{" "}
                     <span className="text-sm font-normal text-gray-400">
@@ -840,20 +896,19 @@ export const FeeConfigWithCalculator: React.FC<
             <div className="mt-4 bg-info/10 rounded-lg p-3 flex items-start gap-2 text-xs">
               <span className="i-mdi:information-outline text-info w-4 h-4 flex-shrink-0 mt-0.5"></span>
               <span className="text-gray-300">
-                <span className="font-medium">Note:</span> These are the total
-                fees that traders will pay on your DEX. The Orderly base fee
-                varies by tier (Public: 3.00 bps taker, Diamond: 1.00 bps
-                taker). Your revenue = Your Custom Fee - Base Fee. Improve your
-                tier through the{" "}
-                <a
-                  href="https://app.orderly.network/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary-light hover:underline"
-                >
-                  Builder Staking Programme
-                </a>{" "}
-                to reduce the base fee and increase your revenue.
+                <Trans
+                  i18nKey="feeConfigWithCalculator.noteTotalFeesTrans"
+                  components={[
+                    <span key="0" className="font-medium" />,
+                    <a
+                      key="1"
+                      href="https://app.orderly.network/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary-light hover:underline"
+                    />,
+                  ]}
+                />
               </span>
             </div>
           </div>
@@ -865,14 +920,16 @@ export const FeeConfigWithCalculator: React.FC<
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold flex items-center">
             <span className="i-mdi:calculator mr-2 h-5 w-5 text-success"></span>
-            Revenue Calculator
+            {t("feeConfigWithCalculator.revenueCalculator")}
           </h3>
           <button
             type="button"
             onClick={() => setShowCalculator(!showCalculator)}
             className="text-primary-light hover:text-primary flex items-center gap-1 text-sm"
           >
-            {showCalculator ? "Hide Calculator" : "Show Calculator"}
+            {showCalculator
+              ? t("feeConfigWithCalculator.hideCalculator")
+              : t("feeConfigWithCalculator.showCalculator")}
             <span
               className={`i-mdi:chevron-right w-4 h-4 transition-transform ${showCalculator ? "rotate-90" : ""}`}
             ></span>
@@ -882,8 +939,7 @@ export const FeeConfigWithCalculator: React.FC<
         {showCalculator && (
           <div className="bg-light/5 rounded-lg p-4 mb-4 slide-fade-in">
             <p className="text-sm text-gray-300 mb-4">
-              Estimate your potential monthly revenue based on trading volume
-              and your current fee configuration.
+              {t("feeConfigWithCalculator.estimateRevenueDesc")}
             </p>
 
             <div className="grid grid-cols-1 gap-4 mb-4">
@@ -892,7 +948,7 @@ export const FeeConfigWithCalculator: React.FC<
                   htmlFor="tradingVolume"
                   className="block text-sm font-bold mb-1"
                 >
-                  Monthly Trading Volume (USD)
+                  {t("feeConfigWithCalculator.monthlyVolume")}
                 </label>
                 <div className="flex items-center">
                   <span className="bg-background-dark border-r border-light/10 px-3 py-2 rounded-l-lg text-gray-400">
@@ -909,7 +965,7 @@ export const FeeConfigWithCalculator: React.FC<
                   />
                 </div>
                 <p className="text-xs text-gray-400 mt-1">
-                  Enter your expected monthly trading volume
+                  {t("feeConfigWithCalculator.enterVolume")}
                 </p>
               </div>
 
@@ -918,7 +974,7 @@ export const FeeConfigWithCalculator: React.FC<
                   htmlFor="tierSelect"
                   className="block text-sm font-bold mb-1"
                 >
-                  Builder Staking Tier
+                  {t("feeConfigWithCalculator.builderStakingTier")}
                 </label>
                 {/* <select
                   id="tierSelect"
@@ -960,12 +1016,14 @@ export const FeeConfigWithCalculator: React.FC<
 
             <div className="bg-success/5 rounded-lg p-4 mb-4">
               <h4 className="text-sm font-semibold mb-3 text-gray-200">
-                Estimated Monthly Revenue (After Base Fee Deduction)
+                {t("feeConfigWithCalculator.estimatedRevenue")}
               </h4>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-background-dark/50 p-3 rounded">
-                  <div className="text-sm text-gray-400">Maker Revenue</div>
+                  <div className="text-sm text-gray-400">
+                    {t("feeConfigWithCalculator.makerRevenue")}
+                  </div>
                   <div className="text-xl font-semibold text-success">
                     {formatCurrency(makerRevenue)}
                   </div>
@@ -974,12 +1032,14 @@ export const FeeConfigWithCalculator: React.FC<
                     {formatNumber(
                       Math.max(0, makerFee - tierBaseFees[selectedTier].maker)
                     )}{" "}
-                    bps after base fee)
+                    bps {t("feeConfigWithCalculator.afterBaseFee")})
                   </div>
                 </div>
 
                 <div className="bg-background-dark/50 p-3 rounded">
-                  <div className="text-sm text-gray-400">Taker Revenue</div>
+                  <div className="text-sm text-gray-400">
+                    {t("feeConfigWithCalculator.takerRevenue")}
+                  </div>
                   <div className="text-xl font-semibold text-success">
                     {formatCurrency(takerRevenue)}
                   </div>
@@ -988,30 +1048,31 @@ export const FeeConfigWithCalculator: React.FC<
                     {formatNumber(
                       Math.max(0, takerFee - tierBaseFees[selectedTier].taker)
                     )}{" "}
-                    bps after base fee)
+                    bps {t("feeConfigWithCalculator.afterBaseFee")})
                   </div>
                 </div>
 
                 <div className="bg-success/10 p-3 rounded">
-                  <div className="text-sm text-gray-300">Total Revenue</div>
+                  <div className="text-sm text-gray-300">
+                    {t("feeConfigWithCalculator.totalRevenue")}
+                  </div>
                   <div className="text-xl font-semibold text-success">
                     {formatCurrency(totalRevenue)}
                   </div>
-                  <div className="text-xs text-gray-300">per month</div>
+                  <div className="text-xs text-gray-300">
+                    {t("feeConfigWithCalculator.perMonth")}
+                  </div>
                 </div>
               </div>
 
               <div className="mt-4 flex items-start gap-2 text-xs">
                 <span className="i-mdi:information-outline text-info w-4 h-4 flex-shrink-0 mt-0.5"></span>
                 <span className="text-gray-300">
-                  This calculation assumes an equal split between maker and
-                  taker volume. Actual revenue may vary based on market
-                  conditions, trading patterns, and fee changes. Revenue shown
-                  represents your earnings after the Orderly base fee (
-                  {tierBaseFees[selectedTier].maker} bps maker,{" "}
-                  {tierBaseFees[selectedTier].taker} bps taker for{" "}
-                  {tierInfo[selectedTier].name} tier) is deducted from your
-                  custom fees.
+                  {t("feeConfigWithCalculator.calculationNote", {
+                    makerBps: tierBaseFees[selectedTier].maker,
+                    takerBps: tierBaseFees[selectedTier].taker,
+                    tierName: tierInfo[selectedTier].name,
+                  })}
                 </span>
               </div>
             </div>

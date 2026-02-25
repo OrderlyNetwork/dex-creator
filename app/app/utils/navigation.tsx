@@ -1,34 +1,4 @@
-import { HTMLAttributeAnchorTarget, ReactNode } from "react";
-
-export interface NavItem {
-  path: string;
-  title: ReactNode;
-  icon?: ReactNode;
-  target?: HTMLAttributeAnchorTarget | undefined;
-}
-
-export const navigationItems: NavItem[] = [
-  {
-    path: "/",
-    title: "Home",
-  },
-  {
-    path: "/board",
-    title: "Board",
-  },
-  {
-    path: "/case-studies",
-    title: "Case Studies",
-  },
-  {
-    path: "/distributor",
-    title: "Distributor",
-  },
-  {
-    path: "/dex",
-    title: "My DEX",
-  },
-];
+import { HTMLAttributeAnchorTarget } from "react";
 
 /**
  * Check if the given path is the currently active path

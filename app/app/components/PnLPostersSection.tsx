@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "~/i18n";
 import ImagePaste from "./ImagePaste";
 import { Button } from "./Button";
 import { Card } from "./Card";
@@ -17,6 +18,7 @@ export default function PnLPostersSection({
   onChange,
   idPrefix = "",
 }: PnLPostersSectionProps) {
+  const { t } = useTranslation();
   const [showPreview, setShowPreview] = useState(false);
 
   const handlePosterChange = (index: number) => (blob: Blob | null) => {
@@ -49,14 +51,13 @@ export default function PnLPostersSection({
       <div className="flex justify-between items-center">
         <div>
           <h3 className="text-md font-medium">
-            PnL Sharing Backgrounds{" "}
+            {t("pnlPostersSection.title")}{" "}
             <span className="text-gray-400 text-sm font-normal">
-              (optional)
+              ({t("pnlPostersSection.optional")})
             </span>
           </h3>
           <p className="text-xs text-gray-400 mt-1">
-            Custom background images for PnL sharing feature. Users can choose
-            from these when sharing their trading results.
+            {t("pnlPostersSection.description")}
           </p>
         </div>
         {pnlPosters.length < 8 && (
@@ -69,7 +70,7 @@ export default function PnLPostersSection({
           >
             <span className="flex items-center gap-1.5">
               <div className="i-mdi:plus h-4 w-4"></div>
-              Add Poster
+              {t("pnlPostersSection.addPoster")}
             </span>
           </Button>
         )}
@@ -79,12 +80,12 @@ export default function PnLPostersSection({
         <Card variant="default" className="p-6 text-center">
           <div className="i-mdi:image-multiple-outline h-12 w-12 mx-auto text-gray-500 mb-3"></div>
           <p className="text-sm text-gray-400 mb-3">
-            No PnL poster backgrounds added yet.
+            {t("pnlPostersSection.noPostersYet")}
           </p>
           <Button type="button" onClick={addPoster} variant="primary" size="sm">
             <span className="flex items-center gap-1.5">
               <div className="i-mdi:plus h-4 w-4"></div>
-              Add First Poster
+              {t("pnlPostersSection.addFirstPoster")}
             </span>
           </Button>
         </Card>
@@ -94,14 +95,14 @@ export default function PnLPostersSection({
             <div key={index} className="relative">
               <div className="flex justify-between items-center mb-2">
                 <label className="text-sm font-medium text-gray-200">
-                  Poster {index + 1}
+                  {t("pnlPostersSection.poster")} {index + 1}
                 </label>
                 <button
                   type="button"
                   onClick={() => removePoster(index)}
                   className="text-xs text-error hover:text-error/70 transition-colors"
                 >
-                  Remove
+                  {t("pnlPostersSection.remove")}
                 </button>
               </div>
               <ImagePaste
@@ -110,7 +111,7 @@ export default function PnLPostersSection({
                 value={poster || undefined}
                 onChange={handlePosterChange(index)}
                 imageType={getPosterImageType()}
-                helpText="16:9 aspect ratio (960x540px). Include a dark area on the left side for text readability."
+                helpText={t("pnlPostersSection.helpTextAspectRatio")}
               />
             </div>
           ))}
@@ -127,7 +128,9 @@ export default function PnLPostersSection({
           >
             <span className="flex items-center gap-1.5">
               <div className="i-mdi:plus h-4 w-4"></div>
-              Add Another Poster ({pnlPosters.length}/8)
+              {t("pnlPostersSection.addAnotherPoster", {
+                count: pnlPosters.length,
+              })}
             </span>
           </Button>
         </div>
@@ -137,52 +140,37 @@ export default function PnLPostersSection({
         <div className="space-y-3">
           <div>
             <span className="font-medium text-primary-light">
-              About PnL Posters:
+              {t("pnlPostersSection.aboutPnLPosters")}:
             </span>{" "}
-            These custom background images will be available to users when
-            sharing their trading PnL (Profit and Loss) results on social media.
+            {t("pnlPostersSection.aboutPnLPostersDesc")}
           </div>
 
           <div className="bg-background-light/30 rounded-lg p-3 border border-primary-light/20">
             <div className="font-medium text-primary-light mb-2">
-              Design Guidelines:
+              {t("pnlPostersSection.designGuidelines")}:
             </div>
             <ul className="space-y-1.5 text-xs">
               <li className="flex items-start gap-2">
                 <div className="i-mdi:check-circle text-green-400 h-3 w-3 mt-0.5 flex-shrink-0"></div>
-                <span>
-                  <strong>Dark Background Area:</strong> Include a dark section
-                  on the left side (about 40% of width) for text overlay
-                </span>
+                <span>{t("pnlPostersSection.darkBackgroundArea")}</span>
               </li>
               <li className="flex items-start gap-2">
                 <div className="i-mdi:check-circle text-green-400 h-3 w-3 mt-0.5 flex-shrink-0"></div>
-                <span>
-                  <strong>Text Readability:</strong> The dark area ensures
-                  white/light text remains readable when trading data is
-                  overlaid
-                </span>
+                <span>{t("pnlPostersSection.textReadability")}</span>
               </li>
               <li className="flex items-start gap-2">
                 <div className="i-mdi:check-circle text-green-400 h-3 w-3 mt-0.5 flex-shrink-0"></div>
-                <span>
-                  <strong>Visual Balance:</strong> Right side can feature your
-                  branding, illustrations, or decorative elements
-                </span>
+                <span>{t("pnlPostersSection.visualBalance")}</span>
               </li>
               <li className="flex items-start gap-2">
                 <div className="i-mdi:check-circle text-green-400 h-3 w-3 mt-0.5 flex-shrink-0"></div>
-                <span>
-                  <strong>Format:</strong> 16:9 aspect ratio (960x540px
-                  recommended) for optimal display
-                </span>
+                <span>{t("pnlPostersSection.format")}</span>
               </li>
             </ul>
           </div>
 
           <div className="text-xs text-gray-500">
-            You can add up to 8 custom backgrounds. If none are provided,
-            default backgrounds will be used.
+            {t("pnlPostersSection.customBackgroundsNote")}
           </div>
         </div>
       </Card>
@@ -199,7 +187,10 @@ export default function PnLPostersSection({
             <div
               className={`h-4 w-4 ${showPreview ? "i-mdi:eye-off-outline" : "i-mdi:eye-outline"}`}
             ></div>
-            {showPreview ? "Hide" : "Preview"} PnL Sharing
+            {showPreview
+              ? t("pnlPostersSection.hide")
+              : t("pnlPostersSection.preview")}{" "}
+            {t("pnlPostersSection.pnlSharing")}
           </span>
         </Button>
 
@@ -213,7 +204,7 @@ export default function PnLPostersSection({
               >
                 <div className="border border-primary-light/20 rounded-lg p-4 bg-background-light/50">
                   <p className="text-xs text-gray-400 mb-3">
-                    Preview of PnL sharing widget with your custom backgrounds:
+                    {t("pnlPostersSection.previewWidgetDescription")}
                   </p>
                   <form
                     onSubmit={e => {

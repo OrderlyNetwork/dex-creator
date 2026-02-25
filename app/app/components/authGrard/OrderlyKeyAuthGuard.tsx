@@ -1,3 +1,4 @@
+import { useTranslation } from "~/i18n";
 import { Button } from "../Button";
 import { Card } from "../Card";
 import { useDex } from "../../context/DexContext";
@@ -12,6 +13,7 @@ type OrderlyKeyAuthGrardProps = {
 };
 
 export const OrderlyKeyAuthGrard = (props: OrderlyKeyAuthGrardProps) => {
+  const { t } = useTranslation();
   const { brokerId } = useDex();
   const { isAuthenticated } = useAuth();
 
@@ -46,12 +48,10 @@ export const OrderlyKeyAuthGrard = (props: OrderlyKeyAuthGrardProps) => {
         </div>
         <div className="flex-1">
           <h3 className="text-lg font-medium text-warning">
-            Orderly Key Required
+            {t("orderlyKeyAuthGuard.title")}
           </h3>
           <p className="text-gray-300 mt-1 mb-4">
-            This key provides secure access to the Orderly Network API. It will
-            be stored locally to manage your distributor profile. A wallet
-            signature is required to create this key.
+            {t("orderlyKeyAuthGuard.description")}
           </p>
           <Button
             onClick={createKey}
@@ -61,12 +61,12 @@ export const OrderlyKeyAuthGrard = (props: OrderlyKeyAuthGrardProps) => {
             {isCreatingKey ? (
               <>
                 <div className="i-svg-spinners:pulse-rings-multiple w-4 h-4"></div>
-                Creating Key...
+                {t("orderlyKeyAuthGuard.creatingKey")}
               </>
             ) : (
               <>
                 <div className="i-mdi:key-plus w-4 h-4"></div>
-                Create Orderly Key
+                {t("orderlyKeyAuthGuard.createButton")}
               </>
             )}
           </Button>

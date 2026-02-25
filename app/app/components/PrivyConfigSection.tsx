@@ -1,6 +1,7 @@
 import React from "react";
 import FormInput from "./FormInput";
 import { Card } from "./Card";
+import { Trans, useTranslation } from "~/i18n";
 
 export interface PrivyConfigProps {
   privyAppId: string;
@@ -35,35 +36,36 @@ const PrivyConfigSection: React.FC<PrivyConfigProps> = ({
   onPrivyLoginMethodsChange,
   idPrefix = "",
 }) => {
+  const { t } = useTranslation();
   const isPrivyConfigured = privyAppId.trim() !== "";
 
   const loginMethodOptions = [
     {
       id: "email",
-      label: "Email",
-      description: "Email-based authentication",
+      label: t("privyConfigSection.email"),
+      description: t("privyConfigSection.emailAuth"),
       setupRequired: false,
     },
     {
       id: "passkey",
-      label: "Passkey",
-      description: "Biometric and security key authentication",
+      label: t("privyConfigSection.passkey"),
+      description: t("privyConfigSection.passkeyAuth"),
       setupRequired: true,
-      setupText: "Requires enabling Passkey in your Privy dashboard",
+      setupText: t("privyConfigSection.requiresPasskey"),
     },
     {
       id: "twitter",
-      label: "X",
-      description: "Sign in with X account",
+      label: t("privyConfigSection.x"),
+      description: t("privyConfigSection.signInWithX"),
       setupRequired: true,
-      setupText: "Requires OAuth setup in your Privy dashboard",
+      setupText: t("privyConfigSection.requiresOAuth"),
     },
     {
       id: "google",
-      label: "Google",
-      description: "Sign in with Google account",
+      label: t("privyConfigSection.google"),
+      description: t("privyConfigSection.signInWithGoogle"),
       setupRequired: true,
-      setupText: "Requires OAuth setup in your Privy dashboard",
+      setupText: t("privyConfigSection.requiresOAuth"),
     },
   ];
 
@@ -86,43 +88,49 @@ const PrivyConfigSection: React.FC<PrivyConfigProps> = ({
           <div className="i-mdi:information-outline text-primary-light h-4 w-4 mt-0.5 flex-shrink-0"></div>
           <div>
             <p className="text-xs text-primary-light font-medium mb-1">
-              Privy provides enhanced wallet connection options
+              {t("privyConfigSection.enhancedWalletOptions")}
             </p>
             <p className="text-xs text-gray-300 mb-1">
               <span className="text-primary-light font-medium">
-                Why use Privy?
+                {t("privyConfigSection.whyUsePrivy")}
               </span>{" "}
-              Privy provides multiple wallet connection options:
+              {t("privyConfigSection.privyProvidesMultiple")}
             </p>
             <ul className="text-xs text-gray-300 list-disc pl-4 space-y-0.5">
-              <li>Social logins (Google, Discord, Twitter)</li>
-              <li>Email/phone authentication</li>
-              <li>Multiple wallet types from a single interface</li>
-              <li>Embedded wallets for non-crypto users</li>
+              <li>{t("privyConfigSection.socialLogins")}</li>
+              <li>{t("privyConfigSection.emailPhoneAuth")}</li>
+              <li>{t("privyConfigSection.multipleWalletTypes")}</li>
+              <li>{t("privyConfigSection.embeddedWallets")}</li>
             </ul>
           </div>
         </div>
       </Card>
       <FormInput
         id={`${idPrefix}privyAppId`}
-        label={<div className="flex items-center gap-1">Privy App ID</div>}
+        label={
+          <div className="flex items-center gap-1">
+            {t("privyConfigSection.privyAppId")}
+          </div>
+        }
         value={privyAppId}
         onChange={handleInputChange("privyAppId")}
-        placeholder="Enter your Privy App ID"
+        placeholder={t("privyConfigSection.placeholderAppId")}
         helpText={
           <>
-            Get a Privy App ID by signing up at{" "}
-            <a
-              href="https://dashboard.privy.io"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary-light hover:underline"
-            >
-              Privy Dashboard
-            </a>
-            . When creating an app, be sure to select{" "}
-            <strong>client-side</strong> and <strong>web</strong> options.
-            You'll find your App ID in the app settings.
+            <Trans
+              i18nKey="privyConfigSection.getAppIdBySigningUp"
+              components={[
+                <a
+                  key="0"
+                  href="https://dashboard.privy.io"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary-light hover:underline"
+                />,
+                <strong key="1" />,
+                <strong key="2" />,
+              ]}
+            />
           </>
         }
       />
@@ -130,9 +138,9 @@ const PrivyConfigSection: React.FC<PrivyConfigProps> = ({
         id={`${idPrefix}privyTermsOfUse`}
         label={
           <div className="flex items-center gap-1">
-            Privy Terms of Use URL
+            {t("privyConfigSection.privyTermsOfUseUrl")}
             <span className="text-gray-400 text-sm font-normal">
-              (optional)
+              ({t("privyConfigSection.optional")})
             </span>
           </div>
         }
@@ -141,24 +149,19 @@ const PrivyConfigSection: React.FC<PrivyConfigProps> = ({
         type="url"
         placeholder="https://example.com/terms"
         validator={urlValidator}
-        helpText={
-          <>
-            Enter the URL to your terms of service that will be displayed during
-            Privy login. This is optional and only needed if you want to show
-            terms during the login process. Must be a valid URL if provided.
-          </>
-        }
+        helpText={<>{t("privyConfigSection.termsOfUseHelp")}</>}
       />
 
       {/* Login Methods Configuration - Always shown but disabled when Privy not configured */}
       <div className="mt-4">
-        <h4 className="text-base font-medium mb-3">Login Methods</h4>
+        <h4 className="text-base font-medium mb-3">
+          {t("privyConfigSection.loginMethods")}
+        </h4>
         <p className="text-xs text-gray-400 mb-3">
-          Choose which authentication methods users can use to sign in to your
-          DEX.
+          {t("privyConfigSection.chooseAuthMethods")}
           {!isPrivyConfigured && (
             <span className="text-orange-400 ml-1">
-              Configure a Privy App ID above to enable these options.
+              {t("privyConfigSection.configurePrivyAppId")}
             </span>
           )}
         </p>
@@ -204,7 +207,9 @@ const PrivyConfigSection: React.FC<PrivyConfigProps> = ({
       </div>
 
       <div className="mt-4">
-        <h4 className="text-base font-medium mb-3">Wallet Configuration</h4>
+        <h4 className="text-base font-medium mb-3">
+          {t("privyConfigSection.walletConfiguration")}
+        </h4>
         <div className="space-y-4">
           {/* Wallet Type Controls - Always shown but disabled when Privy not configured */}
           <label
@@ -225,13 +230,12 @@ const PrivyConfigSection: React.FC<PrivyConfigProps> = ({
               <div
                 className={`text-sm font-medium ${!isPrivyConfigured ? "text-gray-500" : "text-gray-200"}`}
               >
-                Enable EVM Wallets
+                {t("privyConfigSection.enableEvmWallets")}
               </div>
               <div
                 className={`text-xs mt-1 ${!isPrivyConfigured ? "text-gray-600" : "text-gray-400"}`}
               >
-                Allows users to connect Ethereum-compatible wallets (MetaMask,
-                Coinbase, etc.)
+                {t("privyConfigSection.evmWalletsDesc")}
               </div>
             </div>
           </label>
@@ -254,12 +258,12 @@ const PrivyConfigSection: React.FC<PrivyConfigProps> = ({
               <div
                 className={`text-sm font-medium ${!isPrivyConfigured ? "text-gray-500" : "text-gray-200"}`}
               >
-                Enable Solana Wallets
+                {t("privyConfigSection.enableSolanaWallets")}
               </div>
               <div
                 className={`text-xs mt-1 ${!isPrivyConfigured ? "text-gray-600" : "text-gray-400"}`}
               >
-                Allows users to connect Solana wallets (Phantom, Solflare, etc.)
+                {t("privyConfigSection.solanaWalletsDesc")}
               </div>
             </div>
           </label>
@@ -285,14 +289,14 @@ const PrivyConfigSection: React.FC<PrivyConfigProps> = ({
               <div
                 className={`text-sm font-medium ${!isPrivyConfigured ? "text-gray-500" : "text-gray-200"}`}
               >
-                Enable Abstract Wallet (via Privy)
+                {t("privyConfigSection.enableAbstractWallet")}
               </div>
               <div
                 className={`text-xs mt-1 ${!isPrivyConfigured ? "text-gray-600" : "text-gray-400"}`}
               >
                 {isPrivyConfigured
-                  ? "Enables Abstract's wallet solution powered by Privy. This allows users to connect using Abstract's wallet on the Abstract blockchain."
-                  : "Requires a Privy App ID to be set above before this can be enabled."}
+                  ? t("privyConfigSection.abstractWalletEnabled")
+                  : t("privyConfigSection.abstractWalletRequiresPrivy")}
               </div>
             </div>
           </label>

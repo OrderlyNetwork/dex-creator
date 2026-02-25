@@ -9,6 +9,7 @@ import React, {
 import { Button } from "./Button";
 import FormInput from "./FormInput";
 import { useRateLimitCountdown } from "../hooks/useRateLimitCountdown";
+import { useTranslation } from "~/i18n";
 
 export type FormErrors = Record<string, string | null>;
 
@@ -32,12 +33,13 @@ export default function Form({
   children,
   submitText,
   isLoading = false,
-  loadingText = "Submitting",
+  loadingText,
   disabled = false,
   className = "",
   enableRateLimit = false,
 }: FormProps) {
   const [errors, setErrors] = useState<FormErrors>({});
+  const { t } = useTranslation();
 
   const rateLimit = useRateLimitCountdown(enableRateLimit);
   const shouldShowRateLimit = rateLimit.isRateLimited;
@@ -105,6 +107,8 @@ export default function Form({
     });
   }, [children, registerError]);
 
+  const resolvedLoadingText = loadingText ?? t("form.submitting");
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -119,13 +123,17 @@ export default function Form({
             <div className="bg-warning/10 border border-warning/20 rounded-lg p-4 mb-4">
               <div className="flex items-center gap-2 mb-2">
                 <div className="i-mdi:clock-alert text-warning h-5 w-5"></div>
-                <span className="text-warning font-medium">Please Wait</span>
+                <span className="text-warning font-medium">
+                  {t("form.pleaseWait")}
+                </span>
               </div>
               <p className="text-sm text-gray-300 mb-2">
-                You can only update your DEX once every 2 minutes.
+                {t("form.rateLimitMessage")}
               </p>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-400">Time remaining:</span>
+                <span className="text-xs text-gray-400">
+                  {t("form.timeRemaining")}:
+                </span>
                 <span className="font-mono text-warning font-bold">
                   {rateLimit.formattedTime}
                 </span>
@@ -140,10 +148,10 @@ export default function Form({
             size="md"
             disabled={disabled || isLoading || shouldShowRateLimit}
             isLoading={isLoading}
-            loadingText={loadingText}
+            loadingText={resolvedLoadingText}
           >
             {shouldShowRateLimit
-              ? `Wait ${rateLimit.formattedTime}`
+              ? t("form.waitTime", { time: rateLimit.formattedTime })
               : submitText}
           </Button>
         </>

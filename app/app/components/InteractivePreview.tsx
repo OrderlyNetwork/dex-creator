@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { DexPreviewProps } from "./DexPreview";
 import EditModeModal from "./EditModeModal";
 import { Button } from "./Button";
+import { useTranslation } from "~/i18n";
 
 export interface InteractivePreviewProps {
   previewProps: DexPreviewProps;
@@ -30,6 +31,7 @@ const InteractivePreview: FC<InteractivePreviewProps> = ({
   setTradingViewColorConfig,
 }) => {
   const [editMode, setEditMode] = useState<"desktop" | "mobile" | null>(null);
+  const { t } = useTranslation();
 
   const handleOpenEditMode = (mode: "desktop" | "mobile") => {
     setEditMode(mode);
@@ -44,11 +46,10 @@ const InteractivePreview: FC<InteractivePreviewProps> = ({
       <div className="space-y-6">
         <div>
           <h3 className="text-base font-bold mb-2 text-gray-200">
-            Interactive Preview
+            {t("interactivePreview.title")}
           </h3>
           <p className="text-xs text-gray-400 mb-4">
-            Click "Edit Desktop" or "Edit Mobile" to enter edit mode and
-            customize CSS variables by clicking on elements.
+            {t("interactivePreview.description")}
           </p>
         </div>
 
@@ -56,7 +57,7 @@ const InteractivePreview: FC<InteractivePreviewProps> = ({
           <div className="bg-background-card border border-light/10 rounded-lg p-4">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-sm font-medium text-gray-300">
-                Desktop Preview
+                {t("interactivePreview.desktopPreviewTitle")}
               </h4>
             </div>
             <Button
@@ -68,7 +69,7 @@ const InteractivePreview: FC<InteractivePreviewProps> = ({
             >
               <span className="flex items-center gap-2 justify-center">
                 <div className="i-mdi:pencil h-5 w-5"></div>
-                Edit Desktop
+                {t("interactivePreview.editDesktop")}
               </span>
             </Button>
             <div
@@ -77,9 +78,11 @@ const InteractivePreview: FC<InteractivePreviewProps> = ({
             >
               <div className="text-center text-gray-500">
                 <div className="i-mdi:monitor-dashboard h-10 w-10 mx-auto mb-2 opacity-50"></div>
-                <p className="text-xs">Desktop preview</p>
+                <p className="text-xs">
+                  {t("interactivePreview.desktopPreviewPlaceholderTitle")}
+                </p>
                 <p className="text-xs opacity-70 mt-1">
-                  Click "Edit Desktop" to view
+                  {t("interactivePreview.desktopPreviewPlaceholderDescription")}
                 </p>
               </div>
             </div>
@@ -88,7 +91,7 @@ const InteractivePreview: FC<InteractivePreviewProps> = ({
           <div className="bg-background-card border border-light/10 rounded-lg p-4">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-sm font-medium text-gray-300">
-                Mobile Preview
+                {t("interactivePreview.mobilePreviewTitle")}
               </h4>
             </div>
             <Button
@@ -100,7 +103,7 @@ const InteractivePreview: FC<InteractivePreviewProps> = ({
             >
               <span className="flex items-center gap-2 justify-center">
                 <div className="i-mdi:pencil h-5 w-5"></div>
-                Edit Mobile
+                {t("interactivePreview.editMobile")}
               </span>
             </Button>
             <div
@@ -109,9 +112,11 @@ const InteractivePreview: FC<InteractivePreviewProps> = ({
             >
               <div className="text-center text-gray-500">
                 <div className="i-mdi:cellphone h-6 w-6 mx-auto mb-2 opacity-50"></div>
-                <p className="text-xs">Mobile preview</p>
+                <p className="text-xs">
+                  {t("interactivePreview.mobilePreviewPlaceholderTitle")}
+                </p>
                 <p className="text-xs opacity-70 mt-1">
-                  Click "Edit Mobile" to view
+                  {t("interactivePreview.mobilePreviewPlaceholderDescription")}
                 </p>
               </div>
             </div>

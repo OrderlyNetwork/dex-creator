@@ -1,130 +1,144 @@
 import { FC } from "react";
+import { useTranslation, Trans } from "~/i18n";
 
 export const BaseFeeExplanation: FC = () => {
+  const { t } = useTranslation();
   return (
     <div className="bg-primary/10 rounded-lg p-4 mb-6 border border-primary/20">
       <h3 className="text-md font-medium mb-3 flex items-center">
         <div className="i-mdi:finance text-primary w-5 h-5 mr-2"></div>
-        Understanding Base Fees & Staking Tiers
+        {t("baseFeeExplanation.title")}
       </h3>
 
       <div className="text-sm text-gray-300 mb-4">
         <p className="mb-3">
-          <span className="font-medium text-white">Base Fee:</span> Orderly
-          retains 100% of a base taker fee while offering 0 bps maker fee. This
-          fee varies by tier in our Builder Staking Programme:
+          <span className="font-medium text-white">
+            {t("baseFeeExplanation.baseFee")}:
+          </span>{" "}
+          {t("baseFeeExplanation.baseFeeIntro")}
         </p>
 
         <div className="bg-background-dark/50 rounded-lg overflow-hidden mb-4">
           <div className="grid grid-cols-4 text-center border-b border-light/10 text-xs md:text-sm">
-            <div className="p-2 font-medium bg-background-dark/70">Tier</div>
             <div className="p-2 font-medium bg-background-dark/70">
-              Volume Requirement (30d)
+              {t("baseFeeExplanation.tier")}
             </div>
             <div className="p-2 font-medium bg-background-dark/70">
-              Staking Requirement
+              {t("baseFeeExplanation.volumeRequirement")}
             </div>
             <div className="p-2 font-medium bg-background-dark/70">
-              Orderly Base Taker Fee (bps)
+              {t("baseFeeExplanation.stakingRequirement")}
+            </div>
+            <div className="p-2 font-medium bg-background-dark/70">
+              {t("baseFeeExplanation.orderlyBaseTakerFee")}
             </div>
           </div>
 
           <div className="grid grid-cols-4 text-center border-b border-light/10 text-xs md:text-sm">
             <div className="p-2 flex flex-col justify-center">
-              <span className="font-medium">PUBLIC</span>
+              <span className="font-medium">
+                {t("baseFeeExplanation.public")}
+              </span>
             </div>
-            <div className="p-2">No Requirement</div>
-            <div className="p-2">-</div>
+            <div className="p-2">{t("baseFeeExplanation.noRequirement")}</div>
+            <div className="p-2">{t("baseFeeExplanation.dash")}</div>
             <div className="p-2">3.00</div>
           </div>
 
           <div className="grid grid-cols-4 text-center border-b border-light/10 text-xs md:text-sm">
             <div className="p-2 flex flex-col justify-center">
-              <span className="font-medium text-gray-100">SILVER</span>
+              <span className="font-medium text-gray-100">
+                {t("baseFeeExplanation.silver")}
+              </span>
             </div>
             <div className="p-2">
-              ≥ $30M
+              {t("baseFeeExplanation.vol30m")}
               <br />
-              <span className="text-gray-400">OR</span>
+              <span className="text-gray-400">
+                {t("baseFeeExplanation.or")}
+              </span>
             </div>
-            <div className="p-2">100K $ORDER</div>
+            <div className="p-2">{t("baseFeeExplanation.stake100k")}</div>
             <div className="p-2">2.75</div>
           </div>
 
           <div className="grid grid-cols-4 text-center border-b border-light/10 text-xs md:text-sm">
             <div className="p-2 flex flex-col justify-center">
-              <span className="font-medium text-warning">GOLD</span>
+              <span className="font-medium text-warning">
+                {t("baseFeeExplanation.gold")}
+              </span>
             </div>
             <div className="p-2">
-              ≥ $90M
+              {t("baseFeeExplanation.vol90m")}
               <br />
-              <span className="text-gray-400">OR</span>
+              <span className="text-gray-400">
+                {t("baseFeeExplanation.or")}
+              </span>
             </div>
-            <div className="p-2">250K $ORDER</div>
+            <div className="p-2">{t("baseFeeExplanation.stake250k")}</div>
             <div className="p-2">2.50</div>
           </div>
 
           <div className="grid grid-cols-4 text-center border-b border-light/10 text-xs md:text-sm">
             <div className="p-2 flex flex-col justify-center">
-              <span className="font-medium text-blue-300">PLATINUM</span>
+              <span className="font-medium text-blue-300">
+                {t("baseFeeExplanation.platinum")}
+              </span>
             </div>
             <div className="p-2">
-              ≥ $1B
+              {t("baseFeeExplanation.vol1b")}
               <br />
-              <span className="text-gray-400">OR</span>
+              <span className="text-gray-400">
+                {t("baseFeeExplanation.or")}
+              </span>
             </div>
-            <div className="p-2">2M $ORDER</div>
+            <div className="p-2">{t("baseFeeExplanation.stake2m")}</div>
             <div className="p-2">2.00</div>
           </div>
 
           <div className="grid grid-cols-4 text-center text-xs md:text-sm">
             <div className="p-2 flex flex-col justify-center">
-              <span className="font-medium text-cyan-300">DIAMOND</span>
+              <span className="font-medium text-cyan-300">
+                {t("baseFeeExplanation.diamond")}
+              </span>
             </div>
             <div className="p-2">
-              ≥ $10B
+              {t("baseFeeExplanation.vol10b")}
               <br />
-              <span className="text-gray-400">OR</span>
+              <span className="text-gray-400">
+                {t("baseFeeExplanation.or")}
+              </span>
             </div>
-            <div className="p-2">7M $ORDER</div>
+            <div className="p-2">{t("baseFeeExplanation.stake7m")}</div>
             <div className="p-2">1.00</div>
           </div>
         </div>
 
         <div className="flex justify-between items-center mb-3">
-          <p className="font-medium text-white">What does this mean for you?</p>
+          <p className="font-medium text-white">
+            {t("baseFeeExplanation.whatDoesThisMean")}
+          </p>
           <a
             href="https://orderly.network/docs/build-on-omnichain/user-flows/builder-staking-programme"
             target="_blank"
             rel="noopener noreferrer"
             className="text-primary-light hover:underline text-xs flex items-center"
           >
-            View documentation
+            {t("baseFeeExplanation.viewDocumentation")}
             <span className="i-mdi:open-in-new w-3 h-3 ml-1"></span>
           </a>
         </div>
 
-        <p className="mb-3">
-          Your custom fee settings represent the total fees that traders pay.
-          Your revenue is calculated by subtracting the base fee from your
-          custom fees:
-        </p>
+        <p className="mb-3">{t("baseFeeExplanation.customFeeDesc")}</p>
 
         <ul className="pl-5 list-disc space-y-1 mb-3">
-          <li>
-            Base Fee (retained by Orderly): Ranges from 3.00 bps (Public tier)
-            to 1.00 bps (Diamond tier) - this is deducted from your custom fees
-          </li>
-          <li>Your Revenue: Your Custom Fee - Base Fee</li>
+          <li>{t("baseFeeExplanation.baseFeeRetainedDesc")}</li>
+          <li>{t("baseFeeExplanation.yourRevenue")}</li>
         </ul>
 
         <div className="flex items-center gap-2">
           <span className="i-mdi:lightbulb text-warning w-4 h-4 flex-shrink-0"></span>
-          <span>
-            By staking more ORDER tokens or achieving higher trading volume, you
-            can reduce the base fee charged by Orderly, maximizing your DEX's
-            competitiveness.
-          </span>
+          <span>{t("baseFeeExplanation.stakingTip")}</span>
         </div>
 
         <div className="mt-4 flex justify-center">
@@ -135,7 +149,7 @@ export const BaseFeeExplanation: FC = () => {
             className="bg-primary hover:bg-primary-light transition-colors px-4 py-2 rounded-full text-white font-medium flex items-center gap-2"
           >
             <span className="i-mdi:trending-up w-4 h-4"></span>
-            Stake ORDER for Better Rates
+            {t("baseFeeExplanation.stakeOrderCta")}
             <span className="i-mdi:open-in-new w-3.5 h-3.5"></span>
           </a>
         </div>
@@ -144,11 +158,13 @@ export const BaseFeeExplanation: FC = () => {
           <div className="flex items-start gap-2 text-sm">
             <div className="i-mdi:alert-circle text-warning w-5 h-5 flex-shrink-0"></div>
             <p>
-              <span className="font-medium text-warning">Important:</span> You
-              must use the{" "}
-              <span className="font-medium">exact same wallet</span> for staking
-              ORDER tokens that you used to set up this DEX. This ensures proper
-              tier attribution and benefits.
+              <Trans
+                i18nKey="baseFeeExplanation.importantWalletNote"
+                components={[
+                  <span key="0" className="font-medium text-warning" />,
+                  <span key="1" className="font-medium" />,
+                ]}
+              />
             </p>
           </div>
         </div>

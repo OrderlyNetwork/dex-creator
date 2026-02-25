@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "~/i18n";
 import { useAccount, useDisconnect } from "wagmi";
 import { useAuth } from "../context/useAuth";
 import { useModal } from "../context/ModalContext";
@@ -10,6 +11,7 @@ import { useLocation } from "@remix-run/react";
 import { isHandlingSessionExpiryDisconnect } from "../utils/globalDisconnect";
 
 export default function WalletConnect() {
+  const { t } = useTranslation();
   const [connectError, setConnectError] = useState<string | null>(null);
   const [hasUserDismissedModal, setHasUserDismissedModal] = useState(false);
   const { address, isConnected } = useAccount();
@@ -43,7 +45,7 @@ export default function WalletConnect() {
 
   useEffect(() => {
     if (connectError) {
-      toast.error(`Connection error: ${connectError}`);
+      toast.error(`${t("walletConnect.connectionError")}: ${connectError}`);
       console.error("Connection error:", connectError);
     }
   }, [connectError]);
@@ -132,8 +134,10 @@ export default function WalletConnect() {
           className="whitespace-nowrap"
           onClick={openWalletModal}
         >
-          <span className="hidden xs:inline">Connect Wallet</span>
-          <span className="xs:hidden">Connect</span>
+          <span className="hidden xs:inline">
+            {t("walletConnect.connectWallet")}
+          </span>
+          <span className="xs:hidden">{t("walletConnect.connect")}</span>
         </Button>
       ) : !isAuthenticated ? (
         <div className="flex items-center">
@@ -152,18 +156,18 @@ export default function WalletConnect() {
                 withGlow
                 onClick={handleShowLoginModal}
                 isLoading={isLoading}
-                loadingText="Validating"
+                loadingText={t("walletConnect.validating")}
                 className="text-xs py-0.5 px-2.5 md:text-sm md:py-1.5 md:px-4"
               >
-                Login
+                {t("walletConnect.login")}
               </Button>
               <Button
                 variant="ghost"
                 size="xs"
                 className="rounded-full p-0.5! flex items-center justify-center min-w-0"
                 onClick={() => disconnect()}
-                title="Disconnect"
-                aria-label="Disconnect"
+                title={t("walletConnect.disconnect")}
+                aria-label={t("walletConnect.disconnect")}
               >
                 <Icon icon="heroicons:power" width={10} className="md:w-3.5" />
               </Button>
@@ -183,8 +187,8 @@ export default function WalletConnect() {
             size="xs"
             className="rounded-full p-0.5! md:p-1! flex items-center justify-center min-w-0"
             onClick={logout}
-            title="Disconnect"
-            aria-label="Disconnect"
+            title={t("walletConnect.disconnect")}
+            aria-label={t("walletConnect.disconnect")}
           >
             <Icon icon="heroicons:power" width={10} className="md:w-3.5" />
           </Button>
