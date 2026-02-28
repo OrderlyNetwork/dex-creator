@@ -12,74 +12,83 @@ interface FontValues {
   fontSize: string;
 }
 
-const FONT_FAMILIES = [
-  {
-    name: "Manrope",
-    value: "'Manrope', sans-serif",
-    preview: "Manrope",
-    category: i18n.t("themeFontControls.category.default"),
-  },
-  {
-    name: "Roboto",
-    value: "'Roboto', sans-serif",
-    preview: "Roboto",
-    category: i18n.t("themeFontControls.category.modern"),
-  },
-  {
-    name: "Open Sans",
-    value: "'Open Sans', sans-serif",
-    preview: "Open Sans",
-    category: i18n.t("themeFontControls.category.readable"),
-  },
-  {
-    name: "Lato",
-    value: "'Lato', sans-serif",
-    preview: "Lato",
-    category: i18n.t("themeFontControls.category.readable"),
-  },
-  {
-    name: "Poppins",
-    value: "'Poppins', sans-serif",
-    preview: "Poppins",
-    category: i18n.t("themeFontControls.category.modern"),
-  },
-  {
-    name: "Source Sans Pro",
-    value: "'Source Sans Pro', sans-serif",
-    preview: "Source Sans Pro",
-    category: i18n.t("themeFontControls.category.readable"),
-  },
-  {
-    name: "Nunito",
-    value: "'Nunito', sans-serif",
-    preview: "Nunito",
-    category: i18n.t("themeFontControls.category.friendly"),
-  },
-  {
-    name: "Montserrat",
-    value: "'Montserrat', sans-serif",
-    preview: "Montserrat",
-    category: i18n.t("themeFontControls.category.modern"),
-  },
-  {
-    name: "Raleway",
-    value: "'Raleway', sans-serif",
-    preview: "Raleway",
-    category: i18n.t("themeFontControls.category.elegant"),
-  },
-  {
-    name: "Ubuntu",
-    value: "'Ubuntu', sans-serif",
-    preview: "Ubuntu",
-    category: i18n.t("themeFontControls.category.modern"),
-  },
-  {
-    name: "Fira Sans",
-    value: "'Fira Sans', sans-serif",
-    preview: "Fira Sans",
-    category: i18n.t("themeFontControls.category.technical"),
-  },
-];
+interface FontFamilyOption {
+  name: string;
+  value: string;
+  preview: string;
+  category: string;
+}
+
+function getFontFamilies(): FontFamilyOption[] {
+  return [
+    {
+      name: "Manrope",
+      value: "'Manrope', sans-serif",
+      preview: "Manrope",
+      category: i18n.t("themeFontControls.category.default"),
+    },
+    {
+      name: "Roboto",
+      value: "'Roboto', sans-serif",
+      preview: "Roboto",
+      category: i18n.t("themeFontControls.category.modern"),
+    },
+    {
+      name: "Open Sans",
+      value: "'Open Sans', sans-serif",
+      preview: "Open Sans",
+      category: i18n.t("themeFontControls.category.readable"),
+    },
+    {
+      name: "Lato",
+      value: "'Lato', sans-serif",
+      preview: "Lato",
+      category: i18n.t("themeFontControls.category.readable"),
+    },
+    {
+      name: "Poppins",
+      value: "'Poppins', sans-serif",
+      preview: "Poppins",
+      category: i18n.t("themeFontControls.category.modern"),
+    },
+    {
+      name: "Source Sans Pro",
+      value: "'Source Sans Pro', sans-serif",
+      preview: "Source Sans Pro",
+      category: i18n.t("themeFontControls.category.readable"),
+    },
+    {
+      name: "Nunito",
+      value: "'Nunito', sans-serif",
+      preview: "Nunito",
+      category: i18n.t("themeFontControls.category.friendly"),
+    },
+    {
+      name: "Montserrat",
+      value: "'Montserrat', sans-serif",
+      preview: "Montserrat",
+      category: i18n.t("themeFontControls.category.modern"),
+    },
+    {
+      name: "Raleway",
+      value: "'Raleway', sans-serif",
+      preview: "Raleway",
+      category: i18n.t("themeFontControls.category.elegant"),
+    },
+    {
+      name: "Ubuntu",
+      value: "'Ubuntu', sans-serif",
+      preview: "Ubuntu",
+      category: i18n.t("themeFontControls.category.modern"),
+    },
+    {
+      name: "Fira Sans",
+      value: "'Fira Sans', sans-serif",
+      preview: "Fira Sans",
+      category: i18n.t("themeFontControls.category.technical"),
+    },
+  ];
+}
 
 // Custom dropdown component for font selection
 const FontDropdown = ({
@@ -87,14 +96,16 @@ const FontDropdown = ({
   onChange,
   isOpen,
   onToggle,
+  fontFamilies,
 }: {
   value: string;
   onChange: (newValue: string) => void;
   isOpen: boolean;
   onToggle: () => void;
+  fontFamilies: FontFamilyOption[];
 }) => {
   const selectedFont =
-    FONT_FAMILIES.find(font => font.value === value) || FONT_FAMILIES[0];
+    fontFamilies.find(font => font.value === value) || fontFamilies[0];
 
   return (
     <div className="relative">
@@ -113,7 +124,7 @@ const FontDropdown = ({
 
       {isOpen && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-background-dark/95 border border-light/20 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
-          {FONT_FAMILIES.map(font => (
+          {fontFamilies.map(font => (
             <button
               key={font.value}
               type="button"
@@ -270,6 +281,7 @@ export default function ThemeFontControls({
             onChange={handleFontFamilyChange}
             isOpen={isFontDropdownOpen}
             onToggle={() => setIsFontDropdownOpen(!isFontDropdownOpen)}
+            fontFamilies={getFontFamilies()}
           />
         </div>
       </div>

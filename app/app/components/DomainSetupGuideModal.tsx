@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { i18n, useTranslation } from "~/i18n";
 import { Button } from "./Button";
 
@@ -19,97 +19,101 @@ type Step = {
   linkText?: string;
 };
 
-const cloudflareSteps: Step[] = [
-  {
-    id: 1,
-    title: i18n.t("domainSetupGuideModal.cloudflare.step1.title"),
-    description: i18n.t("domainSetupGuideModal.cloudflare.step1.description"),
-    imageUrl: "/cloudflare-signup.webp",
-    imageAlt: i18n.t("domainSetupGuideModal.cloudflare.step1.imageAlt"),
-    link: "https://dash.cloudflare.com/sign-up",
-    linkText: i18n.t("domainSetupGuideModal.cloudflare.step1.linkText"),
-  },
-  {
-    id: 2,
-    title: i18n.t("domainSetupGuideModal.cloudflare.step2.title"),
-    description: i18n.t("domainSetupGuideModal.cloudflare.step2.description"),
-    imageUrl: "/cloudflare-registrar.webp",
-    imageAlt: i18n.t("domainSetupGuideModal.cloudflare.step2.imageAlt"),
-    link: "https://domains.cloudflare.com/",
-    linkText: i18n.t("domainSetupGuideModal.cloudflare.step2.linkText"),
-  },
-  {
-    id: 3,
-    title: i18n.t("domainSetupGuideModal.cloudflare.step3.title"),
-    description: i18n.t("domainSetupGuideModal.cloudflare.step3.description"),
-    imageUrl: "/cloudflare-registration.webp",
-    imageAlt: i18n.t("domainSetupGuideModal.cloudflare.step3.imageAlt"),
-  },
-  {
-    id: 4,
-    title: i18n.t("domainSetupGuideModal.cloudflare.step4.title"),
-    description: i18n.t("domainSetupGuideModal.cloudflare.step4.description"),
-    imageUrl: "/cloudflare-domain.webp",
-    imageAlt: i18n.t("domainSetupGuideModal.cloudflare.step4.imageAlt"),
-    link: "https://dash.cloudflare.com",
-    linkText: i18n.t("domainSetupGuideModal.cloudflare.step4.linkText"),
-  },
-  {
-    id: 5,
-    title: i18n.t("domainSetupGuideModal.cloudflare.step5.title"),
-    description: i18n.t("domainSetupGuideModal.cloudflare.step5.description"),
-    imageUrl: "/cloudflare-dns.webp",
-    imageAlt: i18n.t("domainSetupGuideModal.cloudflare.step5.imageAlt"),
-    link: "https://dash.cloudflare.com",
-    linkText: i18n.t("domainSetupGuideModal.cloudflare.step5.linkText"),
-  },
-];
+function getCloudflareSteps(): Step[] {
+  return [
+    {
+      id: 1,
+      title: i18n.t("domainSetupGuideModal.cloudflare.step1.title"),
+      description: i18n.t("domainSetupGuideModal.cloudflare.step1.description"),
+      imageUrl: "/cloudflare-signup.webp",
+      imageAlt: i18n.t("domainSetupGuideModal.cloudflare.step1.imageAlt"),
+      link: "https://dash.cloudflare.com/sign-up",
+      linkText: i18n.t("domainSetupGuideModal.cloudflare.step1.linkText"),
+    },
+    {
+      id: 2,
+      title: i18n.t("domainSetupGuideModal.cloudflare.step2.title"),
+      description: i18n.t("domainSetupGuideModal.cloudflare.step2.description"),
+      imageUrl: "/cloudflare-registrar.webp",
+      imageAlt: i18n.t("domainSetupGuideModal.cloudflare.step2.imageAlt"),
+      link: "https://domains.cloudflare.com/",
+      linkText: i18n.t("domainSetupGuideModal.cloudflare.step2.linkText"),
+    },
+    {
+      id: 3,
+      title: i18n.t("domainSetupGuideModal.cloudflare.step3.title"),
+      description: i18n.t("domainSetupGuideModal.cloudflare.step3.description"),
+      imageUrl: "/cloudflare-registration.webp",
+      imageAlt: i18n.t("domainSetupGuideModal.cloudflare.step3.imageAlt"),
+    },
+    {
+      id: 4,
+      title: i18n.t("domainSetupGuideModal.cloudflare.step4.title"),
+      description: i18n.t("domainSetupGuideModal.cloudflare.step4.description"),
+      imageUrl: "/cloudflare-domain.webp",
+      imageAlt: i18n.t("domainSetupGuideModal.cloudflare.step4.imageAlt"),
+      link: "https://dash.cloudflare.com",
+      linkText: i18n.t("domainSetupGuideModal.cloudflare.step4.linkText"),
+    },
+    {
+      id: 5,
+      title: i18n.t("domainSetupGuideModal.cloudflare.step5.title"),
+      description: i18n.t("domainSetupGuideModal.cloudflare.step5.description"),
+      imageUrl: "/cloudflare-dns.webp",
+      imageAlt: i18n.t("domainSetupGuideModal.cloudflare.step5.imageAlt"),
+      link: "https://dash.cloudflare.com",
+      linkText: i18n.t("domainSetupGuideModal.cloudflare.step5.linkText"),
+    },
+  ] as Step[];
+}
 
-const namecheapSteps: Step[] = [
-  {
-    id: 1,
-    title: i18n.t("domainSetupGuideModal.namecheap.step1.title"),
-    description: i18n.t("domainSetupGuideModal.namecheap.step1.description"),
-    imageUrl: "/namecheap-signup.webp",
-    imageAlt: i18n.t("domainSetupGuideModal.namecheap.step1.imageAlt"),
-    link: "https://www.namecheap.com/myaccount/signup",
-    linkText: i18n.t("domainSetupGuideModal.namecheap.step1.linkText"),
-  },
-  {
-    id: 2,
-    title: i18n.t("domainSetupGuideModal.namecheap.step2.title"),
-    description: i18n.t("domainSetupGuideModal.namecheap.step2.description"),
-    imageUrl: "/namecheap-registrar.webp",
-    imageAlt: i18n.t("domainSetupGuideModal.namecheap.step2.imageAlt"),
-    link: "https://namecheap.com",
-    linkText: i18n.t("domainSetupGuideModal.namecheap.step2.linkText"),
-  },
-  {
-    id: 3,
-    title: i18n.t("domainSetupGuideModal.namecheap.step3.title"),
-    description: i18n.t("domainSetupGuideModal.namecheap.step3.description"),
-    imageUrl: "/namecheap-registration.webp",
-    imageAlt: i18n.t("domainSetupGuideModal.namecheap.step3.imageAlt"),
-  },
-  {
-    id: 4,
-    title: i18n.t("domainSetupGuideModal.namecheap.step4.title"),
-    description: i18n.t("domainSetupGuideModal.namecheap.step4.description"),
-    imageUrl: "/namecheap-domain.webp",
-    imageAlt: i18n.t("domainSetupGuideModal.namecheap.step4.imageAlt"),
-    link: "https://ap.www.namecheap.com/domains/",
-    linkText: i18n.t("domainSetupGuideModal.namecheap.step4.linkText"),
-  },
-  {
-    id: 5,
-    title: i18n.t("domainSetupGuideModal.namecheap.step5.title"),
-    description: i18n.t("domainSetupGuideModal.namecheap.step5.description"),
-    imageUrl: "/namecheap-dns.webp",
-    imageAlt: i18n.t("domainSetupGuideModal.namecheap.step5.imageAlt"),
-    link: "https://ap.www.namecheap.com/domains/",
-    linkText: i18n.t("domainSetupGuideModal.namecheap.step5.linkText"),
-  },
-];
+function getNamecheapSteps(): Step[] {
+  return [
+    {
+      id: 1,
+      title: i18n.t("domainSetupGuideModal.namecheap.step1.title"),
+      description: i18n.t("domainSetupGuideModal.namecheap.step1.description"),
+      imageUrl: "/namecheap-signup.webp",
+      imageAlt: i18n.t("domainSetupGuideModal.namecheap.step1.imageAlt"),
+      link: "https://www.namecheap.com/myaccount/signup",
+      linkText: i18n.t("domainSetupGuideModal.namecheap.step1.linkText"),
+    },
+    {
+      id: 2,
+      title: i18n.t("domainSetupGuideModal.namecheap.step2.title"),
+      description: i18n.t("domainSetupGuideModal.namecheap.step2.description"),
+      imageUrl: "/namecheap-registrar.webp",
+      imageAlt: i18n.t("domainSetupGuideModal.namecheap.step2.imageAlt"),
+      link: "https://namecheap.com",
+      linkText: i18n.t("domainSetupGuideModal.namecheap.step2.linkText"),
+    },
+    {
+      id: 3,
+      title: i18n.t("domainSetupGuideModal.namecheap.step3.title"),
+      description: i18n.t("domainSetupGuideModal.namecheap.step3.description"),
+      imageUrl: "/namecheap-registration.webp",
+      imageAlt: i18n.t("domainSetupGuideModal.namecheap.step3.imageAlt"),
+    },
+    {
+      id: 4,
+      title: i18n.t("domainSetupGuideModal.namecheap.step4.title"),
+      description: i18n.t("domainSetupGuideModal.namecheap.step4.description"),
+      imageUrl: "/namecheap-domain.webp",
+      imageAlt: i18n.t("domainSetupGuideModal.namecheap.step4.imageAlt"),
+      link: "https://ap.www.namecheap.com/domains/",
+      linkText: i18n.t("domainSetupGuideModal.namecheap.step4.linkText"),
+    },
+    {
+      id: 5,
+      title: i18n.t("domainSetupGuideModal.namecheap.step5.title"),
+      description: i18n.t("domainSetupGuideModal.namecheap.step5.description"),
+      imageUrl: "/namecheap-dns.webp",
+      imageAlt: i18n.t("domainSetupGuideModal.namecheap.step5.imageAlt"),
+      link: "https://ap.www.namecheap.com/domains/",
+      linkText: i18n.t("domainSetupGuideModal.namecheap.step5.linkText"),
+    },
+  ] as Step[];
+}
 
 export default function DomainSetupGuideModal({
   isOpen,
@@ -124,8 +128,12 @@ export default function DomainSetupGuideModal({
 
   if (!isOpen) return null;
 
-  const steps =
-    selectedProvider === "cloudflare" ? cloudflareSteps : namecheapSteps;
+  const steps = useMemo(() => {
+    return selectedProvider === "cloudflare"
+      ? getCloudflareSteps()
+      : getNamecheapSteps();
+  }, [selectedProvider, t]);
+
   const currentStepData = steps.find(step => step.id === currentStep);
   const isFirstStep = currentStep === 1;
   const isLastStep = currentStep === steps.length;

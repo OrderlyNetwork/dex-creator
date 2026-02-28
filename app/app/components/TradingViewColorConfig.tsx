@@ -24,21 +24,25 @@ const DEFAULT_COLORS: ColorConfigInterface = {
   chartBG: "#131722",
 };
 
-const COLOR_LABELS = {
-  upColor: i18n.t("tradingViewColorConfig.candleUpColor"),
-  downColor: i18n.t("tradingViewColorConfig.candleDownColor"),
-  pnlUpColor: i18n.t("tradingViewColorConfig.pnlProfitColor"),
-  pnlDownColor: i18n.t("tradingViewColorConfig.pnlLossColor"),
-  chartBG: i18n.t("tradingViewColorConfig.chartBackground"),
-};
+function getColorLabels(): Record<keyof ColorConfigInterface, string> {
+  return {
+    upColor: i18n.t("tradingViewColorConfig.candleUpColor"),
+    downColor: i18n.t("tradingViewColorConfig.candleDownColor"),
+    pnlUpColor: i18n.t("tradingViewColorConfig.pnlProfitColor"),
+    pnlDownColor: i18n.t("tradingViewColorConfig.pnlLossColor"),
+    chartBG: i18n.t("tradingViewColorConfig.chartBackground"),
+  };
+}
 
-const COLOR_DESCRIPTIONS = {
-  upColor: i18n.t("tradingViewColorConfig.candleUpDesc"),
-  downColor: i18n.t("tradingViewColorConfig.candleDownDesc"),
-  pnlUpColor: i18n.t("tradingViewColorConfig.pnlProfitDesc"),
-  pnlDownColor: i18n.t("tradingViewColorConfig.pnlLossDesc"),
-  chartBG: i18n.t("tradingViewColorConfig.chartBgDesc"),
-};
+function getColorDescriptions(): Record<keyof ColorConfigInterface, string> {
+  return {
+    upColor: i18n.t("tradingViewColorConfig.candleUpDesc"),
+    downColor: i18n.t("tradingViewColorConfig.candleDownDesc"),
+    pnlUpColor: i18n.t("tradingViewColorConfig.pnlProfitDesc"),
+    pnlDownColor: i18n.t("tradingViewColorConfig.pnlLossDesc"),
+    chartBG: i18n.t("tradingViewColorConfig.chartBgDesc"),
+  };
+}
 
 export default function TradingViewColorConfig({
   value,
@@ -158,8 +162,9 @@ export default function TradingViewColorConfig({
             )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {Object.entries(COLOR_LABELS).map(([colorKey, label]) => {
+              {Object.entries(getColorLabels()).map(([colorKey, label]) => {
                 const displayColors = isEnabled ? colors : savedColors;
+                const colorDescriptions = getColorDescriptions();
                 return (
                   <div key={colorKey} className="space-y-2">
                     <div className="flex items-center justify-between">
@@ -173,7 +178,7 @@ export default function TradingViewColorConfig({
                           className={`text-xs ${isEnabled ? "text-gray-400" : "text-gray-600"}`}
                         >
                           {
-                            COLOR_DESCRIPTIONS[
+                            colorDescriptions[
                               colorKey as keyof ColorConfigInterface
                             ]
                           }

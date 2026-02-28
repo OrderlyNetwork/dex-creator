@@ -1,5 +1,5 @@
 import { Component, ReactNode, ErrorInfo } from "react";
-import { i18n } from "~/i18n";
+import { Trans } from "~/i18n";
 
 interface PreviewErrorBoundaryProps {
   children: ReactNode;
@@ -62,10 +62,10 @@ class PreviewErrorBoundary extends Component<
               <div className="i-mdi:alert-circle-outline text-warning h-5 w-5 flex-shrink-0 mt-0.5"></div>
               <div className="flex-1">
                 <p className="text-xs font-medium text-warning mb-1">
-                  {i18n.t("previewErrorBoundary.previewWarning")}
+                  <Trans i18nKey="previewErrorBoundary.previewWarning" />
                 </p>
                 <p className="text-xs text-gray-400">
-                  {i18n.t("previewErrorBoundary.someFeaturesMayNotWork")}
+                  <Trans i18nKey="previewErrorBoundary.someFeaturesMayNotWork" />
                 </p>
               </div>
             </div>

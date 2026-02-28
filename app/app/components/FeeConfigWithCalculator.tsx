@@ -107,12 +107,12 @@ export const FeeConfigWithCalculator: React.FC<
     if (type === "maker") {
       if (value < MIN_MAKER_FEE) {
         setMakerFeeError(
-          `${i18n.t("feeConfigWithCalculator.makerFeeMin", { min: MIN_MAKER_FEE })} bps`
+          `${t("feeConfigWithCalculator.makerFeeMin", { min: MIN_MAKER_FEE })} bps`
         );
         return false;
       } else if (value > MAX_FEE) {
         setMakerFeeError(
-          `${i18n.t("feeConfigWithCalculator.makerFeeMax", { max: MAX_FEE })} bps`
+          `${t("feeConfigWithCalculator.makerFeeMax", { max: MAX_FEE })} bps`
         );
         return false;
       } else {
@@ -122,12 +122,12 @@ export const FeeConfigWithCalculator: React.FC<
     } else if (type === "taker") {
       if (value < MIN_TAKER_FEE) {
         setTakerFeeError(
-          `${i18n.t("feeConfigWithCalculator.takerFeeMin", { min: MIN_TAKER_FEE })} bps`
+          `${t("feeConfigWithCalculator.takerFeeMin", { min: MIN_TAKER_FEE })} bps`
         );
         return false;
       } else if (value > MAX_FEE) {
         setTakerFeeError(
-          `${i18n.t("feeConfigWithCalculator.takerFeeMax", { max: MAX_FEE })} bps`
+          `${t("feeConfigWithCalculator.takerFeeMax", { max: MAX_FEE })} bps`
         );
         return false;
       } else {
@@ -137,14 +137,14 @@ export const FeeConfigWithCalculator: React.FC<
     } else if (type === "rwaMaker") {
       if (value < MIN_RWA_MAKER_FEE) {
         setRwaMakerFeeError(
-          `${i18n.t("feeConfigWithCalculator.rwaMakerFeeMin", {
+          `${t("feeConfigWithCalculator.rwaMakerFeeMin", {
             min: MIN_RWA_MAKER_FEE,
           })} bps`
         );
         return false;
       } else if (value > MAX_RWA_FEE) {
         setRwaMakerFeeError(
-          `${i18n.t("feeConfigWithCalculator.rwaMakerFeeMax", {
+          `${t("feeConfigWithCalculator.rwaMakerFeeMax", {
             max: MAX_RWA_FEE,
           })} bps`
         );
@@ -156,14 +156,14 @@ export const FeeConfigWithCalculator: React.FC<
     } else {
       if (value < MIN_RWA_TAKER_FEE) {
         setRwaTakerFeeError(
-          `${i18n.t("feeConfigWithCalculator.rwaTakerFeeMin", {
+          `${t("feeConfigWithCalculator.rwaTakerFeeMin", {
             min: MIN_RWA_TAKER_FEE,
           })} bps`
         );
         return false;
       } else if (value > MAX_RWA_FEE) {
         setRwaTakerFeeError(
-          `${i18n.t("feeConfigWithCalculator.rwaTakerFeeMax", {
+          `${t("feeConfigWithCalculator.rwaTakerFeeMax", {
             max: MAX_RWA_FEE,
           })} bps`
         );
@@ -444,28 +444,28 @@ export const FeeConfigWithCalculator: React.FC<
 
   const tierInfo = {
     public: {
-      name: i18n.t("feeConfigWithCalculator.tier.public"),
-      requirement: i18n.t("feeConfigWithCalculator.tier.publicRequirement"),
+      name: t("feeConfigWithCalculator.tier.public"),
+      requirement: t("feeConfigWithCalculator.tier.publicRequirement"),
       fee: "3.00 bps",
     },
     silver: {
-      name: i18n.t("feeConfigWithCalculator.tier.silver"),
-      requirement: i18n.t("feeConfigWithCalculator.tier.silverRequirement"),
+      name: t("feeConfigWithCalculator.tier.silver"),
+      requirement: t("feeConfigWithCalculator.tier.silverRequirement"),
       fee: "2.75 bps",
     },
     gold: {
-      name: i18n.t("feeConfigWithCalculator.tier.gold"),
-      requirement: i18n.t("feeConfigWithCalculator.tier.goldRequirement"),
+      name: t("feeConfigWithCalculator.tier.gold"),
+      requirement: t("feeConfigWithCalculator.tier.goldRequirement"),
       fee: "2.50 bps",
     },
     platinum: {
-      name: i18n.t("feeConfigWithCalculator.tier.platinum"),
-      requirement: i18n.t("feeConfigWithCalculator.tier.platinumRequirement"),
+      name: t("feeConfigWithCalculator.tier.platinum"),
+      requirement: t("feeConfigWithCalculator.tier.platinumRequirement"),
       fee: "2.00 bps",
     },
     diamond: {
-      name: i18n.t("feeConfigWithCalculator.tier.diamond"),
-      requirement: i18n.t("feeConfigWithCalculator.tier.diamondRequirement"),
+      name: t("feeConfigWithCalculator.tier.diamond"),
+      requirement: t("feeConfigWithCalculator.tier.diamondRequirement"),
       fee: "1.00 bps",
     },
   };

@@ -7,7 +7,7 @@ import { useOperatePointsStage } from "./usePointsService";
 import { toast } from "react-toastify";
 import { modal } from "@orderly.network/ui";
 import { formatDate } from "~/utils/date";
-import { i18n } from "~/i18n";
+import { useTranslation } from "~/i18n";
 
 type UseOperatePointsProps = {
   type: PointCampaignFormType;
@@ -17,6 +17,7 @@ type UseOperatePointsProps = {
 
 export function useOperatePoints(props: UseOperatePointsProps) {
   const { type, pointDetail } = props;
+  const { t } = useTranslation();
 
   const [updatePointCampaign, { isMutating }] = useOperatePointsStage();
 
@@ -49,18 +50,18 @@ export function useOperatePoints(props: UseOperatePointsProps) {
         if (type === PointCampaignFormType.Create) {
           toast.success(
             <div>
-              {i18n.t("points.operate.create.toast.title")}
+              {t("points.operate.create.toast.title")}
               <div className="text-[13px] text-base-contrast-54">
-                {i18n.t("points.operate.create.toast.description")}
+                {t("points.operate.create.toast.description")}
               </div>
             </div>
           );
         } else if (type === PointCampaignFormType.Edit) {
           toast.success(
             <div>
-              {i18n.t("points.operate.edit.toast.title")}
+              {t("points.operate.edit.toast.title")}
               <div className="text-[13px] text-base-contrast-54">
-                {i18n.t("points.operate.edit.toast.description")}
+                {t("points.operate.edit.toast.description")}
               </div>
             </div>
           );
@@ -72,7 +73,7 @@ export function useOperatePoints(props: UseOperatePointsProps) {
     } catch (err) {
       console.error("Error creating campaign:", err);
       const errorMessage =
-        err instanceof Error ? err.message : i18n.t("points.operate.error");
+        err instanceof Error ? err.message : t("points.operate.error");
       toast.error(errorMessage);
       return err;
     }
@@ -80,11 +81,11 @@ export function useOperatePoints(props: UseOperatePointsProps) {
 
   const onSubmit = (values: PointCampaignFormValues) => {
     modal.confirm({
-      title: i18n.t("points.operate.modal.title"),
-      okLabel: i18n.t("points.operate.modal.ok"),
+      title: t("points.operate.modal.title"),
+      okLabel: t("points.operate.modal.ok"),
       content: (
         <span className="text-warning">
-          {i18n.t("points.operate.modal.content")}
+          {t("points.operate.modal.content")}
         </span>
       ),
       size: "md",

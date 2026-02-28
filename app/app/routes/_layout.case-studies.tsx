@@ -8,110 +8,126 @@ export const meta: MetaFunction = () => [
   { title: "Case Studies | Orderly One" },
 ];
 
-const caseStudies = [
-  {
-    id: "aden",
-    name: "ADEN",
-    description: i18n.t("caseStudies.aden.description"),
-    image: "/aden.webp",
-    dexUrl: "https://aden.io",
-    socialUrl: "https://x.com/aden",
-    stats: [
-      { value: "$45B+", label: i18n.t("caseStudies.stats.totalTradingVolume") },
-      { value: "2K+", label: i18n.t("caseStudies.stats.dailyActiveUsers") },
-      { value: "#2", label: i18n.t("caseStudies.stats.rankingOnCMC") },
-    ],
-    treasuryFeatures: [
-      {
-        type: "paragraph",
-        title: i18n.t("caseStudies.aden.treasury.title"),
-        description: i18n.t("caseStudies.aden.treasury.paragraph1"),
-        description2: i18n.t("caseStudies.aden.treasury.paragraph2"),
-      },
-    ],
-  },
-  {
-    id: "noot",
-    name: "NOOT",
-    description: i18n.t("caseStudies.noot.description"),
-    image: "/noot.webp",
-    dexUrl: "https://nootrade.xyz",
-    socialUrl: "https://x.com/nootonabstract",
-    stats: [
-      { value: "$10M+", label: i18n.t("caseStudies.stats.totalTradingVolume") },
-      {
-        value: "$4K+",
-        label: i18n.t("caseStudies.noot.stats.revenueGeneratedForTreasury"),
-      },
-      { value: "815+", label: i18n.t("caseStudies.noot.stats.uniqueTraders") },
-    ],
-    treasuryFeatures: [
-      {
-        icon: "mdi:fire",
-        title: i18n.t("caseStudies.noot.treasury.tokenBuybacks.title"),
-        description: i18n.t(
-          "caseStudies.noot.treasury.tokenBuybacks.description"
-        ),
-      },
-      {
-        icon: "mdi:account-group",
-        title: i18n.t("caseStudies.noot.treasury.communityGrowth.title"),
-        description: i18n.t(
-          "caseStudies.noot.treasury.communityGrowth.description"
-        ),
-      },
-      {
-        icon: "mdi:currency-usd",
-        title: i18n.t("caseStudies.noot.treasury.cexListings.title"),
-        description: i18n.t(
-          "caseStudies.noot.treasury.cexListings.description"
-        ),
-      },
-    ],
-  },
-  {
-    id: "lol",
-    name: "LOL",
-    description: i18n.t("caseStudies.lol.description"),
-    image: "/lol.webp",
-    dexUrl: "https://www.loldex.lol/",
-    socialUrl: "https://x.com/lolctolol",
-    stats: [
-      { value: "$30M+", label: i18n.t("caseStudies.stats.totalTradingVolume") },
-      {
-        value: "$9K+",
-        label: i18n.t("caseStudies.lol.stats.revenueUsedForBuybacks"),
-      },
-    ],
-    treasuryFeatures: [
-      {
-        icon: "mdi:fire",
-        title: i18n.t("caseStudies.lol.treasury.tokenBuybacks.title"),
-        description: i18n.t(
-          "caseStudies.lol.treasury.tokenBuybacks.description"
-        ),
-      },
-      {
-        icon: "mdi:account-group",
-        title: i18n.t("caseStudies.lol.treasury.communityGrowth.title"),
-        description: i18n.t(
-          "caseStudies.lol.treasury.communityGrowth.description"
-        ),
-      },
-      {
-        icon: "mdi:currency-usd",
-        title: i18n.t("caseStudies.lol.treasury.cexListings.title"),
-        description: i18n.t("caseStudies.lol.treasury.cexListings.description"),
-      },
-    ],
-  },
-];
+function getCaseStudies() {
+  return [
+    {
+      id: "aden",
+      name: "ADEN",
+      description: i18n.t("caseStudies.aden.description"),
+      image: "/aden.webp",
+      dexUrl: "https://aden.io",
+      socialUrl: "https://x.com/aden",
+      stats: [
+        {
+          value: "$45B+",
+          label: i18n.t("caseStudies.stats.totalTradingVolume"),
+        },
+        { value: "2K+", label: i18n.t("caseStudies.stats.dailyActiveUsers") },
+        { value: "#2", label: i18n.t("caseStudies.stats.rankingOnCMC") },
+      ],
+      treasuryFeatures: [
+        {
+          type: "paragraph",
+          title: i18n.t("caseStudies.aden.treasury.title"),
+          description: i18n.t("caseStudies.aden.treasury.paragraph1"),
+          description2: i18n.t("caseStudies.aden.treasury.paragraph2"),
+        },
+      ],
+    },
+    {
+      id: "noot",
+      name: "NOOT",
+      description: i18n.t("caseStudies.noot.description"),
+      image: "/noot.webp",
+      dexUrl: "https://nootrade.xyz",
+      socialUrl: "https://x.com/nootonabstract",
+      stats: [
+        {
+          value: "$10M+",
+          label: i18n.t("caseStudies.stats.totalTradingVolume"),
+        },
+        {
+          value: "$4K+",
+          label: i18n.t("caseStudies.noot.stats.revenueGeneratedForTreasury"),
+        },
+        {
+          value: "815+",
+          label: i18n.t("caseStudies.noot.stats.uniqueTraders"),
+        },
+      ],
+      treasuryFeatures: [
+        {
+          icon: "mdi:fire",
+          title: i18n.t("caseStudies.noot.treasury.tokenBuybacks.title"),
+          description: i18n.t(
+            "caseStudies.noot.treasury.tokenBuybacks.description"
+          ),
+        },
+        {
+          icon: "mdi:account-group",
+          title: i18n.t("caseStudies.noot.treasury.communityGrowth.title"),
+          description: i18n.t(
+            "caseStudies.noot.treasury.communityGrowth.description"
+          ),
+        },
+        {
+          icon: "mdi:currency-usd",
+          title: i18n.t("caseStudies.noot.treasury.cexListings.title"),
+          description: i18n.t(
+            "caseStudies.noot.treasury.cexListings.description"
+          ),
+        },
+      ],
+    },
+    {
+      id: "lol",
+      name: "LOL",
+      description: i18n.t("caseStudies.lol.description"),
+      image: "/lol.webp",
+      dexUrl: "https://www.loldex.lol/",
+      socialUrl: "https://x.com/lolctolol",
+      stats: [
+        {
+          value: "$30M+",
+          label: i18n.t("caseStudies.stats.totalTradingVolume"),
+        },
+        {
+          value: "$9K+",
+          label: i18n.t("caseStudies.lol.stats.revenueUsedForBuybacks"),
+        },
+      ],
+      treasuryFeatures: [
+        {
+          icon: "mdi:fire",
+          title: i18n.t("caseStudies.lol.treasury.tokenBuybacks.title"),
+          description: i18n.t(
+            "caseStudies.lol.treasury.tokenBuybacks.description"
+          ),
+        },
+        {
+          icon: "mdi:account-group",
+          title: i18n.t("caseStudies.lol.treasury.communityGrowth.title"),
+          description: i18n.t(
+            "caseStudies.lol.treasury.communityGrowth.description"
+          ),
+        },
+        {
+          icon: "mdi:currency-usd",
+          title: i18n.t("caseStudies.lol.treasury.cexListings.title"),
+          description: i18n.t(
+            "caseStudies.lol.treasury.cexListings.description"
+          ),
+        },
+      ],
+    },
+  ];
+}
 
 export default function CaseStudies() {
   const { t } = useTranslation();
 
   const [activeTab, setActiveTab] = useState("aden");
-
+  const caseStudies = getCaseStudies();
   const activeCaseStudy = caseStudies.find(study => study.id === activeTab);
 
   return (
