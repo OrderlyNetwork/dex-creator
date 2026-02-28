@@ -13,6 +13,10 @@ You are responsible for extracting hardcoded copy from TypeScript/JavaScript fil
 - Module index: `app/app/i18n/module/index.ts`
 - Usage in components: `import { useTranslation } from "~/i18n"` then `t("prefix.slugKey")`
 - Usage outside components: `import { i18n } from "~/i18n"` then `i18n.t("prefix.slugKey")`
+- **Trans** (inline components / rich text): `import { Trans } from "~/i18n"`. Use when the string interleaves text with inline nodes (e.g. links, styled spans). Translation value uses `<0>...</0>`, `<1>...</1>` placeholders; pass a `components` array in the same order. Example:
+  - Module: `"prefix.richSentence": "Read the <0>documentation</0> for details."`
+  - JSX: `<Trans i18nKey="prefix.richSentence" components={[<a key="0" href="/docs" className="text-primary" />]} />`
+  - Multiple placeholders: `"prefix.feeSplit": "Split: <0>X</0> to you, <1>Y</1> to protocol."` → `components={[<span key="0" className="font-medium text-success" />, <span key="1" className="font-medium text-primary" />]}`
 
 ## 1. Pre-checks and parameters
 

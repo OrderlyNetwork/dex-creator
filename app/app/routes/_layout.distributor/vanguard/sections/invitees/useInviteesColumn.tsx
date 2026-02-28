@@ -42,7 +42,7 @@ export const useInviteesColumn = (props: UseInviteesColumnProps): Column[] => {
                 toast.success(t("distributor.copied"));
               }}
               className="ml-2 text-base-contrast-54 hover:text-base-contrast transition-colors"
-              aria-label={t("distributor.copyAddress")}
+              aria-label="Copy address"
             >
               <CopyIcon className="w-4 h-4" />
             </button>
@@ -68,7 +68,7 @@ export const useInviteesColumn = (props: UseInviteesColumnProps): Column[] => {
                   toast.success(t("distributor.copied"));
                 }}
                 className="ml-2 text-base-contrast-54 hover:text-base-contrast transition-colors"
-                aria-label={t("distributor.copyBrokerId")}
+                aria-label="Copy broker ID"
               >
                 <CopyIcon className="w-4 h-4" />
               </button>
@@ -102,7 +102,7 @@ export const useInviteesColumn = (props: UseInviteesColumnProps): Column[] => {
               <button
                 onClick={() => onEditTier(record)}
                 className="ml-2 text-base-contrast-54 hover:text-base-contrast transition-colors"
-                aria-label={t("distributor.editTier")}
+                aria-label="Edit tier"
               >
                 <EditIcon className="w-4 h-4" />
               </button>

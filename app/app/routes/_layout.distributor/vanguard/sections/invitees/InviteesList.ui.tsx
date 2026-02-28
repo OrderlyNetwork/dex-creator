@@ -48,7 +48,7 @@ const EmptyState = () => {
               }
             }}
             className="text-base-contrast-54 hover:text-base-contrast transition-colors"
-            aria-label={t("distributor.copyCode")}
+            aria-label="Copy code"
           >
             <CopyIcon className="w-4 h-4" />
           </button>
@@ -60,7 +60,7 @@ const EmptyState = () => {
               }
             }}
             className="text-base-contrast-54 hover:text-base-contrast transition-colors"
-            aria-label={t("distributor.copyUrl")}
+            aria-label="Copy URL"
           >
             <LinkIcon className="w-4 h-4" />
           </button>

@@ -25,11 +25,11 @@ export const graduation = {
   "graduation.benefits.builderStaking.stakeLink": "Stake ORDER tokens",
   "graduation.benefits.builderStaking.viewDetails": "View programme details",
   "graduation.benefits.builderStaking.sameWalletNote":
-    "You must use the same wallet for staking that you used to set up your DEX.",
+    "You must use the <0>same wallet</0> for staking that you used to set up your DEX.",
   "graduation.benefits.enhancedSupport.title": "Enhanced Support & Services",
   "graduation.benefits.enhancedSupport.description":
     "As you progress through higher tiers, unlock additional benefits including dedicated tech support, marketing assistance, and priority for new chain expansions. Platinum and Diamond tier members receive enhanced marketing support, flagship partner program access, and dedicated customer service.",
-  "graduation.feeStructure.title": "DEX Fee Structure:",
+  "graduation.feeStructure.title": "DEX Fee Structure",
   "graduation.feeStructure.description":
     "Your custom fees represent the total fees that traders pay. Orderly's base fee (which varies by tier) is deducted from your custom fees to calculate your revenue. The base fee supports the Orderly ecosystem infrastructure and liquidity.",
 };

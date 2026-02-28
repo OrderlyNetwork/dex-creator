@@ -44,7 +44,7 @@ export const useRevenueShareDetailsColumn =
                   toast.success(t("distributor.copied"));
                 }}
                 className="ml-2 text-base-contrast-36 hover:text-base-contrast transition-colors"
-                aria-label={t("distributor.copyAddress")}
+                aria-label="Copy address"
               >
                 <CopyIcon className="w-4 h-4" />
               </button>
@@ -67,7 +67,7 @@ export const useRevenueShareDetailsColumn =
                     toast.success(t("distributor.copied"));
                   }}
                   className="ml-2 text-base-contrast-36 hover:text-base-contrast transition-colors"
-                  aria-label={t("distributor.copyBrokerId")}
+                  aria-label="Copy broker ID"
                 >
                   <CopyIcon className="w-4 h-4" />
                 </button>

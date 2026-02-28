@@ -156,7 +156,7 @@ export default function AdminLoginModal({
 
         <div className="bg-background-dark/50 p-4 rounded-lg border border-secondary-light/10 text-sm mb-6">
           <h4 className="font-semibold mb-2 text-secondary-light">
-            {t("adminLoginModal.howToLogIn")}
+            {t("adminLoginModal.howToLogIn")}:
           </h4>
           <ol className="text-gray-400 space-y-1 list-decimal list-inside">
             <li>{t("adminLoginModal.step1")}</li>

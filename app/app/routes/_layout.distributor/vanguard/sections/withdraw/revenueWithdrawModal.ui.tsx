@@ -175,7 +175,7 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
           </Tooltip>
           <div className="flex items-center justify-start">
             <div className="flex items-center gap-2 text-xs font-medium text-base-contrast-36">
-              <span>{t("distributor.available")}</span>
+              <span>{t("distributor.available")}:</span>
               {isLoadingBalance ? (
                 <span>{t("distributor.loading")}</span>
               ) : (

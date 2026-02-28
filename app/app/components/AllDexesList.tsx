@@ -275,7 +275,7 @@ export default function AllDexesList({
                 {dex.repoUrl && (
                   <div className="md:col-span-2 flex items-center justify-between">
                     <div className="flex-1 min-w-0">
-                      <strong>{t("allDexesList.repoUrlHeading")}</strong>{" "}
+                      <strong>{t("allDexesList.repoUrlHeading")}:</strong>{" "}
                       <a
                         href={dex.repoUrl}
                         target="_blank"
@@ -303,7 +303,7 @@ export default function AllDexesList({
                 {dex.customDomain && (
                   <div className="md:col-span-2 flex items-center justify-between">
                     <div className="flex-1 min-w-0">
-                      <strong>{t("allDexesList.customDomainHeading")}</strong>{" "}
+                      <strong>{t("allDexesList.customDomainHeading")}:</strong>{" "}
                       <a
                         href={`https://${dex.customDomain}`}
                         target="_blank"
@@ -388,7 +388,7 @@ export default function AllDexesList({
                   {dex.customDomainOverride && (
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">
-                        <strong>{t("allDexesList.overrideUrlHeading")}</strong>{" "}
+                        <strong>{t("allDexesList.overrideUrlHeading")}:</strong>{" "}
                         <a
                           href={dex.customDomainOverride}
                           target="_blank"
@@ -417,7 +417,7 @@ export default function AllDexesList({
                 {dex.repoUrl && (
                   <div className="md:col-span-2 flex items-center justify-between">
                     <div className="flex-1 min-w-0">
-                      <strong>{t("allDexesList.deploymentUrlHeading")}</strong>{" "}
+                      <strong>{t("allDexesList.deploymentUrlHeading")}:</strong>{" "}
                       <a
                         href={generateDeploymentUrl(dex.repoUrl)}
                         target="_blank"

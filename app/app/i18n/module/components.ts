@@ -256,7 +256,7 @@ export const components = {
   "adminLoginModal.privateKey": "Private Key (Secret Key)",
   "adminLoginModal.neverSharePrivateKey":
     "⚠️ Never share your private key with anyone!",
-  "adminLoginModal.howToLogIn": "How to log in:",
+  "adminLoginModal.howToLogIn": "How to log in",
   "adminLoginModal.step1": "Open the Admin Dashboard link",
   "adminLoginModal.step2": "Paste your Account ID in the first field",
   "adminLoginModal.step3": "Paste your Public Key in the second field",
@@ -338,21 +338,21 @@ export const components = {
   "allDexesList.brokerIdLabel": "Broker ID",
   "allDexesList.copyBrokerId": "Copy Broker ID",
   "allDexesList.repoUrlLabel": "Repository URL",
-  "allDexesList.repoUrlHeading": "Repo URL:",
+  "allDexesList.repoUrlHeading": "Repo URL",
   "allDexesList.copyRepoUrl": "Copy Repository URL",
   "allDexesList.customDomainUrlLabel": "Custom Domain URL",
-  "allDexesList.customDomainHeading": "Custom Domain:",
+  "allDexesList.customDomainHeading": "Custom Domain",
   "allDexesList.copyCustomDomainUrl": "Copy Custom Domain URL",
   "allDexesList.customDomainOverride": "Custom Domain Override",
   "allDexesList.updating": "Updating...",
   "allDexesList.update": "Update",
   "allDexesList.overrideUrlLabel": "Custom Domain Override URL",
   "allDexesList.overrideUrl": "Override URL",
-  "allDexesList.overrideUrlHeading": "Override URL:",
+  "allDexesList.overrideUrlHeading": "Override URL",
   "allDexesList.copyOverrideUrl": "Copy Override URL",
   "allDexesList.deploymentUrlLabel": "Deployment URL",
   "allDexesList.deploymentUrl": "Deployment URL",
-  "allDexesList.deploymentUrlHeading": "Deployment URL:",
+  "allDexesList.deploymentUrlHeading": "Deployment URL",
   "allDexesList.copyDeploymentUrl": "Copy Deployment URL",
   "allDexesList.actions": "Actions",
   "allDexesList.deploying": "Deploying...",
@@ -1029,6 +1029,7 @@ export const components = {
     "Affordable domains, excellent support, user-friendly interface",
   "domainSetupGuideModal.steps": "Steps",
   "domainSetupGuideModal.step": "Step",
+  "domainSetupGuideModal.stepOf": "Step {{current}} of {{total}}",
   "domainSetupGuideModal.previous": "Previous",
   "domainSetupGuideModal.next": "Next",
   "domainSetupGuideModal.completeGuide": "Complete Guide",
@@ -1168,7 +1169,7 @@ export const components = {
   "feeConfigWithCalculator.saveFeeConfiguration": "Save Fee Configuration",
   "feeConfigWithCalculator.saving": "Saving...",
   "feeConfigWithCalculator.currentFeeStructure": "Current Fee Structure",
-  "feeConfigWithCalculator.currentFeeStructureColon": "Current Fee Structure:",
+  "feeConfigWithCalculator.currentFeeStructureColon": "Current Fee Structure",
   "feeConfigWithCalculator.standardFees": "Standard Fees",
   "feeConfigWithCalculator.makerFee": "Maker Fee",
   "feeConfigWithCalculator.takerFee": "Taker Fee",
@@ -1496,13 +1497,13 @@ export const components = {
   "navigationMenuEditor.setFee": "⚠️ Set Fee",
   "navigationMenuEditor.noMenuItemsSelected":
     "No menu items selected. Default menus will be displayed.",
-  "navigationMenuEditor.swapPageFeatures": "Swap Page Features:",
+  "navigationMenuEditor.swapPageFeatures": "Swap Page Features",
   "navigationMenuEditor.swapPageFeaturesDesc":
     "The Swap page allows users to exchange tokens seamlessly across multiple chains. Powered by WOOFi, this feature provides efficient token swapping with competitive rates and deep liquidity across supported networks.",
-  "navigationMenuEditor.rewardsPageRequirement": "Rewards Page Requirement:",
+  "navigationMenuEditor.rewardsPageRequirement": "Rewards Page Requirement",
   "navigationMenuEditor.rewardsPageRequirementDesc":
     "The Rewards page (which includes referral management) can only be fully utilized after your DEX has been graduated. You can enable the Rewards menu now, but referral features will only become active once you graduate your DEX and start earning fee splits.",
-  "navigationMenuEditor.vaultsPageFeatures": "Vaults Page Features:",
+  "navigationMenuEditor.vaultsPageFeatures": "Vaults Page Features",
   "navigationMenuEditor.vaultsPageFeaturesDesc":
     "The Vaults page enables users to earn passive yield through automated trading strategies and yield farming. Users can deposit USDC into curated vault strategies that deploy market-making strategies, handle liquidations, and accrue platform fees. This feature works across multiple blockchains with no gas fees for deposits from your DEX account.",
   "navigationMenuEditor.default": "Default",
@@ -1521,7 +1522,7 @@ export const components = {
     "Enhanced Wallet Connectivity with Reown",
   "reownConfigSection.whatIsReown":
     "<0>What is Reown?</0> Reown (formerly WalletConnect) provides a superior wallet connection experience that goes far beyond basic browser wallet integration.",
-  "reownConfigSection.keyBenefits": "🚀 Key Benefits for Your DEX Users:",
+  "reownConfigSection.keyBenefits": "🚀 Key Benefits for Your DEX Users",
   "reownConfigSection.mobileWalletSupport":
     "<0>Mobile Wallet Support:</0> Users can connect mobile wallets like MetaMask Mobile, Trust Wallet, and 300+ others via QR code scanning",
   "reownConfigSection.crossPlatformAccess":
@@ -1694,7 +1695,7 @@ export const components = {
   "graduationForm.amount": "Amount",
   "graduationForm.transferSuccessfulVerifying":
     "Transfer successful! Verifying transaction...",
-  "graduationForm.recipientAddress": "Recipient Address:",
+  "graduationForm.recipientAddress": "Recipient Address",
   "graduationForm.enterBrokerIdToContinue":
     "Please enter your broker ID to continue",
   "graduationForm.fixBrokerIdError": "Please fix the broker ID error above",
@@ -1890,7 +1891,7 @@ export const components = {
   "graduationForm.manualVerificationDescription":
     "If you've already sent {{token}} tokens, enter the transaction hash to verify and complete your graduation.",
   "graduationForm.copy": "Copy",
-  "graduationForm.tokenAddressLabel": "{{token}} Token Address:",
+  "graduationForm.tokenAddressLabel": "{{token}} Token Address",
   "graduationForm.buyTokenCta": "Buy {{token}}",
   "graduationForm.transactionVerificationTitle": "Transaction Verification",
   "graduationForm.transactionVerificationDescription":

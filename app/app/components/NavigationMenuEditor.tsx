@@ -85,17 +85,17 @@ const NavigationMenuEditor: React.FC<NavigationMenuEditorProps> = ({
   const MENU_INFO = useMemo(() => {
     return {
       Swap: {
-        title: t("navigationMenuEditor.swapPageFeatures"),
+        title: `${t("navigationMenuEditor.swapPageFeatures")}:`,
         description: t("navigationMenuEditor.swapPageFeaturesDesc"),
         color: "blue",
       },
       Rewards: {
-        title: t("navigationMenuEditor.rewardsPageRequirement"),
+        title: `${t("navigationMenuEditor.rewardsPageRequirement")}:`,
         description: t("navigationMenuEditor.rewardsPageRequirementDesc"),
         color: "warning",
       },
       Vaults: {
-        title: t("navigationMenuEditor.vaultsPageFeatures"),
+        title: `${t("navigationMenuEditor.vaultsPageFeatures")}:`,
         description: t("navigationMenuEditor.vaultsPageFeaturesDesc"),
         color: "success",
       },

@@ -43,7 +43,7 @@ const ActionList = ({
     <button
       onClick={onEdit}
       className="text-base-contrast-54 hover:text-base-contrast transition-colors"
-      aria-label={t("distributor.edit")}
+      aria-label="Edit"
     >
       <EditIcon className="w-4 h-4" />
     </button>
@@ -55,7 +55,7 @@ const ActionList = ({
         toast.success(t("distributor.copiedToClipboard"));
       }}
       className="text-base-contrast-54 hover:text-base-contrast transition-colors"
-      aria-label={t("distributor.copyCode")}
+      aria-label="Copy code"
     >
       <CopyIcon className="w-4 h-4" />
     </button>
@@ -67,7 +67,7 @@ const ActionList = ({
         toast.success(t("distributor.copiedToClipboard"));
       }}
       className="text-base-contrast-54 hover:text-base-contrast transition-colors"
-      aria-label={t("distributor.copyUrl")}
+      aria-label="Copy URL"
     >
       <LinkIcon className="w-4 h-4" />
     </button>
@@ -143,7 +143,7 @@ const OverviewUI: React.FC<OverviewUIProps> = ({
               size="xs"
               className="!bg-purple-dark !border !border-purple-light text-white px-3 py-1.5 shrink-0 whitespace-nowrap text-sm"
               onClick={onWithdrawClick}
-              aria-label={t("distributor.withdraw")}
+              aria-label="Withdraw"
               disabled={availableBalance === 0 || isLoadingBalance}
             >
               {t("distributor.withdraw")}

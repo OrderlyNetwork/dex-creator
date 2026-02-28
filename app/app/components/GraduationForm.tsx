@@ -1862,7 +1862,7 @@ export function GraduationForm({
               <div className="mb-4">
                 <div className="flex justify-between items-center mb-1">
                   <p className="text-xs text-gray-400">
-                    {t("graduationForm.recipientAddress")}
+                    {t("graduationForm.recipientAddress")}:
                   </p>
                   <button
                     onClick={() =>
@@ -1890,6 +1890,7 @@ export function GraduationForm({
                     {t("graduationForm.tokenAddressLabel", {
                       token: paymentType === "usdc" ? "USDC" : "ORDER",
                     })}
+                    :
                   </p>
                   <a
                     href={getSwapUrl(preferredChain)}

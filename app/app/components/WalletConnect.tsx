@@ -167,7 +167,7 @@ export default function WalletConnect() {
                 className="rounded-full p-0.5! flex items-center justify-center min-w-0"
                 onClick={() => disconnect()}
                 title={t("walletConnect.disconnect")}
-                aria-label={t("walletConnect.disconnect")}
+                aria-label="Disconnect"
               >
                 <Icon icon="heroicons:power" width={10} className="md:w-3.5" />
               </Button>
@@ -188,7 +188,7 @@ export default function WalletConnect() {
             className="rounded-full p-0.5! md:p-1! flex items-center justify-center min-w-0"
             onClick={logout}
             title={t("walletConnect.disconnect")}
-            aria-label={t("walletConnect.disconnect")}
+            aria-label="Disconnect"
           >
             <Icon icon="heroicons:power" width={10} className="md:w-3.5" />
           </Button>

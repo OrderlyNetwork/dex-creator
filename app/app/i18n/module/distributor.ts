@@ -7,7 +7,7 @@ export const distributor = {
     "Not a builder? No problem! You can register as an ambassador*.",
   "distributor.ambassadorFooter":
     "*After signing up as an ambassador, you cannot create your own DEX using the same address.",
-  "distributor.available": "Available:",
+  "distributor.available": "Available",
   "distributor.availableBalance": "Available balance",
   "distributor.baseMakerFee": "Base maker fee",
   "distributor.baseMakerFeeRwa": "Base maker fee (RWA)",
@@ -188,14 +188,6 @@ export const distributor = {
   "distributor.toastConfigureProfile": "Configure profile",
   "distributor.toastFailedUpdateAmbassadorName":
     "Failed to update ambassador name",
-  "distributor.edit": "Edit",
-  "distributor.copyCode": "Copy code",
-  "distributor.copyUrl": "Copy URL",
-  "distributor.copyAddress": "Copy address",
-  "distributor.copyBrokerId": "Copy broker ID",
-  "distributor.editTier": "Edit tier",
-  "distributor.previousPage": "Previous page",
-  "distributor.nextPage": "Next page",
 
   // useBindDistrubutorCode / distrubutorCode service
   "distributor.failedToBindCode": "Failed to bind distributor code",

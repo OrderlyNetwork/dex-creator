@@ -69,7 +69,7 @@ const Pagination: React.FC<PaginationProps> = ({
           <button
             onClick={() => onPageChange(pageNumbers[0] - 1)}
             className="w-8 h-8 rounded flex items-center justify-center bg-base-700 text-base-contrast border border-base-contrast-36 hover:bg-base-600 transition-colors"
-            aria-label={t("distributor.previousPage")}
+            aria-label="Previous page"
           >
             &lt;
           </button>
@@ -100,7 +100,7 @@ const Pagination: React.FC<PaginationProps> = ({
               onPageChange(pageNumbers[pageNumbers.length - 1] + 1)
             }
             className="w-8 h-8 rounded flex items-center justify-center bg-base-700 text-base-contrast border border-base-contrast-36 hover:bg-base-600 transition-colors"
-            aria-label={t("distributor.nextPage")}
+            aria-label="Next page"
           >
             &gt;
           </button>

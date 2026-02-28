@@ -39,7 +39,7 @@ const ReownConfigSection: React.FC<ReownConfigProps> = ({
             <div className="space-y-3">
               <div>
                 <h4 className="text-base font-bold text-secondary-light mb-1">
-                  {t("reownConfigSection.keyBenefits")}
+                  {t("reownConfigSection.keyBenefits")}:
                 </h4>
                 <ul className="text-sm text-gray-300 list-disc pl-4 space-y-1">
                   <li>

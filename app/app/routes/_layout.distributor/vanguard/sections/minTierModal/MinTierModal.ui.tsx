@@ -70,7 +70,7 @@ const MinTierModalUI: React.FC<MinTierModalUIProps> = ({
               <button
                 onClick={onCopyInviteeAddress}
                 className="text-base-contrast-54 hover:text-base-contrast transition-colors"
-                aria-label={t("distributor.copyAddress")}
+                aria-label="Copy address"
               >
                 <CopyIcon className="w-4 h-4" />
               </button>

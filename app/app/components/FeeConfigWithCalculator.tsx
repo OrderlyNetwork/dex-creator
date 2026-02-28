@@ -816,9 +816,11 @@ export const FeeConfigWithCalculator: React.FC<
           <div>
             <div className="flex justify-between items-center mb-2">
               <span className="text-gray-300">
-                {readOnly
-                  ? t("feeConfigWithCalculator.currentFeeStructure")
-                  : t("feeConfigWithCalculator.currentFeeStructureColon")}
+                {readOnly ? (
+                  t("feeConfigWithCalculator.currentFeeStructure")
+                ) : (
+                  <>{t("feeConfigWithCalculator.currentFeeStructureColon")}:</>
+                )}
               </span>
             </div>
             <div className="mb-3">

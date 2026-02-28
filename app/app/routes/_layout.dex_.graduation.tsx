@@ -5,7 +5,7 @@ import { useDex } from "../context/DexContext";
 import { Card } from "../components/Card";
 import WalletConnect from "../components/WalletConnect";
 import { useState } from "react";
-import { useTranslation } from "~/i18n";
+import { Trans, useTranslation } from "~/i18n";
 import { FeeConfigWithCalculator } from "../components/FeeConfigWithCalculator";
 import { BaseFeeExplanation } from "../components/BaseFeeExplanation";
 import { BackDexDashboard } from "../components/BackDexDashboard";
@@ -187,7 +187,10 @@ export default function GraduationRoute() {
                   <div className="mt-2 bg-warning/10 p-2 rounded text-xs flex items-start gap-1.5">
                     <div className="i-mdi:alert-circle-outline text-warning w-4 h-4 flex-shrink-0 mt-0.5"></div>
                     <p className="text-gray-300">
-                      {t("graduation.benefits.builderStaking.sameWalletNote")}
+                      <Trans
+                        i18nKey="graduation.benefits.builderStaking.sameWalletNote"
+                        components={{ 0: <span className="font-medium" /> }}
+                      />
                     </p>
                   </div>
                 </div>
@@ -213,7 +216,7 @@ export default function GraduationRoute() {
                 <div className="i-mdi:information-outline text-info w-5 h-5 flex-shrink-0 mt-0.5"></div>
                 <p className="text-gray-400">
                   <span className="text-white font-medium">
-                    {t("graduation.feeStructure.title")}
+                    {t("graduation.feeStructure.title")}:
                   </span>{" "}
                   {t("graduation.feeStructure.description")}
                 </p>
