@@ -6,6 +6,7 @@ import { Card } from "./Card";
 import { SharePnLDialogWidget } from "@orderly.network/ui-share";
 import { OrderlyAppProvider } from "@orderly.network/react-app";
 import { WalletConnectorProvider } from "@orderly.network/wallet-connector";
+import { LocaleProvider } from "@orderly.network/i18n";
 
 interface PnLPostersSectionProps {
   pnlPosters: (Blob | null)[];
@@ -194,44 +195,46 @@ export default function PnLPostersSection({
 
         {showPreview && (
           <div className="mt-4 slide-fade-in">
-            <WalletConnectorProvider>
-              <OrderlyAppProvider
-                brokerId="orderly"
-                brokerName="Orderly"
-                networkId="testnet"
-              >
-                <div className="border border-primary-light/20 rounded-lg p-4 bg-background-light/50">
-                  <p className="text-xs text-gray-400 mb-3">
-                    {t("pnlPostersSection.previewWidgetDescription")}
-                  </p>
-                  <form
-                    onSubmit={e => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      return false;
-                    }}
-                    action="#"
-                    method="get"
-                  >
-                    <SharePnLDialogWidget
-                      pnl={{
-                        entity: {
-                          symbol: "PERP_ETH_USDC",
-                          roi: 1.22 * 100,
-                          side: "LONG",
-                          openPrice: 2518.74,
-                          openTime: 1725345164501,
-                          markPrice: 2518.81,
-                          quantity: 0.0794,
-                        },
-                        leverage: 10,
-                        backgroundImages: posterUrls,
+            <LocaleProvider>
+              <WalletConnectorProvider>
+                <OrderlyAppProvider
+                  brokerId="orderly"
+                  brokerName="Orderly"
+                  networkId="testnet"
+                >
+                  <div className="border border-primary-light/20 rounded-lg p-4 bg-background-light/50">
+                    <p className="text-xs text-gray-400 mb-3">
+                      {t("pnlPostersSection.previewWidgetDescription")}
+                    </p>
+                    <form
+                      onSubmit={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
                       }}
-                    />
-                  </form>
-                </div>
-              </OrderlyAppProvider>
-            </WalletConnectorProvider>
+                      action="#"
+                      method="get"
+                    >
+                      <SharePnLDialogWidget
+                        pnl={{
+                          entity: {
+                            symbol: "PERP_ETH_USDC",
+                            roi: 1.22 * 100,
+                            side: "LONG",
+                            openPrice: 2518.74,
+                            openTime: 1725345164501,
+                            markPrice: 2518.81,
+                            quantity: 0.0794,
+                          },
+                          leverage: 10,
+                          backgroundImages: posterUrls,
+                        }}
+                      />
+                    </form>
+                  </div>
+                </OrderlyAppProvider>
+              </WalletConnectorProvider>
+            </LocaleProvider>
           </div>
         )}
       </div>

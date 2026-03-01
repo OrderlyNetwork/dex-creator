@@ -33,6 +33,7 @@
     "@orderly.network/ui-share": "2.8.11",
     "@orderly.network/ui-transfer": "2.8.11",
     "@orderly.network/wallet-connector": "2.8.11",
+    "@orderly.network/i18n": "2.8.11",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-switch": "^1.2.6",

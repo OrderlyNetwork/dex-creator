@@ -12,6 +12,7 @@ import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { API } from "@orderly.network/types";
 import type { RouteOption } from "@orderly.network/types";
 import PreviewErrorBoundary from "./PreviewErrorBoundary";
+import { LocaleProvider } from "@orderly.network/i18n";
 
 export interface DexPreviewProps {
   brokerId: string;
@@ -35,6 +36,7 @@ export interface DexPreviewProps {
   onLoad?: () => void;
 }
 
+// TODO: lazy load when use DexPreview component
 const DexPreview: FC<DexPreviewProps> = ({
   brokerId,
   brokerName,
@@ -286,41 +288,42 @@ const DexPreview: FC<DexPreviewProps> = ({
         key={`theme-${customStyles || "empty"}`}
         dangerouslySetInnerHTML={{ __html: customStyles || "" }}
       />
-
-      <WalletConnectorProvider
-        solanaInitial={{
-          network:
-            resolvedNetworkId === "mainnet"
-              ? WalletAdapterNetwork.Mainnet
-              : WalletAdapterNetwork.Devnet,
-        }}
-      >
-        <OrderlyAppProvider
-          brokerId={brokerId}
-          brokerName={brokerName}
-          networkId={resolvedNetworkId}
-          onChainChanged={onChainChanged}
-          appIcons={appIcons}
+      <LocaleProvider>
+        <WalletConnectorProvider
+          solanaInitial={{
+            network:
+              resolvedNetworkId === "mainnet"
+                ? WalletAdapterNetwork.Mainnet
+                : WalletAdapterNetwork.Devnet,
+          }}
         >
-          <Scaffold
-            mainNavProps={mainNavProps}
-            footerProps={footerProps}
-            routerAdapter={{
-              onRouteChange,
-              currentPath: "/",
-            }}
+          <OrderlyAppProvider
+            brokerId={brokerId}
+            brokerName={brokerName}
+            networkId={resolvedNetworkId}
+            onChainChanged={onChainChanged}
+            appIcons={appIcons}
           >
-            <PreviewErrorBoundary>
-              <TradingPage
-                symbol={currentSymbol || DEFAULT_SYMBOL}
-                onSymbolChange={handleSymbolChange}
-                tradingViewConfig={tradingViewConfig}
-                sharePnLConfig={sharePnLConfig}
-              />
-            </PreviewErrorBoundary>
-          </Scaffold>
-        </OrderlyAppProvider>
-      </WalletConnectorProvider>
+            <Scaffold
+              mainNavProps={mainNavProps}
+              footerProps={footerProps}
+              routerAdapter={{
+                onRouteChange,
+                currentPath: "/",
+              }}
+            >
+              <PreviewErrorBoundary>
+                <TradingPage
+                  symbol={currentSymbol || DEFAULT_SYMBOL}
+                  onSymbolChange={handleSymbolChange}
+                  tradingViewConfig={tradingViewConfig}
+                  sharePnLConfig={sharePnLConfig}
+                />
+              </PreviewErrorBoundary>
+            </Scaffold>
+          </OrderlyAppProvider>
+        </WalletConnectorProvider>
+      </LocaleProvider>
     </div>
   );
 };
