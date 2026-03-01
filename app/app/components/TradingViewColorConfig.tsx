@@ -26,21 +26,21 @@ const DEFAULT_COLORS: ColorConfigInterface = {
 
 function getColorLabels(): Record<keyof ColorConfigInterface, string> {
   return {
-    upColor: i18n.t("tradingViewColorConfig.candleUpColor"),
-    downColor: i18n.t("tradingViewColorConfig.candleDownColor"),
-    pnlUpColor: i18n.t("tradingViewColorConfig.pnlProfitColor"),
-    pnlDownColor: i18n.t("tradingViewColorConfig.pnlLossColor"),
-    chartBG: i18n.t("tradingViewColorConfig.chartBackground"),
+    upColor: i18n.t("tradingView.colorConfig.candleUpColor"),
+    downColor: i18n.t("tradingView.colorConfig.candleDownColor"),
+    pnlUpColor: i18n.t("tradingView.colorConfig.pnlProfitColor"),
+    pnlDownColor: i18n.t("tradingView.colorConfig.pnlLossColor"),
+    chartBG: i18n.t("tradingView.colorConfig.chartBackground"),
   };
 }
 
 function getColorDescriptions(): Record<keyof ColorConfigInterface, string> {
   return {
-    upColor: i18n.t("tradingViewColorConfig.candleUpDesc"),
-    downColor: i18n.t("tradingViewColorConfig.candleDownDesc"),
-    pnlUpColor: i18n.t("tradingViewColorConfig.pnlProfitDesc"),
-    pnlDownColor: i18n.t("tradingViewColorConfig.pnlLossDesc"),
-    chartBG: i18n.t("tradingViewColorConfig.chartBgDesc"),
+    upColor: i18n.t("tradingView.colorConfig.candleUpDesc"),
+    downColor: i18n.t("tradingView.colorConfig.candleDownDesc"),
+    pnlUpColor: i18n.t("tradingView.colorConfig.pnlProfitDesc"),
+    pnlDownColor: i18n.t("tradingView.colorConfig.pnlLossDesc"),
+    chartBG: i18n.t("tradingView.colorConfig.chartBgDesc"),
   };
 }
 
@@ -103,10 +103,10 @@ export default function TradingViewColorConfig({
       <div className="flex items-center justify-between">
         <div>
           <h4 className="text-base font-bold text-gray-300">
-            {t("tradingViewColorConfig.title")}
+            {t("tradingView.colorConfig.title")}
           </h4>
           <p className="text-xs text-gray-400 mt-1">
-            {t("tradingViewColorConfig.description")}
+            {t("tradingView.colorConfig.description")}
           </p>
         </div>
         <label className="flex items-center gap-2 cursor-pointer">
@@ -130,8 +130,8 @@ export default function TradingViewColorConfig({
           </div>
           <span className="text-xs text-gray-400">
             {isEnabled
-              ? t("tradingViewColorConfig.enabled")
-              : t("tradingViewColorConfig.disabled")}
+              ? t("tradingView.colorConfig.enabled")
+              : t("tradingView.colorConfig.disabled")}
           </span>
         </label>
       </div>
@@ -145,8 +145,8 @@ export default function TradingViewColorConfig({
               <div className="i-mdi:information-outline h-3.5 w-3.5"></div>
               <span>
                 {isEnabled
-                  ? t("tradingViewColorConfig.overrideDefault")
-                  : t("tradingViewColorConfig.savedConfigDisabled")}
+                  ? t("tradingView.colorConfig.overrideDefault")
+                  : t("tradingView.colorConfig.savedConfigDisabled")}
               </span>
             </div>
 
@@ -155,7 +155,7 @@ export default function TradingViewColorConfig({
                 <div className="flex items-center gap-1 text-xs text-warning">
                   <div className="i-mdi:eye-off h-3.5 w-3.5"></div>
                   <span>
-                    {t("tradingViewColorConfig.customColorsDisabled")}
+                    {t("tradingView.colorConfig.customColorsDisabled")}
                   </span>
                 </div>
               </div>
@@ -235,8 +235,8 @@ export default function TradingViewColorConfig({
               <h5
                 className={`text-xs font-medium mb-2 ${isEnabled ? "text-gray-300" : "text-gray-500"}`}
               >
-                {t("tradingViewColorConfig.preview")}{" "}
-                {!isEnabled && `(${t("tradingViewColorConfig.disabled")})`}
+                {t("tradingView.colorConfig.preview")}{" "}
+                {!isEnabled && `(${t("tradingView.colorConfig.disabled")})`}
               </h5>
               <div className="flex items-center gap-4 text-xs">
                 <div className="flex items-center gap-2">
@@ -251,7 +251,7 @@ export default function TradingViewColorConfig({
                   <span
                     className={isEnabled ? "text-gray-400" : "text-gray-600"}
                   >
-                    {t("tradingViewColorConfig.bullish")}
+                    {t("tradingView.colorConfig.bullish")}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -266,7 +266,7 @@ export default function TradingViewColorConfig({
                   <span
                     className={isEnabled ? "text-gray-400" : "text-gray-600"}
                   >
-                    {t("tradingViewColorConfig.bearish")}
+                    {t("tradingView.colorConfig.bearish")}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -281,7 +281,7 @@ export default function TradingViewColorConfig({
                   <span
                     className={isEnabled ? "text-gray-400" : "text-gray-600"}
                   >
-                    {t("tradingViewColorConfig.chartBg")}
+                    {t("tradingView.colorConfig.chartBg")}
                   </span>
                 </div>
               </div>
@@ -293,13 +293,13 @@ export default function TradingViewColorConfig({
                 <div className="space-y-2">
                   <p className="text-xs text-amber-200">
                     <span className="font-medium">
-                      {t("tradingViewColorConfig.importantNotes")}:
+                      {t("tradingView.importantNotes")}:
                     </span>
                   </p>
                   <ul className="text-xs text-amber-300/90 space-y-1 list-disc list-inside ml-2">
-                    <li>{t("tradingViewColorConfig.importantNotesDesc")}</li>
-                    <li>{t("tradingViewColorConfig.clearStorageNote")}</li>
-                    <li>{t("tradingViewColorConfig.disableForDefault")}</li>
+                    <li>{t("tradingView.colorConfig.importantNotesDesc")}</li>
+                    <li>{t("tradingView.colorConfig.clearStorageNote")}</li>
+                    <li>{t("tradingView.colorConfig.disableForDefault")}</li>
                   </ul>
                 </div>
               </div>

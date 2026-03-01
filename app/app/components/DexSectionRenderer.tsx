@@ -61,9 +61,9 @@ export function getDexSections(): DexSectionConfig[] {
     {
       id: 1,
       key: DEX_SECTION_KEYS.DistributorCode,
-      title: i18n.t("dexSectionRenderer.distributorCode.title"),
-      label: i18n.t("dexSectionRenderer.distributorCode.label"),
-      description: i18n.t("dexSectionRenderer.distributorCode.description"),
+      title: i18n.t("dex.sectionRenderer.distributorCode.title"),
+      label: i18n.t("dex.sectionRenderer.distributorCode.label"),
+      description: i18n.t("dex.sectionRenderer.distributorCode.description"),
       isOptional: true,
       component: DistributorCodeSection,
       getProps: props => ({
@@ -81,8 +81,8 @@ export function getDexSections(): DexSectionConfig[] {
     {
       id: 2,
       key: DEX_SECTION_KEYS.BrokerDetails,
-      title: i18n.t("dexSectionRenderer.brokerDetails.title"),
-      description: i18n.t("dexSectionRenderer.brokerDetails.description"),
+      title: i18n.t("dex.sectionRenderer.brokerDetails.title"),
+      description: i18n.t("dex.sectionRenderer.brokerDetails.description"),
       isOptional: false,
       component: BrokerDetailsSection,
       getProps: props => ({
@@ -97,8 +97,8 @@ export function getDexSections(): DexSectionConfig[] {
     {
       id: 3,
       key: DEX_SECTION_KEYS.Branding,
-      title: i18n.t("dexSectionRenderer.branding.title"),
-      description: i18n.t("dexSectionRenderer.branding.description"),
+      title: i18n.t("dex.sectionRenderer.branding.title"),
+      description: i18n.t("dex.sectionRenderer.branding.description"),
       isOptional: true,
       component: BrandingSection,
       getProps: props => ({
@@ -111,8 +111,8 @@ export function getDexSections(): DexSectionConfig[] {
     {
       id: 4,
       key: DEX_SECTION_KEYS.ThemeCustomization,
-      title: i18n.t("dexSectionRenderer.themeCustomization.title"),
-      description: i18n.t("dexSectionRenderer.themeCustomization.description"),
+      title: i18n.t("dex.sectionRenderer.themeCustomization.title"),
+      description: i18n.t("dex.sectionRenderer.themeCustomization.description"),
       isOptional: true,
       component: ThemeCustomizationSection,
       getProps: props => ({
@@ -141,8 +141,8 @@ export function getDexSections(): DexSectionConfig[] {
     {
       id: 5,
       key: DEX_SECTION_KEYS.PnLPosters,
-      title: i18n.t("dexSectionRenderer.pnlPosters.title"),
-      description: i18n.t("dexSectionRenderer.pnlPosters.description"),
+      title: i18n.t("dex.sectionRenderer.pnlPosters.title"),
+      description: i18n.t("dex.sectionRenderer.pnlPosters.description"),
       isOptional: true,
       component: PnLPostersSection,
       getProps: props => ({
@@ -154,7 +154,7 @@ export function getDexSections(): DexSectionConfig[] {
       id: 6,
       key: DEX_SECTION_KEYS.SocialLinks,
       title: i18n.t("dexCard.socialMediaLinks"),
-      description: i18n.t("dexSectionRenderer.socialLinks.description"),
+      description: i18n.t("dex.sectionRenderer.socialLinks.description"),
       isOptional: true,
       component: SocialLinksSection,
       getProps: props => ({
@@ -168,8 +168,8 @@ export function getDexSections(): DexSectionConfig[] {
     {
       id: 7,
       key: DEX_SECTION_KEYS.SEOConfiguration,
-      title: i18n.t("dexSectionRenderer.seoConfiguration.title"),
-      description: i18n.t("dexSectionRenderer.seoConfiguration.description"),
+      title: i18n.t("dex.sectionRenderer.seoConfiguration.title"),
+      description: i18n.t("dex.sectionRenderer.seoConfiguration.description"),
       isOptional: true,
       component: SEOConfigSection,
       getProps: props => ({
@@ -187,9 +187,9 @@ export function getDexSections(): DexSectionConfig[] {
     {
       id: 8,
       key: DEX_SECTION_KEYS.AnalyticsConfiguration,
-      title: i18n.t("dexSectionRenderer.analyticsConfiguration.title"),
+      title: i18n.t("dex.sectionRenderer.analyticsConfiguration.title"),
       description: i18n.t(
-        "dexSectionRenderer.analyticsConfiguration.description"
+        "dex.sectionRenderer.analyticsConfiguration.description"
       ),
       isOptional: true,
       component: AnalyticsConfigSection,
@@ -201,8 +201,8 @@ export function getDexSections(): DexSectionConfig[] {
     {
       id: 9,
       key: DEX_SECTION_KEYS.ReownConfiguration,
-      title: i18n.t("dexSectionRenderer.reownConfiguration.title"),
-      description: i18n.t("dexSectionRenderer.reownConfiguration.description"),
+      title: i18n.t("dex.sectionRenderer.reownConfiguration.title"),
+      description: i18n.t("dex.sectionRenderer.reownConfiguration.description"),
       isOptional: true,
       component: ReownConfigSection,
       getProps: props => ({
@@ -213,8 +213,8 @@ export function getDexSections(): DexSectionConfig[] {
     {
       id: 10,
       key: DEX_SECTION_KEYS.PrivyConfiguration,
-      title: i18n.t("dexSectionRenderer.privyConfiguration.title"),
-      description: i18n.t("dexSectionRenderer.privyConfiguration.description"),
+      title: i18n.t("dex.sectionRenderer.privyConfiguration.title"),
+      description: i18n.t("dex.sectionRenderer.privyConfiguration.description"),
       isOptional: true,
       component: PrivyConfigSection,
       getProps: props => ({
@@ -239,9 +239,9 @@ export function getDexSections(): DexSectionConfig[] {
     {
       id: 11,
       key: DEX_SECTION_KEYS.BlockchainConfiguration,
-      title: i18n.t("dexSectionRenderer.blockchainConfiguration.title"),
+      title: i18n.t("dex.sectionRenderer.blockchainConfiguration.title"),
       description: i18n.t(
-        "dexSectionRenderer.blockchainConfiguration.description"
+        "dex.sectionRenderer.blockchainConfiguration.description"
       ),
       isOptional: true,
       component: BlockchainConfigSection,
@@ -260,7 +260,7 @@ export function getDexSections(): DexSectionConfig[] {
       id: 12,
       key: DEX_SECTION_KEYS.AssetFilter,
       title: i18n.t("assetFilterSection.assetFiltering"),
-      description: i18n.t("dexSectionRenderer.assetFilter.description"),
+      description: i18n.t("dex.sectionRenderer.assetFilter.description"),
       isOptional: true,
       component: AssetFilterSection,
       getProps: props => ({
@@ -271,8 +271,8 @@ export function getDexSections(): DexSectionConfig[] {
     {
       id: 13,
       key: DEX_SECTION_KEYS.LanguageSupport,
-      title: i18n.t("dexSectionRenderer.languageSupport.title"),
-      description: i18n.t("dexSectionRenderer.languageSupport.description"),
+      title: i18n.t("dex.sectionRenderer.languageSupport.title"),
+      description: i18n.t("dex.sectionRenderer.languageSupport.description"),
       isOptional: true,
       component: LanguageSupportSection,
       getProps: props => ({
@@ -283,8 +283,8 @@ export function getDexSections(): DexSectionConfig[] {
     {
       id: 14,
       key: DEX_SECTION_KEYS.NavigationMenus,
-      title: i18n.t("dexSectionRenderer.navigationMenus.title"),
-      description: i18n.t("dexSectionRenderer.navigationMenus.description"),
+      title: i18n.t("dex.sectionRenderer.navigationMenus.title"),
+      description: i18n.t("dex.sectionRenderer.navigationMenus.description"),
       isOptional: true,
       component: NavigationMenuSection,
       getProps: props => ({
@@ -301,8 +301,8 @@ export function getDexSections(): DexSectionConfig[] {
     {
       id: 15,
       key: DEX_SECTION_KEYS.ServiceDisclaimer,
-      title: i18n.t("dexSectionRenderer.serviceDisclaimer.title"),
-      description: i18n.t("dexSectionRenderer.serviceDisclaimer.description"),
+      title: i18n.t("dex.sectionRenderer.serviceDisclaimer.title"),
+      description: i18n.t("dex.sectionRenderer.serviceDisclaimer.description"),
       isOptional: true,
       component: ServiceDisclaimerSection,
       getProps: props => ({
@@ -314,8 +314,10 @@ export function getDexSections(): DexSectionConfig[] {
     {
       id: 16,
       key: DEX_SECTION_KEYS.ServiceRestrictions,
-      title: i18n.t("dexSectionRenderer.serviceRestrictions.title"),
-      description: i18n.t("dexSectionRenderer.serviceRestrictions.description"),
+      title: i18n.t("dex.sectionRenderer.serviceRestrictions.title"),
+      description: i18n.t(
+        "dex.sectionRenderer.serviceRestrictions.description"
+      ),
       isOptional: true,
       component: ServiceRestrictionsSection,
       getProps: props => ({
@@ -504,7 +506,7 @@ const DexSectionRenderer: React.FC<DexSectionRendererProps> = ({
                 {section.title}{" "}
                 {section.isOptional && (
                   <span className="text-gray-400 text-sm font-normal">
-                    ({t("dexSectionRenderer.optional")})
+                    ({t("dex.sectionRenderer.optional")})
                   </span>
                 )}
               </h3>

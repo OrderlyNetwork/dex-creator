@@ -82,7 +82,8 @@ export default function Footer() {
                     target="_blank"
                     className="block text-gray-400 hover:text-gray-300"
                   >
-                    {t("footer.github")}
+                    {/* i18n-ignore */}
+                    GitHub
                   </a>
                   <a
                     href="https://orderly.network/docs/sdks/overview"
@@ -294,7 +295,8 @@ export default function Footer() {
                   target="_blank"
                   className="text-gray-400 hover:text-gray-300 my-[8px]"
                 >
-                  {t("footer.github")}
+                  {/* i18n-ignore */}
+                  GitHub
                 </a>
                 <a
                   href="https://orderly.network/docs/sdks/overview"

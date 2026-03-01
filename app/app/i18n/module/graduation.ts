@@ -9,7 +9,6 @@ export const graduation = {
   "graduation.previewRevenue.title": "Preview Revenue Potential",
   "graduation.previewRevenue.description":
     "While you need to create a DEX first, you can still explore the potential revenue you could earn after graduation:",
-  "graduation.authRequired.title": "Authentication Required",
   "graduation.authRequired.description":
     "Please connect your wallet and login to access DEX graduation benefits.",
   "graduation.benefits.title": "Benefits of Graduating",
@@ -32,4 +31,219 @@ export const graduation = {
   "graduation.feeStructure.title": "DEX Fee Structure",
   "graduation.feeStructure.description":
     "Your custom fees represent the total fees that traders pay. Orderly's base fee (which varies by tier) is deducted from your custom fees to calculate your revenue. The base fee supports the Orderly ecosystem infrastructure and liquidity.",
+
+  // Graduation form (migrated from components)
+  "graduation.form.brokerIdCreated": "Broker ID Created!",
+  "graduation.form.completeYourGraduation": "Complete Your Graduation",
+  "graduation.form.graduatedSuccessfully": "Graduated Successfully!",
+  "graduation.form.congratulations": "Congratulations!",
+  "graduation.form.feeRevenueSharing": "Fee Revenue Sharing",
+  "graduation.form.customFeeConfiguration": "Custom Fee Configuration",
+  "graduation.form.withdrawStep1": 'Click the "Withdraw Fees" button below',
+  "graduation.form.withdrawStep2":
+    "Enter the amount of USDC you want to withdraw",
+  "graduation.form.graduateYourDex": "Graduate Your DEX",
+  "graduation.form.whatIsDexGraduation": "What is DEX Graduation?",
+  "graduation.form.whySendTokens": "Why send tokens for graduation?",
+  "graduation.form.usingToken": "Using token",
+  "graduation.form.yourBalance": "Your balance",
+  "graduation.form.amount": "Amount",
+  "graduation.form.transferSuccessfulVerifying":
+    "Transfer successful! Verifying transaction...",
+  "graduation.form.recipientAddress": "Recipient Address",
+  "graduation.form.enterBrokerIdToContinue":
+    "Please enter your broker ID to continue",
+  "graduation.form.fixBrokerIdError": "Please fix the broker ID error above",
+  "graduation.form.enterTxHashToVerify":
+    "Please enter the transaction hash to verify",
+  "graduation.form.copiedToClipboard": "{{label}} copied to clipboard",
+  "graduation.form.failedToCopyToClipboard": "Failed to copy to clipboard",
+  "graduation.form.enterMultisigAddress": "Please enter your multisig address",
+  "graduation.form.enterSafeTransactionHash":
+    "Please enter the transaction hash from your Safe transaction",
+  "graduation.form.noBrokerIdFound":
+    "No broker ID found. Please complete the previous steps first.",
+  "graduation.form.multisigRegisteredSuccess":
+    "Multisig registered and admin wallet setup completed! Your DEX has graduated successfully.",
+  "graduation.form.failedToRegisterMultisig": "Failed to register multisig",
+  "graduation.form.noWalletClientAvailable":
+    "No wallet client available. Please ensure your wallet is connected.",
+  "graduation.form.accountRegisteredSuccessfully":
+    "Account registered successfully!",
+  "graduation.form.adminWalletSetupSuccess":
+    "Admin wallet setup completed! Your DEX has graduated successfully.",
+  "graduation.form.failedToFinalizeAdminWallet":
+    "Failed to finalize admin wallet setup",
+  "graduation.form.enterBrokerId": "Please enter your broker ID",
+  "graduation.form.missingTokenAddressConfig":
+    "Missing token address configuration",
+  "graduation.form.missingReceiverAddressConfig":
+    "Missing receiver address configuration",
+  "graduation.form.loadingTokenInfo":
+    "Loading token information, please try again in a moment",
+  "graduation.form.invalidReceiverAddressConfig":
+    "Invalid receiver address configuration",
+  "graduation.form.ensureCorrectNetwork":
+    "Please make sure your wallet is on the correct network before continuing",
+  "graduation.form.feeOptionsNotLoaded":
+    "Fee options not loaded. Please try again.",
+  "graduation.form.failedToInitiateTransfer": "Failed to initiate transfer",
+  "graduation.form.failedToInitiateTransferWithReason":
+    "Failed to initiate transfer: {{message}}",
+  "graduation.form.verifyingTransactionWait":
+    "Verifying transaction... This may take up to 1-2 minutes. Please wait.",
+  "graduation.form.transactionVerifiedSuccessfully":
+    "Transaction verified successfully!",
+  "graduation.form.verificationFailed": "Verification failed",
+  "graduation.form.connectionLostRefreshing":
+    "Connection lost during verification. The transaction may have succeeded. Refreshing page to check status...",
+  "graduation.form.finalStepRequired": "Final Step Required",
+  "graduation.form.notEarningFeesYet": "You are not earning fees yet.",
+  "graduation.form.completeAdminWalletSetup":
+    "Complete the admin wallet setup to start earning revenue from your DEX.",
+  "graduation.form.selectWalletType": "Select Wallet Type",
+  "graduation.form.eoaWallet": "EOA Wallet",
+  "graduation.form.whatThisDoes": "What This Does",
+  "graduation.form.registersEvmAddress":
+    "• Registers your EVM address with Orderly Network",
+  "graduation.form.createsBrokerAccount":
+    "• Creates your broker account for fee collection",
+  "graduation.form.enablesRevenueSharing":
+    "• Enables revenue sharing from your DEX",
+  "graduation.form.registeringWithOrderly": "Registering with Orderly...",
+  "graduation.form.registerWithOrderly":
+    "Register with Orderly & Start Earning",
+  "graduation.form.gnosisSafeWallet": "Gnosis Safe Wallet",
+  "graduation.form.multisigEnhancedSecurity":
+    "• Enhanced security with multi-signature approval",
+  "graduation.form.multisigShareControl":
+    "• Share control with multiple signers",
+  "graduation.form.multisigForTeams": "• Perfect for teams and organizations",
+  "graduation.form.viewSetupInstructions": "View Setup Instructions",
+  "graduation.form.registerYourMultisig": "Register Your Multisig",
+  "graduation.form.multisigAddress": "Multisig Address",
+  "graduation.form.multisigAddressPlaceholder":
+    "0x... or eth:0x... or base:0x...",
+  "graduation.form.transactionHash": "Transaction Hash",
+  "graduation.form.registeringMultisig": "Registering multisig...",
+  "graduation.form.registerMultisig": "Register Multisig",
+  "graduation.form.connectWalletToRegisterMultisig":
+    "Please connect your wallet to register your multisig",
+  "graduation.form.stepByStepGuide": "Step-by-Step Guide",
+  "graduation.form.yourDexIsReady": "Your DEX is Ready!",
+  "graduation.form.dexReadyDescription":
+    "Your DEX has been deployed with your broker ID and is now fully operational. Users can start trading and you'll earn fees from all trades.",
+  "graduation.form.viewYourLiveDex": "View Your Live DEX →",
+  "graduation.form.yourDexBenefits": "Your DEX Benefits",
+  "graduation.form.brokerIdFormatInvalid":
+    "Broker ID must contain only lowercase letters, numbers, hyphens, and underscores",
+  "graduation.form.brokerIdAlreadyTaken":
+    "This broker ID is already taken. Please choose another one.",
+  "graduation.form.failedToLoadFeeOptions":
+    "Failed to load graduation fee options",
+  "graduation.form.eoaDescription":
+    "This registers your connected EOA (Externally Owned Account) wallet with Orderly Network and activates your broker account. Once completed, you'll start earning fees from all trades on your DEX.",
+  "graduation.form.signMessagePrompt":
+    "When you click the button above, you'll be prompted to sign a message to register your EVM address with Orderly Network using broker ID {{brokerId}}. This happens directly in your wallet.",
+  "graduation.form.gnosisSafeDescription":
+    "Use this option if you want to register a Gnosis Safe multisig wallet as your admin wallet. This provides enhanced security through multi-signature approval for fee withdrawals and admin actions.",
+  "graduation.form.multisigAddressHelp":
+    "Enter your Gnosis Safe address. Chain prefixes (eth:, base:, arb:) are supported.",
+  "graduation.form.transactionHashHelp":
+    "The transaction hash from your Safe delegateSigner transaction.",
+  "graduation.form.viewSetupInstructionsHelp":
+    'Click "View Setup Instructions" above to see detailed steps on how to set up your Gnosis Safe wallet with broker ID {{brokerId}}.',
+  "graduation.form.graduationSuccessDescription":
+    "Your DEX has successfully graduated to the revenue-sharing tier. Your custom broker ID {{brokerId}} is now active and your DEX is fully ready for users!",
+  "graduation.form.feeRevenueSharingDescription":
+    "You now earn a percentage of all trading fees generated through your DEX.",
+  "graduation.form.customFeeConfigurationDescription":
+    "You can now customize your maker and taker fees to optimize for your trading community.",
+  "graduation.form.switchingToCorrectNetworkForMultisig":
+    "Switching to the correct network for this multisig address",
+  "graduation.form.unknownErrorOccurred": "Unknown error occurred",
+  "graduation.form.multisigFeeWithdrawalTitle": "Multisig Fee Withdrawal",
+  "graduation.form.multisigFeeWithdrawalDescription":
+    "Since you're using a multisig wallet as your admin wallet, use the withdrawal modal below to transfer fees from your Orderly account to your Safe wallet.",
+  "graduation.form.howToWithdrawFees": "How to Withdraw Fees",
+  "graduation.form.withdrawStep3":
+    "Sign the EIP-712 messages in your connected wallet (for PnL settlement and withdrawal)",
+  "graduation.form.withdrawStep4":
+    "Fees will be transferred from your Orderly account to your Safe wallet",
+  "graduation.form.importantNote": "Important Note",
+  "graduation.form.multisigWithdrawalsNote":
+    "All fee withdrawals must be approved by the required number of signers in your Safe wallet, providing enhanced security for your earnings.",
+  "graduation.form.withdrawFeesButton": "Withdraw Fees",
+  "graduation.form.createOrderlyKeyButton": "Create Orderly Key",
+  "graduation.form.unableToRetrieveMultisigConfig":
+    "Unable to retrieve multisig configuration. Please ensure you have completed the multisig registration.",
+  "graduation.form.yourBrokerTier": "Your Broker Tier",
+  "graduation.form.currentTierLevel": "Current Tier Level",
+  "graduation.form.stakingVolume": "Staking Volume",
+  "graduation.form.tradingVolume": "Trading Volume",
+  "graduation.form.orderlyMakerFee": "Orderly Maker Fee",
+  "graduation.form.orderlyTakerFee": "Orderly Taker Fee",
+  "graduation.form.lastUpdated": "Last updated",
+  "graduation.form.adminWalletStakingTitle": "Important: Admin Wallet Staking",
+  "graduation.form.adminWalletStakingDescriptionEoa":
+    "ORDER tokens must be staked on your admin wallet (your connected EOA wallet) to count towards your broker tier. Staking on other addresses will not improve your tier.",
+  "graduation.form.dailyTierUpdatesTitle": "Daily Tier Updates",
+  "graduation.form.dailyTierUpdatesDescription":
+    "Tier information is updated once per day, so changes to your staking or trading volume may take up to 24 hours to reflect in your tier level.",
+  "graduation.form.graduationIntro":
+    "Graduating your DEX enables revenue sharing and additional features:",
+  "graduation.form.graduationBenefitRevenue":
+    "You'll earn a percentage of all trading fees generated through your DEX",
+  "graduation.form.graduationBenefitCustomFees":
+    "You can customize trading fees to optimize for your community",
+  "graduation.form.graduationRequirementDescription":
+    "This requirement ensures DEX creators are committed to the Orderly ecosystem and helps maintain quality standards.",
+  "graduation.form.tradingFeeConfigurationTitle": "Trading Fee Configuration",
+  "graduation.form.tradingFeeConfigurationDescription":
+    "Configure your trading fees to determine your revenue split. Default values are shown below.",
+  "graduation.form.brokerIdLabel": "Broker ID",
+  "graduation.form.brokerIdHelp1":
+    "Your preferred unique broker ID (5-15 characters, lowercase letters, numbers, hyphens, and underscores only)",
+  "graduation.form.brokerIdHelp2":
+    "This ID uniquely identifies your DEX in the Orderly ecosystem and will be used for revenue tracking and user rewards.",
+  "graduation.form.choosePaymentMethod":
+    "Choose your graduation payment method:",
+  "graduation.form.doNotSendTokensManuallyTitle": "Do NOT send tokens manually",
+  "graduation.form.doNotSendTokensManuallyDescription":
+    "The system will handle the token transfer automatically when you click the button below. Do not send tokens to any address manually - this will not complete your graduation.",
+  "graduation.form.autoTransferDescription":
+    "The system will automatically transfer the required tokens when you click the button below.",
+  "graduation.form.needOrderTokensCta": "Need ORDER tokens? Buy here",
+  "graduation.form.sendTokensTitle": "Send {{token}} Tokens",
+  "graduation.form.sendTokensDescription":
+    "Send {{token}} tokens and verify in one step directly from your wallet.",
+  "graduation.form.insufficientForGraduation": "Insufficient for graduation",
+  "graduation.form.buyOrderCta": "Buy ORDER",
+  "graduation.form.saveWithOrderTitle": "Save 25% by paying with ORDER tokens!",
+  "graduation.form.saveWithOrderDescription":
+    "Instead of ${{usdcAmount}} USDC, pay only {{orderAmount}} ORDER (~${{orderValue}}).",
+  "graduation.form.discount25Off": "25% OFF",
+  "graduation.form.loading": "Loading...",
+  "graduation.form.confirmInWallet": "Confirm in wallet...",
+  "graduation.form.confirming": "Confirming...",
+  "graduation.form.verifyingTransactionLoading":
+    "Verifying transaction... This may take 1-2 minutes",
+  "graduation.form.transferTokensCta": "Transfer {{token}} Tokens",
+  "graduation.form.switchChainCta": "Switch Chain",
+  "graduation.form.viewOnExplorer": "View on Explorer",
+  "graduation.form.hideManualOption": "Hide manual option",
+  "graduation.form.showManualOption": "I already sent {{token}} tokens",
+  "graduation.form.manualVerificationTitle": "Manual Transaction Verification",
+  "graduation.form.manualVerificationDescription":
+    "If you've already sent {{token}} tokens, enter the transaction hash to verify and complete your graduation.",
+  "graduation.form.tokenAddressLabel": "{{token}} Token Address",
+  "graduation.form.buyTokenCta": "Buy {{token}}",
+  "graduation.form.transactionVerificationTitle": "Transaction Verification",
+  "graduation.form.transactionVerificationDescription":
+    "Verification involves checking the blockchain transaction and may take 1-2 minutes to complete. Please be patient and do not refresh the page during this process.",
+  "graduation.form.txHashHelpText":
+    "The transaction hash of your {{token}} token transfer",
+  "graduation.form.verifyTransactionButton": "Verify Transaction",
+  "graduation.form.verifiedTransfer":
+    "Verified transfer of {{amount}} {{token}} tokens",
 };

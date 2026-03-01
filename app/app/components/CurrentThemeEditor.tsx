@@ -33,25 +33,16 @@ const CurrentThemeEditor: React.FC<CurrentThemeEditorProps> = ({
     <>
       <div className="border-b border-light/10 mt-4">
         <div className="flex overflow-x-auto">
-          <ThemeTabButton
-            tab="colors"
-            label={t("currentThemeEditor.tab.colors")}
-          />
-          <ThemeTabButton
-            tab="fonts"
-            label={t("theme.fonts")}
-          />
-          <ThemeTabButton
-            tab="rounded"
-            label={t("currentThemeEditor.tab.rounded")}
-          />
-          <ThemeTabButton
-            tab="spacing"
-            label={t("theme.spacing")}
-          />
+          <ThemeTabButton tab="colors" label={t("theme.colorPalette")} />
+          <ThemeTabButton tab="fonts" label={t("theme.fonts")} />
+          <ThemeTabButton tab="rounded" label={t("theme.borderRadius")} />
+          <ThemeTabButton tab="spacing" label={t("theme.spacing")} />
           <ThemeTabButton
             tab="tradingview"
-            label={t("currentThemeEditor.tab.tradingview")}
+            label={
+              /* i18n-ignore */
+              "TradingView"
+            }
           />
         </div>
       </div>
@@ -60,7 +51,7 @@ const CurrentThemeEditor: React.FC<CurrentThemeEditorProps> = ({
           <div className="bg-background-dark/50 p-4 rounded-lg border border-light/10 slide-fade-in">
             <div className="flex items-center gap-1 mb-3 text-xs text-gray-400">
               <div className="i-mdi:information-outline h-3.5 w-3.5"></div>
-              <span>{t("currentThemeEditor.colorsHint")}</span>
+              <span>{t("theme.editor.colorsHint")}</span>
             </div>
             <ThemeColorSwatches
               css={currentTheme || defaultTheme}
@@ -72,7 +63,7 @@ const CurrentThemeEditor: React.FC<CurrentThemeEditorProps> = ({
           <div className="bg-background-dark/50 p-4 rounded-lg border border-light/10 slide-fade-in">
             <div className="flex items-center gap-1 mb-3 text-xs text-gray-400">
               <div className="i-mdi:information-outline h-3.5 w-3.5"></div>
-              <span>{t("currentThemeEditor.fontsHint")}</span>
+              <span>{t("theme.editor.fontsHint")}</span>
             </div>
             <ThemeFontControls
               css={currentTheme || defaultTheme}
@@ -84,7 +75,7 @@ const CurrentThemeEditor: React.FC<CurrentThemeEditorProps> = ({
           <div className="bg-background-dark/50 p-4 rounded-lg border border-light/10 slide-fade-in">
             <div className="flex items-center gap-1 mb-3 text-xs text-gray-400">
               <div className="i-mdi:information-outline h-3.5 w-3.5"></div>
-              <span>{t("currentThemeEditor.roundedHint")}</span>
+              <span>{t("theme.editor.roundedHint")}</span>
             </div>
             <ThemeRoundedControls
               css={currentTheme || defaultTheme}
@@ -96,7 +87,7 @@ const CurrentThemeEditor: React.FC<CurrentThemeEditorProps> = ({
           <div className="bg-background-dark/50 p-4 rounded-lg border border-light/10 slide-fade-in">
             <div className="flex items-center gap-1 mb-3 text-xs text-gray-400">
               <div className="i-mdi:information-outline h-3.5 w-3.5"></div>
-              <span>{t("currentThemeEditor.spacingHint")}</span>
+              <span>{t("theme.editor.spacingHint")}</span>
             </div>
             <ThemeSpacingControls
               css={currentTheme || defaultTheme}
@@ -108,7 +99,7 @@ const CurrentThemeEditor: React.FC<CurrentThemeEditorProps> = ({
           <div className="bg-background-dark/50 p-4 rounded-lg border border-light/10 slide-fade-in">
             <div className="flex items-center gap-1 mb-3 text-xs text-gray-400">
               <div className="i-mdi:information-outline h-3.5 w-3.5"></div>
-              <span>{t("currentThemeEditor.tradingViewHint")}</span>
+              <span>{t("theme.editor.tradingViewHint")}</span>
             </div>
             <TradingViewColorConfig
               value={tradingViewColorConfig}

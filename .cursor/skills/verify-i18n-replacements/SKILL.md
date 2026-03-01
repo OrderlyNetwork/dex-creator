@@ -7,7 +7,7 @@ description: Verifies that i18n replacements (t/i18n.t/Trans) in source code fol
 
 You verify that existing i18n usage in this repo follows the rules from [extract-i18n-keys](../extract-i18n-keys/SKILL.md) and that key values are correct. You do **not** modify any files; you only produce a structured report.
 
-**When to use**: User asks to check i18n replacements by commit, audit replaced copy, verify rules, or find over-extracted content (e.g. "根据 commit 检查多语言", "校验 i18n 替换", "替换后文本有没有变", "是否有不需要提取的多语言 key", "inline components 是否用了 Trans").
+**When to use**: User asks to check i18n replacements by commit, audit replaced copy, verify rules, or find over-extracted content (e.g. "check i18n by commit", "verify i18n replacements", "did replaced text change", "are there i18n keys that should not have been extracted", "do inline components use Trans").
 
 ## 0. Key-value storage
 
@@ -39,25 +39,25 @@ Result: **list of files to verify**.
 ### 2.2 Rule compliance (extract-i18n-keys)
 
 - **t vs i18n.t**: Inside a React component (with `useTranslation()`), use `t(...)`. At module top-level or outside components (e.g. config objects, utils), **must** use `i18n.t(...)`; never `t()` at top-level (hooks rule). Report violations.
-- **Prefix vs file location**: File under `app/app/routes/_layout.<segment>/` → key prefix should match that route’s module name (e.g. distributor, points, dex). File under `app/app/components/` → prefix should match component name (camelCase from filename or directory; see reference). Report "prefix 与文件位置不匹配" when inconsistent.
+- **Prefix vs file location**: File under `app/app/routes/_layout.<segment>/` → key prefix should match that route’s module name (e.g. distributor, points, dex). File under `app/app/components/` → prefix should match component name (camelCase from filename or directory; see reference). Report "prefix does not match file location" when inconsistent.
 - **Trans usage**:
-  - **Inline components / rich text must use Trans**: If JSX has user-facing text interleaved with inline nodes (e.g. `<>text <a href="...">link</a> more</>`, `<p><span className="...">X</span> text</p>`), it must be translated with `<Trans i18nKey="..." components={[...]} />` and `<0>...</0>` placeholders in the module value, not with `t()` or multiple `t()` calls. Report "inline components / rich text 应使用 Trans 组件翻译" when such structure is translated without Trans.
-  - When `<Trans i18nKey="..." components={[...]} />` is used, the module value must contain placeholders `<0>`, `<1>`, … matching the length of `components`. Report "Trans 占位符与 components 不匹配" if missing or count wrong.
+  - **Inline components / rich text must use Trans**: If JSX has user-facing text interleaved with inline nodes (e.g. `<>text <a href="...">link</a> more</>`, `<p><span className="...">X</span> text</p>`), it must be translated with `<Trans i18nKey="..." components={[...]} />` and `<0>...</0>` placeholders in the module value, not with `t()` or multiple `t()` calls. Report "inline components / rich text should use Trans component for translation" when such structure is translated without Trans.
+  - When `<Trans i18nKey="..." components={[...]} />` is used, the module value must contain placeholders `<0>`, `<1>`, … matching the length of `components`. Report "Trans placeholders do not match components" if missing or count wrong.
   - If the key’s value has `{{varName}}`, the call site must pass `values={{ varName: ... }}`. Report missing interpolation.
 - **Colon/parentheses**: If source renders as `{t("x")}:`, the module value must **not** end with a colon. If source renders as ` ({t("x")})`, the module value must **not** include the parentheses. Report violations.
-- **No key indirection**: Config must not use `titleKey`/`descKey`/`labelKey` and then `t(step.titleKey)`; use `i18n.t("prefix.key")` directly. Report "存在 key 间接层，应直接使用 i18n.t".
+- **No key indirection**: Config must not use `titleKey`/`descKey`/`labelKey` and then `t(step.titleKey)`; use `i18n.t("prefix.key")` directly. Report "key indirection present; use i18n.t directly".
 - **Key depth**: Key at most 5 levels (e.g. `home.dialog.confirm.button.submit`). Warn if deeper.
 
 ### 2.3 Content consistency (replaced text unchanged)
 
 - Every referenced key must exist in the module and have a non-empty string value.
-- If source calls `t("key", { var1, var2 })`, the module value must contain `{{var1}}`, `{{var2}}` (or match Trans `values`). If value has `{{x}}` but call does not pass `x`, report "缺少插值".
-- **When input is a commit/range**: For each changed file, use `git diff <commit>^..<commit> -- <file>` (or range diff) to get (oldText, key) where oldText was replaced by `t("key")`/`i18n.t("key")`/Trans. Normalize oldText (e.g. `${x}` → `{{x}}`, strip colon/paren that stay in source only) and compare to current module value for that key. If different, report "替换后文案变化：key `xxx` 的 module 值与本次 commit 中被替换的原文不一致".
+- If source calls `t("key", { var1, var2 })`, the module value must contain `{{var1}}`, `{{var2}}` (or match Trans `values`). If value has `{{x}}` but call does not pass `x`, report "missing interpolation".
+- **When input is a commit/range**: For each changed file, use `git diff <commit>^..<commit> -- <file>` (or range diff) to get (oldText, key) where oldText was replaced by `t("key")`/`i18n.t("key")`/Trans. Normalize oldText (e.g. `${x}` → `{{x}}`, strip colon/paren that stay in source only) and compare to current module value for that key. If different, report "content changed after replacement: key `xxx` module value does not match the original text replaced in this commit".
 - Without commit: only check existence, non-empty, and interpolation; optionally list key→value for manual review.
 
 ### 2.4 Over-extraction (should not have been extracted)
 
-Using extract-i18n-keys **exclusion rules**, if a key’s value (or the replaced text from diff) is in an excluded category, report "该内容无需多语言，不应使用 i18n key".
+Using extract-i18n-keys **exclusion rules**, if a key’s value (or the replaced text from diff) is in an excluded category, report "this content does not require i18n; should not use i18n key".
 
 **Exclusion criteria** (align with extract-i18n-keys §2.3, 2.1):
 

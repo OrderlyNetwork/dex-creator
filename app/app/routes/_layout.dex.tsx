@@ -290,7 +290,8 @@ export default function DexRoute() {
   const handleShowDeleteConfirm = () => {
     openModal("deleteConfirm", {
       onConfirm: handleDelete,
-      entityName: t("dex.entityName"),
+      /* i18n-ignore */
+      entityName: "DEX",
     });
   };
 

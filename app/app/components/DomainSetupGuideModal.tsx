@@ -190,10 +190,10 @@ export default function DomainSetupGuideModal({
               className="flex items-center gap-2 text-sm font-medium"
             >
               <div className="i-mdi:menu h-4 w-4"></div>
+              {/* i18n-ignore: brand name */}
               {selectedProvider === "cloudflare"
-                ? t("domainSetupGuideModal.cloudflare")
-                : t("domainSetupGuideModal.namecheap")}{" "}
-              -{" "}
+                ? "CloudFlare"
+                : "Namecheap"} -{" "}
               {t("domainSetupGuideModal.stepOf", {
                 current: currentStep,
                 total: steps.length,
@@ -221,7 +221,8 @@ export default function DomainSetupGuideModal({
                 }`}
               >
                 <div className="font-bold mb-1">
-                  {t("domainSetupGuideModal.cloudflare")}
+                  {/* i18n-ignore: brand name */}
+                  CloudFlare
                 </div>
                 <div className="text-sm text-gray-300">
                   {t("domainSetupGuideModal.cloudflareDesc")}
@@ -236,7 +237,8 @@ export default function DomainSetupGuideModal({
                 }`}
               >
                 <div className="font-bold mb-1">
-                  {t("domainSetupGuideModal.namecheap")}
+                  {/* i18n-ignore: brand name */}
+                  Namecheap
                 </div>
                 <div className="text-sm text-gray-300">
                   {t("domainSetupGuideModal.namecheapDesc")}
@@ -282,9 +284,10 @@ export default function DomainSetupGuideModal({
                         {t("domainSetupGuideModal.step")} {currentStepData.id}
                       </span>
                       <span className="text-sm text-gray-400">
+                        {/* i18n-ignore: brand name */}
                         {selectedProvider === "cloudflare"
-                          ? t("domainSetupGuideModal.cloudflare")
-                          : t("domainSetupGuideModal.namecheap")}
+                          ? "CloudFlare"
+                          : "Namecheap"}
                       </span>
                     </div>
                     <h3 className="text-xl font-bold mb-2">

@@ -168,16 +168,14 @@ function ModalManager() {
           }
           warningMessage={currentModalProps.warningMessage}
           confirmButtonText={
-            currentModalProps.confirmButtonText ||
-            t("common.confirm")
+            currentModalProps.confirmButtonText || t("common.confirm")
           }
           confirmButtonVariant={
             // i18n-ignore
             currentModalProps.confirmButtonVariant || "primary"
           }
           cancelButtonText={
-            currentModalProps.cancelButtonText ||
-            t("common.cancel")
+            currentModalProps.cancelButtonText || t("common.cancel")
           }
           isDestructive={currentModalProps.isDestructive || false}
         />

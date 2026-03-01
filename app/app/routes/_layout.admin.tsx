@@ -882,7 +882,8 @@ export default function AdminRoute() {
                             {dex.brokerName || t("common.unnamedDex")}
                           </div>
                           <div className="text-xs text-gray-400">
-                            {t("admin.idLabel")}: {dex.id.substring(0, 8)}...
+                            {/* i18n-ignore: technical label */}
+                            ID: {dex.id.substring(0, 8)}...
                           </div>
                           <div className="text-xs text-gray-400">
                             {t("admin.currentBrokerIdLabel")}: {dex.brokerId}
@@ -917,10 +918,11 @@ export default function AdminRoute() {
 
             <FormInput
               id="dexId"
-              label={t("admin.dexIdLabel")}
+              label={t("common.dexId")}
               value={dexId}
               onChange={e => setDexId(e.target.value)}
-              placeholder={t("admin.dexIdPlaceholder")}
+              // i18n-ignore: format placeholder
+              placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
               helpText={t("admin.dexIdHelp")}
               required
             />
@@ -930,7 +932,8 @@ export default function AdminRoute() {
               label={t("admin.newBrokerIdLabel")}
               value={brokerId}
               onChange={e => setBrokerId(e.target.value)}
-              placeholder={t("admin.newBrokerIdPlaceholder")}
+              // i18n-ignore: format placeholder
+              placeholder="new-broker-id"
               helpText={t("admin.newBrokerIdHelp")}
               required
               minLength={1}
@@ -987,7 +990,8 @@ export default function AdminRoute() {
                             {dex.brokerName || t("common.unnamedDex")}
                           </div>
                           <div className="text-xs text-gray-400">
-                            {t("admin.idLabel")}: {dex.id.substring(0, 8)}...
+                            {/* i18n-ignore: technical label */}
+                            ID: {dex.id.substring(0, 8)}...
                           </div>
                           {dex.repoUrl && (
                             <div className="text-xs text-gray-400 truncate max-w-xs">
@@ -1025,10 +1029,11 @@ export default function AdminRoute() {
 
             <FormInput
               id="repoDexId"
-              label={t("admin.dexIdLabel")}
+              label={t("common.dexId")}
               value={repoDexId}
               onChange={e => setRepoDexId(e.target.value)}
-              placeholder={t("admin.dexIdPlaceholder")}
+              // i18n-ignore: format placeholder
+              placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
               helpText={t("admin.dexIdHelp")}
               required
             />
@@ -1038,7 +1043,8 @@ export default function AdminRoute() {
               label={t("admin.newRepositoryName")}
               value={newRepoName}
               onChange={e => setNewRepoName(e.target.value)}
-              placeholder={t("admin.newRepoNamePlaceholder")}
+              // i18n-ignore: format placeholder
+              placeholder="new-repo-name"
               helpText={t("admin.newRepoNameHelp")}
               required
               pattern="^[a-z0-9-]+$"
@@ -1105,7 +1111,8 @@ export default function AdminRoute() {
                             {dex.brokerName || t("common.unnamedDex")}
                           </div>
                           <div className="text-xs font-mono text-gray-400">
-                            {t("admin.idLabel")}: {dex.id.substring(0, 8)}...
+                            {/* i18n-ignore: technical label */}
+                            ID: {dex.id.substring(0, 8)}...
                           </div>
                           <div className="text-xs font-mono text-gray-400">
                             {t("common.wallet")}:{" "}
@@ -1145,14 +1152,15 @@ export default function AdminRoute() {
                 htmlFor="dexToDeleteId"
                 className="block text-sm font-medium mb-1 text-error"
               >
-                {t("admin.dexIdLabel")}
+                {t("common.dexId")}
               </label>
               <input
                 type="text"
                 id="dexToDeleteId"
                 value={dexToDeleteId}
                 onChange={e => setDexToDeleteId(e.target.value)}
-                placeholder={t("admin.dexIdPlaceholder")}
+                // i18n-ignore: format placeholder
+                placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
                 className="w-full bg-dark rounded px-4 py-3 text-base border border-error/30 focus:border-error outline-none placeholder:text-gray-500"
               />
               <div className="text-xs text-gray-400 mt-1">
@@ -1213,7 +1221,7 @@ export default function AdminRoute() {
                             {dex.brokerName || t("common.unnamedDex")}
                           </div>
                           <div className="text-xs text-gray-400">
-                            {t("admin.dexIdLabel")}: {dex.id.substring(0, 8)}...
+                            {t("common.dexId")}: {dex.id.substring(0, 8)}...
                           </div>
                           <div className="text-xs text-gray-400">
                             {t("common.wallet")}:{" "}
@@ -1256,7 +1264,7 @@ export default function AdminRoute() {
 
             <FormInput
               id="manualDexId"
-              label={t("admin.dexIdLabel")}
+              label={t("common.dexId")}
               value={manualDexId}
               onChange={e => setManualDexId(e.target.value)}
               // i18n-ignore
@@ -1274,7 +1282,7 @@ export default function AdminRoute() {
               label={t("admin.brokerIdLabel")}
               value={manualBrokerId}
               onChange={e => setManualBrokerId(e.target.value)}
-              placeholder={t("admin.newBrokerIdPlaceholder")}
+              placeholder="new-broker-id"
               helpText={t("admin.brokerIdHelp")}
               required
               minLength={5}
@@ -1301,7 +1309,8 @@ export default function AdminRoute() {
               label={t("admin.transactionHash")}
               value={manualTxHash}
               onChange={e => setManualTxHash(e.target.value)}
-              placeholder={t("admin.txHashPlaceholder")}
+              // i18n-ignore: format placeholder
+              placeholder="0x..."
               helpText={t("admin.txHashHelp")}
               required
               minLength={10}

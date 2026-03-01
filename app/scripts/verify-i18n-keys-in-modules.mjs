@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * 校验 commit 中引用的 i18n key 是否都存在于对应 module。
- * 用法: node scripts/verify-i18n-keys-in-modules.mjs [commitHash]
- * 默认 commit: 49a44cbd15dc79852be377c26037b743ef31d15c
+ * check if all i18n keys in a commit are defined in the corresponding module.
+ * usage: node scripts/verify-i18n-keys-in-modules.mjs [commitHash]
+ * default commit: 49a44cbd15dc79852be377c26037b743ef31d15c
  */
 
 import { execSync } from "child_process";
@@ -16,11 +16,11 @@ const MODULE_DIR = path.join(ROOT, "app", "i18n", "module");
 
 const COMMIT = process.argv[2] || "49a44cbd15dc79852be377c26037b743ef31d15c";
 
-// 从源码中提取 t("key") / i18n.t("key") / i18nKey="key"
+// extract t("key") / i18n.t("key") / i18nKey="key" from source code
 const KEY_IN_SOURCE_RE =
   /(?:^|[^\w.])(?:t|i18n\.t)\s*\(\s*["'`]([^"'`]+)["'`]|i18nKey\s*=\s*["']([^"']+)["']/g;
 
-// 从 module 文件中提取 "key": 的 key 名（value 可能是 "、'、` 或换行）
+// extract key names from module files (value may be "、'、` or newline)
 const KEY_IN_MODULE_RE = /"([^"]+)"\s*:/g;
 
 function getChangedFiles(commit) {
@@ -41,7 +41,7 @@ function getChangedFiles(commit) {
 
 function getFileContentAtCommit(commit, filePath) {
   try {
-    // 转义 $ 等字符，避免 shell 展开（如 _layout.board_.$dexId.tsx）
+    // escape $ etc. characters to avoid shell expansion (e.g. _layout.board_.$dexId.tsx)
     const escaped = filePath
       .replace(/\\/g, "\\\\")
       .replace(/"/g, '\\"')

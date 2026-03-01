@@ -1,9 +1,7 @@
 export const dexCard = {
-  "dexCard.loading.title": "Loading your DEX",
   "dexCard.loading.subtitle": "Please wait while we fetch your configuration",
   "dexCard.setup.title": "DEX Card Setup",
   "dexCard.setup.subtitle": "Configure how your DEX appears on the board page",
-  "dexCard.authRequired.title": "Authentication Required",
   "dexCard.authRequired.description":
     "Please connect your wallet and login to set up your DEX card.",
   "dexCard.dexRequired.title": "DEX Required",
@@ -14,13 +12,11 @@ export const dexCard = {
   "dexCard.boardDisplay.heading": "Board Page Display",
   "dexCard.boardDisplay.description":
     "This information will be displayed on the board page to showcase your DEX alongside others.",
-  "dexCard.graduationRequired.title": "Graduation Required",
   "dexCard.graduationRequired.description":
     "Your DEX card will only appear on the board page after you have graduated your DEX. Complete the graduation process to start earning fees and make your DEX visible on the board.",
   "dexCard.form.saveButton": "Save DEX Card",
   "dexCard.form.saving": "Saving...",
   "dexCard.form.optional": "(optional)",
-  "dexCard.description.label": "Description",
   "dexCard.description.placeholder":
     "Brief description of your DEX for the board page",
   "dexCard.description.helper": "Brief description for social media",
@@ -33,7 +29,6 @@ export const dexCard = {
   "dexCard.logo.useSecondaryLogo": "Use Secondary Logo",
   "dexCard.logo.hint": "Small logo for the board page. Recommended: 400x400px",
   "dexCard.logo.helpText": "Small logo for the board page display",
-  "dexCard.tokenInfo.heading": "Token Information",
   "dexCard.tokenInfo.description":
     "Optional: Add your token details for enhanced board page display",
   "dexCard.tokenInfo.price": "Price",
@@ -47,12 +42,8 @@ export const dexCard = {
   "dexCard.tokenChain.loadingNetworks": "Loading networks...",
   "dexCard.tokenChain.noNetworks": "No networks found",
   "dexCard.socialMediaLinks": "Social Media Links",
-  "dexCard.socialLinks.heading": "Social Media Links",
   "dexCard.socialLinks.description":
     "Optional: Add your social media links for enhanced board page display",
-  "dexCard.telegram.label": "Telegram",
-  "dexCard.discord.label": "Discord",
-  "dexCard.xTwitter.label": "X (Twitter)",
   "dexCard.website.heading": "Website URL",
   "dexCard.website.description":
     "Optional: Add your DEX website URL for the board page",
@@ -64,7 +55,6 @@ export const dexCard = {
   "dexCard.hidden.title": "DEX Hidden from Board",
   "dexCard.hidden.description":
     "Your DEX is currently hidden from the public board. Enable board visibility above to configure how your DEX appears to others.",
-  "dexCard.error.dexUnavailable": "DEX information is not available",
   "dexCard.error.fixValidation":
     "Please fix token validation errors before saving",
   "dexCard.success.updated": "DEX card information updated successfully!",
@@ -72,7 +62,6 @@ export const dexCard = {
   "dexCard.error.networksFailed": "Failed to load available networks",
   "dexCard.error.tokenNotFound": "Token not found on this network",
   "dexCard.error.tokenValidateFailed": "Failed to validate token",
-  "dexCard.link.viewOnGeckoTerminal": "View on GeckoTerminal",
   "dexCard.visibility.toast.mustGraduate":
     "You must graduate your DEX before changing board visibility",
   "dexCard.visibility.toast.showOnBoard":
@@ -84,5 +73,4 @@ export const dexCard = {
   "dexCard.visibility.afterGraduation": "(Available after graduation)",
   "dexCard.visibility.description":
     "Control whether your DEX appears on the public leaderboard. When disabled, your DEX will be private.",
-  "dexCard.visibility.updating": "Updating...",
 };

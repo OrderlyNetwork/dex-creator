@@ -42,9 +42,9 @@ const ThemeEditingTabs: FC<ThemeEditingTabsProps> = ({
     <div className="mb-6 space-y-4">
       <div className="border-b border-light/10">
         <div className="flex">
-          <TabButton tab="colors" label={t("themeEditingTabs.colorPalette")} />
+          <TabButton tab="colors" label={t("theme.colorPalette")} />
           <TabButton tab="fonts" label={t("theme.fonts")} />
-          <TabButton tab="rounded" label={t("themeEditingTabs.borderRadius")} />
+          <TabButton tab="rounded" label={t("theme.borderRadius")} />
           <TabButton tab="spacing" label={t("theme.spacing")} />
         </div>
       </div>
@@ -53,9 +53,9 @@ const ThemeEditingTabs: FC<ThemeEditingTabsProps> = ({
         {activeTab === "colors" && (
           <div className="bg-background-dark/50 p-4 rounded-lg border border-light/10">
             <h4 className="font-semibold mb-2 flex justify-between items-center">
-              <span>{t("themeEditingTabs.colorPalette")}</span>
+              <span>{t("theme.colorPalette")}</span>
               <span className="text-xs text-gray-400">
-                {t("themeEditingTabs.clickOnColorToEdit")}
+                {t("theme.editingTabs.clickOnColorToEdit")}
               </span>
             </h4>
             <ThemeColorSwatches css={css} onColorChange={onColorChange} />
@@ -67,7 +67,7 @@ const ThemeEditingTabs: FC<ThemeEditingTabsProps> = ({
             <h4 className="font-semibold mb-2 flex justify-between items-center">
               <span>{t("theme.fonts")}</span>
               <span className="text-xs text-gray-400">
-                {t("themeEditingTabs.customizeFontFamilyAndSize")}
+                {t("theme.editingTabs.customizeFontFamilyAndSize")}
               </span>
             </h4>
             <ThemeFontControls css={css} onValueChange={onValueChange} />
@@ -77,9 +77,9 @@ const ThemeEditingTabs: FC<ThemeEditingTabsProps> = ({
         {activeTab === "rounded" && (
           <div className="bg-background-dark/50 p-4 rounded-lg border border-light/10">
             <h4 className="font-semibold mb-2 flex justify-between items-center">
-              <span>{t("themeEditingTabs.borderRadius")}</span>
+              <span>{t("theme.borderRadius")}</span>
               <span className="text-xs text-gray-400">
-                {t("themeEditingTabs.adjustValuesWithSliders")}
+                {t("theme.editingTabs.adjustValuesWithSliders")}
               </span>
             </h4>
             <ThemeRoundedControls css={css} onValueChange={onValueChange} />
@@ -91,7 +91,7 @@ const ThemeEditingTabs: FC<ThemeEditingTabsProps> = ({
             <h4 className="font-semibold mb-2 flex justify-between items-center">
               <span>{t("theme.spacing")}</span>
               <span className="text-xs text-gray-400">
-                {t("themeEditingTabs.adjustSpacingWithSliders")}
+                {t("theme.editingTabs.adjustSpacingWithSliders")}
               </span>
             </h4>
             <ThemeSpacingControls css={css} onValueChange={onValueChange} />
@@ -102,7 +102,8 @@ const ThemeEditingTabs: FC<ThemeEditingTabsProps> = ({
       {showCssPreview && (
         <div>
           <div className="flex justify-between items-center mb-2">
-            <h4 className="font-semibold">{t("themeEditingTabs.css")}</h4>
+            {/* i18n-ignore */}
+            <h4 className="font-semibold">CSS</h4>
           </div>
           <pre className="bg-background-dark/95 p-4 rounded-lg text-sm border-2 border-primary/20 overflow-x-auto text-gray-200 shadow-inner max-h-[300px] overflow-y-auto">
             {css}

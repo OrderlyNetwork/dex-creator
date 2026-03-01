@@ -8,7 +8,6 @@ export const points = {
     "The feature will show on your DEX UI within 5 minutes.",
   "points.enableCard.toast.error": "Failed to enable point system",
   "points.list.column.stage": "Stage",
-  "points.list.column.status": "Status",
   "points.list.column.title": "Title",
   "points.list.column.time": "Time",
   "points.list.column.action": "Action",
@@ -16,8 +15,6 @@ export const points = {
   "points.list.status.active": "Ongoing",
   "points.list.status.completed": "Ended",
   "points.list.button.view": "View",
-  "points.list.button.edit": "Edit",
-  "points.list.button.delete": "Delete",
   "points.list.button.create": "Create",
   "points.list.tooltip.recurring":
     "Please set an end date for the last stage first.",
@@ -31,7 +28,6 @@ export const points = {
   "points.basic.stages.label": "Stages",
   "points.basic.stages.tooltip":
     "This default number will increase as more campaigns are created. The stage is mainly used to help organize and track data in the future.",
-  "points.basic.description.label": "Description",
   "points.basic.description.placeholder": "Description...",
   "points.basic.startDate.help": "Starts at 00:00:00 UTC",
   "points.basic.endDate.label": "End Date (UTC)",

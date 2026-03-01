@@ -237,7 +237,7 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
           <div className="mb-4 pb-4 border-b border-light/10">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-gray-300">
-                {t("themeCustomizationSection.themePresets")}
+                {t("theme.customizationSection.themePresets")}
               </span>
             </div>
             <Button
@@ -261,7 +261,7 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
             >
               <span className="flex items-center gap-1 justify-center">
                 <div className="i-mdi:swatch h-3.5 w-3.5"></div>
-                {t("themeCustomizationSection.selectPreset")}
+                {t("theme.customizationSection.selectPreset")}
               </span>
             </Button>
           </div>
@@ -287,9 +287,7 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
                         : "i-mdi:pencil h-3.5 w-3.5"
                     }
                   ></div>
-                  {showThemeEditor
-                    ? t("theme.hideEditor")
-                    : t("theme.editCss")}
+                  {showThemeEditor ? t("theme.hideEditor") : t("theme.editCss")}
                 </span>
               </Button>
               <Button
@@ -361,7 +359,7 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
               {t("theme.aiThemeGenerator")}
             </h4>
             <p className="text-xs text-gray-400 mb-2">
-              {t("themeCustomizationSection.aiThemeGeneratorDesc")}
+              {t("theme.customizationSection.aiThemeGeneratorDesc")}
             </p>
             <Card className="mb-3 p-3 slide-fade-in" variant="default">
               <div className="flex items-start gap-2">
@@ -369,13 +367,13 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
                 <div>
                   <p className="text-xs text-gray-300 mb-1">
                     <span className="text-primary-light font-medium">
-                      {t("themeCustomizationSection.note")}:
+                      {t("theme.customizationSection.note")}:
                     </span>{" "}
-                    {t("themeCustomizationSection.aiNoteDesc")}:
+                    {t("theme.customizationSection.aiNoteDesc")}:
                   </p>
                   <ul className="text-xs text-gray-300 list-disc pl-4 space-y-0.5">
-                    <li>{t("themeCustomizationSection.reviewInPreview")}</li>
-                    <li>{t("themeCustomizationSection.adjustColors")}</li>
+                    <li>{t("theme.customizationSection.reviewInPreview")}</li>
+                    <li>{t("theme.customizationSection.adjustColors")}</li>
                   </ul>
                 </div>
               </div>
@@ -386,9 +384,9 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
               value={themePrompt}
               onChange={handleInputChange("themePrompt")}
               placeholder={t(
-                "themeCustomizationSection.themeDescriptionPlaceholder"
+                "theme.customizationSection.themeDescriptionPlaceholder"
               )}
-              helpText={t("themeCustomizationSection.themeDescriptionHelp")}
+              helpText={t("theme.customizationSection.themeDescriptionHelp")}
               maxLength={100}
               disabled={isGeneratingTheme}
             />
@@ -399,7 +397,7 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
                 handleGenerateTheme(themePrompt, undefined, "mobile")
               }
               isLoading={isGeneratingTheme}
-              loadingText={t("themeCustomizationSection.generating")}
+              loadingText={t("theme.customizationSection.generating")}
               disabled={!themePrompt.trim() || isGeneratingTheme}
               variant="secondary"
               size="sm"

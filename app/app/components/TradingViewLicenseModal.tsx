@@ -25,7 +25,7 @@ export default function TradingViewLicenseModal({
       <div className="relative z-[1002] w-full max-w-2xl p-6 rounded-xl bg-background-light border border-light/10 shadow-2xl slide-fade-in max-h-[90vh] overflow-auto">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-bold">
-            {t("tradingViewLicenseModal.title")}
+            {t("tradingView.licenseModal.title")}
           </h3>
           <button
             onClick={onClose}
@@ -43,10 +43,10 @@ export default function TradingViewLicenseModal({
               <div className="i-mdi:check-circle text-success h-5 w-5 mt-0.5 flex-shrink-0"></div>
               <div>
                 <h4 className="text-base font-bold mb-1 text-success">
-                  {t("tradingView.goodNewsItS")}
+                  {t("tradingView.licenseAck.goodNews")}
                 </h4>
                 <p className="text-xs text-gray-300">
-                  {t("tradingViewLicenseModal.freeLicenseDesc")}
+                  {t("tradingView.licenseModal.freeLicenseDesc")}
                 </p>
               </div>
             </div>
@@ -55,12 +55,12 @@ export default function TradingViewLicenseModal({
           {/* What You Need */}
           <div>
             <h4 className="text-base font-bold mb-3">
-              {t("tradingView.whatYouNeedTo")}
+              {t("tradingView.licenseAck.whatYouNeed")}
             </h4>
             <ol className="text-sm text-gray-300 space-y-2 list-decimal list-inside">
               <li>
                 <Trans
-                  i18nKey="tradingViewLicenseModal.visitTradingViewPage"
+                  i18nKey="tradingView.licenseModal.visitTradingViewPage"
                   components={[
                     <a
                       key="0"
@@ -72,16 +72,16 @@ export default function TradingViewLicenseModal({
                   ]}
                 />
               </li>
-              <li>{t("tradingViewLicenseModal.clickGetLibrary")}</li>
-              <li>{t("tradingViewLicenseModal.fillOutForm")}</li>
-              <li>{t("tradingView.waitForApprovalUsually")}</li>
+              <li>{t("tradingView.licenseModal.clickGetLibrary")}</li>
+              <li>{t("tradingView.licenseModal.fillOutForm")}</li>
+              <li>{t("tradingView.licenseAck.waitForApproval")}</li>
             </ol>
           </div>
 
           {/* Where to Click Image */}
           <div>
             <h4 className="text-base font-bold mb-3">
-              {t("tradingViewLicenseModal.whereToClick")}
+              {t("tradingView.licenseModal.whereToClick")}
             </h4>
             <div className="bg-background-dark/50 rounded-lg p-4 border border-light/10">
               <img
@@ -90,7 +90,7 @@ export default function TradingViewLicenseModal({
                 className="w-full rounded border border-light/20"
               />
               <p className="text-xs text-gray-400 mt-2 text-center">
-                {t("tradingViewLicenseModal.lookForGetLibrary")}
+                {t("tradingView.licenseModal.lookForGetLibrary")}
               </p>
             </div>
           </div>
@@ -98,25 +98,25 @@ export default function TradingViewLicenseModal({
           {/* Application Details */}
           <div>
             <h4 className="text-base font-bold mb-3">
-              {t("tradingViewLicenseModal.applicationFormDetails")}
+              {t("tradingView.licenseModal.applicationFormDetails")}
             </h4>
             <div className="bg-background-dark/50 rounded-lg p-4 border border-light/10 space-y-3">
               <div>
                 <span className="text-xs font-medium text-primary-light">
-                  {t("tradingViewLicenseModal.websiteUrl")}
+                  {t("tradingView.licenseModal.websiteUrl")}
                 </span>
                 <p className="text-xs text-gray-300 mt-1">
-                  {t("tradingViewLicenseModal.websiteUrlDesc")}
+                  {t("tradingView.licenseModal.websiteUrlDesc")}
                 </p>
               </div>
 
               <div>
                 <span className="text-xs font-medium text-primary-light">
-                  {t("tradingViewLicenseModal.githubProfile")}:
+                  {t("tradingView.licenseModal.githubProfile")}:
                 </span>
                 <p className="text-xs text-gray-300 mt-1">
                   <Trans
-                    i18nKey="tradingViewLicenseModal.githubProfileDesc"
+                    i18nKey="tradingView.licenseModal.githubProfileDesc"
                     components={[
                       <a
                         key="0"
@@ -132,28 +132,28 @@ export default function TradingViewLicenseModal({
 
               <div>
                 <span className="text-xs font-medium text-primary-light">
-                  {t("tradingViewLicenseModal.companyProfile")}
+                  {t("tradingView.licenseModal.companyProfile")}
                 </span>
                 <p className="text-xs text-gray-300 mt-1">
-                  {t("tradingViewLicenseModal.companyProfileValue")}
+                  {t("tradingView.licenseModal.companyProfileValue")}
                 </p>
               </div>
 
               <div>
                 <span className="text-xs font-medium text-primary-light">
-                  {t("tradingViewLicenseModal.ownDataFeed")}
+                  {t("tradingView.licenseModal.ownDataFeed")}
                 </span>
                 <p className="text-xs text-gray-300 mt-1">
-                  {t("tradingViewLicenseModal.ownDataFeedValue")}
+                  {t("tradingView.licenseModal.ownDataFeedValue")}
                 </p>
               </div>
 
               <div>
                 <span className="text-xs font-medium text-primary-light">
-                  {t("tradingViewLicenseModal.reasonForRequest")}
+                  {t("tradingView.licenseModal.reasonForRequest")}
                 </span>
                 <p className="text-xs text-gray-300 mt-1">
-                  {t("tradingViewLicenseModal.reasonForRequestDesc")}
+                  {t("tradingView.licenseModal.reasonForRequestDesc")}
                 </p>
               </div>
             </div>
@@ -168,10 +168,10 @@ export default function TradingViewLicenseModal({
                   {t("tradingView.importantNotes")}
                 </h4>
                 <ul className="text-xs text-gray-300 space-y-1 list-disc list-inside">
-                  <li>{t("tradingView.theLicenseApplicationIs")}</li>
-                  <li>{t("tradingViewLicenseModal.note2")}</li>
-                  <li>{t("tradingViewLicenseModal.note3")}</li>
-                  <li>{t("tradingView.onceApprovedYourDex")}</li>
+                  <li>{t("tradingView.licenseAck.ackNote2")}</li>
+                  <li>{t("tradingView.licenseModal.note2")}</li>
+                  <li>{t("tradingView.licenseModal.note3")}</li>
+                  <li>{t("tradingView.licenseAck.ackNote4")}</li>
                 </ul>
               </div>
             </div>
@@ -187,7 +187,7 @@ export default function TradingViewLicenseModal({
               variant="primary"
             >
               <span className="flex items-center gap-2">
-                {t("tradingViewLicenseModal.applyForLicense")}
+                {t("tradingView.licenseModal.applyForLicense")}
                 <div className="i-mdi:open-in-new h-4 w-4"></div>
               </span>
             </Button>

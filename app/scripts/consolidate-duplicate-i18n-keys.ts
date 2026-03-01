@@ -5,7 +5,7 @@
  *
  * - Same prefix (e.g. board.revenue, board.tableRevenue): in-module dedup — keep
  *   one key, remove others, replace all refs with the kept key. No common.ts.
- * - Different prefix (e.g. themeCustomizationSection.x, aiThemeGeneratorModal.y):
+ * - Different prefix (e.g. dex.x, board.y):
  *   suggestion only; recommend merging to common.xxx (no file changes).
  *
  * Usage:
@@ -209,7 +209,9 @@ function suggestCommonKeySuffix(value: string): string {
     .toLowerCase();
   const words = cleaned.split(/\s+/).filter(Boolean).slice(0, 4);
   if (words.length === 0) return "sharedKey";
-  return words.map((w, i) => (i === 0 ? w : w[0].toUpperCase() + w.slice(1))).join("");
+  return words
+    .map((w, i) => (i === 0 ? w : w[0].toUpperCase() + w.slice(1)))
+    .join("");
 }
 
 /** Count how many source files contain a reference to key (t/i18n.t/i18nKey). */

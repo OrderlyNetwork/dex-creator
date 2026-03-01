@@ -15,13 +15,13 @@ const ROUNDED_ORDER = ["sm", "", "md", "lg", "xl", "2xl", "full"] as const;
 
 function getDisplayNameKey(key: (typeof ROUNDED_ORDER)[number]): string {
   const DISPLAY_NAME_KEYS = {
-    "": i18n.t("themeRoundedControls.displayName.base"),
-    sm: i18n.t("themeRoundedControls.displayName.sm"),
-    md: i18n.t("themeRoundedControls.displayName.md"),
-    lg: i18n.t("themeRoundedControls.displayName.lg"),
-    xl: i18n.t("themeRoundedControls.displayName.xl"),
-    "2xl": i18n.t("themeRoundedControls.displayName.2xl"),
-    full: i18n.t("themeRoundedControls.displayName.full"),
+    "": i18n.t("theme.roundedControls.displayName.base"),
+    sm: i18n.t("theme.roundedControls.displayName.sm"),
+    md: i18n.t("theme.roundedControls.displayName.md"),
+    lg: i18n.t("theme.roundedControls.displayName.lg"),
+    xl: i18n.t("theme.roundedControls.displayName.xl"),
+    "2xl": i18n.t("theme.roundedControls.displayName.2xl"),
+    full: i18n.t("theme.roundedControls.displayName.full"),
   };
   return DISPLAY_NAME_KEYS[key];
 }
@@ -142,7 +142,7 @@ export default function ThemeRoundedControls({
       {/* Help text on top for mobile */}
       <div className="text-xs text-gray-400 flex items-center gap-1.5 mb-2">
         <span className="i-mdi:radius-outline text-primary text-sm"></span>
-        <span>{t("themeRoundedControls.helpText")}</span>
+        <span>{t("theme.roundedControls.helpText")}</span>
       </div>
 
       {ROUNDED_ORDER.map(key => {
@@ -192,7 +192,7 @@ export default function ThemeRoundedControls({
                 </div>
               ) : (
                 <div className="text-xs text-gray-400 italic px-1">
-                  ({t("themeRoundedControls.fullRoundedCannotModify")})
+                  ({t("theme.roundedControls.fullRoundedCannotModify")})
                 </div>
               )}
             </div>

@@ -478,7 +478,8 @@ export default function DexDetailRoute() {
                     className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                   >
                     <Icon icon="mdi:telegram" width={20} />
-                    {/* i18n-ignore */}{"Telegram"}
+                    {/* i18n-ignore */}
+                    {"Telegram"}
                   </a>
                 )}
                 {dexData.discordLink && (
@@ -489,7 +490,8 @@ export default function DexDetailRoute() {
                     className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
                   >
                     <Icon icon="mdi:discord" width={20} />
-                    {/* i18n-ignore */}{"Discord"}
+                    {/* i18n-ignore */}
+                    {"Discord"}
                   </a>
                 )}
                 {dexData.xLink && (

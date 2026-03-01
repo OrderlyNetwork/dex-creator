@@ -51,7 +51,7 @@ const AIThemeGeneratorModal: FC<AIThemeGeneratorModalProps> = ({
         <div className="flex-1 overflow-auto p-4">
           <div className="flex flex-col gap-4">
             <p className="text-xs text-gray-400">
-              {t("aiThemeGeneratorModal.describePrompt")}
+              {t("theme.aiThemeGeneratorModal.describePrompt")}
             </p>
             <Card className="p-3" variant="default">
               <div className="flex items-start gap-2">
@@ -59,7 +59,7 @@ const AIThemeGeneratorModal: FC<AIThemeGeneratorModalProps> = ({
                 <div>
                   <p className="text-xs text-gray-300 mb-1">
                     <Trans
-                      i18nKey="aiThemeGeneratorModal.noteWithDesc"
+                      i18nKey="theme.aiThemeGeneratorModal.noteWithDesc"
                       components={[
                         <span
                           key="0"
@@ -69,8 +69,8 @@ const AIThemeGeneratorModal: FC<AIThemeGeneratorModalProps> = ({
                     />
                   </p>
                   <ul className="text-xs text-gray-300 list-disc pl-4 space-y-0.5">
-                    <li>{t("aiThemeGeneratorModal.reviewInPreview")}</li>
-                    <li>{t("aiThemeGeneratorModal.adjustColors")}</li>
+                    <li>{t("theme.aiThemeGeneratorModal.reviewInPreview")}</li>
+                    <li>{t("theme.aiThemeGeneratorModal.adjustColors")}</li>
                   </ul>
                 </div>
               </div>
@@ -80,8 +80,8 @@ const AIThemeGeneratorModal: FC<AIThemeGeneratorModalProps> = ({
               label={t("theme.themeDescription")}
               value={themePrompt}
               onChange={e => setThemePrompt(e.target.value)}
-              placeholder={t("aiThemeGeneratorModal.placeholder")}
-              helpText={t("aiThemeGeneratorModal.helpText")}
+              placeholder={t("theme.aiThemeGeneratorModal.placeholder")}
+              helpText={t("theme.aiThemeGeneratorModal.helpText")}
               maxLength={100}
               disabled={isGeneratingTheme}
             />
@@ -96,7 +96,7 @@ const AIThemeGeneratorModal: FC<AIThemeGeneratorModalProps> = ({
               onGenerateTheme(themePrompt, viewMode);
             }}
             isLoading={isGeneratingTheme}
-            loadingText={t("aiThemeGeneratorModal.generating")}
+            loadingText={t("theme.aiThemeGeneratorModal.generating")}
             disabled={isGeneratingTheme}
             variant="primary"
             size="sm"

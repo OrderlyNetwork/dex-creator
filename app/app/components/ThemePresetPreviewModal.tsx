@@ -149,7 +149,7 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
       >
         <div className="flex items-center justify-between p-4 border-b border-light/10">
           <h2 className="text-lg font-bold text-gray-200">
-            {t("themePresetPreviewModal.selectThemePreset")}
+            {t("theme.presetPreviewModal.selectThemePreset")}
           </h2>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 bg-background-card border border-light/20 rounded-lg p-1">
@@ -182,7 +182,7 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
               size="md"
               type="button"
             >
-              {t("themePresetPreviewModal.applyPreset")}
+              {t("theme.presetPreviewModal.applyPreset")}
             </Button>
           </div>
         </div>
@@ -230,27 +230,29 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
                 <div className="i-mdi:alert-circle text-warning h-6 w-6 flex-shrink-0 mt-0.5"></div>
                 <div className="flex-1">
                   <h3 className="text-lg font-bold text-gray-200 mb-2">
-                    {t("themePresetPreviewModal.applyThemePresetTitle")}
+                    {t("theme.presetPreviewModal.applyThemePresetTitle")}
                   </h3>
                   <p className="text-sm text-gray-300">
                     <Trans
-                      i18nKey="themePresetPreviewModal.applyThemePresetDesc"
+                      i18nKey="theme.presetPreviewModal.applyThemePresetDesc"
                       components={[<strong key="0" />]}
                     />
                   </p>
                   <ul className="text-sm text-gray-300 list-disc list-inside mt-2 space-y-1">
                     <li>
-                      {t("themePresetPreviewModal.allColorCustomizations")}
+                      {t("theme.presetPreviewModal.allColorCustomizations")}
                     </li>
-                    <li>{t("themePresetPreviewModal.fontSettings")}</li>
+                    <li>{t("theme.presetPreviewModal.fontSettings")}</li>
                     <li>
-                      {t("themePresetPreviewModal.borderRadiusAdjustments")}
+                      {t("theme.presetPreviewModal.borderRadiusAdjustments")}
                     </li>
-                    <li>{t("themePresetPreviewModal.spacingModifications")}</li>
-                    <li>{t("themePresetPreviewModal.aiFineTuneOverrides")}</li>
+                    <li>
+                      {t("theme.presetPreviewModal.spacingModifications")}
+                    </li>
+                    <li>{t("theme.presetPreviewModal.aiFineTuneOverrides")}</li>
                   </ul>
                   <p className="text-sm text-gray-300 mt-3">
-                    {t("themePresetPreviewModal.actionCannotBeUndone")}
+                    {t("theme.presetPreviewModal.actionCannotBeUndone")}
                   </p>
                 </div>
               </div>
@@ -269,7 +271,7 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
                   size="md"
                   type="button"
                 >
-                  {t("themePresetPreviewModal.yesApplyPreset")}
+                  {t("theme.presetPreviewModal.yesApplyPreset")}
                 </Button>
               </div>
             </div>
@@ -292,7 +294,7 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
       <div className="relative z-[1002] w-full max-w-3xl p-6 rounded-xl bg-background-light border border-light/10 shadow-2xl slide-fade-in max-h-[90vh] overflow-auto">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-bold">
-            {t("themePresetPreviewModal.selectThemePreset")}
+            {t("theme.presetPreviewModal.selectThemePreset")}
           </h3>
           <div className="flex items-center gap-2 bg-background-card border border-light/20 rounded-lg p-1">
             {themePresets.map(preset => (
@@ -325,7 +327,7 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
             {t("common.cancel")}
           </Button>
           <Button variant="primary" onClick={handleApplyClick}>
-            {t("themePresetPreviewModal.applyPreset")}
+            {t("theme.presetPreviewModal.applyPreset")}
           </Button>
         </div>
       </div>
@@ -347,25 +349,27 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
               <div className="i-mdi:alert-circle text-warning h-6 w-6 flex-shrink-0 mt-0.5"></div>
               <div className="flex-1">
                 <h3 className="text-lg font-bold text-gray-200 mb-2">
-                  {t("themePresetPreviewModal.applyThemePresetTitle")}
+                  {t("theme.presetPreviewModal.applyThemePresetTitle")}
                 </h3>
                 <p className="text-sm text-gray-300">
                   <Trans
-                    i18nKey="themePresetPreviewModal.applyThemePresetDesc"
+                    i18nKey="theme.presetPreviewModal.applyThemePresetDesc"
                     components={[<strong key="0" />]}
                   />
                 </p>
                 <ul className="text-sm text-gray-300 list-disc list-inside mt-2 space-y-1">
-                  <li>{t("themePresetPreviewModal.allColorCustomizations")}</li>
-                  <li>{t("themePresetPreviewModal.fontSettings")}</li>
                   <li>
-                    {t("themePresetPreviewModal.borderRadiusAdjustments")}
+                    {t("theme.presetPreviewModal.allColorCustomizations")}
                   </li>
-                  <li>{t("themePresetPreviewModal.spacingModifications")}</li>
-                  <li>{t("themePresetPreviewModal.aiFineTuneOverrides")}</li>
+                  <li>{t("theme.presetPreviewModal.fontSettings")}</li>
+                  <li>
+                    {t("theme.presetPreviewModal.borderRadiusAdjustments")}
+                  </li>
+                  <li>{t("theme.presetPreviewModal.spacingModifications")}</li>
+                  <li>{t("theme.presetPreviewModal.aiFineTuneOverrides")}</li>
                 </ul>
                 <p className="text-sm text-gray-300 mt-3">
-                  {t("themePresetPreviewModal.actionCannotBeUndone")}
+                  {t("theme.presetPreviewModal.actionCannotBeUndone")}
                 </p>
               </div>
             </div>
@@ -384,7 +388,7 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
                 size="md"
                 type="button"
               >
-                {t("themePresetPreviewModal.yesApplyPreset")}
+                {t("theme.presetPreviewModal.yesApplyPreset")}
               </Button>
             </div>
           </div>

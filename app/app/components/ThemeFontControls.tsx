@@ -25,67 +25,67 @@ function getFontFamilies(): FontFamilyOption[] {
       name: "Manrope",
       value: "'Manrope', sans-serif",
       preview: "Manrope",
-      category: i18n.t("themeFontControls.category.default"),
+      category: i18n.t("theme.fontControls.category.default"),
     },
     {
       name: "Roboto",
       value: "'Roboto', sans-serif",
       preview: "Roboto",
-      category: i18n.t("themeFontControls.category.modern"),
+      category: i18n.t("theme.fontControls.category.modern"),
     },
     {
       name: "Open Sans",
       value: "'Open Sans', sans-serif",
       preview: "Open Sans",
-      category: i18n.t("themeFontControls.category.readable"),
+      category: i18n.t("theme.fontControls.category.readable"),
     },
     {
       name: "Lato",
       value: "'Lato', sans-serif",
       preview: "Lato",
-      category: i18n.t("themeFontControls.category.readable"),
+      category: i18n.t("theme.fontControls.category.readable"),
     },
     {
       name: "Poppins",
       value: "'Poppins', sans-serif",
       preview: "Poppins",
-      category: i18n.t("themeFontControls.category.modern"),
+      category: i18n.t("theme.fontControls.category.modern"),
     },
     {
       name: "Source Sans Pro",
       value: "'Source Sans Pro', sans-serif",
       preview: "Source Sans Pro",
-      category: i18n.t("themeFontControls.category.readable"),
+      category: i18n.t("theme.fontControls.category.readable"),
     },
     {
       name: "Nunito",
       value: "'Nunito', sans-serif",
       preview: "Nunito",
-      category: i18n.t("themeFontControls.category.friendly"),
+      category: i18n.t("theme.fontControls.category.friendly"),
     },
     {
       name: "Montserrat",
       value: "'Montserrat', sans-serif",
       preview: "Montserrat",
-      category: i18n.t("themeFontControls.category.modern"),
+      category: i18n.t("theme.fontControls.category.modern"),
     },
     {
       name: "Raleway",
       value: "'Raleway', sans-serif",
       preview: "Raleway",
-      category: i18n.t("themeFontControls.category.elegant"),
+      category: i18n.t("theme.fontControls.category.elegant"),
     },
     {
       name: "Ubuntu",
       value: "'Ubuntu', sans-serif",
       preview: "Ubuntu",
-      category: i18n.t("themeFontControls.category.modern"),
+      category: i18n.t("theme.fontControls.category.modern"),
     },
     {
       name: "Fira Sans",
       value: "'Fira Sans', sans-serif",
       preview: "Fira Sans",
-      category: i18n.t("themeFontControls.category.technical"),
+      category: i18n.t("theme.fontControls.category.technical"),
     },
   ];
 }
@@ -254,7 +254,7 @@ export default function ThemeFontControls({
       {/* Help text */}
       <div className="text-xs text-gray-400 flex items-center gap-1.5 mb-2">
         <span className="i-mdi:format-font text-primary text-sm"></span>
-        <span>{t("themeFontControls.helpText")}</span>
+        <span>{t("theme.fontControls.helpText")}</span>
       </div>
 
       {/* Font Family Selection */}
@@ -335,7 +335,7 @@ export default function ThemeFontControls({
       <div className="border-t border-light/10 pt-4">
         <div className="mb-2">
           <span className="text-sm font-medium text-gray-300">
-            {t("themeFontControls.preview")}
+            {t("theme.fontControls.preview")}
           </span>
         </div>
         <div
@@ -346,10 +346,10 @@ export default function ThemeFontControls({
           }}
         >
           <p className="text-white mb-2">
-            {t("themeFontControls.previewDesc")}
+            {t("theme.fontControls.previewDesc")}
           </p>
           <p className="text-gray-300 text-sm">
-            {t("themeFontControls.previewNote")}
+            {t("theme.fontControls.previewNote")}
           </p>
         </div>
       </div>

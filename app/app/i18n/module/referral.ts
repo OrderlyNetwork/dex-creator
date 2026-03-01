@@ -7,23 +7,18 @@ export const referral = {
   "referral.orderlyKeyRequired.title": "Orderly Key Required",
   "referral.orderlyKeyRequired.description":
     "To manage referral settings, you need to create an Orderly key that allows secure API access to the Orderly Network. This key will be stored locally and used for managing your referral program.",
-  "referral.orderlyKeyRequired.creatingKey": "Creating Key...",
   "referral.orderlyKeyRequired.createKey": "Create Orderly Key",
 
   // Page Title and Navigation
   "referral.referralSettings": "Referral Settings",
-  "referral.pageTitle": "Referral Settings",
   "referral.backToDexDashboard": "Back to DEX Dashboard",
-  "referral.authRequired.title": "Authentication Required",
   "referral.authRequired.description":
     "Please connect your wallet and login to access referral settings.",
 
   // No DEX / Not Graduated
-  "referral.noDex.title": "No DEX Found",
   "referral.noDex.description":
     "You need to create a DEX first before you can set up referrals.",
   "referral.createYourDex": "Create Your DEX",
-  "referral.graduationRequired.title": "Graduation Required",
   "referral.graduationRequired.description":
     "Referral settings are only available for graduated DEXs. You need to graduate your DEX first to start earning revenue and enable referral programs.",
   "referral.graduationRequired.whyTitle": "Why graduation is required:",
@@ -150,7 +145,6 @@ export const referral = {
   "referral.singleLevel.refereeRebate": "Default referee rebate",
   "referral.singleLevel.rebateSplitHint":
     "Adjust the split between referrer and referee rebates. Total rebate: {{maxRebate}}%",
-  "referral.singleLevel.descriptionLabel": "Description",
   "referral.singleLevel.descriptionPlaceholder":
     "Describe your referral program...",
   "referral.singleLevel.currentSettings": "Current Settings",

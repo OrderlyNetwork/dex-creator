@@ -81,14 +81,10 @@ export const admin = {
   "admin.searchDex": "Search DEX",
   "admin.searchPlaceholderBroker":
     "Search by DEX ID, broker name, or broker ID...",
-  "admin.idLabel": "ID",
   "admin.currentBrokerIdLabel": "Current Broker ID",
   "admin.noDexsFound": "No DEXs found matching your search.",
-  "admin.dexIdLabel": "DEX ID",
   "admin.newBrokerIdLabel": "New Broker ID",
-  "admin.dexIdPlaceholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
   "admin.dexIdHelp": "Enter the UUID of the DEX to update",
-  "admin.newBrokerIdPlaceholder": "new-broker-id",
   "admin.newBrokerIdHelp": "Enter the new broker ID (1-50 characters)",
   "admin.renameRepoDescription":
     "Rename the GitHub repository for a DEX. This will update all references including the deployment URL.",
@@ -96,7 +92,6 @@ export const admin = {
     "Search by DEX ID, broker name, or repository URL...",
   "admin.repoLabel": "Repo",
   "admin.newRepositoryName": "New Repository Name",
-  "admin.newRepoNamePlaceholder": "new-repo-name",
   "admin.newRepoNameHelp": "Lowercase letters, numbers, and hyphens only",
   "admin.renaming": "Renaming...",
   "admin.dangerZoneDescription":
@@ -118,7 +113,6 @@ export const admin = {
   "admin.brokerIdHelp":
     "5-15 characters, lowercase letters, numbers, hyphens, and underscores only. Cannot contain 'orderly'",
   "admin.transactionHash": "Transaction Hash",
-  "admin.txHashPlaceholder": "0x...",
   "admin.txHashHelp":
     "Transaction hash as proof (will not be validated for payment)",
   "admin.chainOptional": "Chain (Optional)",

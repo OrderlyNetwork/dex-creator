@@ -60,7 +60,7 @@ export default function ThemeColorSwatches({
 
   const colorCategories = [
     {
-      title: t("themeColorSwatches.primaryColors"),
+      title: t("theme.colorSwatches.primaryColors"),
       colors: allColorKeys.filter(
         key =>
           key.includes("primary") ||
@@ -71,7 +71,7 @@ export default function ThemeColorSwatches({
       ),
     },
     {
-      title: t("themeColorSwatches.statusColors"),
+      title: t("theme.colorSwatches.statusColors"),
       colors: allColorKeys.filter(
         key =>
           key.includes("success") ||
@@ -80,25 +80,25 @@ export default function ThemeColorSwatches({
       ),
     },
     {
-      title: t("themeColorSwatches.baseColors"),
+      title: t("theme.colorSwatches.baseColors"),
       colors: allColorKeys.filter(key => key.includes("base")),
     },
     {
-      title: t("themeColorSwatches.tradingColors"),
+      title: t("theme.colorSwatches.tradingColors"),
       colors: allColorKeys.filter(key => key.includes("trading")),
     },
     {
-      title: t("themeColorSwatches.fillColors"),
+      title: t("theme.colorSwatches.fillColors"),
       colors: allColorKeys.filter(key => key.includes("fill")),
     },
     {
-      title: t("themeColorSwatches.lineColors"),
+      title: t("theme.colorSwatches.lineColors"),
       colors: allColorKeys.filter(
         key => key.includes("line") && !key.includes("trading")
       ),
     },
     {
-      title: t("themeColorSwatches.otherColors"),
+      title: t("theme.colorSwatches.otherColors"),
       colors: allColorKeys.filter(
         key =>
           !key.includes("primary") &&
@@ -162,10 +162,10 @@ export default function ThemeColorSwatches({
           }}
           title={
             isValid
-              ? t("themeColorSwatches.clickToEditColor", { displayName })
+              ? t("theme.colorSwatches.clickToEditColor", { displayName })
               : storedValue === null
                 ? t("theme.clickToSetDisplayname", { displayName })
-                : t("themeColorSwatches.invalidCssFormat", { displayName })
+                : t("theme.colorSwatches.invalidCssFormat", { displayName })
           }
         >
           <div className="flex flex-col items-start">
@@ -187,13 +187,12 @@ export default function ThemeColorSwatches({
                   needsShadow || !isValid ? "0 0 2px rgba(0,0,0,0.8)" : "none",
               }}
             >
+              {/* i18n-ignore */}
               {isValid
-                ? t("themeColorSwatches.rgbValue", {
-                    rgbValue: storedValue?.replace(/\s+/g, ", "),
-                  })
+                ? `RGB(${storedValue?.replace(/\s+/g, ", ")})`
                 : storedValue === null
-                  ? t("themeColorSwatches.notSet")
-                  : t("themeColorSwatches.invalidFormat")}
+                  ? t("theme.colorSwatches.notSet")
+                  : t("theme.colorSwatches.invalidFormat")}
             </span>
           </div>
 
@@ -228,7 +227,7 @@ export default function ThemeColorSwatches({
       <div className="mb-4">
         <div className="flex justify-between items-center mb-2">
           <h5 className="text-sm font-medium text-gray-300">
-            {t("themeColorSwatches.brandGradient")}
+            {t("theme.colorSwatches.brandGradient")}
           </h5>
           <label className="flex items-center cursor-pointer relative">
             <input
@@ -245,7 +244,7 @@ export default function ThemeColorSwatches({
               ></div>
             </div>
             <span className="text-xs text-gray-300">
-              {t("themeColorSwatches.syncWithPrimary")}
+              {t("theme.colorSwatches.syncWithPrimary")}
             </span>
           </label>
         </div>
@@ -260,13 +259,13 @@ export default function ThemeColorSwatches({
         ) : (
           <div className="w-full h-16 rounded-md border border-error/50 bg-background-dark/50 flex items-center justify-center">
             <span className="text-xs text-gray-400">
-              {t("themeColorSwatches.invalidGradientFormat")}
+              {t("theme.colorSwatches.invalidGradientFormat")}
             </span>
           </div>
         )}
 
         <div className="text-xs text-gray-400 mt-1">
-          {t("themeColorSwatches.brandGradientUsedFor")}
+          {t("theme.colorSwatches.brandGradientUsedFor")}
         </div>
       </div>
     );

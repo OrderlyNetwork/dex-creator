@@ -196,10 +196,10 @@ export function GraduationForm({
   const copyToClipboard = async (text: string, label: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success(t("graduationForm.copiedToClipboard", { label }));
+      toast.success(t("graduation.form.copiedToClipboard", { label }));
     } catch (error) {
       console.error("Failed to copy to clipboard:", error);
-      toast.error(t("graduationForm.failedToCopyToClipboard"));
+      toast.error(t("graduation.form.failedToCopyToClipboard"));
     }
   };
 
@@ -268,12 +268,12 @@ export function GraduationForm({
 
   const handleRegisterMultisig = async () => {
     if (!multisigAddress.trim()) {
-      toast.error(t("graduationForm.enterMultisigAddress"));
+      toast.error(t("graduation.form.enterMultisigAddress"));
       return;
     }
 
     if (!multisigTxHash.trim()) {
-      toast.error(t("graduationForm.enterSafeTransactionHash"));
+      toast.error(t("graduation.form.enterSafeTransactionHash"));
       return;
     }
 
@@ -283,7 +283,7 @@ export function GraduationForm({
     }
 
     if (!graduationStatus?.brokerId) {
-      toast.error(t("graduationForm.noBrokerIdFound"));
+      toast.error(t("graduation.form.noBrokerIdFound"));
       return;
     }
 
@@ -294,7 +294,7 @@ export function GraduationForm({
       const extractedChain = extractChainFromAddress(multisigAddress);
       if (extractedChain && extractedChain !== connectedChainId) {
         await switchChain({ chainId: extractedChain });
-        toast.info(t("graduationForm.switchingToCorrectNetworkForMultisig"));
+        toast.info(t("graduation.form.switchingToCorrectNetworkForMultisig"));
         return;
       }
 
@@ -322,7 +322,7 @@ export function GraduationForm({
       );
 
       if (response.success) {
-        toast.success(t("graduationForm.multisigRegisteredSuccess"));
+        toast.success(t("graduation.form.multisigRegisteredSuccess"));
         const statusResponse = await get<NewGraduationStatusResponse>(
           "api/graduation/graduation-status",
           token
@@ -340,7 +340,7 @@ export function GraduationForm({
       toast.error(
         error instanceof Error
           ? error.message
-          : t("graduationForm.failedToRegisterMultisig")
+          : t("graduation.form.failedToRegisterMultisig")
       );
     } finally {
       setIsRegisteringMultisig(false);
@@ -466,12 +466,12 @@ export function GraduationForm({
 
     const isValidFormat = /^[a-z0-9_-]+$/.test(brokerId);
     if (!isValidFormat) {
-      setBrokerIdError(t("graduationForm.brokerIdFormatInvalid"));
+      setBrokerIdError(t("graduation.form.brokerIdFormatInvalid"));
       return;
     }
 
     if (existingBrokerIds.includes(brokerId)) {
-      setBrokerIdError(t("graduationForm.brokerIdAlreadyTaken"));
+      setBrokerIdError(t("graduation.form.brokerIdAlreadyTaken"));
       return;
     }
 
@@ -505,7 +505,7 @@ export function GraduationForm({
       setFeeOptions(response);
     } catch (error) {
       console.error("Error loading fee options:", error);
-      toast.error(t("graduationForm.failedToLoadFeeOptions"));
+      toast.error(t("graduation.form.failedToLoadFeeOptions"));
     }
   }, [token]);
 
@@ -602,12 +602,12 @@ export function GraduationForm({
     }
 
     if (!graduationStatus?.brokerId) {
-      toast.error(t("graduationForm.noBrokerIdFound"));
+      toast.error(t("graduation.form.noBrokerIdFound"));
       return;
     }
 
     if (!walletClient) {
-      toast.error(t("graduationForm.noWalletClientAvailable"));
+      toast.error(t("graduation.form.noWalletClientAvailable"));
       return;
     }
 
@@ -636,7 +636,7 @@ export function GraduationForm({
           1000
         );
 
-        toast.success(t("graduationForm.accountRegisteredSuccessfully"));
+        toast.success(t("graduation.form.accountRegisteredSuccessfully"));
       }
 
       const response = await post<{
@@ -648,7 +648,7 @@ export function GraduationForm({
       });
 
       if (response.success) {
-        toast.success(t("graduationForm.adminWalletSetupSuccess"));
+        toast.success(t("graduation.form.adminWalletSetupSuccess"));
         const statusResponse = await get<NewGraduationStatusResponse>(
           "api/graduation/graduation-status",
           token
@@ -665,7 +665,7 @@ export function GraduationForm({
       console.error("Error finalizing admin wallet:", error);
       const message =
         parseWalletError(error) ||
-        t("graduationForm.failedToFinalizeAdminWallet");
+        t("graduation.form.failedToFinalizeAdminWallet");
       toast.error(message);
     } finally {
       setIsFinalizingAdminWallet(false);
@@ -684,7 +684,7 @@ export function GraduationForm({
     }
 
     if (!brokerId) {
-      toast.error(t("graduationForm.enterBrokerId"));
+      toast.error(t("graduation.form.enterBrokerId"));
       return;
     }
 
@@ -693,24 +693,24 @@ export function GraduationForm({
 
       if (!currentTokenAddress) {
         console.log(`Missing ORDER token address for ${chain}`);
-        toast.error(t("graduationForm.missingTokenAddressConfig"));
+        toast.error(t("graduation.form.missingTokenAddressConfig"));
         return;
       }
 
       if (!feeOptions?.receiverAddress) {
         console.log("Missing receiver address from fee options");
-        toast.error(t("graduationForm.missingReceiverAddressConfig"));
+        toast.error(t("graduation.form.missingReceiverAddressConfig"));
         return;
       }
 
       if (tokenDecimals === undefined) {
-        toast.error(t("graduationForm.loadingTokenInfo"));
+        toast.error(t("graduation.form.loadingTokenInfo"));
         return;
       }
 
       if (!validateAddress(feeOptions.receiverAddress)) {
         console.log("Invalid receiver address format");
-        toast.error(t("graduationForm.invalidReceiverAddressConfig"));
+        toast.error(t("graduation.form.invalidReceiverAddressConfig"));
         return;
       }
 
@@ -718,12 +718,12 @@ export function GraduationForm({
         await switchChain({ chainId: currentChainId });
       } catch (error) {
         console.error("Failed to switch chain:", error);
-        toast.error(t("graduationForm.ensureCorrectNetwork"));
+        toast.error(t("graduation.form.ensureCorrectNetwork"));
         return;
       }
 
       if (!feeOptions) {
-        toast.error(t("graduationForm.feeOptionsNotLoaded"));
+        toast.error(t("graduation.form.feeOptionsNotLoaded"));
         return;
       }
 
@@ -753,9 +753,9 @@ export function GraduationForm({
     } catch (error) {
       console.log("ORDER token transfer error:", error);
 
-      let errorMessage = t("graduationForm.failedToInitiateTransfer");
+      let errorMessage = t("graduation.form.failedToInitiateTransfer");
       if (error instanceof Error) {
-        errorMessage = t("graduationForm.failedToInitiateTransferWithReason", {
+        errorMessage = t("graduation.form.failedToInitiateTransferWithReason", {
           message: error.message,
         });
       }
@@ -768,7 +768,7 @@ export function GraduationForm({
     setResult(null);
     setIsLoading(true);
 
-    toast.info(t("graduationForm.verifyingTransactionWait"));
+    toast.info(t("graduation.form.verifyingTransactionWait"));
 
     try {
       const response = await post<VerifyTxResponse>(
@@ -794,7 +794,7 @@ export function GraduationForm({
       setHasSubmitted(true);
 
       if (response.success) {
-        toast.success(t("graduationForm.transactionVerifiedSuccessfully"));
+        toast.success(t("graduation.form.transactionVerifiedSuccessfully"));
         loadFeeConfiguration();
         setTxHash("");
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -803,12 +803,14 @@ export function GraduationForm({
           onGraduationSuccess();
         }
       } else {
-        toast.error(response.message || t("graduationForm.verificationFailed"));
+        toast.error(
+          response.message || t("graduation.form.verificationFailed")
+        );
       }
     } catch (error) {
       console.log("Transaction verification error:", error);
 
-      let errorMessage = t("graduationForm.verificationFailed");
+      let errorMessage = t("graduation.form.verificationFailed");
       let is502ErrorLocal = false;
 
       if (error instanceof Error) {
@@ -823,12 +825,12 @@ export function GraduationForm({
       } else {
         setResult({
           success: false,
-          message: t("graduationForm.unknownErrorOccurred"),
+          message: t("graduation.form.unknownErrorOccurred"),
         });
       }
 
       if (is502ErrorLocal) {
-        toast.error(t("graduationForm.connectionLostRefreshing"), {
+        toast.error(t("graduation.form.connectionLostRefreshing"), {
           autoClose: 3000,
           closeButton: false,
         });
@@ -871,14 +873,14 @@ export function GraduationForm({
         <div className="text-center">
           <div className="i-mdi:account-check text-6xl text-primary-light mx-auto mb-2"></div>
           <div className="bg-primary/10 rounded-full text-primary-light px-4 py-2 inline-block text-sm font-medium mb-4">
-            {t("graduationForm.brokerIdCreated")}
+            {t("graduation.form.brokerIdCreated")}
           </div>
           <h2 className="text-2xl font-bold">
-            {t("graduationForm.completeYourGraduation")}
+            {t("graduation.form.completeYourGraduation")}
           </h2>
           <p className="text-gray-300 mt-2 mb-6">
             <Trans
-              i18nKey={"graduationForm.brokerIdCreatedDescription"}
+              i18nKey={"graduation.form.brokerIdCreatedDescription"}
               values={{ brokerId: graduationStatus.brokerId }}
               components={[
                 <span
@@ -892,20 +894,20 @@ export function GraduationForm({
           <div className="bg-warning/10 rounded-lg p-4 mb-6 text-left">
             <h3 className="font-medium flex items-center mb-2">
               <div className="i-mdi:alert-circle text-warning mr-2 h-5 w-5"></div>
-              {t("graduationForm.finalStepRequired")}
+              {t("graduation.form.finalStepRequired")}
             </h3>
             <p className="text-sm text-gray-400 mb-3">
               <strong className="text-warning">
-                {t("graduationForm.notEarningFeesYet")}
+                {t("graduation.form.notEarningFeesYet")}
               </strong>{" "}
-              {t("graduationForm.completeAdminWalletSetup")}
+              {t("graduation.form.completeAdminWalletSetup")}
             </p>
           </div>
 
           <div className="bg-light/5 rounded-lg p-4 mb-6 text-left">
             <h3 className="text-md font-medium mb-3 flex items-center">
               <div className="i-mdi:wallet text-primary-light mr-2 h-5 w-5"></div>
-              {t("graduationForm.selectWalletType")}
+              {t("graduation.form.selectWalletType")}
             </h3>
 
             <div className="flex gap-2 mb-4">
@@ -917,7 +919,7 @@ export function GraduationForm({
                     : "bg-background-card text-gray-400 hover:text-gray-300 border border-light/10"
                 }`}
               >
-                {t("graduationForm.eoaWallet")}
+                {t("graduation.form.eoaWallet")}
               </button>
               <button
                 onClick={() => setWalletType("multisig")}
@@ -927,7 +929,8 @@ export function GraduationForm({
                     : "bg-background-card text-gray-400 hover:text-gray-300 border border-light/10"
                 }`}
               >
-                {t("graduationForm.gnosisSafe")}
+                {/* i18n-ignore: product name */}
+                Gnosis Safe
               </button>
             </div>
 
@@ -936,31 +939,31 @@ export function GraduationForm({
                 <div className="bg-background-card rounded-lg p-4">
                   <h4 className="text-sm font-medium mb-2 flex items-center">
                     <div className="i-mdi:information-outline text-info mr-2 h-4 w-4"></div>
-                    {t("graduationForm.whatThisDoes")}
+                    {t("graduation.form.whatThisDoes")}
                   </h4>
                   <p className="text-xs text-gray-400 mb-3">
-                    {t("graduationForm.eoaDescription")}
+                    {t("graduation.form.eoaDescription")}
                   </p>
                   <div className="text-xs text-gray-500 space-y-1">
-                    <p>{t("graduationForm.registersEvmAddress")}</p>
-                    <p>{t("graduationForm.createsBrokerAccount")}</p>
-                    <p>{t("graduationForm.enablesRevenueSharing")}</p>
+                    <p>{t("graduation.form.registersEvmAddress")}</p>
+                    <p>{t("graduation.form.createsBrokerAccount")}</p>
+                    <p>{t("graduation.form.enablesRevenueSharing")}</p>
                   </div>
                 </div>
 
                 <Button
                   onClick={handleFinalizeAdminWallet}
                   isLoading={isFinalizingAdminWallet}
-                  loadingText={t("graduationForm.registeringWithOrderly")}
+                  loadingText={t("graduation.form.registeringWithOrderly")}
                   variant="primary"
                   className="w-full text-center"
                 >
-                  {t("graduationForm.registerWithOrderly")}
+                  {t("graduation.form.registerWithOrderly")}
                 </Button>
 
                 <div className="bg-light/5 rounded-lg p-3">
                   <p className="text-xs text-gray-400">
-                    {t("graduationForm.signMessagePrompt", {
+                    {t("graduation.form.signMessagePrompt", {
                       brokerId: graduationStatus.brokerId,
                     })}
                   </p>
@@ -971,15 +974,15 @@ export function GraduationForm({
                 <div className="bg-background-card rounded-lg p-4">
                   <h4 className="text-sm font-medium mb-2 flex items-center">
                     <div className="i-mdi:shield-check text-info mr-2 h-4 w-4"></div>
-                    {t("graduationForm.gnosisSafeWallet")}
+                    {t("graduation.form.gnosisSafeWallet")}
                   </h4>
                   <p className="text-xs text-gray-400 mb-3">
-                    {t("graduationForm.gnosisSafeDescription")}
+                    {t("graduation.form.gnosisSafeDescription")}
                   </p>
                   <div className="text-xs text-gray-500 space-y-1 mb-4">
-                    <p>{t("graduationForm.multisigEnhancedSecurity")}</p>
-                    <p>{t("graduationForm.multisigShareControl")}</p>
-                    <p>{t("graduationForm.multisigForTeams")}</p>
+                    <p>{t("graduation.form.multisigEnhancedSecurity")}</p>
+                    <p>{t("graduation.form.multisigShareControl")}</p>
+                    <p>{t("graduation.form.multisigForTeams")}</p>
                   </div>
                 </div>
 
@@ -995,38 +998,38 @@ export function GraduationForm({
                 >
                   <span className="flex items-center justify-center gap-2">
                     <div className="i-mdi:book-open-variant h-4 w-4"></div>
-                    {t("graduationForm.viewSetupInstructions")}
+                    {t("graduation.form.viewSetupInstructions")}
                   </span>
                 </Button>
 
                 <div className="bg-background-card rounded-lg p-4 border border-primary/10">
                   <h4 className="text-sm font-medium mb-3 flex items-center">
                     <div className="i-mdi:account-plus text-primary mr-2 h-4 w-4"></div>
-                    {t("graduationForm.registerYourMultisig")}
+                    {t("graduation.form.registerYourMultisig")}
                   </h4>
 
                   <div className="space-y-4">
                     <div>
                       <label className="block text-xs font-medium text-gray-300 mb-2">
-                        {t("graduationForm.multisigAddress")}
+                        {t("graduation.form.multisigAddress")}
                       </label>
                       <input
                         type="text"
                         value={multisigAddress}
                         onChange={e => setMultisigAddress(e.target.value)}
                         placeholder={t(
-                          "graduationForm.multisigAddressPlaceholder"
+                          "graduation.form.multisigAddressPlaceholder"
                         )}
                         className="w-full px-3 py-2 bg-background-dark border border-light/10 rounded-lg text-white placeholder-gray-400 focus:border-primary/50 focus:outline-none text-sm"
                       />
                       <p className="text-xs text-gray-400 mt-1">
-                        {t("graduationForm.multisigAddressHelp")}
+                        {t("graduation.form.multisigAddressHelp")}
                       </p>
                     </div>
 
                     <div>
                       <label className="block text-xs font-medium text-gray-300 mb-2">
-                        {t("graduationForm.transactionHash")}
+                        {t("graduation.form.transactionHash")}
                       </label>
                       <input
                         type="text"
@@ -1036,14 +1039,14 @@ export function GraduationForm({
                         className="w-full px-3 py-2 bg-background-dark border border-light/10 rounded-lg text-white placeholder-gray-400 focus:border-primary/50 focus:outline-none text-sm"
                       />
                       <p className="text-xs text-gray-400 mt-1">
-                        {t("graduationForm.transactionHashHelp")}
+                        {t("graduation.form.transactionHashHelp")}
                       </p>
                     </div>
 
                     <Button
                       onClick={handleRegisterMultisig}
                       isLoading={isRegisteringMultisig}
-                      loadingText={t("graduationForm.registeringMultisig")}
+                      loadingText={t("graduation.form.registeringMultisig")}
                       variant="primary"
                       className="w-full"
                       disabled={
@@ -1054,13 +1057,13 @@ export function GraduationForm({
                     >
                       <span className="flex items-center justify-center gap-2">
                         <div className="i-mdi:account-plus h-4 w-4"></div>
-                        {t("graduationForm.registerMultisig")}
+                        {t("graduation.form.registerMultisig")}
                       </span>
                     </Button>
 
                     {!address && (
                       <p className="text-xs text-warning text-center">
-                        {t("graduationForm.connectWalletToRegisterMultisig")}
+                        {t("graduation.form.connectWalletToRegisterMultisig")}
                       </p>
                     )}
                   </div>
@@ -1071,10 +1074,10 @@ export function GraduationForm({
                     <div className="i-mdi:information-outline text-info w-4 h-4 mt-0.5 flex-shrink-0"></div>
                     <div>
                       <p className="text-xs text-info font-medium mb-1">
-                        {t("graduationForm.stepByStepGuide")}
+                        {t("graduation.form.stepByStepGuide")}
                       </p>
                       <p className="text-xs text-gray-400">
-                        {t("graduationForm.viewSetupInstructionsHelp", {
+                        {t("graduation.form.viewSetupInstructionsHelp", {
                           brokerId: graduationStatus.brokerId,
                         })}
                       </p>
@@ -1095,13 +1098,13 @@ export function GraduationForm({
         <div className="text-center">
           <div className="i-mdi:check-circle text-6xl text-success mx-auto mb-2"></div>
           <div className="bg-success/10 rounded-full text-success px-4 py-2 inline-block text-sm font-medium mb-4">
-            {t("graduationForm.graduatedSuccessfully")}
+            {t("graduation.form.graduatedSuccessfully")}
           </div>
           <h2 className="text-2xl font-bold">
-            {t("graduationForm.congratulations")}
+            {t("graduation.form.congratulations")}
           </h2>
           <p className="text-gray-300 mt-2 mb-6">
-            {t("graduationForm.graduationSuccessDescription", {
+            {t("graduation.form.graduationSuccessDescription", {
               brokerId: graduationStatus.brokerId,
             })}
           </p>
@@ -1110,10 +1113,10 @@ export function GraduationForm({
             <div className="bg-success/10 rounded-lg p-4 mb-6 text-left">
               <h3 className="font-medium flex items-center mb-2">
                 <div className="i-mdi:check-circle text-success mr-2 h-5 w-5"></div>
-                {t("graduationForm.yourDexIsReady")}
+                {t("graduation.form.yourDexIsReady")}
               </h3>
               <p className="text-sm text-gray-400 mb-3">
-                {t("graduationForm.dexReadyDescription")}
+                {t("graduation.form.dexReadyDescription")}
               </p>
               <a
                 href={generateDeploymentUrl(dexData.repoUrl)}
@@ -1121,7 +1124,7 @@ export function GraduationForm({
                 rel="noopener noreferrer"
                 className="text-success hover:underline font-medium"
               >
-                {t("graduationForm.viewYourLiveDex")}
+                {t("graduation.form.viewYourLiveDex")}
               </a>
             </div>
           )}
@@ -1129,7 +1132,7 @@ export function GraduationForm({
           <div className="bg-light/5 rounded-lg p-5 mb-6 text-left">
             <h3 className="text-lg font-semibold mb-3 flex items-center">
               <div className="i-mdi:star text-warning mr-2 h-5 w-5"></div>
-              {t("graduationForm.yourDexBenefits")}
+              {t("graduation.form.yourDexBenefits")}
             </h3>
 
             <ul className="space-y-4">
@@ -1139,10 +1142,10 @@ export function GraduationForm({
                 </div>
                 <div>
                   <span className="font-medium">
-                    {t("graduationForm.feeRevenueSharing")}
+                    {t("graduation.form.feeRevenueSharing")}
                   </span>
                   <p className="text-sm text-gray-400 mt-0.5">
-                    {t("graduationForm.feeRevenueSharingDescription")}
+                    {t("graduation.form.feeRevenueSharingDescription")}
                   </p>
                 </div>
               </li>
@@ -1153,10 +1156,10 @@ export function GraduationForm({
                 </div>
                 <div>
                   <span className="font-medium">
-                    {t("graduationForm.customFeeConfiguration")}
+                    {t("graduation.form.customFeeConfiguration")}
                   </span>
                   <p className="text-sm text-gray-400 mt-0.5">
-                    {t("graduationForm.customFeeConfigurationDescription")}
+                    {t("graduation.form.customFeeConfigurationDescription")}
                   </p>
                 </div>
               </li>
@@ -1167,31 +1170,31 @@ export function GraduationForm({
             <div className="bg-warning/10 rounded-lg p-5 mb-6 border border-warning/20 text-left">
               <h3 className="text-lg font-semibold mb-3 flex items-center">
                 <div className="i-mdi:wallet text-warning mr-2 h-5 w-5"></div>
-                {t("graduationForm.multisigFeeWithdrawalTitle")}
+                {t("graduation.form.multisigFeeWithdrawalTitle")}
               </h3>
               <p className="text-sm text-gray-300 mb-4">
-                {t("graduationForm.multisigFeeWithdrawalDescription")}
+                {t("graduation.form.multisigFeeWithdrawalDescription")}
               </p>
               <div className="bg-background-card rounded-lg p-4">
                 <h4 className="font-medium mb-2 flex items-center">
                   <div className="i-mdi:shield-check text-primary mr-2 h-4 w-4"></div>
-                  {t("graduationForm.howToWithdrawFees")}
+                  {t("graduation.form.howToWithdrawFees")}
                 </h4>
                 <ol className="text-sm text-gray-300 space-y-2 list-decimal list-inside">
-                  <li>{t("graduationForm.withdrawStep1")}</li>
-                  <li>{t("graduationForm.withdrawStep2")}</li>
-                  <li>{t("graduationForm.withdrawStep3")}</li>
-                  <li>{t("graduationForm.withdrawStep4")}</li>
+                  <li>{t("graduation.form.withdrawStep1")}</li>
+                  <li>{t("graduation.form.withdrawStep2")}</li>
+                  <li>{t("graduation.form.withdrawStep3")}</li>
+                  <li>{t("graduation.form.withdrawStep4")}</li>
                 </ol>
                 <div className="mt-3 p-3 bg-info/10 rounded-lg">
                   <div className="flex items-start gap-2">
                     <div className="i-mdi:information-outline text-info w-4 h-4 mt-0.5 flex-shrink-0"></div>
                     <div>
                       <p className="text-xs text-info font-medium mb-1">
-                        {t("graduationForm.importantNote")}
+                        {t("graduation.form.importantNote")}
                       </p>
                       <p className="text-xs text-gray-400">
-                        {t("graduationForm.multisigWithdrawalsNote")}
+                        {t("graduation.form.multisigWithdrawalsNote")}
                       </p>
                     </div>
                   </div>
@@ -1216,7 +1219,7 @@ export function GraduationForm({
                     >
                       <span className="flex items-center justify-center w-full gap-2">
                         <div className="i-mdi:cash-multiple h-4 w-4"></div>
-                        {t("graduationForm.withdrawFeesButton")}
+                        {t("graduation.form.withdrawFeesButton")}
                       </span>
                     </Button>
                   ) : (
@@ -1236,7 +1239,7 @@ export function GraduationForm({
                     >
                       <span className="flex items-center justify-center w-full gap-2">
                         <div className="i-mdi:key-plus h-4 w-4"></div>
-                        {t("graduationForm.createOrderlyKeyButton")}
+                        {t("graduation.form.createOrderlyKeyButton")}
                       </span>
                     </Button>
                   )}
@@ -1244,7 +1247,7 @@ export function GraduationForm({
                   {(!graduationStatus.multisigAddress ||
                     !graduationStatus.multisigChainId) && (
                     <p className="text-xs text-warning text-center mt-2">
-                      {t("graduationForm.unableToRetrieveMultisigConfig")}
+                      {t("graduation.form.unableToRetrieveMultisigConfig")}
                     </p>
                   )}
                 </div>
@@ -1258,7 +1261,7 @@ export function GraduationForm({
             <div className="bg-light/5 rounded-lg p-5 mb-6">
               <h3 className="text-lg font-semibold mb-3 flex items-center">
                 <div className="i-mdi:trophy text-warning mr-2 h-5 w-5"></div>
-                {t("graduationForm.yourBrokerTier")}
+                {t("graduation.form.yourBrokerTier")}
               </h3>
               <div className="flex items-center justify-between mb-4">
                 <div>
@@ -1266,7 +1269,7 @@ export function GraduationForm({
                     {brokerTier.tier}
                   </div>
                   <div className="text-xs text-gray-400 mt-1">
-                    {t("graduationForm.currentTierLevel")}
+                    {t("graduation.form.currentTierLevel")}
                   </div>
                 </div>
                 <div className="bg-primary/20 p-3 rounded-full">
@@ -1277,7 +1280,7 @@ export function GraduationForm({
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="bg-background-card rounded-lg p-3">
                   <div className="text-xs text-gray-400 mb-1">
-                    {t("graduationForm.stakingVolume")}
+                    {t("graduation.form.stakingVolume")}
                   </div>
                   <div className="font-medium">
                     $
@@ -1289,7 +1292,7 @@ export function GraduationForm({
                 </div>
                 <div className="bg-background-card rounded-lg p-3">
                   <div className="text-xs text-gray-400 mb-1">
-                    {t("graduationForm.tradingVolume")}
+                    {t("graduation.form.tradingVolume")}
                   </div>
                   <div className="font-medium">
                     $
@@ -1304,7 +1307,7 @@ export function GraduationForm({
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-success/10 rounded-lg p-3">
                   <div className="text-xs text-gray-400 mb-1">
-                    {t("graduationForm.orderlyMakerFee")}
+                    {t("graduation.form.orderlyMakerFee")}
                   </div>
                   <div className="font-medium text-success">
                     {new Intl.NumberFormat("en-US", {
@@ -1316,7 +1319,7 @@ export function GraduationForm({
                 </div>
                 <div className="bg-info/10 rounded-lg p-3">
                   <div className="text-xs text-gray-400 mb-1">
-                    {t("graduationForm.orderlyTakerFee")}
+                    {t("graduation.form.orderlyTakerFee")}
                   </div>
                   <div className="font-medium text-info">
                     {new Intl.NumberFormat("en-US", {
@@ -1329,7 +1332,7 @@ export function GraduationForm({
               </div>
 
               <div className="mt-4 text-xs text-gray-400">
-                {t("graduationForm.lastUpdated")}:{" "}
+                {t("graduation.form.lastUpdated")}:{" "}
                 {new Date(brokerTier.logDate).toLocaleDateString()}
               </div>
 
@@ -1337,7 +1340,7 @@ export function GraduationForm({
                 <p className="text-xs text-gray-400">
                   <Trans
                     i18nKey={
-                      "graduationForm.tierBenefitsDescription" as unknown as never
+                      "graduation.form.tierBenefitsDescription" as unknown as never
                     }
                     components={[
                       <span
@@ -1352,13 +1355,13 @@ export function GraduationForm({
                     <div className="i-mdi:information-outline text-warning w-4 h-4 mt-0.5 flex-shrink-0"></div>
                     <div>
                       <p className="text-xs text-warning font-medium mb-1">
-                        {t("graduationForm.adminWalletStakingTitle")}
+                        {t("graduation.form.adminWalletStakingTitle")}
                       </p>
                       <p className="text-xs text-gray-400">
                         {graduationStatus?.isMultisig ? (
                           <Trans
                             i18nKey={
-                              "graduationForm.adminWalletStakingDescriptionMultisig"
+                              "graduation.form.adminWalletStakingDescriptionMultisig"
                             }
                             values={{
                               address: graduationStatus.multisigAddress
@@ -1373,7 +1376,7 @@ export function GraduationForm({
                             ]}
                           />
                         ) : (
-                          t("graduationForm.adminWalletStakingDescriptionEoa")
+                          t("graduation.form.adminWalletStakingDescriptionEoa")
                         )}
                       </p>
                     </div>
@@ -1384,10 +1387,10 @@ export function GraduationForm({
                     <div className="i-mdi:clock-outline text-info w-4 h-4 mt-0.5 flex-shrink-0"></div>
                     <div>
                       <p className="text-xs text-info font-medium mb-1">
-                        {t("graduationForm.dailyTierUpdatesTitle")}
+                        {t("graduation.form.dailyTierUpdatesTitle")}
                       </p>
                       <p className="text-xs text-gray-400">
-                        {t("graduationForm.dailyTierUpdatesDescription")}
+                        {t("graduation.form.dailyTierUpdatesDescription")}
                       </p>
                     </div>
                   </div>
@@ -1428,31 +1431,31 @@ export function GraduationForm({
   return (
     <Card className="w-full max-w-2xl mx-auto slide-fade-in">
       <h2 className="text-xl font-bold mb-4">
-        {t("graduationForm.graduateYourDex")}
+        {t("graduation.form.graduateYourDex")}
       </h2>
 
       <div className="bg-light/5 rounded-lg p-4 mb-6">
         <h3 className="text-md font-medium mb-3">
-          {t("graduationForm.whatIsDexGraduation")}
+          {t("graduation.form.whatIsDexGraduation")}
         </h3>
         <p className="text-gray-300 text-sm mb-3">
-          {t("graduationForm.graduationIntro")}
+          {t("graduation.form.graduationIntro")}
         </p>
         <ul className="text-sm space-y-2 mb-3">
           <li className="flex items-start gap-2">
             <div className="i-mdi:cash-multiple text-success w-4 h-4 mt-0.5 flex-shrink-0"></div>
-            <span>{t("graduationForm.graduationBenefitRevenue")}</span>
+            <span>{t("graduation.form.graduationBenefitRevenue")}</span>
           </li>
           <li className="flex items-start gap-2">
             <div className="i-mdi:cog text-warning w-4 h-4 mt-0.5 flex-shrink-0"></div>
-            <span>{t("graduationForm.graduationBenefitCustomFees")}</span>
+            <span>{t("graduation.form.graduationBenefitCustomFees")}</span>
           </li>
         </ul>
         <p className="text-gray-300 text-sm">
           <span className="font-medium">
-            {t("graduationForm.whySendTokens")}
+            {t("graduation.form.whySendTokens")}
           </span>{" "}
-          {t("graduationForm.graduationRequirementDescription")}
+          {t("graduation.form.graduationRequirementDescription")}
         </p>
       </div>
 
@@ -1462,10 +1465,10 @@ export function GraduationForm({
         <div className="bg-light/5 rounded-xl p-4 mb-4">
           <h3 className="text-md font-medium mb-2 flex items-center">
             <div className="i-mdi:cog text-gray-400 w-5 h-5 mr-2"></div>
-            {t("graduationForm.tradingFeeConfigurationTitle")}
+            {t("graduation.form.tradingFeeConfigurationTitle")}
           </h3>
           <p className="text-sm text-gray-300 mb-4">
-            {t("graduationForm.tradingFeeConfigurationDescription")}
+            {t("graduation.form.tradingFeeConfigurationDescription")}
           </p>
 
           <FeeConfigWithCalculator
@@ -1495,21 +1498,22 @@ export function GraduationForm({
       <div className="mb-6">
         <FormInput
           id="brokerId"
-          label={t("graduationForm.brokerIdLabel")}
+          label={t("graduation.form.brokerIdLabel")}
           type="text"
           value={brokerId}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setBrokerId(e.target.value)
           }
-          placeholder={t("graduationForm.brokerIdPlaceholder")}
+          // i18n-ignore: format placeholder
+          placeholder="my-broker-id"
           required
           helpText={
             <>
               <span className="text-gray-400 mb-1 block">
-                {t("graduationForm.brokerIdHelp1")}
+                {t("graduation.form.brokerIdHelp1")}
               </span>
               <span className="text-gray-400 mt-1 block">
-                {t("graduationForm.brokerIdHelp2")}
+                {t("graduation.form.brokerIdHelp2")}
               </span>
             </>
           }
@@ -1526,7 +1530,7 @@ export function GraduationForm({
         {feeOptions && (
           <div className="mb-6 mt-8">
             <p className="text-gray-300 mb-4">
-              {t("graduationForm.choosePaymentMethod")}
+              {t("graduation.form.choosePaymentMethod")}
             </p>
 
             {/* Payment Method Selection Button */}
@@ -1607,7 +1611,7 @@ export function GraduationForm({
                               )
                             </span>
                             <div className="bg-warning/20 text-warning px-2 py-1 rounded-full text-xs font-medium">
-                              {t("graduationForm.discount25Off")}
+                              {t("graduation.form.discount25Off")}
                             </div>
                           </div>
                         )}
@@ -1620,7 +1624,7 @@ export function GraduationForm({
                 </div>
                 {tokenBalance && (
                   <div className="mt-2 text-xs text-gray-400">
-                    {t("graduationForm.yourBalance")}:{" "}
+                    {t("graduation.form.yourBalance")}:{" "}
                     {parseFloat(tokenBalance.formatted).toFixed(2)}{" "}
                     {paymentType === "usdc" ? "USDC" : "ORDER"}
                   </div>
@@ -1633,17 +1637,17 @@ export function GraduationForm({
                 <div className="i-mdi:alert-circle text-warning w-5 h-5 mt-0.5 flex-shrink-0"></div>
                 <div>
                   <h4 className="text-warning font-medium text-sm mb-1">
-                    {t("graduationForm.doNotSendTokensManuallyTitle")}
+                    {t("graduation.form.doNotSendTokensManuallyTitle")}
                   </h4>
                   <p className="text-xs text-gray-400">
-                    {t("graduationForm.doNotSendTokensManuallyDescription")}
+                    {t("graduation.form.doNotSendTokensManuallyDescription")}
                   </p>
                 </div>
               </div>
             </div>
 
             <p className="text-gray-300 text-sm">
-              {t("graduationForm.autoTransferDescription")}
+              {t("graduation.form.autoTransferDescription")}
               {paymentType === "order" && (
                 <a
                   href={getSwapUrl(preferredChain)}
@@ -1651,7 +1655,7 @@ export function GraduationForm({
                   rel="noopener noreferrer"
                   className="ml-1 text-primary-light hover:underline inline-flex items-center"
                 >
-                  {t("graduationForm.needOrderTokensCta")}
+                  {t("graduation.form.needOrderTokensCta")}
                   <span className="i-mdi:open-in-new w-3.5 h-3.5 ml-1"></span>
                 </a>
               )}
@@ -1663,12 +1667,12 @@ export function GraduationForm({
           <div className="border rounded-xl p-4 bg-primary/10 border-primary/20">
             <h3 className="text-md font-medium mb-2 flex items-center">
               <div className="w-5 h-5 mr-2 i-mdi:rocket-launch text-primary"></div>
-              {t("graduationForm.sendTokensTitle", {
+              {t("graduation.form.sendTokensTitle", {
                 token: paymentType === "usdc" ? "USDC" : "ORDER",
               })}
             </h3>
             <p className="text-sm text-gray-300 mb-4">
-              {t("graduationForm.sendTokensDescription", {
+              {t("graduation.form.sendTokensDescription", {
                 token: paymentType === "usdc" ? "USDC" : "ORDER",
               })}
             </p>
@@ -1676,7 +1680,7 @@ export function GraduationForm({
             <div className="mb-4">
               <div className="flex justify-between items-center mb-2">
                 <div className="text-xs text-gray-400">
-                  {t("graduationForm.usingToken")}
+                  {t("graduation.form.usingToken")}
                 </div>
                 <div className="text-xs bg-info/20 text-info px-2 py-1 rounded-full flex items-center">
                   <div className="i-mdi:information-outline mr-1 w-3.5 h-3.5"></div>
@@ -1691,7 +1695,7 @@ export function GraduationForm({
               {tokenBalance && (
                 <div className="text-xs mb-3 flex items-center">
                   <span className="text-info">
-                    {t("graduationForm.yourBalance")}:
+                    {t("graduation.form.yourBalance")}:
                   </span>{" "}
                   <span className="font-medium ml-1">
                     {new Intl.NumberFormat("en-US", {
@@ -1706,7 +1710,7 @@ export function GraduationForm({
                         ? feeOptions.usdc.amount
                         : feeOptions.order.amount) && (
                       <div className="ml-2 text-warning flex items-center">
-                        {t("graduationForm.insufficientForGraduation")}
+                        {t("graduation.form.insufficientForGraduation")}
                         {paymentType === "order" && (
                           <a
                             href={getSwapUrl(preferredChain)}
@@ -1714,7 +1718,7 @@ export function GraduationForm({
                             rel="noopener noreferrer"
                             className="ml-2 text-primary-light hover:underline inline-flex items-center"
                           >
-                            {t("graduationForm.buyOrderCta")}
+                            {t("graduation.form.buyOrderCta")}
                             <span className="i-mdi:open-in-new w-3 h-3 ml-0.5"></span>
                           </a>
                         )}
@@ -1729,11 +1733,11 @@ export function GraduationForm({
                 <div className="flex items-center gap-2">
                   <div className="i-mdi:tag text-warning w-4 h-4"></div>
                   <span className="text-warning font-medium text-sm">
-                    {t("graduationForm.saveWithOrderTitle")}
+                    {t("graduation.form.saveWithOrderTitle")}
                   </span>
                 </div>
                 <div className="text-xs text-gray-400 mt-1">
-                  {t("graduationForm.saveWithOrderDescription", {
+                  {t("graduation.form.saveWithOrderDescription", {
                     usdcAmount: feeOptions?.usdc.amount.toLocaleString(),
                     orderAmount: feeOptions?.order.amount.toLocaleString(),
                     orderValue: (
@@ -1746,7 +1750,7 @@ export function GraduationForm({
             )}
 
             <div className="flex items-center gap-2 mb-4">
-              <div className="text-sm">{t("graduationForm.amount")}:</div>
+              <div className="text-sm">{t("graduation.form.amount")}:</div>
               <div className="font-medium flex items-center gap-2">
                 {feeOptions ? (
                   paymentType === "usdc" ? (
@@ -1755,12 +1759,12 @@ export function GraduationForm({
                     <>
                       {feeOptions.order.amount.toLocaleString()} ORDER
                       <div className="bg-warning/20 text-warning px-2 py-1 rounded-full text-xs font-medium">
-                        {t("graduationForm.discount25Off")}
+                        {t("graduation.form.discount25Off")}
                       </div>
                     </>
                   )
                 ) : (
-                  t("graduationForm.loading")
+                  t("graduation.form.loading")
                 )}
               </div>
             </div>
@@ -1774,10 +1778,10 @@ export function GraduationForm({
               isLoading={isPending || isConfirming || isLoading}
               loadingText={
                 isPending
-                  ? t("graduationForm.confirmInWallet")
+                  ? t("graduation.form.confirmInWallet")
                   : isConfirming
-                    ? t("graduationForm.confirming")
-                    : t("graduationForm.verifyingTransactionLoading")
+                    ? t("graduation.form.confirming")
+                    : t("graduation.form.verifyingTransactionLoading")
               }
               disabled={
                 isCorrectChain &&
@@ -1797,17 +1801,19 @@ export function GraduationForm({
             >
               {isCorrectChain
                 ? !brokerId
-                  ? t("graduationForm.enterBrokerIdToContinue")
-                  : t("graduationForm.transferTokensCta", {
+                  ? t("graduation.form.enterBrokerIdToContinue")
+                  : t("graduation.form.transferTokensCta", {
                       token: paymentType === "usdc" ? "USDC" : "ORDER",
                     })
-                : t("graduationForm.switchChainCta")}
+                : t("graduation.form.switchChainCta")}
             </Button>
 
             {isConfirmed && hash && !result && (
               <div className="mt-3 bg-success/10 text-success text-sm p-2 rounded">
                 <div className="flex items-center justify-between">
-                  <span>{t("graduationForm.transferSuccessfulVerifying")}</span>
+                  <span>
+                    {t("graduation.form.transferSuccessfulVerifying")}
+                  </span>
                   {getBlockExplorerUrl(hash, preferredChain) && (
                     <a
                       href={getBlockExplorerUrl(hash, preferredChain)!}
@@ -1815,7 +1821,7 @@ export function GraduationForm({
                       rel="noopener noreferrer"
                       className="text-primary-light hover:text-primary text-xs flex items-center ml-2"
                     >
-                      {t("graduationForm.viewOnExplorer")}
+                      {t("graduation.form.viewOnExplorer")}
                       <span className="i-mdi:open-in-new w-3 h-3 ml-1"></span>
                     </a>
                   )}
@@ -1839,8 +1845,8 @@ export function GraduationForm({
                 <div className="i-mdi:chevron-right w-4 h-4"></div>
               </div>
               {showManualInput
-                ? t("graduationForm.hideManualOption")
-                : t("graduationForm.showManualOption", {
+                ? t("graduation.form.hideManualOption")
+                : t("graduation.form.showManualOption", {
                     token: paymentType === "usdc" ? "USDC" : "ORDER",
                   })}
             </button>
@@ -1851,10 +1857,10 @@ export function GraduationForm({
             <div className="border rounded-xl p-4 bg-background-card border-base-contrast-12">
               <h3 className="text-md font-medium mb-2 flex items-center">
                 <div className="w-5 h-5 mr-2 i-mdi:file-document text-base-contrast-12"></div>
-                {t("graduationForm.manualVerificationTitle")}
+                {t("graduation.form.manualVerificationTitle")}
               </h3>
               <p className="text-sm text-gray-300 mb-4">
-                {t("graduationForm.manualVerificationDescription", {
+                {t("graduation.form.manualVerificationDescription", {
                   token: paymentType === "usdc" ? "USDC" : "ORDER",
                 })}
               </p>
@@ -1862,13 +1868,13 @@ export function GraduationForm({
               <div className="mb-4">
                 <div className="flex justify-between items-center mb-1">
                   <p className="text-xs text-gray-400">
-                    {t("graduationForm.recipientAddress")}:
+                    {t("graduation.form.recipientAddress")}:
                   </p>
                   <button
                     onClick={() =>
                       copyToClipboard(
                         feeOptions?.receiverAddress || "",
-                        t("graduationForm.recipientAddress")
+                        t("graduation.form.recipientAddress")
                       )
                     }
                     className="text-primary-light hover:text-primary text-xs flex items-center"
@@ -1887,7 +1893,7 @@ export function GraduationForm({
               <div className="mt-3">
                 <div className="flex justify-between items-center mb-1">
                   <p className="text-xs text-gray-400">
-                    {t("graduationForm.tokenAddressLabel", {
+                    {t("graduation.form.tokenAddressLabel", {
                       token: paymentType === "usdc" ? "USDC" : "ORDER",
                     })}
                     :
@@ -1899,7 +1905,7 @@ export function GraduationForm({
                     className="text-primary-light hover:text-primary text-xs flex items-center"
                   >
                     <div className="i-mdi:cart w-3 h-3 mr-1"></div>
-                    {t("graduationForm.buyTokenCta", {
+                    {t("graduation.form.buyTokenCta", {
                       token: paymentType === "usdc" ? "USDC" : "ORDER",
                     })}
                   </a>
@@ -1916,10 +1922,10 @@ export function GraduationForm({
                   <div className="i-mdi:information-outline text-blue-400 mt-0.5 h-5 w-5 flex-shrink-0"></div>
                   <div>
                     <h4 className="text-sm font-medium text-blue-400 mb-1">
-                      {t("graduationForm.transactionVerificationTitle")}
+                      {t("graduation.form.transactionVerificationTitle")}
                     </h4>
                     <p className="text-xs text-gray-300">
-                      {t("graduationForm.transactionVerificationDescription")}
+                      {t("graduation.form.transactionVerificationDescription")}
                     </p>
                   </div>
                 </div>
@@ -1928,7 +1934,7 @@ export function GraduationForm({
               <form onSubmit={handleSubmit} className="space-y-4">
                 <FormInput
                   id="txHash"
-                  label={t("graduationForm.transactionHash")}
+                  label={t("graduation.form.transactionHash")}
                   type="text"
                   value={txHash}
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -1936,7 +1942,7 @@ export function GraduationForm({
                   }
                   placeholder="0x..."
                   required
-                  helpText={t("graduationForm.txHashHelpText", {
+                  helpText={t("graduation.form.txHashHelpText", {
                     token: paymentType === "usdc" ? "USDC" : "ORDER",
                   })}
                 />
@@ -1945,23 +1951,25 @@ export function GraduationForm({
                   type="submit"
                   variant="secondary"
                   isLoading={isLoading}
-                  loadingText={t("graduationForm.verifyingTransactionLoading")}
+                  loadingText={t("graduation.form.verifyingTransactionLoading")}
                   className="w-full justify-center"
                   disabled={!txHash || !!brokerIdError || !brokerId}
                 >
-                  {t("graduationForm.verifyTransactionButton")}
+                  {t("graduation.form.verifyTransactionButton")}
                 </Button>
 
                 {(!txHash || !!brokerIdError || !brokerId) && (
                   <div className="mt-2 text-xs text-gray-400 text-center">
                     {!brokerId && (
-                      <span>{t("graduationForm.enterBrokerIdToContinue")}</span>
+                      <span>
+                        {t("graduation.form.enterBrokerIdToContinue")}
+                      </span>
                     )}
                     {brokerId && brokerIdError && (
-                      <span>{t("graduationForm.fixBrokerIdError")}</span>
+                      <span>{t("graduation.form.fixBrokerIdError")}</span>
                     )}
                     {brokerId && !brokerIdError && !txHash && (
-                      <span>{t("graduationForm.enterTxHashToVerify")}</span>
+                      <span>{t("graduation.form.enterTxHashToVerify")}</span>
                     )}
                   </div>
                 )}
@@ -1980,7 +1988,7 @@ export function GraduationForm({
           </p>
           {result.success && result.amount && (
             <p className="text-gray-300 text-sm mt-2">
-              {t("graduationForm.verifiedTransfer", {
+              {t("graduation.form.verifiedTransfer", {
                 amount: result.amount,
                 token: paymentType === "usdc" ? "USDC" : "ORDER",
               })}

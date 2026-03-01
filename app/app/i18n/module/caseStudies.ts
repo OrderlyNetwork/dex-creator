@@ -4,7 +4,6 @@ export const caseStudies = {
     "See how communities and creators use Orderly One's no-code solution to build branded perp DEXs and turn trading fees into growth and utility.",
 
   // Buttons
-  "caseStudies.buttons.visitDex": "Visit DEX",
   "caseStudies.buttons.discoverX": "Discover Their X",
 
   // Shared stats labels

@@ -178,7 +178,7 @@ export default function ThemePreviewModal({
       >
         <div className="flex items-center justify-between p-4 border-b border-light/10">
           <h2 className="text-lg font-bold text-gray-200">
-            {t("themePreviewModal.previewThemeChanges")}
+            {t("theme.previewModal.previewThemeChanges")}
           </h2>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 bg-background-card border border-light/20 rounded-lg p-1">
@@ -191,7 +191,7 @@ export default function ThemePreviewModal({
                 }`}
                 type="button"
               >
-                {t("themePreviewModal.old")}
+                {t("theme.previewModal.old")}
               </button>
               {[0, 1, 2].map(index => (
                 <button
@@ -225,7 +225,7 @@ export default function ThemePreviewModal({
             >
               {selectedVariant === "old"
                 ? t("theme.selectAVariant")
-                : t("themePreviewModal.acceptTheme")}
+                : t("theme.previewModal.acceptTheme")}
             </Button>
           </div>
         </div>
@@ -278,7 +278,7 @@ export default function ThemePreviewModal({
       <div className="relative z-[1002] w-full max-w-3xl p-6 rounded-xl bg-background-light border border-light/10 shadow-2xl slide-fade-in max-h-[90vh] overflow-auto">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-bold">
-            {t("themePreviewModal.themePreview")}
+            {t("theme.previewModal.themePreview")}
           </h3>
           {hasMultipleThemes && (
             <div className="flex items-center gap-2 bg-background-card border border-light/20 rounded-lg p-1">
@@ -291,7 +291,7 @@ export default function ThemePreviewModal({
                 }`}
                 type="button"
               >
-                {t("themePreviewModal.old")}
+                {t("theme.previewModal.old")}
               </button>
               {[0, 1, 2].map(index => (
                 <button
@@ -316,21 +316,21 @@ export default function ThemePreviewModal({
             <div className="i-mdi:robot text-primary-light h-5 w-5 mt-0.5 flex-shrink-0"></div>
             <div>
               <h4 className="text-sm font-medium mb-1">
-                {t("themePreviewModal.aiGeneratedTheme")}
+                {t("theme.previewModal.aiGeneratedTheme")}
               </h4>
               <p className="text-xs text-gray-300 mb-2">
-                {t("themePreviewModal.aiGeneratedThemeDesc")}
+                {t("theme.previewModal.aiGeneratedThemeDesc")}
               </p>
               <ul className="text-xs text-gray-300 list-disc pl-4 space-y-1 mb-2">
-                <li>{t("themePreviewModal.colorsMayNotMatch")}</li>
-                <li>{t("themePreviewModal.contrastMayNeedAdjustments")}</li>
-                <li>{t("themePreviewModal.combinationsMayNotLookIdeal")}</li>
+                <li>{t("theme.previewModal.colorsMayNotMatch")}</li>
+                <li>{t("theme.previewModal.contrastMayNeedAdjustments")}</li>
+                <li>{t("theme.previewModal.combinationsMayNotLookIdeal")}</li>
               </ul>
               <p className="text-xs text-gray-300">
                 <span className="text-primary-light font-medium">
-                  {t("themePreviewModal.recommendation")}
+                  {t("theme.previewModal.recommendation")}
                 </span>{" "}
-                {t("themePreviewModal.recommendationDesc")}
+                {t("theme.previewModal.recommendationDesc")}
               </p>
             </div>
           </div>
@@ -355,7 +355,7 @@ export default function ThemePreviewModal({
           >
             {hasMultipleThemes && selectedVariant === "old"
               ? t("theme.selectAVariant")
-              : t("themePreviewModal.applyTheme")}
+              : t("theme.previewModal.applyTheme")}
           </Button>
         </div>
       </div>

@@ -42,4 +42,5 @@ export const common = {
   "common.confirm": "Confirm",
   "common.loadingYourDex": "Loading your DEX",
   "common.authenticationRequired": "Authentication Required",
+  "common.dexId": "DEX ID",
 };

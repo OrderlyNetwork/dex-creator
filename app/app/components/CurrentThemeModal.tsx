@@ -132,9 +132,7 @@ const CurrentThemeModal: FC<CurrentThemeModalProps> = ({
                         : "i-mdi:pencil h-4 w-4"
                     }
                   ></div>
-                  {showThemeEditor
-                    ? t("theme.hideEditor")
-                    : t("theme.editCss")}
+                  {showThemeEditor ? t("theme.hideEditor") : t("theme.editCss")}
                 </span>
               </Button>
             </div>
@@ -197,7 +195,7 @@ const CurrentThemeModal: FC<CurrentThemeModalProps> = ({
                 size="sm"
                 type="button"
               >
-                {t("currentThemeModal.resetAIFineTune")}
+                {t("theme.currentThemeModal.resetAIFineTune")}
               </Button>
             )}
             <Button

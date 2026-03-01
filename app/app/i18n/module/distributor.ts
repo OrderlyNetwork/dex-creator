@@ -7,7 +7,6 @@ export const distributor = {
     "Not a builder? No problem! You can register as an ambassador*.",
   "distributor.ambassadorFooter":
     "*After signing up as an ambassador, you cannot create your own DEX using the same address.",
-  "distributor.available": "Available",
   "distributor.availableBalance": "Available balance",
   "distributor.baseMakerFee": "Base maker fee",
   "distributor.baseMakerFeeRwa": "Base maker fee (RWA)",
@@ -27,12 +26,10 @@ export const distributor = {
   "distributor.connectWalletTitle": "Connect your wallet to get started",
   "distributor.connectWalletDesc":
     "Authentication required. Please connect your wallet and login to create and manage your distributor profile",
-  "distributor.close": "Close",
   "distributor.codeUpdateInvalidateNotice":
     "Once updated, the original distributor code and URL will be invalidated.",
   "distributor.copied": "Copied",
   "distributor.copiedToClipboard": "Copied to clipboard",
-  "distributor.confirm": "Confirm",
   "distributor.configureDistributorCode": "Configure distributor code",
   "distributor.configureMinTier": "Configure minimum tier",
   "distributor.createAccount": "Create account",
@@ -117,7 +114,6 @@ export const distributor = {
     "This key provides secure access to the Orderly Network API. It will be stored locally to manage your distributor profile. A wallet signature is required to create this key.",
   "distributor.paidDailyUsdc": "Paid daily in USDC",
   "distributor.percentOfFeesEarned": "{{percent}}% of fees earned",
-  "distributor.period": "Period",
   "distributor.preview": "Preview",
   "distributor.quantity": "Quantity",
   "distributor.revenueShare": "Revenue share",
@@ -126,8 +122,6 @@ export const distributor = {
     "Estimated monthly revenue; actual amount is dependent on referrals' tiers and their taker volume.",
   "distributor.revenueTableFootnote2":
     "Stake $ORDER tokens to unlock higher tiers immediately for higher earnings. ",
-  "distributor.save": "Save",
-  "distributor.cancel": "Cancel",
   "distributor.selectNetwork": "Select network",
   "distributor.showingRange": "Showing {{start}}-{{end}} of {{total}}",
   "distributor.signUpThreeSteps": "Sign up and start earning in 3 steps:",
@@ -160,7 +154,6 @@ export const distributor = {
   "distributor.vol.1b": "1B Vol.",
   "distributor.vol.10b": "10B Vol.",
   "distributor.volume30d": "30d volume",
-  "distributor.wallet": "Wallet",
   "distributor.whatDescribesYou": "What describes you best?",
   "distributor.withdraw": "Withdraw",
   "distributor.withdrawTitle": "Withdraw: distributor's balance",

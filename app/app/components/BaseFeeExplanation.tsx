@@ -41,7 +41,8 @@ export const BaseFeeExplanation: FC = () => {
               </span>
             </div>
             <div className="p-2">{t("baseFeeExplanation.noRequirement")}</div>
-            <div className="p-2">{t("baseFeeExplanation.dash")}</div>
+            {/* i18n-ignore: symbol */}
+            <div className="p-2">-</div>
             <div className="p-2">3.00</div>
           </div>
 
@@ -52,13 +53,15 @@ export const BaseFeeExplanation: FC = () => {
               </span>
             </div>
             <div className="p-2">
-              {t("baseFeeExplanation.vol30m")}
+              {/* i18n-ignore */}
+              ≥ $30M
               <br />
               <span className="text-gray-400">
                 {t("baseFeeExplanation.or")}
               </span>
             </div>
-            <div className="p-2">{t("baseFeeExplanation.stake100k")}</div>
+            {/* i18n-ignore */}
+            <div className="p-2">100K $ORDER</div>
             <div className="p-2">2.75</div>
           </div>
 
@@ -69,13 +72,15 @@ export const BaseFeeExplanation: FC = () => {
               </span>
             </div>
             <div className="p-2">
-              {t("baseFeeExplanation.vol90m")}
+              {/* i18n-ignore */}
+              ≥ $90M
               <br />
               <span className="text-gray-400">
                 {t("baseFeeExplanation.or")}
               </span>
             </div>
-            <div className="p-2">{t("baseFeeExplanation.stake250k")}</div>
+            {/* i18n-ignore */}
+            <div className="p-2">250K $ORDER</div>
             <div className="p-2">2.50</div>
           </div>
 
@@ -86,13 +91,15 @@ export const BaseFeeExplanation: FC = () => {
               </span>
             </div>
             <div className="p-2">
-              {t("baseFeeExplanation.vol1b")}
+              {/* i18n-ignore */}
+              ≥ $1B
               <br />
               <span className="text-gray-400">
                 {t("baseFeeExplanation.or")}
               </span>
             </div>
-            <div className="p-2">{t("baseFeeExplanation.stake2m")}</div>
+            {/* i18n-ignore */}
+            <div className="p-2">2M $ORDER</div>
             <div className="p-2">2.00</div>
           </div>
 
@@ -103,13 +110,15 @@ export const BaseFeeExplanation: FC = () => {
               </span>
             </div>
             <div className="p-2">
-              {t("baseFeeExplanation.vol10b")}
+              {/* i18n-ignore */}
+              ≥ $10B
               <br />
               <span className="text-gray-400">
                 {t("baseFeeExplanation.or")}
               </span>
             </div>
-            <div className="p-2">{t("baseFeeExplanation.stake7m")}</div>
+            {/* i18n-ignore */}
+            <div className="p-2">7M $ORDER</div>
             <div className="p-2">1.00</div>
           </div>
         </div>

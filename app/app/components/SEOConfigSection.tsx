@@ -80,7 +80,8 @@ export default function SEOConfigSection({
           id="seoSiteLanguage"
           value={seoSiteLanguage}
           onChange={handleInputChange("seoSiteLanguage")}
-          placeholder={t("seoConfigSection.siteLanguagePlaceholder")}
+          // i18n-ignore: locale/format placeholder
+          placeholder="en"
           helpText={t("seoConfigSection.siteLanguageHelp")}
           validator={value => {
             if (!value || value.trim() === "") return null;
@@ -97,7 +98,8 @@ export default function SEOConfigSection({
           id="seoSiteLocale"
           value={seoSiteLocale}
           onChange={handleInputChange("seoSiteLocale")}
-          placeholder={t("seoConfigSection.siteLocalePlaceholder")}
+          // i18n-ignore: locale/format placeholder
+          placeholder="en_US"
           helpText={t("seoConfigSection.siteLocaleHelp")}
           validator={value => {
             if (!value || value.trim() === "") return null;
@@ -204,7 +206,8 @@ export default function SEOConfigSection({
                 id="seoThemeColor"
                 value={seoThemeColor}
                 onChange={handleInputChange("seoThemeColor")}
-                placeholder={t("seoConfigSection.themeColorPlaceholder")}
+                // i18n-ignore: hex color placeholder
+                placeholder="#1a1b23"
                 className="w-full px-3 py-2 bg-background-dark/50 border border-light/10 rounded-md text-sm text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent"
               />
             )}
@@ -220,7 +223,8 @@ export default function SEOConfigSection({
         id="seoKeywords"
         value={seoKeywords}
         onChange={handleInputChange("seoKeywords")}
-        placeholder={t("seoConfigSection.keywordsPlaceholder")}
+        // i18n-ignore: example keywords placeholder
+        placeholder="dex, crypto, trading, defi, orderly"
         maxLength={500}
         helpText={t("seoConfigSection.keywordsHelp")}
       />

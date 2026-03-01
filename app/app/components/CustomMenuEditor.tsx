@@ -290,7 +290,8 @@ const CustomMenuEditor: React.FC<CustomMenuEditorProps> = ({
 
                         <div>
                           <label className="block text-xs font-medium text-gray-400 mb-2">
-                            {t("customMenuEditor.url")}
+                            {/* i18n-ignore: technical abbreviation */}
+                            URL
                           </label>
                           <input
                             type="url"

@@ -55,14 +55,16 @@ const PrivyConfigSection: React.FC<PrivyConfigProps> = ({
     },
     {
       id: "twitter",
-      label: t("privyConfigSection.x"),
+      // i18n-ignore: platform/brand name
+      label: "X",
       description: t("privyConfigSection.signInWithX"),
       setupRequired: true,
       setupText: t("privyConfigSection.requiresOAuth"),
     },
     {
       id: "google",
-      label: t("privyConfigSection.google"),
+      // i18n-ignore: brand name
+      label: "Google",
       description: t("privyConfigSection.signInWithGoogle"),
       setupRequired: true,
       setupText: t("privyConfigSection.requiresOAuth"),
