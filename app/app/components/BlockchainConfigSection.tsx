@@ -251,7 +251,7 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
               </span>
               {chain.network === "testnet" && (
                 <span className="text-xs px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-300">
-                  {t("blockchainConfigSection.testnetBadge")}
+                  {t("common.testnet")}
                 </span>
               )}
               {isDefaultChain && (
@@ -287,7 +287,7 @@ const BlockchainConfigSection: React.FC<BlockchainConfigProps> = ({
             onClick={handleSelectAll}
             className="text-xs px-3 py-1 bg-primary/20 hover:bg-primary/30 text-primary-light rounded-full transition-all duration-200 ease-in-out"
           >
-            {t("blockchainConfigSection.selectAll")}
+            {t("common.selectAll")}
           </button>
           <button
             type="button"

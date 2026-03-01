@@ -57,7 +57,7 @@ const InteractivePreview: FC<InteractivePreviewProps> = ({
           <div className="bg-background-card border border-light/10 rounded-lg p-4">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-sm font-medium text-gray-300">
-                {t("interactivePreview.desktopPreviewTitle")}
+                {t("common.desktopPreview")}
               </h4>
             </div>
             <Button
@@ -91,7 +91,7 @@ const InteractivePreview: FC<InteractivePreviewProps> = ({
           <div className="bg-background-card border border-light/10 rounded-lg p-4">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-sm font-medium text-gray-300">
-                {t("interactivePreview.mobilePreviewTitle")}
+                {t("common.mobilePreview")}
               </h4>
             </div>
             <Button

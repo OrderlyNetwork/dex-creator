@@ -91,7 +91,7 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
         }
       }}
       okText={t("distributor.withdraw")}
-      cancelText={t("distributor.cancel")}
+      cancelText={t("common.cancel")}
       contentClassName="max-w-[480px]"
       confirmDisable={confirmDisabled || isSubmitting}
       footer={
@@ -108,7 +108,7 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
               isSubmitting && "opacity-60 cursor-not-allowed"
             )}
           >
-            {t("distributor.cancel")}
+            {t("common.cancel")}
           </button>
           <Button
             variant="primary"
@@ -175,7 +175,7 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
           </Tooltip>
           <div className="flex items-center justify-start">
             <div className="flex items-center gap-2 text-xs font-medium text-base-contrast-36">
-              <span>{t("distributor.available")}:</span>
+              <span>{t("common.available")}:</span>
               {isLoadingBalance ? (
                 <span>{t("distributor.loading")}</span>
               ) : (
@@ -201,7 +201,7 @@ const RevenueWithdrawModalUI: React.FC<RevenueWithdrawModalUIProps> = ({
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-base-contrast-36">
-              {t("distributor.wallet")}
+              {t("common.wallet")}
             </span>
             <div className="flex items-center gap-1">
               {walletName ? (

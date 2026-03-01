@@ -43,9 +43,9 @@ const ThemeEditingTabs: FC<ThemeEditingTabsProps> = ({
       <div className="border-b border-light/10">
         <div className="flex">
           <TabButton tab="colors" label={t("themeEditingTabs.colorPalette")} />
-          <TabButton tab="fonts" label={t("themeEditingTabs.fonts")} />
+          <TabButton tab="fonts" label={t("theme.fonts")} />
           <TabButton tab="rounded" label={t("themeEditingTabs.borderRadius")} />
-          <TabButton tab="spacing" label={t("themeEditingTabs.spacing")} />
+          <TabButton tab="spacing" label={t("theme.spacing")} />
         </div>
       </div>
 
@@ -65,7 +65,7 @@ const ThemeEditingTabs: FC<ThemeEditingTabsProps> = ({
         {activeTab === "fonts" && (
           <div className="bg-background-dark/50 p-4 rounded-lg border border-light/10">
             <h4 className="font-semibold mb-2 flex justify-between items-center">
-              <span>{t("themeEditingTabs.fonts")}</span>
+              <span>{t("theme.fonts")}</span>
               <span className="text-xs text-gray-400">
                 {t("themeEditingTabs.customizeFontFamilyAndSize")}
               </span>
@@ -89,7 +89,7 @@ const ThemeEditingTabs: FC<ThemeEditingTabsProps> = ({
         {activeTab === "spacing" && (
           <div className="bg-background-dark/50 p-4 rounded-lg border border-light/10">
             <h4 className="font-semibold mb-2 flex justify-between items-center">
-              <span>{t("themeEditingTabs.spacing")}</span>
+              <span>{t("theme.spacing")}</span>
               <span className="text-xs text-gray-400">
                 {t("themeEditingTabs.adjustSpacingWithSliders")}
               </span>

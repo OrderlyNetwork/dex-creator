@@ -39,7 +39,7 @@ export const AccountCreationCard = (props: AccountCreationCardProps) => {
         props.brokerId
       );
       props.onSuccess(res);
-      toast.success(t("distributor.toastCreateAccount"));
+      toast.success(t("distributor.createAccount"));
       setBrokerId(props.brokerId);
     } catch (error: any) {
       console.error("Error creating account:", error);

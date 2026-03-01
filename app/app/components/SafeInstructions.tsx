@@ -283,7 +283,7 @@ export default function SafeInstructionsModal({
                       ></div>
                       {copiedItem === "vault"
                         ? t("safeInstructions.copied")
-                        : t("safeInstructions.copy")}
+                        : t("common.copy")}
                     </button>
                   </div>
                   <code className="block text-sm text-gray-300 bg-background-dark p-3 rounded border border-primary/10 break-all">
@@ -310,7 +310,7 @@ export default function SafeInstructionsModal({
                       ></div>
                       {copiedItem === "abi"
                         ? t("safeInstructions.copied")
-                        : t("safeInstructions.copy")}
+                        : t("common.copy")}
                     </button>
                   </div>
                   <div className="max-h-32 overflow-y-auto bg-background-dark p-3 rounded border border-primary/10">
@@ -347,7 +347,7 @@ export default function SafeInstructionsModal({
                       ></div>
                       {copiedItem === "data"
                         ? t("safeInstructions.copied")
-                        : t("safeInstructions.copy")}
+                        : t("common.copy")}
                     </button>
                   </div>
                   <p className="text-sm text-gray-400 mb-2">
@@ -424,7 +424,7 @@ export default function SafeInstructionsModal({
               <Button variant="secondary" onClick={onClose}>
                 <span className="flex items-center gap-2">
                   <div className="i-mdi:close h-4 w-4"></div>
-                  {t("safeInstructions.close")}
+                  {t("common.close")}
                 </span>
               </Button>
             </div>

@@ -174,7 +174,7 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
               size="md"
               type="button"
             >
-              {t("themePresetPreviewModal.cancel")}
+              {t("common.cancel")}
             </Button>
             <Button
               onClick={handleApplyClick}
@@ -261,7 +261,7 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
                   size="md"
                   type="button"
                 >
-                  {t("themePresetPreviewModal.cancel")}
+                  {t("common.cancel")}
                 </Button>
                 <Button
                   onClick={handleConfirmApply}
@@ -322,7 +322,7 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
 
         <div className="flex gap-3 justify-end">
           <Button variant="ghost" onClick={handleClose}>
-            {t("themePresetPreviewModal.cancel")}
+            {t("common.cancel")}
           </Button>
           <Button variant="primary" onClick={handleApplyClick}>
             {t("themePresetPreviewModal.applyPreset")}
@@ -376,7 +376,7 @@ const ThemePresetPreviewModal: FC<ThemePresetPreviewModalProps> = ({
                 size="md"
                 type="button"
               >
-                {t("themePresetPreviewModal.cancel")}
+                {t("common.cancel")}
               </Button>
               <Button
                 onClick={handleConfirmApply}

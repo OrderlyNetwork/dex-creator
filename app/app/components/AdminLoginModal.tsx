@@ -169,7 +169,7 @@ export default function AdminLoginModal({
 
         <div className="flex gap-3 justify-end">
           <Button variant="secondary" onClick={onClose}>
-            {t("adminLoginModal.close")}
+            {t("common.close")}
           </Button>
           <Button
             variant="primary"

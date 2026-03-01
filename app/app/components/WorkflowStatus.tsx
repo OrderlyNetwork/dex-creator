@@ -349,7 +349,7 @@ export default function WorkflowStatus({
             onClick={fetchWorkflowStatus}
             disabled={isLoading}
             className="p-1 rounded hover:bg-dark/50"
-            title={t("workflowStatus.refresh")}
+            title={t("common.refresh")}
           >
             <div
               className={`i-mdi:refresh h-5 w-5 ${isLoading ? "animate-spin" : ""}`}
@@ -455,7 +455,7 @@ export default function WorkflowStatus({
                     <div className="my-2 text-xs">
                       <div className="flex justify-between mb-1">
                         <span className="text-gray-400">
-                          {t("workflowStatus.status")}
+                          {t("common.status")}
                         </span>
                         <span className="font-medium">
                           {getStatusText(

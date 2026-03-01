@@ -69,7 +69,7 @@ export function PointsBasicInput(props: PointsBasicInputProps) {
       {/* Description */}
       <div>
         <PointFormInput
-          label={t("points.basic.description.label")}
+          label={t("common.description")}
           placeholder={t("points.basic.description.placeholder")}
           type="textarea"
           value={values.stage_description}
@@ -96,7 +96,7 @@ export function PointsBasicInput(props: PointsBasicInputProps) {
                   : "border-transparent",
                 disabledStartDate && "pointer-events-none"
               )}
-              placeholder={t("points.basic.startDate.placeholder")}
+              placeholder={t("points.basic.endDate.placeholder")}
             />
             {errors.start_date ? (
               <div className="flex items-center gap-1 mt-1 pl-1">

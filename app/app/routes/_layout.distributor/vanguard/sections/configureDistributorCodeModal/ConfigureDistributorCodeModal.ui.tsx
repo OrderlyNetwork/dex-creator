@@ -53,8 +53,8 @@ const ConfigureDistributorCodeModalUI: React.FC<
       title={t("distributor.configureDistributorCode")}
       onOk={onConfirm}
       onCancel={onClose}
-      okText={t("distributor.save")}
-      cancelText={t("distributor.cancel")}
+      okText={t("common.save")}
+      cancelText={t("common.cancel")}
       contentClassName="max-w-[480px]"
       confirmDisable={!isValid}
       loading={isLoading || isSaving}

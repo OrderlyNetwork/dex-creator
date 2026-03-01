@@ -33,7 +33,7 @@ export default function OrderlyKeyRequiredCard({
             {isCreatingKey ? (
               <>
                 <div className="i-svg-spinners:pulse-rings-multiple w-4 h-4"></div>
-                {t("referral.orderlyKeyRequired.creatingKey")}
+                {t("common.creatingKey")}
               </>
             ) : (
               <>

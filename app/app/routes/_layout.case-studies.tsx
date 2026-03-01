@@ -58,23 +58,23 @@ function getCaseStudies() {
       treasuryFeatures: [
         {
           icon: "mdi:fire",
-          title: i18n.t("caseStudies.noot.treasury.tokenBuybacks.title"),
+          title: i18n.t("caseStudies.lol.treasury.tokenBuybacks.title"),
           description: i18n.t(
             "caseStudies.noot.treasury.tokenBuybacks.description"
           ),
         },
         {
           icon: "mdi:account-group",
-          title: i18n.t("caseStudies.noot.treasury.communityGrowth.title"),
+          title: i18n.t("caseStudies.lol.treasury.communityGrowth.title"),
           description: i18n.t(
-            "caseStudies.noot.treasury.communityGrowth.description"
+            "caseStudies.lol.treasury.communityGrowth.description"
           ),
         },
         {
           icon: "mdi:currency-usd",
           title: i18n.t("caseStudies.noot.treasury.cexListings.title"),
           description: i18n.t(
-            "caseStudies.noot.treasury.cexListings.description"
+            "caseStudies.lol.treasury.cexListings.description"
           ),
         },
       ],
@@ -200,7 +200,7 @@ export default function CaseStudies() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {t("caseStudies.buttons.visitDex")}
+                        {t("common.visitDex")}
                       </Button>
                       <Button
                         variant="secondary"

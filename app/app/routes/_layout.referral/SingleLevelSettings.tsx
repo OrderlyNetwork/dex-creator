@@ -196,7 +196,7 @@ export default function SingleLevelSettings({
             <div className="flex items-center justify-between p-4 bg-background-dark/30 rounded-lg border border-light/10">
               <div className="flex-1 pr-4">
                 <h3 className="text-sm font-medium mb-1">
-                  {t("referral.singleLevel.autoProgram.title")}
+                  {t("referral.preview.autoReferral.title")}
                 </h3>
                 <p className="text-xs text-gray-400">
                   {t("referral.singleLevel.autoProgram.hint")}
@@ -331,7 +331,7 @@ export default function SingleLevelSettings({
 
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  {t("referral.singleLevel.descriptionLabel")}
+                  {t("common.description")}
                 </label>
                 <textarea
                   value={description}
@@ -358,7 +358,7 @@ export default function SingleLevelSettings({
                 ) : (
                   <>
                     <div className="i-mdi:content-save w-4 h-4"></div>
-                    {t("referral.singleLevel.saveButton")}
+                    {t("referral.multiLevel.saveButton")}
                   </>
                 )}
               </Button>
@@ -422,7 +422,7 @@ export default function SingleLevelSettings({
           {referralInfo.description && (
             <div className="mt-4 pt-4 border-t border-light/10">
               <span className="text-gray-400 text-sm">
-                {t("referral.singleLevel.descriptionLabel")}:
+                {t("common.description")}:
               </span>
               <p className="text-sm mt-1">{referralInfo.description}</p>
             </div>

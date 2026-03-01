@@ -27,7 +27,7 @@ export const GraduationAuthGuard = (props: GraduationAuthGuardProps) => {
         </div>
         <div>
           <h3 className="text-lg font-medium text-warning mb-2">
-            {t("graduationAuthGuard.title")}
+            {t("common.graduationRequired")}
           </h3>
           <p className="text-gray-300 mb-4">
             {t("graduationAuthGuard.description")}

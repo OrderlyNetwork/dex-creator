@@ -211,7 +211,7 @@ export default function DexRoute() {
 
   const handleRetryForking = async () => {
     if (!dexData || !dexData.id || !token) {
-      toast.error(t("dex.infoUnavailable"));
+      toast.error(t("error.dexInformationIsNot"));
       return;
     }
 
@@ -263,7 +263,7 @@ export default function DexRoute() {
 
   const handleDelete = async () => {
     if (!dexData || !dexData.id || !token) {
-      toast.error(t("dex.infoUnavailable"));
+      toast.error(t("error.dexInformationIsNot"));
       return;
     }
 
@@ -330,7 +330,7 @@ export default function DexRoute() {
         <div className="text-center">
           <div className="i-svg-spinners:pulse-rings-multiple h-12 w-12 mx-auto text-primary-light mb-4"></div>
           <div className="text-base md:text-lg mb-2">
-            {t("dex.loadingYourDex")}
+            {t("common.loadingYourDex")}
           </div>
           <div className="text-xs md:text-sm text-gray-400">
             {t("dex.fetchConfigurationHint")}
@@ -450,7 +450,7 @@ export default function DexRoute() {
           href="/dex/graduation"
           className="whitespace-nowrap flex-shrink-0"
         >
-          {t("dex.graduateNow")}
+          {t("common.graduateNow")}
         </Button>
       </div>
     </Card>
@@ -621,7 +621,7 @@ export default function DexRoute() {
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-1">
-              {t("dex.referralSettingsTitle")}
+              {t("referral.referralSettings")}
             </h3>
             <p className="text-gray-300">
               {isGraduated
@@ -718,7 +718,7 @@ export default function DexRoute() {
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                   <div>
                     <h4 className="font-medium text-red-400 mb-1">
-                      {t("dex.deleteDex")}
+                      {t("common.deleteDex")}
                     </h4>
                     <p className="text-sm text-gray-400">
                       {t("dex.deleteDexWarning")}
@@ -730,7 +730,7 @@ export default function DexRoute() {
                     disabled={isDeleting}
                     className="whitespace-nowrap"
                   >
-                    {isDeleting ? t("dex.deleting") : t("dex.deleteDex")}
+                    {isDeleting ? t("common.deleting") : t("common.deleteDex")}
                   </Button>
                 </div>
               </div>

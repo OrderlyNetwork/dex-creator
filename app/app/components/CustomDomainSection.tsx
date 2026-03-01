@@ -316,7 +316,7 @@ export default function CustomDomainSection({
                     >
                       <span className="flex items-center gap-1">
                         <div className="i-mdi:check h-4 w-4"></div>
-                        {t("customDomainSection.update")}
+                        {t("common.update")}
                       </span>
                     </Button>
                     <Button
@@ -327,7 +327,7 @@ export default function CustomDomainSection({
                     >
                       <span className="flex items-center gap-1">
                         <div className="i-mdi:close h-4 w-4"></div>
-                        {t("customDomainSection.cancel")}
+                        {t("common.cancel")}
                       </span>
                     </Button>
                   </div>

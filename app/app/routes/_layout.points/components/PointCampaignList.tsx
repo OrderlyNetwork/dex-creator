@@ -43,7 +43,7 @@ export function PointCampaignList(props: PointCampaignListProps) {
         width: 50,
       },
       {
-        title: t("points.list.column.status"),
+        title: t("common.status"),
         dataIndex: "status",
         width: 60,
         render: (status: PointCampaignStatus, record: PointCampaign) => {
@@ -84,7 +84,7 @@ export function PointCampaignList(props: PointCampaignListProps) {
               {formatUTCDate(start_time * 1000, formatStr)} -{" "}
               {end_time
                 ? formatUTCDate(end_time * 1000, formatStr)
-                : t("points.list.time.recurring")}
+                : t("points.basic.endDate.recurring")}
             </span>
           );
         },
@@ -114,7 +114,7 @@ export function PointCampaignList(props: PointCampaignListProps) {
                   size="sm"
                   onClick={() => props.onEdit(record)}
                 >
-                  {t("points.list.button.edit")}
+                  {t("common.edit")}
                 </OrderlyButton>
               )}
 
@@ -125,7 +125,7 @@ export function PointCampaignList(props: PointCampaignListProps) {
                   size="sm"
                   onClick={() => props.onDelete(record)}
                 >
-                  {t("points.list.button.delete")}
+                  {t("common.delete")}
                 </OrderlyButton>
               )}
             </div>

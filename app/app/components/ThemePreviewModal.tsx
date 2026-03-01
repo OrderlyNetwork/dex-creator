@@ -214,7 +214,7 @@ export default function ThemePreviewModal({
               size="md"
               type="button"
             >
-              {t("themePreviewModal.cancel")}
+              {t("common.cancel")}
             </Button>
             <Button
               onClick={handleApply}
@@ -224,7 +224,7 @@ export default function ThemePreviewModal({
               disabled={selectedVariant === "old"}
             >
               {selectedVariant === "old"
-                ? t("themePreviewModal.selectVariant")
+                ? t("theme.selectAVariant")
                 : t("themePreviewModal.acceptTheme")}
             </Button>
           </div>
@@ -346,7 +346,7 @@ export default function ThemePreviewModal({
 
         <div className="flex gap-3 justify-end">
           <Button variant="ghost" onClick={handleCancel}>
-            {t("themePreviewModal.cancel")}
+            {t("common.cancel")}
           </Button>
           <Button
             variant="primary"
@@ -354,7 +354,7 @@ export default function ThemePreviewModal({
             disabled={hasMultipleThemes && selectedVariant === "old"}
           >
             {hasMultipleThemes && selectedVariant === "old"
-              ? t("themePreviewModal.selectVariant")
+              ? t("theme.selectAVariant")
               : t("themePreviewModal.applyTheme")}
           </Button>
         </div>

@@ -61,7 +61,7 @@ export const OrderlyKeyAuthGrard = (props: OrderlyKeyAuthGrardProps) => {
             {isCreatingKey ? (
               <>
                 <div className="i-svg-spinners:pulse-rings-multiple w-4 h-4"></div>
-                {t("orderlyKeyAuthGuard.creatingKey")}
+                {t("common.creatingKey")}
               </>
             ) : (
               <>

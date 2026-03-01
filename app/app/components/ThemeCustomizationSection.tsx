@@ -269,7 +269,7 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
           {/* Current Theme */}
           <div className="flex justify-between mb-2 flex-col sm:flex-row gap-2 sm:gap-0">
             <span className="text-sm font-medium mb-2 text-gray-300">
-              {t("themeCustomizationSection.currentTheme")}
+              {t("theme.currentTheme")}
             </span>
             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
               <Button
@@ -288,8 +288,8 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
                     }
                   ></div>
                   {showThemeEditor
-                    ? t("themeCustomizationSection.hideEditor")
-                    : t("themeCustomizationSection.editCss")}
+                    ? t("theme.hideEditor")
+                    : t("theme.editCss")}
                 </span>
               </Button>
               <Button
@@ -299,7 +299,7 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
                 className="w-full sm:w-auto"
                 type="button"
               >
-                {t("themeCustomizationSection.reset")}
+                {t("common.reset")}
               </Button>
             </div>
           </div>
@@ -311,7 +311,7 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
                   handleThemeEditorChange(e.target.value)
                 }
                 className="w-full h-80 bg-black/80 text-xs text-gray-300 font-mono p-3 rounded border border-light/10"
-                placeholder={t("themeCustomizationSection.editCssPlaceholder")}
+                placeholder={t("theme.editYourCssTheme")}
               />
             </div>
           )}
@@ -325,8 +325,8 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
                 >
                   <span>
                     {viewCssCode
-                      ? t("themeCustomizationSection.hideCssCode")
-                      : t("themeCustomizationSection.viewCssCode")}
+                      ? t("theme.hideCssCode")
+                      : t("theme.viewCssCode")}
                   </span>
                   <div
                     className={`i-mdi:chevron-down h-4 w-4 ml-1 transition-transform ${viewCssCode ? "rotate-180" : ""}`}
@@ -358,7 +358,7 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
         <div className="flex flex-col space-y-4 mt-6">
           <div className="flex flex-col gap-2">
             <h4 className="text-base font-bold mb-1">
-              {t("themeCustomizationSection.aiThemeGenerator")}
+              {t("theme.aiThemeGenerator")}
             </h4>
             <p className="text-xs text-gray-400 mb-2">
               {t("themeCustomizationSection.aiThemeGeneratorDesc")}
@@ -382,7 +382,7 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
             </Card>
             <FormInput
               id={`${idPrefix}themePrompt`}
-              label={t("themeCustomizationSection.themeDescription")}
+              label={t("theme.themeDescription")}
               value={themePrompt}
               onChange={handleInputChange("themePrompt")}
               placeholder={t(
@@ -407,7 +407,7 @@ const ThemeCustomizationSection: React.FC<ThemeCustomizationProps> = ({
             >
               <span className="flex items-center gap-1">
                 <div className="i-mdi:magic-wand h-4 w-4"></div>{" "}
-                {t("themeCustomizationSection.generateTheme")}
+                {t("theme.generateTheme")}
               </span>
             </Button>
           </div>

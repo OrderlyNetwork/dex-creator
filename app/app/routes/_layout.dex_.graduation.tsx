@@ -101,7 +101,7 @@ export default function GraduationRoute() {
           <div className="text-center">
             <Card>
               <h2 className="text-lg md:text-xl font-medium mb-3 md:mb-4">
-                {t("graduation.authRequired.title")}
+                {t("common.authenticationRequired")}
               </h2>
               <p className="mb-4 md:mb-6 text-sm md:text-base text-gray-300">
                 {t("graduation.authRequired.description")}

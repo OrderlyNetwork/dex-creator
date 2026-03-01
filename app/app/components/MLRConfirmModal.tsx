@@ -81,7 +81,7 @@ export default function MLRConfirmModal({
             className="flex-1 h-10 px-5 py-3 rounded-[46px] border border-[#9c75ff] text-base font-medium leading-[1.2] text-base-contrast-80 hover:text-base-contrast hover:border-base-contrast transition-colors inline-flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
             type="button"
           >
-            {t("mlrConfirmModal.cancel")}
+            {t("common.cancel")}
           </button>
           <Button
             variant="primary"

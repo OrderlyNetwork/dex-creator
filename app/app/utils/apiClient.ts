@@ -75,7 +75,7 @@ export async function apiClient<T = any>({
     }
 
     if (!response.ok) {
-      let errorMessage = i18n.t("apiClient.errorOccurred");
+      let errorMessage = i18n.t("error.anErrorOccurred");
 
       if (typeof data === "object") {
         errorMessage = parseZodError(data);
@@ -168,7 +168,7 @@ export async function apiClientFormData<T = any>({
     }
 
     if (!response.ok) {
-      let errorMessage = i18n.t("apiClient.errorOccurred");
+      let errorMessage = i18n.t("error.anErrorOccurred");
 
       if (typeof data === "object") {
         errorMessage = parseZodError(data);

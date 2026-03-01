@@ -153,7 +153,7 @@ export function getDexSections(): DexSectionConfig[] {
     {
       id: 6,
       key: DEX_SECTION_KEYS.SocialLinks,
-      title: i18n.t("dexSectionRenderer.socialLinks.title"),
+      title: i18n.t("dexCard.socialMediaLinks"),
       description: i18n.t("dexSectionRenderer.socialLinks.description"),
       isOptional: true,
       component: SocialLinksSection,
@@ -259,7 +259,7 @@ export function getDexSections(): DexSectionConfig[] {
     {
       id: 12,
       key: DEX_SECTION_KEYS.AssetFilter,
-      title: i18n.t("dexSectionRenderer.assetFilter.title"),
+      title: i18n.t("assetFilterSection.assetFiltering"),
       description: i18n.t("dexSectionRenderer.assetFilter.description"),
       isOptional: true,
       component: AssetFilterSection,

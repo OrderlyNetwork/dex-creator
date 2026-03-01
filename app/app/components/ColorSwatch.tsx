@@ -46,7 +46,7 @@ export default function ColorSwatch({
           isValid
             ? t("colorSwatch.clickToEditColor", { displayName })
             : storedValue === null
-              ? t("colorSwatch.clickToSetColor", { displayName })
+              ? t("theme.clickToSetDisplayname", { displayName })
               : t("colorSwatch.invalidCssFormat", { displayName })
         }
       >

@@ -420,7 +420,7 @@ const AIFineTuneModal: FC<AIFineTuneModalProps> = ({
             {t("aiFineTuneModal.title")}
           </h2>
           <Button onClick={onClose} variant="secondary" size="sm" type="button">
-            {t("aiFineTuneModal.close")}
+            {t("common.close")}
           </Button>
         </div>
         <div className="flex-1 overflow-auto p-4">
@@ -455,7 +455,7 @@ const AIFineTuneModal: FC<AIFineTuneModalProps> = ({
             )}
             <FormInput
               id="fineTunePrompt"
-              label={t("aiFineTuneModal.description")}
+              label={t("common.description")}
               value={prompt}
               onChange={e => setPrompt(e.target.value)}
               placeholder={t("aiFineTuneModal.placeholder")}

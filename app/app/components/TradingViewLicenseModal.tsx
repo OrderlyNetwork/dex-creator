@@ -43,7 +43,7 @@ export default function TradingViewLicenseModal({
               <div className="i-mdi:check-circle text-success h-5 w-5 mt-0.5 flex-shrink-0"></div>
               <div>
                 <h4 className="text-base font-bold mb-1 text-success">
-                  {t("tradingViewLicenseModal.goodNews")}
+                  {t("tradingView.goodNewsItS")}
                 </h4>
                 <p className="text-xs text-gray-300">
                   {t("tradingViewLicenseModal.freeLicenseDesc")}
@@ -55,7 +55,7 @@ export default function TradingViewLicenseModal({
           {/* What You Need */}
           <div>
             <h4 className="text-base font-bold mb-3">
-              {t("tradingViewLicenseModal.whatYouNeed")}
+              {t("tradingView.whatYouNeedTo")}
             </h4>
             <ol className="text-sm text-gray-300 space-y-2 list-decimal list-inside">
               <li>
@@ -74,7 +74,7 @@ export default function TradingViewLicenseModal({
               </li>
               <li>{t("tradingViewLicenseModal.clickGetLibrary")}</li>
               <li>{t("tradingViewLicenseModal.fillOutForm")}</li>
-              <li>{t("tradingViewLicenseModal.waitForApproval")}</li>
+              <li>{t("tradingView.waitForApprovalUsually")}</li>
             </ol>
           </div>
 
@@ -165,13 +165,13 @@ export default function TradingViewLicenseModal({
               <div className="i-mdi:information-outline text-warning h-5 w-5 mt-0.5 flex-shrink-0"></div>
               <div>
                 <h4 className="text-base font-bold mb-2 text-warning">
-                  {t("tradingViewLicenseModal.importantNotes")}
+                  {t("tradingView.importantNotes")}
                 </h4>
                 <ul className="text-xs text-gray-300 space-y-1 list-disc list-inside">
-                  <li>{t("tradingViewLicenseModal.note1")}</li>
+                  <li>{t("tradingView.theLicenseApplicationIs")}</li>
                   <li>{t("tradingViewLicenseModal.note2")}</li>
                   <li>{t("tradingViewLicenseModal.note3")}</li>
-                  <li>{t("tradingViewLicenseModal.note4")}</li>
+                  <li>{t("tradingView.onceApprovedYourDex")}</li>
                 </ul>
               </div>
             </div>

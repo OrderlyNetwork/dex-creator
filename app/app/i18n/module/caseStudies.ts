@@ -28,17 +28,10 @@ export const caseStudies = {
   "caseStudies.noot.stats.revenueGeneratedForTreasury":
     "REVENUE GENERATED FOR NOOT TREASURY",
   "caseStudies.noot.stats.uniqueTraders": "UNIQUE TRADERS",
-  "caseStudies.noot.treasury.tokenBuybacks.title": "Token Buybacks & Burns",
   "caseStudies.noot.treasury.tokenBuybacks.description":
     "Regularly repurchasing $NOOT tokens from the market and permanently removing them from circulation to create scarcity and strengthen long-term value.",
-  "caseStudies.noot.treasury.communityGrowth.title":
-    "Community Growth Campaigns",
-  "caseStudies.noot.treasury.communityGrowth.description":
-    "Running targeted marketing campaigns and hosting engaging trading competitions to attract new users, boost participation, and increase brand visibility.",
   "caseStudies.noot.treasury.cexListings.title":
     "Funding for Future CEX Listings",
-  "caseStudies.noot.treasury.cexListings.description":
-    "Allocating resources to secure listings on major centralized exchanges, expanding market access and improving token liquidity.",
 
   // LOL-specific content
   "caseStudies.lol.description":

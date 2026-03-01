@@ -232,7 +232,7 @@ export default function DexCardRoute() {
   }, [token]);
 
   const descriptionValidator = composeValidators(
-    maxLength(150, t("dexCard.description.label"))
+    maxLength(150, t("common.description"))
   );
 
   const tokenAddressValidator = composeValidators(
@@ -254,7 +254,7 @@ export default function DexCardRoute() {
     event.preventDefault();
 
     if (!dexData || !dexData.id) {
-      toast.error(t("dexCard.error.dexUnavailable"));
+      toast.error(t("error.dexInformationIsNot"));
       return;
     }
 
@@ -321,7 +321,7 @@ export default function DexCardRoute() {
         <div className="text-center">
           <div className="i-svg-spinners:pulse-rings-multiple h-12 w-12 mx-auto text-primary-light mb-4"></div>
           <div className="text-base md:text-lg mb-2">
-            {t("dexCard.loading.title")}
+            {t("common.loadingYourDex")}
           </div>
           <div className="text-xs md:text-sm text-gray-400">
             {t("dexCard.loading.subtitle")}
@@ -340,7 +340,7 @@ export default function DexCardRoute() {
           </h1>
           <Card>
             <h2 className="text-lg md:text-xl font-medium mb-3 md:mb-4">
-              {t("dexCard.authRequired.title")}
+              {t("common.authenticationRequired")}
             </h2>
             <p className="mb-4 md:mb-6 text-sm md:text-base text-gray-300">
               {t("dexCard.authRequired.description")}
@@ -415,7 +415,7 @@ export default function DexCardRoute() {
                   </div>
                   <div>
                     <h3 className="text-sm font-medium text-warning mb-1">
-                      {t("dexCard.graduationRequired.title")}
+                      {t("common.graduationRequired")}
                     </h3>
                     <p className="text-xs text-gray-300">
                       {t("dexCard.graduationRequired.description")}
@@ -436,7 +436,7 @@ export default function DexCardRoute() {
               {/* Description */}
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  {t("dexCard.description.label")}{" "}
+                  {t("common.description")}{" "}
                   <span className="text-gray-400">
                     {t("dexCard.form.optional")}
                   </span>
@@ -541,7 +541,7 @@ export default function DexCardRoute() {
               {/* Token Information */}
               <div className="border-t border-gray-600 pt-6">
                 <h3 className="text-md font-semibold mb-4">
-                  {t("dexCard.tokenInfo.heading")}
+                  {t("common.tokenInformation")}
                 </h3>
                 <p className="text-xs text-gray-400 mb-4">
                   {t("dexCard.tokenInfo.description")}
@@ -648,7 +648,7 @@ export default function DexCardRoute() {
                                       rel="noopener noreferrer"
                                       className="text-xs text-primary hover:text-primary-light inline-flex items-center gap-1 mt-1"
                                     >
-                                      {t("dexCard.link.viewOnGeckoTerminal")}
+                                      {t("board.viewOnGeckoTerminal")}
                                       <div className="i-mdi:open-in-new h-3 w-3"></div>
                                     </a>
                                   );
@@ -728,7 +728,7 @@ export default function DexCardRoute() {
               {/* Social Media Links */}
               <div className="border-t border-gray-600 pt-6">
                 <h3 className="text-md font-semibold mb-4">
-                  {t("dexCard.socialLinks.heading")}
+                  {t("dexCard.socialMediaLinks")}
                 </h3>
                 <p className="text-xs text-gray-400 mb-4">
                   {t("dexCard.socialLinks.description")}
@@ -738,7 +738,8 @@ export default function DexCardRoute() {
                   {/* Telegram */}
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      {t("dexCard.telegram.label")}{" "}
+                      {/* i18n-ignore */}
+                      {"Telegram"}{" "}
                       <span className="text-gray-400">
                         {t("dexCard.form.optional")}
                       </span>
@@ -755,7 +756,8 @@ export default function DexCardRoute() {
                   {/* Discord */}
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      {t("dexCard.discord.label")}{" "}
+                      {/* i18n-ignore */}
+                      {"Discord"}{" "}
                       <span className="text-gray-400">
                         {t("dexCard.form.optional")}
                       </span>
@@ -772,7 +774,8 @@ export default function DexCardRoute() {
                   {/* X (Twitter) */}
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      {t("dexCard.xTwitter.label")}{" "}
+                      {/* i18n-ignore */}
+                      {"X (Twitter)"}{" "}
                       <span className="text-gray-400">
                         {t("dexCard.form.optional")}
                       </span>
@@ -800,7 +803,7 @@ export default function DexCardRoute() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      {t("dexCard.website.label")}{" "}
+                      {t("dexCard.website.heading")}{" "}
                       <span className="text-gray-400">
                         {t("dexCard.form.optional")}
                       </span>

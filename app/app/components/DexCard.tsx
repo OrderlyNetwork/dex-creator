@@ -181,7 +181,7 @@ export default function DexCard({ broker, rank, timePeriod }: DexCardProps) {
               className="inline-flex items-center justify-center gap-2 p-2 bg-primary hover:bg-primary-light text-white text-sm font-medium rounded-lg transition-colors flex-1"
             >
               <div className="i-mdi:chart-line min-h-4 min-w-4"></div>
-              {t("board.visitDex")}
+              {t("common.visitDex")}
             </a>
 
             {/* Website Link CTA Button */}
@@ -209,7 +209,7 @@ export default function DexCard({ broker, rank, timePeriod }: DexCardProps) {
                   rel="noopener noreferrer"
                   onClick={e => e.stopPropagation()}
                   className="text-gray-400 hover:text-primary transition-colors"
-                  title={t("board.telegram")}
+                  title={/* i18n-ignore */ "Telegram"}
                 >
                   <div className="i-mdi:telegram h-5 w-5"></div>
                 </a>
@@ -221,7 +221,7 @@ export default function DexCard({ broker, rank, timePeriod }: DexCardProps) {
                   rel="noopener noreferrer"
                   onClick={e => e.stopPropagation()}
                   className="text-gray-400 hover:text-primary transition-colors"
-                  title={t("board.discord")}
+                  title={/* i18n-ignore */ "Discord"}
                 >
                   <div className="i-mdi:discord h-5 w-5"></div>
                 </a>
@@ -233,7 +233,7 @@ export default function DexCard({ broker, rank, timePeriod }: DexCardProps) {
                   rel="noopener noreferrer"
                   onClick={e => e.stopPropagation()}
                   className="text-gray-400 hover:text-primary transition-colors"
-                  title={t("board.xTwitter")}
+                  title={/* i18n-ignore */ "X (Twitter)"}
                 >
                   <svg
                     width="20"

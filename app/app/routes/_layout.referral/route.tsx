@@ -207,11 +207,11 @@ export default function ReferralRoute() {
       <div className="w-full max-w-3xl mx-auto px-4 py-6 md:py-10 mt-26 pb-52">
         <div className="text-center">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">
-            {t("referral.pageTitle")}
+            {t("referral.referralSettings")}
           </h1>
           <Card>
             <h2 className="text-lg md:text-xl font-medium mb-3 md:mb-4">
-              {t("referral.authRequired.title")}
+              {t("common.authenticationRequired")}
             </h2>
             <p className="mb-4 md:mb-6 text-sm md:text-base text-gray-300">
               {t("referral.authRequired.description")}
@@ -237,11 +237,11 @@ export default function ReferralRoute() {
             {t("referral.backToDexDashboard")}
           </Link>
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">
-            {t("referral.pageTitle")}
+            {t("referral.referralSettings")}
           </h1>
           <Card>
             <h2 className="text-lg md:text-xl font-medium mb-3 md:mb-4">
-              {t("referral.noDex.title")}
+              {t("error.noDexFound")}
             </h2>
             <p className="mb-4 md:mb-6 text-sm md:text-base text-gray-300">
               {t("referral.noDex.description")}
@@ -270,7 +270,7 @@ export default function ReferralRoute() {
               {t("referral.backToDexDashboard")}
             </Link>
             <h1 className="text-2xl md:text-3xl font-bold gradient-text">
-              {t("referral.pageTitle")}
+              {t("referral.referralSettings")}
             </h1>
           </div>
         </div>
@@ -282,7 +282,7 @@ export default function ReferralRoute() {
             </div>
             <div className="flex-1">
               <h3 className="text-lg font-medium text-warning mb-2">
-                {t("referral.graduationRequired.title")}
+                {t("common.graduationRequired")}
               </h3>
               <p className="text-gray-300 mb-4">
                 {t("referral.graduationRequired.description")}
@@ -410,7 +410,7 @@ export default function ReferralRoute() {
               {t("referral.backToDexDashboard")}
             </Link>
             <h1 className="text-2xl md:text-3xl font-bold gradient-text">
-              {t("referral.pageTitle")}
+              {t("referral.referralSettings")}
             </h1>
           </div>
         </div>

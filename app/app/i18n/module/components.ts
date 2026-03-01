@@ -68,9 +68,6 @@ export const components = {
   "themeFontControls.helpText":
     "Customize the font family and base font size used throughout your DEX interface.",
   "themeFontControls.preview": "Preview",
-  "themeFontControls.fontFamily": "Font Family",
-  "themeFontControls.fontSize": "Font Size",
-  "themeFontControls.fontSizeValue": "Font size value",
   "themeFontControls.category.default": "Default",
   "themeFontControls.category.modern": "Modern",
   "themeFontControls.category.readable": "Readable",
@@ -179,7 +176,6 @@ export const components = {
   "confirmationModal.cancel": "Cancel",
 
   // DeleteConfirmModal
-  "deleteConfirmModal.title": "Delete {{entityName}}",
   "deleteConfirmModal.confirmMessage":
     "Are you sure you want to delete this {{entityNameLower}}? This action cannot be undone.",
   "deleteConfirmModal.warningTitle": "Warning",
@@ -215,7 +211,6 @@ export const components = {
   "footer.supplementalTermsForDexs": "Supplemental Terms for DEXs",
 
   "languageSwitcher.language": "Language",
-  "languageSwitcher.tooltip": "Switch language",
   "languageSwitcher.tips":
     "AI-generated translations may not be fully accurate.",
 
@@ -347,11 +342,8 @@ export const components = {
   "allDexesList.updating": "Updating...",
   "allDexesList.update": "Update",
   "allDexesList.overrideUrlLabel": "Custom Domain Override URL",
-  "allDexesList.overrideUrl": "Override URL",
   "allDexesList.overrideUrlHeading": "Override URL",
   "allDexesList.copyOverrideUrl": "Copy Override URL",
-  "allDexesList.deploymentUrlLabel": "Deployment URL",
-  "allDexesList.deploymentUrl": "Deployment URL",
   "allDexesList.deploymentUrlHeading": "Deployment URL",
   "allDexesList.copyDeploymentUrl": "Copy Deployment URL",
   "allDexesList.actions": "Actions",
@@ -360,7 +352,6 @@ export const components = {
   "allDexesList.cssTheme": "CSS Theme",
   "allDexesList.hideTheme": "Hide theme",
   "allDexesList.showTheme": "Show theme",
-  "allDexesList.cssThemeLabel": "CSS Theme",
   "allDexesList.copyCssTheme": "Copy CSS Theme",
   "allDexesList.itemName": "DEXs",
 
@@ -379,6 +370,7 @@ export const components = {
 
   // AssetFilterSection
   "assetFilterSection.loadingAssets": "Loading available assets...",
+  "assetFilterSection.assetFiltering": "Asset Filtering",
   "assetFilterSection.title": "Asset Filtering",
   "assetFilterSection.description":
     "Select which trading pairs will be displayed in your DEX. Leave empty to show all available assets.",
@@ -638,7 +630,6 @@ export const components = {
   "customDomainSection.dnsRecordName": "Name",
   "customDomainSection.dnsRecordValue": "Value",
   "customDomainSection.dnsRecordValues": "Values",
-  "customDomainSection.dnsRecordTtl": "TTL",
   "customDomainSection.yourSubdomain": "your subdomain",
 
   // CustomMenuEditor
@@ -1075,7 +1066,6 @@ export const components = {
     "Visit the Namecheap signup page to create a new account. You can also sign up using your Google or Facebook account for faster registration.",
   "domainSetupGuideModal.namecheap.step1.imageAlt": "Namecheap sign up page",
   "domainSetupGuideModal.namecheap.step1.linkText": "Namecheap Sign Up",
-  "domainSetupGuideModal.namecheap.step2.title": "Search and Select Domain",
   "domainSetupGuideModal.namecheap.step2.description":
     "Use the domain search bar to find your desired domain name. Choose your domain and TLD, review pricing, and add to cart.",
   "domainSetupGuideModal.namecheap.step2.imageAlt":
@@ -1094,7 +1084,6 @@ export const components = {
     "Namecheap domain management dashboard",
   "domainSetupGuideModal.namecheap.step4.linkText":
     "Namecheap Domain Management",
-  "domainSetupGuideModal.namecheap.step5.title": "Configure DNS Records",
   "domainSetupGuideModal.namecheap.step5.description":
     "In the 'Advanced DNS' tab, first remove the default DNS setup (one redirect and a CNAME www record). Then add the required A records and CNAME record for your DEX.",
   "domainSetupGuideModal.namecheap.step5.imageAlt":
@@ -1116,8 +1105,6 @@ export const components = {
     "Recommended: Email Security Records",
   "domainSetupGuideModal.emailSecurityDesc":
     "Add these TXT records to protect your domain from email spoofing attacks. Without these, attackers could send phishing emails appearing to come from your domain, which may cause your site to be flagged by Google Safe Browsing.",
-  "domainSetupGuideModal.spfRecord": "SPF Record:",
-  "domainSetupGuideModal.dmarcRecord": "DMARC Record:",
   "domainSetupGuideModal.recordsTellServers":
     "These records tell email servers that your domain doesn't send emails and to reject any emails claiming to be from your domain.",
   "domainSetupGuideModal.copyExactValues":
@@ -1139,11 +1126,8 @@ export const components = {
   "feeConfigWithCalculator.configure": "Configure",
   "feeConfigWithCalculator.feeConfigDesc":
     "Configure the trading fees for your DEX. Maker fees apply to limit orders that provide liquidity, while taker fees apply to market orders that take liquidity.",
-  "feeConfigWithCalculator.importantFeeNote": "Important Fee Note:",
   "feeConfigWithCalculator.importantFeeNoteBlock":
     "<0>Important Fee Note:</0> The fees you configure here are the <1>total fees</1> that traders will pay. This includes the Orderly base fee (varies by tier - see calculator below). Your revenue will be: <2>Your Custom Fee - Orderly Base Fee</2>.",
-  "feeConfigWithCalculator.feeNoteDesc":
-    "The fees you configure here are the total fees that traders will pay. This includes the Orderly base fee (varies by tier - see calculator below). Your revenue will be: Your Custom Fee - Orderly Base Fee.",
   "feeConfigWithCalculator.makerFeeLabel": "Maker Fee",
   "feeConfigWithCalculator.takerFeeLabel": "Taker Fee",
   "feeConfigWithCalculator.rwaAssetFees": "RWA Asset Fees",
@@ -1151,7 +1135,6 @@ export const components = {
     "Configure separate fees for Real World Asset (RWA) trading.",
   "feeConfigWithCalculator.rwaMakerFeeLabel": "RWA Maker Fee",
   "feeConfigWithCalculator.rwaTakerFeeLabel": "RWA Taker Fee",
-  "feeConfigWithCalculator.percentUnit": "(0.01%)",
   "feeConfigWithCalculator.feeRange":
     "Minimum: {{min}} {{unit}} ({{minPercent}}%), Maximum: {{max}} {{unit}} ({{maxPercent}}%)",
   "feeConfigWithCalculator.correctErrors":
@@ -1169,14 +1152,11 @@ export const components = {
   "feeConfigWithCalculator.saveFeeConfiguration": "Save Fee Configuration",
   "feeConfigWithCalculator.saving": "Saving...",
   "feeConfigWithCalculator.currentFeeStructure": "Current Fee Structure",
-  "feeConfigWithCalculator.currentFeeStructureColon": "Current Fee Structure",
   "feeConfigWithCalculator.standardFees": "Standard Fees",
   "feeConfigWithCalculator.makerFee": "Maker Fee",
   "feeConfigWithCalculator.takerFee": "Taker Fee",
   "feeConfigWithCalculator.rwaMakerFee": "RWA Maker Fee",
   "feeConfigWithCalculator.rwaTakerFee": "RWA Taker Fee",
-  "feeConfigWithCalculator.noteTotalFees":
-    "Note: These are the total fees that traders will pay on your DEX. The Orderly base fee varies by tier (Public: 3.00 bps taker, Diamond: 1.00 bps taker). Your revenue = Your Custom Fee - Base Fee. Improve your tier through the Builder Staking Programme to reduce the base fee and increase your revenue.",
   "feeConfigWithCalculator.noteTotalFeesTrans":
     "<0>Note:</0> These are the total fees that traders will pay on your DEX. The Orderly base fee varies by tier (Public: 3.00 bps taker, Diamond: 1.00 bps taker). Your revenue = Your Custom Fee - Base Fee. Improve your tier through the <1>Builder Staking Programme</1> to reduce the base fee and increase your revenue.",
   "feeConfigWithCalculator.revenueCalculator": "Revenue Calculator",
@@ -1673,9 +1653,6 @@ export const components = {
   "serviceRestrictionsSection.restrictedRegions": "Restricted Regions",
   "serviceRestrictionsSection.restrictedRegionsDesc":
     "Select regions that should be restricted from accessing your DEX.",
-  "serviceRestrictionsSection.whitelistedIps": "Whitelisted IP Ranges",
-  "serviceRestrictionsSection.whitelistedIpsDesc":
-    "IP ranges that can bypass region restrictions (CIDR notation, e.g., 192.168.1.0/24)",
 
   // GraduationForm
   "graduationForm.brokerIdCreated": "Broker ID Created!",
@@ -1808,8 +1785,6 @@ export const components = {
   "graduationForm.switchingToCorrectNetworkForMultisig":
     "Switching to the correct network for this multisig address",
   "graduationForm.unknownErrorOccurred": "Unknown error occurred",
-  "graduationForm.brokerIdCreatedDescription":
-    "Your broker ID <0>{{brokerId}}</0> has been created. Complete the final step to start earning fees.",
   "graduationForm.multisigFeeWithdrawalTitle": "Multisig Fee Withdrawal",
   "graduationForm.multisigFeeWithdrawalDescription":
     "Since you're using a multisig wallet as your admin wallet, use the withdrawal modal below to transfer fees from your Orderly account to your Safe wallet.",
@@ -1832,11 +1807,7 @@ export const components = {
   "graduationForm.orderlyMakerFee": "Orderly Maker Fee",
   "graduationForm.orderlyTakerFee": "Orderly Taker Fee",
   "graduationForm.lastUpdated": "Last updated",
-  "graduationForm.tierBenefitsDescription":
-    "<0>Tier Benefits:</0> Higher tiers reduce the fees Orderly charges you, allowing you to earn higher fees yourself. Stake more ORDER tokens or increase trading volume to upgrade your tier.",
   "graduationForm.adminWalletStakingTitle": "Important: Admin Wallet Staking",
-  "graduationForm.adminWalletStakingDescriptionMultisig":
-    "ORDER tokens must be staked on your admin wallet (your multisig: <0>{{address}}</0>) to count towards your broker tier. Staking on other addresses will not improve your tier.",
   "graduationForm.adminWalletStakingDescriptionEoa":
     "ORDER tokens must be staked on your admin wallet (your connected EOA wallet) to count towards your broker tier. Staking on other addresses will not improve your tier.",
   "graduationForm.dailyTierUpdatesTitle": "Daily Tier Updates",
@@ -2033,6 +2004,7 @@ export const components = {
   "navigation.board": "Board",
   "navigation.caseStudies": "Case Studies",
   "navigation.distributor": "Distributor",
+  "navigation.menuOrder": "Menu Order",
   "navigation.myDex": "My DEX",
 
   // imageUtils (utils/imageUtils.ts)

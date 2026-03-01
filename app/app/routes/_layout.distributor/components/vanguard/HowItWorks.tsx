@@ -28,7 +28,7 @@ export function HowItWorks() {
       <div className="flex flex-col gap-5 max-w-[1088px] mx-auto px-5 lg:px-0">
         <div className="mb-6 flex flex-col items-center text-center gap-2">
           <h2 className="text-[32px] font-semibold leading-[1.2]">
-            {t("distributor.howItWorks")}
+            {t("common.howItWorks")}
           </h2>
           <p className="text-base-contrast/54 text-lg">
             {t("distributor.signUpThreeSteps")}

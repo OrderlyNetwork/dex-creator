@@ -70,7 +70,7 @@ const RevenueShareDetailsModalUI: React.FC<RevenueShareDetailsModalUIProps> = ({
         }}
         title={t("distributor.revenueShareDetails")}
         onCancel={onClose}
-        cancelText={t("distributor.close")}
+        cancelText={t("common.close")}
         contentClassName="w-[900px]"
         footer={null}
       >
@@ -102,7 +102,7 @@ const RevenueShareDetailsModalUI: React.FC<RevenueShareDetailsModalUIProps> = ({
             </div>
             <div>
               <div className="mb-1 text-sm font-medium leading-[125%] text-base-contrast-54">
-                {t("distributor.period")}
+                {t("common.period")}
               </div>
               <div className="text-sm font-medium leading-[125%] flex flex-col">
                 {(() => {

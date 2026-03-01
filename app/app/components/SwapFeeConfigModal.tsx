@@ -247,7 +247,7 @@ export default function SwapFeeConfigModal({
 
         <div className="flex gap-3 justify-end">
           <Button variant="secondary" onClick={onClose}>
-            {t("swapFeeConfigModal.cancel")}
+            {t("common.cancel")}
           </Button>
           <Button variant="primary" onClick={handleSave}>
             {t("swapFeeConfigModal.saveConfiguration")}

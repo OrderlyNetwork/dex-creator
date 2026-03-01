@@ -118,7 +118,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
               disabled={!isOptional && !isStepContentValidTest}
               isLoading={isValidating}
             >
-              {t("accordionItem.next")}
+              {t("common.next")}
             </Button>
           </div>
         </div>

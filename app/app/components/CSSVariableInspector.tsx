@@ -478,14 +478,14 @@ const CSSVariableInspector: FC<CSSVariableInspectorProps> = ({
                           className="text-xs text-primary-light hover:text-primary-light/80 transition-colors"
                           type="button"
                         >
-                          {t("cssVariableInspector.edit")}
+                          {t("common.edit")}
                         </button>
                         <button
                           onClick={() => handleRuleDelete(index)}
                           className="text-xs text-red-400 hover:text-red-300 transition-colors"
                           type="button"
                         >
-                          {t("cssVariableInspector.delete")}
+                          {t("common.delete")}
                         </button>
                       </div>
                     )}
@@ -507,7 +507,7 @@ const CSSVariableInspector: FC<CSSVariableInspectorProps> = ({
                           size="xs"
                           type="button"
                         >
-                          {t("cssVariableInspector.save")}
+                          {t("common.save")}
                         </Button>
                         <Button
                           onClick={handleCancel}
@@ -515,7 +515,7 @@ const CSSVariableInspector: FC<CSSVariableInspectorProps> = ({
                           size="xs"
                           type="button"
                         >
-                          {t("cssVariableInspector.cancel")}
+                          {t("common.cancel")}
                         </Button>
                       </div>
                     </div>
@@ -587,7 +587,7 @@ const CSSVariableInspector: FC<CSSVariableInspectorProps> = ({
                       className="text-xs text-primary-light hover:text-primary-light/80 transition-colors"
                       type="button"
                     >
-                      {t("cssVariableInspector.edit")}
+                      {t("common.edit")}
                     </button>
                   )}
                 </div>
@@ -634,7 +634,7 @@ const CSSVariableInspector: FC<CSSVariableInspectorProps> = ({
                         size="xs"
                         type="button"
                       >
-                        {t("cssVariableInspector.save")}
+                        {t("common.save")}
                       </Button>
                       <Button
                         onClick={handleCancel}
@@ -642,7 +642,7 @@ const CSSVariableInspector: FC<CSSVariableInspectorProps> = ({
                         size="xs"
                         type="button"
                       >
-                        {t("cssVariableInspector.cancel")}
+                        {t("common.cancel")}
                       </Button>
                     </div>
                   </div>

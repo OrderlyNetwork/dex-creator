@@ -135,7 +135,7 @@ export default function ConfirmationModal({
 
         <div className="flex gap-3 justify-end">
           <Button variant="ghost" onClick={onClose} disabled={isLoading}>
-            {cancelButtonText ?? t("confirmationModal.cancel")}
+            {cancelButtonText ?? t("common.cancel")}
           </Button>
           <Button
             variant={confirmButtonVariant}

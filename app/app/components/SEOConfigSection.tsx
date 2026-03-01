@@ -194,7 +194,7 @@ export default function SEOConfigSection({
                     className="px-2 py-1 text-xs text-gray-400 hover:text-gray-300 transition-colors"
                     title={t("seoConfigSection.clearThemeColor")}
                   >
-                    {t("seoConfigSection.clear")}
+                    {t("common.clear")}
                   </button>
                 )}
               </div>

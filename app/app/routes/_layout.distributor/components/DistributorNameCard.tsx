@@ -99,7 +99,7 @@ export const DistributorNameCard = (props: DistributorNameCardProps) => {
           onClick={handleUpdateAmbassadorName}
           isLoading={isMutating}
         >
-          {t("distributor.confirm")}
+          {t("common.confirm")}
         </Button>
       </div>
     </Card>

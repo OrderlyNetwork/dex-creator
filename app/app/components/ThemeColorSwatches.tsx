@@ -164,7 +164,7 @@ export default function ThemeColorSwatches({
             isValid
               ? t("themeColorSwatches.clickToEditColor", { displayName })
               : storedValue === null
-                ? t("themeColorSwatches.clickToSetColor", { displayName })
+                ? t("theme.clickToSetDisplayname", { displayName })
                 : t("themeColorSwatches.invalidCssFormat", { displayName })
           }
         >

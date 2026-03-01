@@ -962,7 +962,7 @@ export default function ImageCropModal({
 
           <div className="flex gap-3 justify-end mt-6">
             <Button variant="ghost" onClick={onClose} disabled={isLoading}>
-              {t("imageCropModal.cancel")}
+              {t("common.cancel")}
             </Button>
             <Button
               variant="primary"

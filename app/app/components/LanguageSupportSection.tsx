@@ -83,7 +83,7 @@ export default function LanguageSupportSection({
         >
           {allSelected
             ? t("languageSupportSection.unselectAll")
-            : t("languageSupportSection.selectAll")}
+            : t("common.selectAll")}
         </button>
       </div>
 

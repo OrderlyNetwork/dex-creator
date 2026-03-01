@@ -251,7 +251,7 @@ export default function DexConfigRoute() {
           </h1>
           <Card>
             <h2 className="text-lg md:text-xl font-medium mb-3 md:mb-4">
-              {t("dex.config.authRequired")}
+              {t("common.authenticationRequired")}
             </h2>
             <p className="mb-4 md:mb-6 text-sm md:text-base text-gray-300">
               {t("dex.config.authRequiredHint")}
@@ -274,7 +274,7 @@ export default function DexConfigRoute() {
           </h1>
           <Card>
             <h2 className="text-lg md:text-xl font-medium mb-3 md:mb-4">
-              {t("dex.config.noDexFound")}
+              {t("error.noDexFound")}
             </h2>
             <p className="mb-4 md:mb-6 text-sm md:text-base text-gray-300">
               {t("dex.config.createDexFirst")}

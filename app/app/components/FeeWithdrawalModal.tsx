@@ -220,7 +220,7 @@ export function FeeWithdrawalModal({
                 ) : usdcBalance !== null ? (
                   <>
                     <span className="text-xs text-gray-400">
-                      {t("feeWithdrawalModal.available")}:{" "}
+                      {t("common.available")}:{" "}
                       {usdcBalance.toFixed(2)} USDC
                     </span>
                     <button

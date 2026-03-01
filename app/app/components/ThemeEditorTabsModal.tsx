@@ -57,7 +57,7 @@ const ThemeEditorTabsModal: FC<ThemeEditorTabsModalProps> = ({
             {t("themeEditorTabsModal.title")}
           </h2>
           <Button onClick={onClose} variant="secondary" size="sm" type="button">
-            {t("themeEditorTabsModal.close")}
+            {t("common.close")}
           </Button>
         </div>
         <div className="flex-1 overflow-auto p-4">
@@ -88,7 +88,7 @@ const ThemeEditorTabsModal: FC<ThemeEditorTabsModalProps> = ({
             size="sm"
             type="button"
           >
-            {t("themeEditorTabsModal.applyChanges")}
+            {t("common.applyChanges")}
           </Button>
         </div>
       </div>

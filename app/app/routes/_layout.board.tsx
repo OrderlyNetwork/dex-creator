@@ -174,7 +174,7 @@ export default function BoardRoute() {
       case "pnl":
         return t("board.sortPnl");
       case "fee":
-        return t("board.sortFees");
+        return t("board.fees");
     }
   };
 
@@ -261,7 +261,7 @@ export default function BoardRoute() {
             {/* Time Period Dropdown */}
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-300">
-                {t("board.period")}:
+                {t("common.period")}:
               </span>
               {/* <select
                 value={timePeriod}
@@ -307,7 +307,7 @@ export default function BoardRoute() {
                 }
                 width={16}
               />
-              {t("board.refresh")}
+              {t("common.refresh")}
             </button>
           </div>
         </div>
@@ -372,7 +372,7 @@ export default function BoardRoute() {
             pageSize={pageSize}
             totalItems={totalItems}
             onPageChange={handlePageChange}
-            itemName={t("board.paginationItemName")}
+            itemName={t("common.dexs")}
             showPageSizeSelector={false}
           />
         )}
@@ -400,7 +400,7 @@ export default function BoardRoute() {
           <div className="grid md:grid-cols-2 gap-6 text-sm text-gray-300">
             <div>
               <h4 className="font-medium text-white mb-2 underline">
-                {t("board.aboutHowItWorks")}
+                {t("common.howItWorks")}
               </h4>
               <p>{t("board.aboutHowItWorksDescription")}</p>
             </div>

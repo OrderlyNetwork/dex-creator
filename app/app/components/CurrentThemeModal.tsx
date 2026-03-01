@@ -109,10 +109,10 @@ const CurrentThemeModal: FC<CurrentThemeModalProps> = ({
       <div className="bg-background-card border border-light/20 rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
         <div className="flex items-center justify-between p-4 border-b border-light/10">
           <h2 className="text-lg font-bold text-gray-200">
-            {t("currentThemeModal.title")}
+            {t("theme.currentTheme")}
           </h2>
           <Button onClick={onClose} variant="secondary" size="sm" type="button">
-            {t("currentThemeModal.close")}
+            {t("common.close")}
           </Button>
         </div>
         <div className="flex-1 overflow-auto p-4">
@@ -133,8 +133,8 @@ const CurrentThemeModal: FC<CurrentThemeModalProps> = ({
                     }
                   ></div>
                   {showThemeEditor
-                    ? t("currentThemeModal.hideEditor")
-                    : t("currentThemeModal.editCss")}
+                    ? t("theme.hideEditor")
+                    : t("theme.editCss")}
                 </span>
               </Button>
             </div>
@@ -148,7 +148,7 @@ const CurrentThemeModal: FC<CurrentThemeModalProps> = ({
                   handleThemeEditorChange(e.target.value)
                 }
                 className="w-full h-80 bg-black/80 text-xs text-gray-300 font-mono p-3 rounded border border-light/10"
-                placeholder={t("currentThemeModal.editCssPlaceholder")}
+                placeholder={t("theme.editYourCssTheme")}
               />
             </div>
           )}
@@ -162,8 +162,8 @@ const CurrentThemeModal: FC<CurrentThemeModalProps> = ({
               >
                 <span>
                   {viewCssCode
-                    ? t("currentThemeModal.hideCssCode")
-                    : t("currentThemeModal.viewCssCode")}
+                    ? t("theme.hideCssCode")
+                    : t("theme.viewCssCode")}
                 </span>
                 <div
                   className={`i-mdi:chevron-down h-4 w-4 ml-1 transition-transform ${viewCssCode ? "rotate-180" : ""}`}
@@ -212,7 +212,7 @@ const CurrentThemeModal: FC<CurrentThemeModalProps> = ({
               size="sm"
               type="button"
             >
-              {t("currentThemeModal.reset")}
+              {t("common.reset")}
             </Button>
           </div>
           <Button
@@ -221,7 +221,7 @@ const CurrentThemeModal: FC<CurrentThemeModalProps> = ({
             size="sm"
             type="button"
           >
-            {t("currentThemeModal.applyChanges")}
+            {t("common.applyChanges")}
           </Button>
         </div>
       </div>

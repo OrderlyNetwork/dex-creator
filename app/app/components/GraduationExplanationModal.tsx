@@ -158,7 +158,7 @@ export default function GraduationExplanationModal({
             >
               <span className="flex items-center gap-2">
                 <div className="i-mdi:rocket-launch h-4 w-4"></div>
-                {t("graduationExplanationModal.graduateNow")}
+                {t("common.graduateNow")}
               </span>
             </Button>
           </div>

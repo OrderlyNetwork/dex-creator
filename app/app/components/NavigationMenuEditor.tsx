@@ -314,7 +314,7 @@ const NavigationMenuEditor: React.FC<NavigationMenuEditorProps> = ({
         <>
           <div className="flex items-center justify-between">
             <div className="text-base font-bold">
-              {t("navigationMenuEditor.menuOrder")}
+              {t("navigation.menuOrder")}
             </div>
             <div className="text-xs text-gray-400">
               {t("navigationMenuEditor.dragItemsToReorder")}

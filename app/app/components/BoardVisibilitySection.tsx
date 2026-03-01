@@ -89,7 +89,7 @@ const BoardVisibilitySection: React.FC<BoardVisibilitySectionProps> = ({
       {isUpdating && (
         <div className="flex items-center gap-2 text-xs text-gray-400">
           <div className="i-svg-spinners:pulse-rings-multiple h-4 w-4"></div>
-          {t("dexCard.visibility.updating")}
+          {t("common.updating")}
         </div>
       )}
     </div>

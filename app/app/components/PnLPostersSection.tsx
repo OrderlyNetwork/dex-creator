@@ -188,7 +188,7 @@ export default function PnLPostersSection({
               className={`h-4 w-4 ${showPreview ? "i-mdi:eye-off-outline" : "i-mdi:eye-outline"}`}
             ></div>
             {showPreview
-              ? t("pnlPostersSection.hide")
+              ? t("common.hide")
               : t("pnlPostersSection.preview")}{" "}
             {t("pnlPostersSection.pnlSharing")}
           </span>

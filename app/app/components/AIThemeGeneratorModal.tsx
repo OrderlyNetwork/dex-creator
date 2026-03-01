@@ -42,10 +42,10 @@ const AIThemeGeneratorModal: FC<AIThemeGeneratorModalProps> = ({
       <div className="bg-background-card border border-light/20 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
         <div className="flex items-center justify-between p-4 border-b border-light/10">
           <h2 className="text-lg font-bold text-gray-200">
-            {t("aiThemeGeneratorModal.title")}
+            {t("theme.aiThemeGenerator")}
           </h2>
           <Button onClick={onClose} variant="secondary" size="sm" type="button">
-            {t("aiThemeGeneratorModal.close")}
+            {t("common.close")}
           </Button>
         </div>
         <div className="flex-1 overflow-auto p-4">
@@ -77,7 +77,7 @@ const AIThemeGeneratorModal: FC<AIThemeGeneratorModalProps> = ({
             </Card>
             <FormInput
               id="themePrompt"
-              label={t("aiThemeGeneratorModal.themeDescription")}
+              label={t("theme.themeDescription")}
               value={themePrompt}
               onChange={e => setThemePrompt(e.target.value)}
               placeholder={t("aiThemeGeneratorModal.placeholder")}
@@ -104,7 +104,7 @@ const AIThemeGeneratorModal: FC<AIThemeGeneratorModalProps> = ({
           >
             <span className="flex items-center gap-1">
               <div className="i-mdi:magic-wand h-4 w-4"></div>
-              {t("aiThemeGeneratorModal.generateTheme")}
+              {t("theme.generateTheme")}
             </span>
           </Button>
         </div>

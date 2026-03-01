@@ -67,7 +67,7 @@ export default function TradingViewLicenseAcknowledgmentModal({
               <div className="i-mdi:check-circle text-success h-5 w-5 mt-0.5 flex-shrink-0"></div>
               <div>
                 <h4 className="text-base font-bold mb-1 text-success">
-                  {t("tradingViewLicenseAckModal.goodNews")}
+                  {t("tradingView.goodNewsItS")}
                 </h4>
                 <p className="text-sm text-gray-300">
                   {t("tradingViewLicenseAckModal.goodNewsDesc")}
@@ -78,7 +78,7 @@ export default function TradingViewLicenseAcknowledgmentModal({
 
           <div>
             <h4 className="text-base font-bold mb-3">
-              {t("tradingViewLicenseAckModal.whatYouNeed")}
+              {t("tradingView.whatYouNeedTo")}
             </h4>
             <ol className="text-sm text-gray-300 space-y-2 list-decimal list-inside">
               <li>
@@ -95,7 +95,7 @@ export default function TradingViewLicenseAcknowledgmentModal({
               </li>
               <li>{t("tradingViewLicenseAckModal.clickGetLibrary")}</li>
               <li>{t("tradingViewLicenseAckModal.fillOutForm")}</li>
-              <li>{t("tradingViewLicenseAckModal.waitForApproval")}</li>
+              <li>{t("tradingView.waitForApprovalUsually")}</li>
             </ol>
           </div>
 
@@ -104,13 +104,13 @@ export default function TradingViewLicenseAcknowledgmentModal({
               <div className="i-mdi:information-outline text-info h-5 w-5 mt-0.5 flex-shrink-0"></div>
               <div>
                 <h4 className="text-base font-bold mb-2 text-info">
-                  {t("tradingViewLicenseAckModal.importantNotes")}
+                  {t("tradingView.importantNotes")}
                 </h4>
                 <ul className="text-sm text-gray-300 space-y-1.5 list-disc list-inside">
                   <li>{t("tradingViewLicenseAckModal.ackNote1")}</li>
-                  <li>{t("tradingViewLicenseAckModal.ackNote2")}</li>
+                  <li>{t("tradingView.theLicenseApplicationIs")}</li>
                   <li>{t("tradingViewLicenseAckModal.ackNote3")}</li>
-                  <li>{t("tradingViewLicenseAckModal.ackNote4")}</li>
+                  <li>{t("tradingView.onceApprovedYourDex")}</li>
                 </ul>
               </div>
             </div>
@@ -154,7 +154,7 @@ export default function TradingViewLicenseAcknowledgmentModal({
           {/* Action Buttons */}
           <div className="flex gap-3 justify-end pt-2">
             <Button variant="secondary" onClick={onClose}>
-              {t("tradingViewLicenseAckModal.cancel")}
+              {t("common.cancel")}
             </Button>
             <Button
               variant="primary"

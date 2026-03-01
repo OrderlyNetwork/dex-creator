@@ -355,7 +355,7 @@ export default function ImagePaste({
             className="text-xs text-error hover:text-error/70 transition-colors"
             disabled={isProcessing}
           >
-            {t("imagePaste.clear")}
+            {t("common.clear")}
           </button>
         )}
       </div>

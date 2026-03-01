@@ -11,6 +11,7 @@ export const referral = {
   "referral.orderlyKeyRequired.createKey": "Create Orderly Key",
 
   // Page Title and Navigation
+  "referral.referralSettings": "Referral Settings",
   "referral.pageTitle": "Referral Settings",
   "referral.backToDexDashboard": "Back to DEX Dashboard",
   "referral.authRequired.title": "Authentication Required",
@@ -137,7 +138,6 @@ export const referral = {
   "referral.singleLevel.configTitle": "Auto Referral Configuration",
   "referral.singleLevel.configIntro":
     "Configure your automatic referral program settings. Users who meet the trading volume requirements will be automatically enrolled in your referral program.",
-  "referral.singleLevel.autoProgram.title": "Auto Referral Program",
   "referral.singleLevel.autoProgram.hint":
     "Enable automatic enrollment for users who meet trading requirements",
   "referral.singleLevel.requiredVolumeLabel": "Required Trading Volume (USDC)",
@@ -153,7 +153,6 @@ export const referral = {
   "referral.singleLevel.descriptionLabel": "Description",
   "referral.singleLevel.descriptionPlaceholder":
     "Describe your referral program...",
-  "referral.singleLevel.saveButton": "Save Settings",
   "referral.singleLevel.currentSettings": "Current Settings",
   "referral.singleLevel.tradingVolumeRequired": "Trading Volume Required:",
   "referral.singleLevel.maxRebateDisplay": "Max Rebate:",

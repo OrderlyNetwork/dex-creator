@@ -145,7 +145,7 @@ export const parseZodError = (errorResponse: any): string => {
     }
   }
 
-  return errorResponse.message || i18n.t("validation.errorOccurred");
+  return errorResponse.message || i18n.t("error.anErrorOccurred");
 };
 
 /**

@@ -6,7 +6,6 @@ export const admin = {
     'Are you sure you want to trigger a redeployment for "{{brokerName}}"?',
   "admin.redeployModal.warningMessage":
     "This will redeploy the DEX to GitHub Pages. The process may take several minutes to complete, but the current version will remain available during deployment.",
-  "admin.redeployModal.confirmButtonText": "Redeploy",
   "admin.redeploySuccess": "Redeployment triggered for {{brokerName}}",
   "admin.redeployError": "Failed to trigger redeployment",
   "admin.redeployErrorWithMessage":
@@ -17,27 +16,22 @@ export const admin = {
   "admin.loadAdminUsersError": "Failed to load admin users",
   "admin.selectDexToDelete": "Please select a DEX to delete",
   "admin.selectedDex": "Selected DEX",
-  "admin.deleteModal.title": "Delete DEX",
   "admin.deleteModal.message":
     'Are you sure you want to delete "{{dexName}}"? This action cannot be undone.',
   "admin.deleteModal.warningMessage":
     "Deleting this DEX will permanently remove all associated data from the system, including the GitHub repository. However, any deployed instances on GitHub Pages will remain active and must be manually disabled through GitHub.",
-  "admin.deleteModal.confirmButtonText": "Delete DEX",
   "admin.deleteSuccess": "DEX deleted successfully",
   "admin.unknownError": "An unknown error occurred",
   "admin.enterDexId": "Please enter a DEX ID",
   "admin.enterBrokerId": "Please enter a Broker ID",
-  "admin.updateBrokerModal.title": "Update Broker ID",
   "admin.updateBrokerModal.message":
     'Are you sure you want to update the broker ID for "{{dexName}}" from "{{currentBrokerId}}" to "{{newBrokerId}}"?',
   "admin.updateBrokerModal.warningMessage":
     "Updating the broker ID will affect the DEX's integration with the Orderly Network. This change will be immediate and may impact trading functionality.",
-  "admin.updateBrokerModal.confirmButtonText": "Update Broker ID",
   "admin.currentLabel": "Current",
   "admin.currentRepository": "Current Repository",
   "admin.brokerUpdatedSuccess": "Broker ID updated successfully",
   "admin.enterNewRepoName": "Please enter a new repository name",
-  "admin.renameRepoModal.title": "Rename Repository",
   "admin.renameRepoModal.message":
     'Are you sure you want to rename the repository for "{{dexName}}" from "{{currentRepoName}}" to "{{newRepoName}}"?',
   "admin.renameRepoModal.warningMessage":
@@ -87,19 +81,15 @@ export const admin = {
   "admin.searchDex": "Search DEX",
   "admin.searchPlaceholderBroker":
     "Search by DEX ID, broker name, or broker ID...",
-  "admin.unnamedDex": "Unnamed DEX",
   "admin.idLabel": "ID",
   "admin.currentBrokerIdLabel": "Current Broker ID",
   "admin.noDexsFound": "No DEXs found matching your search.",
-  "admin.searching": "Searching...",
   "admin.dexIdLabel": "DEX ID",
   "admin.newBrokerIdLabel": "New Broker ID",
   "admin.dexIdPlaceholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
   "admin.dexIdHelp": "Enter the UUID of the DEX to update",
   "admin.newBrokerIdPlaceholder": "new-broker-id",
   "admin.newBrokerIdHelp": "Enter the new broker ID (1-50 characters)",
-  "admin.updating": "Updating...",
-  "admin.renameRepository": "Rename Repository",
   "admin.renameRepoDescription":
     "Rename the GitHub repository for a DEX. This will update all references including the deployment URL.",
   "admin.searchPlaceholderRepo":
@@ -109,14 +99,12 @@ export const admin = {
   "admin.newRepoNamePlaceholder": "new-repo-name",
   "admin.newRepoNameHelp": "Lowercase letters, numbers, and hyphens only",
   "admin.renaming": "Renaming...",
-  "admin.deleteDex": "Delete DEX",
   "admin.dangerZoneDescription":
     "Danger zone! This tool will <0>permanently delete a DEX</0> and all associated data. This action <1>cannot be undone</1>.",
   "admin.searchPlaceholderDelete":
     "Search by wallet address, broker name, broker ID, or DEX ID...",
   "admin.dexIdOrSearchHelp":
     "Enter the DEX ID or use the search above to find a DEX",
-  "admin.deleting": "Deleting...",
   "admin.manualBrokerCreation": "Manual Broker Creation",
   "admin.manualBrokerDescription":
     "Create a broker ID manually for any user without requiring payment verification. A transaction hash must be provided as proof of some transaction, but it won't be validated.",
@@ -129,7 +117,6 @@ export const admin = {
     "DEX ID (auto-filled when selecting a DEX from search)",
   "admin.brokerIdHelp":
     "5-15 characters, lowercase letters, numbers, hyphens, and underscores only. Cannot contain 'orderly'",
-  "admin.brokerIdAvailable": "Broker ID is available",
   "admin.transactionHash": "Transaction Hash",
   "admin.txHashPlaceholder": "0x...",
   "admin.txHashHelp":
@@ -137,7 +124,6 @@ export const admin = {
   "admin.chainOptional": "Chain (Optional)",
   "admin.selectChainOptional": "Select chain (optional)",
   "admin.mainnet": "Mainnet",
-  "admin.testnet": "Testnet",
   "admin.chainHelp":
     "Select the chain where the transaction occurred (ORDER/USDC available chains)",
   "admin.tradingFeeConfig": "Trading Fee Configuration",
@@ -163,7 +149,6 @@ export const admin = {
   "admin.brokerIdCreatedSuccess": "Broker ID created successfully",
   "admin.brokerIdLabel": "Broker ID",
   "admin.noneLabel": "None",
-  "admin.walletLabel": "Wallet",
   "admin.fetchBrokerIdsError": "Failed to fetch broker IDs",
   "admin.transactionHashesLabel": "Transaction Hashes",
 };

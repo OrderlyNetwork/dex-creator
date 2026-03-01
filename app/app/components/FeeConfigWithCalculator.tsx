@@ -540,7 +540,7 @@ export const FeeConfigWithCalculator: React.FC<
               className="text-primary-light hover:text-primary flex items-center gap-1 text-sm"
             >
               {showFeeConfig
-                ? t("feeConfigWithCalculator.hide")
+                ? t("common.hide")
                 : t("feeConfigWithCalculator.configure")}
               <div
                 className={`i-mdi:chevron-right w-4 h-4 transition-transform ${showFeeConfig ? "rotate-90" : ""}`}
@@ -819,7 +819,7 @@ export const FeeConfigWithCalculator: React.FC<
                 {readOnly ? (
                   t("feeConfigWithCalculator.currentFeeStructure")
                 ) : (
-                  <>{t("feeConfigWithCalculator.currentFeeStructureColon")}:</>
+                  <>{t("feeConfigWithCalculator.currentFeeStructure")}:</>
                 )}
               </span>
             </div>

@@ -236,7 +236,7 @@ export function SwapFeeWithdrawalModal({
 
   const handleClaimFees = async (chainName: SwapFeeSupportedChainName) => {
     if (!walletClient || !address) {
-      toast.error(t("swapFeeWithdrawalModal.pleaseConnectWallet"));
+      toast.error(t("common.pleaseConnectYourWallet"));
       return;
     }
 

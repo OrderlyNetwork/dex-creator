@@ -24,7 +24,7 @@ export function useNavigationMenu() {
       },
       {
         path: "/case-studies",
-        title: t("navigation.caseStudies"),
+        title: t("caseStudies.title"),
       },
       {
         path: "/distributor",

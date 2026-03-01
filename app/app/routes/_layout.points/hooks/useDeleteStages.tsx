@@ -37,7 +37,7 @@ export function useDeleteStages(props: UseDeleteStagesProps) {
   const onDelete = () => {
     modal.confirm({
       title: t("points.delete.modal.title"),
-      okLabel: t("points.delete.modal.ok"),
+      okLabel: t("common.delete"),
       content: (
         <span className="text-warning">{t("points.delete.modal.content")}</span>
       ),

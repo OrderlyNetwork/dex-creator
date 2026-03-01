@@ -15,7 +15,6 @@ export const points = {
   "points.list.status.pending": "Ready to go",
   "points.list.status.active": "Ongoing",
   "points.list.status.completed": "Ended",
-  "points.list.time.recurring": "Recurring",
   "points.list.button.view": "View",
   "points.list.button.edit": "Edit",
   "points.list.button.delete": "Delete",
@@ -34,8 +33,6 @@ export const points = {
     "This default number will increase as more campaigns are created. The stage is mainly used to help organize and track data in the future.",
   "points.basic.description.label": "Description",
   "points.basic.description.placeholder": "Description...",
-  "points.basic.startDate.label": "Start Date (UTC)",
-  "points.basic.startDate.placeholder": "Select a date",
   "points.basic.startDate.help": "Starts at 00:00:00 UTC",
   "points.basic.endDate.label": "End Date (UTC)",
   "points.basic.endDate.tooltip":

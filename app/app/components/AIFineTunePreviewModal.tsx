@@ -146,7 +146,7 @@ const AIFineTunePreviewModal: FC<AIFineTunePreviewModalProps> = ({
             disabled={selectedVariant === "old"}
           >
             {selectedVariant === "old"
-              ? t("aiFineTunePreviewModal.selectVariant")
+              ? t("theme.selectAVariant")
               : t("aiFineTunePreviewModal.acceptChanges")}
           </Button>
         </div>

@@ -11,7 +11,9 @@
     "typechain": "typechain --target ethers-v6 --out-dir ./types './abi/**/*.json'",
     "export-en-json": "tsx scripts/export-en-json.ts",
     "sync-locales": "tsx scripts/sync-locales.ts",
-    "check-i18n-untranslated": "node scripts/check-i18n-untranslated.mjs --json"
+    "check-i18n-untranslated": "node scripts/check-i18n-untranslated.mjs --json",
+    "remove-unused-i18n-keys": "tsx scripts/remove-unused-i18n-keys.ts",
+    "consolidate-duplicate-i18n-keys": "tsx scripts/consolidate-duplicate-i18n-keys.ts"
   },
   "license": "MIT",
   "author": "Mario Reder <mario@orderly.network>",

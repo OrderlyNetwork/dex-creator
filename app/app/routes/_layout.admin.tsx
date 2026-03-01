@@ -180,7 +180,7 @@ export default function AdminRoute() {
       title: t("admin.redeployModal.title"),
       message: t("admin.redeployModal.message", { brokerName }),
       warningMessage: t("admin.redeployModal.warningMessage"),
-      confirmButtonText: t("admin.redeployModal.confirmButtonText"),
+      confirmButtonText: t("common.redeploy"),
       confirmButtonVariant: "primary",
       onConfirm: async () => {
         setRedeployingDexes(prev => new Set(prev).add(dexId));
@@ -484,10 +484,10 @@ export default function AdminRoute() {
     const dexName = t("admin.selectedDex");
 
     openModal("confirmation", {
-      title: t("admin.deleteModal.title"),
+      title: t("common.deleteDex"),
       message: t("admin.deleteModal.message", { dexName }),
       warningMessage: t("admin.deleteModal.warningMessage"),
-      confirmButtonText: t("admin.deleteModal.confirmButtonText"),
+      confirmButtonText: t("common.deleteDex"),
       confirmButtonVariant: "danger",
       isDestructive: true,
       onConfirm: async () => {
@@ -534,14 +534,14 @@ export default function AdminRoute() {
     const currentBrokerId = t("admin.currentLabel");
 
     openModal("confirmation", {
-      title: t("admin.updateBrokerModal.title"),
+      title: t("admin.updateBrokerId"),
       message: t("admin.updateBrokerModal.message", {
         dexName,
         currentBrokerId,
         newBrokerId: brokerId.trim(),
       }),
       warningMessage: t("admin.updateBrokerModal.warningMessage"),
-      confirmButtonText: t("admin.updateBrokerModal.confirmButtonText"),
+      confirmButtonText: t("admin.updateBrokerId"),
       confirmButtonVariant: "warning",
       onConfirm: async () => {
         setIsUpdatingBrokerId(true);
@@ -586,7 +586,7 @@ export default function AdminRoute() {
     const currentRepoName = t("admin.currentRepository");
 
     openModal("confirmation", {
-      title: t("admin.renameRepoModal.title"),
+      title: t("admin.renameRepoModal.confirmButtonText"),
       message: t("admin.renameRepoModal.message", {
         dexName,
         currentRepoName,
@@ -879,7 +879,7 @@ export default function AdminRoute() {
                       >
                         <div>
                           <div className="font-medium">
-                            {dex.brokerName || t("admin.unnamedDex")}
+                            {dex.brokerName || t("common.unnamedDex")}
                           </div>
                           <div className="text-xs text-gray-400">
                             {t("admin.idLabel")}: {dex.id.substring(0, 8)}...
@@ -909,7 +909,7 @@ export default function AdminRoute() {
                 <div className="text-center py-2">
                   <div className="i-svg-spinners:pulse-rings h-6 w-6 mx-auto text-primary-light/80"></div>
                   <p className="text-xs text-gray-300 mt-1">
-                    {t("admin.searching")}
+                    {t("common.searching")}
                   </p>
                 </div>
               )}
@@ -941,7 +941,7 @@ export default function AdminRoute() {
               type="submit"
               variant="primary"
               isLoading={isUpdatingBrokerId}
-              loadingText={t("admin.updating")}
+              loadingText={t("common.updating")}
               className="mt-2"
             >
               {t("admin.updateBrokerId")}
@@ -952,7 +952,7 @@ export default function AdminRoute() {
         {/* Rename Repository Section */}
         <div className="bg-light/5 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-light/10">
           <h2 className="text-xl font-medium mb-4">
-            {t("admin.renameRepository")}
+            {t("admin.renameRepoModal.confirmButtonText")}
           </h2>
           <p className="text-gray-400 text-sm mb-4">
             {t("admin.renameRepoDescription")}
@@ -984,7 +984,7 @@ export default function AdminRoute() {
                       >
                         <div>
                           <div className="font-medium">
-                            {dex.brokerName || t("admin.unnamedDex")}
+                            {dex.brokerName || t("common.unnamedDex")}
                           </div>
                           <div className="text-xs text-gray-400">
                             {t("admin.idLabel")}: {dex.id.substring(0, 8)}...
@@ -1017,7 +1017,7 @@ export default function AdminRoute() {
                 <div className="text-center py-2">
                   <div className="i-svg-spinners:pulse-rings h-6 w-6 mx-auto text-primary-light/80"></div>
                   <p className="text-xs text-gray-300 mt-1">
-                    {t("admin.searching")}
+                    {t("common.searching")}
                   </p>
                 </div>
               )}
@@ -1053,7 +1053,7 @@ export default function AdminRoute() {
               loadingText={t("admin.renaming")}
               className="mt-2"
             >
-              {t("admin.renameRepository")}
+              {t("admin.renameRepoModal.confirmButtonText")}
             </Button>
           </form>
         </div>
@@ -1063,7 +1063,7 @@ export default function AdminRoute() {
           <div className="flex items-center mb-4">
             <div className="i-mdi:alert-octagon text-error mr-2 h-6 w-6" />
             <h2 className="text-xl font-medium text-error">
-              {t("admin.deleteDex")}
+              {t("common.deleteDex")}
             </h2>
           </div>
           <p className="text-gray-400 text-sm mb-6">
@@ -1102,13 +1102,13 @@ export default function AdminRoute() {
                       >
                         <div>
                           <div className="font-medium">
-                            {dex.brokerName || t("admin.unnamedDex")}
+                            {dex.brokerName || t("common.unnamedDex")}
                           </div>
                           <div className="text-xs font-mono text-gray-400">
                             {t("admin.idLabel")}: {dex.id.substring(0, 8)}...
                           </div>
                           <div className="text-xs font-mono text-gray-400">
-                            {t("admin.walletLabel")}:{" "}
+                            {t("common.wallet")}:{" "}
                             {dex.user.address.substring(0, 8)}...
                             {dex.user.address.substring(
                               dex.user.address.length - 6
@@ -1134,7 +1134,7 @@ export default function AdminRoute() {
                 <div className="text-center py-2">
                   <div className="i-svg-spinners:pulse-rings h-6 w-6 mx-auto text-primary-light/80"></div>
                   <p className="text-xs text-gray-300 mt-1">
-                    {t("admin.searching")}
+                    {t("common.searching")}
                   </p>
                 </div>
               )}
@@ -1164,10 +1164,10 @@ export default function AdminRoute() {
               type="submit"
               variant="danger"
               isLoading={isDeleting}
-              loadingText={t("admin.deleting")}
+              loadingText={t("common.deleting")}
               className="mt-4 text-base font-semibold py-3"
             >
-              {t("admin.deleteDex")}
+              {t("common.deleteDex")}
             </Button>
           </form>
         </div>
@@ -1210,13 +1210,13 @@ export default function AdminRoute() {
                       >
                         <div>
                           <div className="font-medium">
-                            {dex.brokerName || t("admin.unnamedDex")}
+                            {dex.brokerName || t("common.unnamedDex")}
                           </div>
                           <div className="text-xs text-gray-400">
                             {t("admin.dexIdLabel")}: {dex.id.substring(0, 8)}...
                           </div>
                           <div className="text-xs text-gray-400">
-                            {t("admin.walletLabel")}:{" "}
+                            {t("common.wallet")}:{" "}
                             {dex.user.address.substring(0, 8)}...
                             {dex.user.address.substring(
                               dex.user.address.length - 6
@@ -1248,7 +1248,7 @@ export default function AdminRoute() {
                 <div className="text-center py-2">
                   <div className="i-svg-spinners:pulse-rings h-6 w-6 mx-auto text-success/80"></div>
                   <p className="text-xs text-gray-300 mt-1">
-                    {t("admin.searching")}
+                    {t("common.searching")}
                   </p>
                 </div>
               )}
@@ -1292,7 +1292,7 @@ export default function AdminRoute() {
             {!manualBrokerIdError && manualBrokerId && (
               <div className="mt-1 text-xs text-success flex items-center">
                 <span className="i-mdi:check-circle mr-1"></span>
-                {t("admin.brokerIdAvailable")}
+                {t("common.brokerIdIsAvailable")}
               </div>
             )}
 
@@ -1346,7 +1346,7 @@ export default function AdminRoute() {
                       </option>
                     ))}
                 </optgroup>
-                <optgroup label={t("admin.testnet")}>
+                <optgroup label={t("common.testnet")}>
                   {Object.values(ALL_CHAINS)
                     .filter(
                       chain =>

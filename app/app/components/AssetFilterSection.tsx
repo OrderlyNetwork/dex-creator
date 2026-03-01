@@ -156,7 +156,7 @@ const AssetFilterSection: React.FC<AssetFilterSectionProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h4 className="text-base font-bold mb-1">
-            {t("assetFilterSection.title")}
+            {t("assetFilterSection.assetFiltering")}
           </h4>
           <p className="text-xs text-gray-400">
             {t("assetFilterSection.description")}

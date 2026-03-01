@@ -289,7 +289,7 @@ export default function DexDetailRoute() {
                 className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors"
               >
                 <Icon icon="mdi:chart-line" width={20} />
-                {t("board.visitDex")}
+                {t("common.visitDex")}
               </a>
               {dexData.websiteUrl && (
                 <a
@@ -353,7 +353,7 @@ export default function DexDetailRoute() {
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-white">
-                  {t("board.volume")}
+                  {t("board.sortVolume")}
                 </h3>
                 <p className="text-sm text-gray-400">({timePeriodString})</p>
               </div>
@@ -443,7 +443,7 @@ export default function DexDetailRoute() {
                   className="text-primary"
                 />
                 <h3 className="text-xl font-semibold text-white">
-                  {t("board.tokenInformation")}
+                  {t("common.tokenInformation")}
                 </h3>
               </div>
               <div className="aspect-[3/4] sm:aspect-square md:aspect-[4/3] bg-gray-800 rounded-lg overflow-hidden">
@@ -478,7 +478,7 @@ export default function DexDetailRoute() {
                     className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                   >
                     <Icon icon="mdi:telegram" width={20} />
-                    {t("board.telegram")}
+                    {/* i18n-ignore */}{"Telegram"}
                   </a>
                 )}
                 {dexData.discordLink && (
@@ -489,7 +489,7 @@ export default function DexDetailRoute() {
                     className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
                   >
                     <Icon icon="mdi:discord" width={20} />
-                    {t("board.discord")}
+                    {/* i18n-ignore */}{"Discord"}
                   </a>
                 )}
                 {dexData.xLink && (
@@ -531,13 +531,13 @@ export default function DexDetailRoute() {
                         {t("board.tableDate")}
                       </th>
                       <th className="text-right py-3 px-2 text-gray-400">
-                        {t("board.tableVolume")}
+                        {t("board.sortVolume")}
                       </th>
                       <th className="text-right py-3 px-2 text-gray-400">
-                        {t("board.tableFees")}
+                        {t("board.fees")}
                       </th>
                       <th className="text-right py-3 px-2 text-gray-400">
-                        {t("board.tableRevenue")}
+                        {t("board.revenue")}
                       </th>
                       {/* <th className="text-right py-3 px-2 text-gray-400">
                         PnL

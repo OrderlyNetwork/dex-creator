@@ -226,7 +226,7 @@ export default function AllDexesList({
               <div className="text-center p-4">
                 <div className="i-svg-spinners:pulse-rings h-6 w-6 mx-auto text-primary-light mb-2"></div>
                 <p className="text-xs text-gray-300">
-                  {t("allDexesList.searching")}
+                  {t("common.searching")}
                 </p>
               </div>
             </div>
@@ -238,7 +238,7 @@ export default function AllDexesList({
             >
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-medium text-primary-light">
-                  {dex.brokerName || t("allDexesList.unnamedDex")} (ID:{" "}
+                  {dex.brokerName || t("common.unnamedDex")} (ID:{" "}
                   {dex.id.substring(0, 8)}...)
                 </h3>
                 <button
@@ -374,12 +374,12 @@ export default function AllDexesList({
                         customDomainOverrideDexId === dex.id ? (
                           <>
                             <div className="i-svg-spinners:pulse-rings h-3 w-3"></div>
-                            {t("allDexesList.updating")}
+                            {t("common.updating")}
                           </>
                         ) : (
                           <>
                             <div className="i-mdi:check h-3 w-3"></div>
-                            {t("allDexesList.update")}
+                            {t("common.update")}
                           </>
                         )}
                       </Button>
@@ -434,7 +434,7 @@ export default function AllDexesList({
                       onClick={() =>
                         copyToClipboard(
                           generateDeploymentUrl(dex.repoUrl!),
-                          t("allDexesList.deploymentUrlLabel")
+                          t("allDexesList.deploymentUrlHeading")
                         )
                       }
                       className="text-gray-400 hover:text-primary-light p-1 rounded ml-2 flex-shrink-0"
@@ -470,7 +470,7 @@ export default function AllDexesList({
                       ) : (
                         <>
                           <div className="i-mdi:rocket-launch h-3 w-3"></div>
-                          {t("allDexesList.redeploy")}
+                          {t("common.redeploy")}
                         </>
                       )}
                     </Button>
@@ -508,7 +508,7 @@ export default function AllDexesList({
                       onClick={() =>
                         copyToClipboard(
                           dex.themeCSS!,
-                          t("allDexesList.cssThemeLabel")
+                          t("allDexesList.cssTheme")
                         )
                       }
                       className="text-gray-400 hover:text-primary-light p-1 rounded"
@@ -540,7 +540,7 @@ export default function AllDexesList({
           totalItems={totalDexes}
           onPageChange={page => loadAllDexes(page, pageSize, searchTerm)}
           onPageSizeChange={size => loadAllDexes(1, size, searchTerm)}
-          itemName={t("allDexesList.itemName")}
+          itemName={t("common.dexs")}
         />
       )}
     </div>

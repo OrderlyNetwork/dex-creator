@@ -454,8 +454,8 @@ const EditModeModal: FC<EditModeModalProps> = ({
         <div className="flex items-center gap-4">
           <h2 className="text-lg font-bold text-gray-200">
             {viewMode === "desktop"
-              ? t("editModeModal.desktopPreview")
-              : t("editModeModal.mobilePreview")}
+              ? t("common.desktopPreview")
+              : t("common.mobilePreview")}
           </h2>
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-background-dark/50 border border-light/20">
             <div className="i-mdi:cursor-pointer h-4 w-4 text-gray-400"></div>
@@ -556,7 +556,7 @@ const EditModeModal: FC<EditModeModalProps> = ({
             </span>
           </Button>
           <Button onClick={onClose} variant="secondary" size="sm" type="button">
-            {t("editModeModal.close")}
+            {t("common.close")}
           </Button>
         </div>
       </div>

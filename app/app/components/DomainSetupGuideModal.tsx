@@ -80,7 +80,7 @@ function getNamecheapSteps(): Step[] {
     },
     {
       id: 2,
-      title: i18n.t("domainSetupGuideModal.namecheap.step2.title"),
+      title: i18n.t("domainSetupGuideModal.cloudflare.step2.title"),
       description: i18n.t("domainSetupGuideModal.namecheap.step2.description"),
       imageUrl: "/namecheap-registrar.webp",
       imageAlt: i18n.t("domainSetupGuideModal.namecheap.step2.imageAlt"),
@@ -105,7 +105,7 @@ function getNamecheapSteps(): Step[] {
     },
     {
       id: 5,
-      title: i18n.t("domainSetupGuideModal.namecheap.step5.title"),
+      title: i18n.t("domainSetupGuideModal.cloudflare.step5.title"),
       description: i18n.t("domainSetupGuideModal.namecheap.step5.description"),
       imageUrl: "/namecheap-dns.webp",
       imageAlt: i18n.t("domainSetupGuideModal.namecheap.step5.imageAlt"),
@@ -736,7 +736,7 @@ export default function DomainSetupGuideModal({
                     className="flex-1 sm:flex-none"
                   >
                     <span className="flex items-center gap-1">
-                      {t("domainSetupGuideModal.next")}
+                      {t("common.next")}
                       <div className="i-mdi:chevron-right h-4 w-4"></div>
                     </span>
                   </Button>

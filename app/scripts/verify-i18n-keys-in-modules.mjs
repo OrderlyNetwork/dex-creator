@@ -24,20 +24,28 @@ const KEY_IN_SOURCE_RE =
 const KEY_IN_MODULE_RE = /"([^"]+)"\s*:/g;
 
 function getChangedFiles(commit) {
-  const out = execSync(
-    `git show --name-only --pretty=format: ${commit}`,
-    { encoding: "utf-8", cwd: ROOT }
-  );
+  const out = execSync(`git show --name-only --pretty=format: ${commit}`, {
+    encoding: "utf-8",
+    cwd: ROOT,
+  });
   return out
     .trim()
     .split("\n")
-    .filter((f) => /\.(ts|tsx|js|jsx)$/.test(f) && !f.includes("/i18n/") && !/\.(test|spec)\./.test(f));
+    .filter(
+      f =>
+        /\.(ts|tsx|js|jsx)$/.test(f) &&
+        !f.includes("/i18n/") &&
+        !/\.(test|spec)\./.test(f)
+    );
 }
 
 function getFileContentAtCommit(commit, filePath) {
   try {
     // 转义 $ 等字符，避免 shell 展开（如 _layout.board_.$dexId.tsx）
-    const escaped = filePath.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\$/g, "\\$");
+    const escaped = filePath
+      .replace(/\\/g, "\\\\")
+      .replace(/"/g, '\\"')
+      .replace(/\$/g, "\\$");
     return execSync(`git show "${commit}:${escaped}"`, {
       encoding: "utf-8",
       cwd: ROOT,
@@ -103,12 +111,14 @@ function main() {
     }
   }
 
-  console.log(`Unique keys referenced in changed files: ${keysInSource.size}\n`);
+  console.log(
+    `Unique keys referenced in changed files: ${keysInSource.size}\n`
+  );
 
   const moduleKeys = loadAllModuleKeys();
   console.log(`Keys defined in i18n modules: ${moduleKeys.size}\n`);
 
-  const missing = [...keysInSource].filter((k) => !moduleKeys.has(k)).sort();
+  const missing = [...keysInSource].filter(k => !moduleKeys.has(k)).sort();
 
   if (missing.length === 0) {
     console.log("OK: All referenced keys exist in modules.");

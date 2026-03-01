@@ -24,7 +24,6 @@ export const dexCard = {
   "dexCard.description.placeholder":
     "Brief description of your DEX for the board page",
   "dexCard.description.helper": "Brief description for social media",
-  "dexCard.description.count": "{{count}}/150",
   "dexCard.banner.label": "Banner Image",
   "dexCard.banner.usePrimaryLogo": "Use Primary Logo",
   "dexCard.banner.hint":
@@ -47,6 +46,7 @@ export const dexCard = {
   "dexCard.tokenChain.placeholder": "Search blockchain networks...",
   "dexCard.tokenChain.loadingNetworks": "Loading networks...",
   "dexCard.tokenChain.noNetworks": "No networks found",
+  "dexCard.socialMediaLinks": "Social Media Links",
   "dexCard.socialLinks.heading": "Social Media Links",
   "dexCard.socialLinks.description":
     "Optional: Add your social media links for enhanced board page display",
@@ -56,7 +56,6 @@ export const dexCard = {
   "dexCard.website.heading": "Website URL",
   "dexCard.website.description":
     "Optional: Add your DEX website URL for the board page",
-  "dexCard.website.label": "Website URL",
   "dexCard.website.helper":
     "This will be used as the main website link on your DEX card",
   "dexCard.preview.heading": "Board Page Preview",

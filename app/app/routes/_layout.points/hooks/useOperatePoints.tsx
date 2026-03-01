@@ -73,7 +73,7 @@ export function useOperatePoints(props: UseOperatePointsProps) {
     } catch (err) {
       console.error("Error creating campaign:", err);
       const errorMessage =
-        err instanceof Error ? err.message : t("points.operate.error");
+        err instanceof Error ? err.message : t("error.anErrorOccurred");
       toast.error(errorMessage);
       return err;
     }

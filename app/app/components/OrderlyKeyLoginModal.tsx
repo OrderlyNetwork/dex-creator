@@ -113,7 +113,7 @@ export default function OrderlyKeyLoginModal({
 
   const handleCreateKey = async () => {
     if (!walletClient || !address) {
-      toast.error(t("orderlyKeyLoginModal.connectWalletFirst"));
+      toast.error(t("common.pleaseConnectYourWallet"));
       return;
     }
 
@@ -294,7 +294,7 @@ export default function OrderlyKeyLoginModal({
                 onClick={handleCancel}
                 disabled={isCreating}
               >
-                {t("orderlyKeyLoginModal.cancel")}
+                {t("common.cancel")}
               </Button>
               {isOnCorrectChain ? (
                 <Button

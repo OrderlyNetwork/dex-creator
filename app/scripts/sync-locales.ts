@@ -54,9 +54,9 @@ function main() {
       const reordered: Record<string, unknown> = {};
 
       for (const key of enKeys) {
-        if (Object.prototype.hasOwnProperty.call(localeObj, key)) {
-          reordered[key] = localeObj[key];
-        }
+        reordered[key] = Object.prototype.hasOwnProperty.call(localeObj, key)
+          ? localeObj[key]
+          : enObj[key];
       }
 
       const keptKeys = Object.keys(reordered);

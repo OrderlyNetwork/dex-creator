@@ -214,7 +214,7 @@ const CustomMenuEditor: React.FC<CustomMenuEditorProps> = ({
             {/* Menu Order Header */}
             <div className="flex items-center justify-between">
               <div className="text-base font-bold text-gray-300">
-                {t("customMenuEditor.menuOrder")}
+                {t("navigation.menuOrder")}
               </div>
               <div className="text-xs text-gray-400">
                 {t("customMenuEditor.dragToReorder")}

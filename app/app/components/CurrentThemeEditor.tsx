@@ -39,7 +39,7 @@ const CurrentThemeEditor: React.FC<CurrentThemeEditorProps> = ({
           />
           <ThemeTabButton
             tab="fonts"
-            label={t("currentThemeEditor.tab.fonts")}
+            label={t("theme.fonts")}
           />
           <ThemeTabButton
             tab="rounded"
@@ -47,7 +47,7 @@ const CurrentThemeEditor: React.FC<CurrentThemeEditorProps> = ({
           />
           <ThemeTabButton
             tab="spacing"
-            label={t("currentThemeEditor.tab.spacing")}
+            label={t("theme.spacing")}
           />
           <ThemeTabButton
             tab="tradingview"

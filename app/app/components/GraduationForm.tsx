@@ -278,7 +278,7 @@ export function GraduationForm({
     }
 
     if (!address) {
-      toast.error(t("graduationForm.connectWalletFirst"));
+      toast.error(t("common.pleaseConnectYourWallet"));
       return;
     }
 
@@ -597,7 +597,7 @@ export function GraduationForm({
 
   const handleFinalizeAdminWallet = async () => {
     if (!address) {
-      toast.error(t("graduationForm.connectWalletFirst"));
+      toast.error(t("common.pleaseConnectYourWallet"));
       return;
     }
 
@@ -674,7 +674,7 @@ export function GraduationForm({
 
   const handleTransferOrder = async () => {
     if (!address) {
-      toast.error(t("graduationForm.connectWalletFirst"));
+      toast.error(t("common.pleaseConnectYourWallet"));
       return;
     }
 
@@ -1519,7 +1519,7 @@ export function GraduationForm({
         {!brokerIdError && brokerId && (
           <div className="mt-1 text-xs text-success flex items-center">
             <span className="i-mdi:check-circle mr-1"></span>
-            {t("graduationForm.brokerIdAvailable")}
+            {t("common.brokerIdIsAvailable")}
           </div>
         )}
 
@@ -1874,7 +1874,7 @@ export function GraduationForm({
                     className="text-primary-light hover:text-primary text-xs flex items-center"
                   >
                     <div className="i-mdi:content-copy w-3 h-3 mr-1"></div>
-                    {t("graduationForm.copy")}
+                    {t("common.copy")}
                   </button>
                 </div>
                 <div className="bg-background-dark/70 p-2 rounded overflow-hidden">

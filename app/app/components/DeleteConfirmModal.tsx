@@ -43,7 +43,7 @@ export default function DeleteConfirmModal({
       {/* Modal */}
       <div className="relative z-[1002] max-w-md p-6 rounded-xl bg-background-light border border-red-500/20 shadow-2xl slide-fade-in">
         <h3 className="text-xl font-bold mb-4 text-red-500">
-          {t("deleteConfirmModal.title", { entityName })}
+          {t("deleteConfirmModal.deleteButton", { entityName })}
         </h3>
 
         <div className="mb-6 space-y-4">
@@ -67,7 +67,7 @@ export default function DeleteConfirmModal({
 
         <div className="flex gap-3 justify-end">
           <Button variant="ghost" onClick={onClose} disabled={isLoading}>
-            {t("deleteConfirmModal.cancel")}
+            {t("common.cancel")}
           </Button>
           <Button
             variant="danger"
