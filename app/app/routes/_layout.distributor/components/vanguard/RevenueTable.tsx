@@ -2,47 +2,33 @@ import { useTranslation } from "~/i18n";
 
 export function RevenueTable() {
   const { t } = useTranslation();
-  const tierKey: Record<string, string> = {
-    Public: "distributor.tierPublic",
-    Silver: "distributor.tierSilver",
-    Gold: "distributor.tierGold",
-    Platinum: "distributor.tierPlatinum",
-    Diamond: "distributor.tierDiamond",
-  };
-  const stakeKey: Record<string, string> = {
-    "0 $ORDER": "distributor.stake0Order",
-    "100K $ORDER": "distributor.stake100kOrder",
-    "250K $ORDER": "distributor.stake250kOrder",
-    "2M $ORDER": "distributor.stake2mOrder",
-    "7M $ORDER": "distributor.stake7mOrder",
-  };
   const tiers = [
     {
-      tier: "Public",
+      tier: t("distributor.public"),
       stake: "0 $ORDER",
       vals: ["$100", "$750", "$4,500", "$100K", "$2M"],
       icon: "/distributor/tier-public.png",
     },
     {
-      tier: "Silver",
+      tier: t("distributor.silver"),
       stake: "100K $ORDER",
       vals: ["$250", "$750", "$4,500", "$100K", "$2M"],
       icon: "/distributor/tier-silver.png",
     },
     {
-      tier: "Gold",
+      tier: t("distributor.gold"),
       stake: "250K $ORDER",
       vals: ["$500", "$1,500", "$4,500", "$100K", "$2M"],
       icon: "/distributor/tier-gold.png",
     },
     {
-      tier: "Platinum",
+      tier: t("distributor.platinum"),
       stake: "2M $ORDER",
       vals: ["$1,000", "$3,000", "$9,000", "$100K", "$2M"],
       icon: "/distributor/tier-platinum.png",
     },
     {
-      tier: "Diamond",
+      tier: t("distributor.diamond"),
       stake: "7M $ORDER",
       vals: ["$2,000", "$6,000", "$18,000", "$200K", "$2M"],
       icon: "/distributor/tier-diamond.png",
@@ -89,7 +75,7 @@ export function RevenueTable() {
                     {/* Rows */}
                     {tiers.map((row, idx) => (
                       <div
-                        key={row.tier}
+                        key={idx}
                         className={`flex flex-nowrap items-center gap-4 px-6 py-6 ${
                           idx < 4 ? "mb-[2px]" : ""
                         }`}
@@ -104,10 +90,10 @@ export function RevenueTable() {
                           </div>
                           <div className="flex flex-col gap-1">
                             <span className="text-base text-base-contrast leading-[1.2]">
-                              {t(tierKey[row.tier])}
+                              {row.tier}
                             </span>
                             <span className="text-sm text-purple-light leading-[1.2]">
-                              {t(stakeKey[row.stake])}
+                              {row.stake}
                             </span>
                           </div>
                         </div>

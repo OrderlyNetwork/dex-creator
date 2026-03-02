@@ -5,36 +5,36 @@ export enum LocaleEnum {
   en = "en",
   /** Chinese */
   zh = "zh",
-  /** Japanese */
-  ja = "ja",
+  /** Traditional Chinese */
+  tc = "tc",
   /** Spanish */
   es = "es",
   /** Korean */
   ko = "ko",
-  /** Vietnamese */
-  vi = "vi",
-  /** German */
-  de = "de",
-  /** French */
-  fr = "fr",
-  /** Russian */
-  ru = "ru",
-  /** Indonesian */
-  id = "id",
-  /** Turkish */
-  tr = "tr",
-  /** Italian */
-  it = "it",
-  /** Portuguese */
-  pt = "pt",
-  /** Ukrainian */
-  uk = "uk",
-  /** Polish */
-  pl = "pl",
-  /** Dutch */
-  nl = "nl",
-  /** Traditional Chinese */
-  tc = "tc",
+  // /** Japanese */
+  // ja = "ja",
+  // /** Vietnamese */
+  // vi = "vi",
+  // /** German */
+  // de = "de",
+  // /** French */
+  // fr = "fr",
+  // /** Russian */
+  // ru = "ru",
+  // /** Indonesian */
+  // id = "id",
+  // /** Turkish */
+  // tr = "tr",
+  // /** Italian */
+  // it = "it",
+  // /** Portuguese */
+  // pt = "pt",
+  // /** Ukrainian */
+  // uk = "uk",
+  // /** Polish */
+  // pl = "pl",
+  // /** Dutch */
+  // nl = "nl",
 }
 
 export const defaultLanguages: Language[] = [
