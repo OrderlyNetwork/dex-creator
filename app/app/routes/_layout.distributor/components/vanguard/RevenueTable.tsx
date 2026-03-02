@@ -123,7 +123,7 @@ export function RevenueTable() {
                   Stake $ORDER tokens to unlock higher tiers immediately for
                   higher earnings.{" "}
                   <a
-                    href="https://orderly.network/docs/build-on-omnichain/user-flows/builder-staking-programme"
+                    href="https://orderly.network/docs/introduction/trade-on-orderly/trading-basics/trading-fees#builder-staking-programme"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-purple-light no-underline"

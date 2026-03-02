@@ -94,7 +94,7 @@ export const BaseFeeExplanation: FC = () => {
         <div className="flex justify-between items-center mb-3">
           <p className="font-medium text-white">What does this mean for you?</p>
           <a
-            href="https://orderly.network/docs/build-on-omnichain/user-flows/builder-staking-programme"
+            href="https://orderly.network/docs/introduction/trade-on-orderly/trading-basics/trading-fees#builder-staking-programme"
             target="_blank"
             rel="noopener noreferrer"
             className="text-primary-light hover:underline text-xs flex items-center"

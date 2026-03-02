@@ -182,7 +182,7 @@ export default function GraduationRoute() {
                   </a>
                   <div className="flex gap-2 mt-1">
                     <a
-                      href="https://orderly.network/docs/build-on-omnichain/user-flows/builder-staking-programme"
+                      href="https://orderly.network/docs/introduction/trade-on-orderly/trading-basics/trading-fees#builder-staking-programme"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-primary-light hover:text-primary inline-flex items-center text-sm"

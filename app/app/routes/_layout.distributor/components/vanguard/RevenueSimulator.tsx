@@ -212,7 +212,7 @@ export function RevenueSimulator() {
               </div>
               <div className="flex self-stretch gap-6 justify-start">
                 <a
-                  href="https://orderly.network/docs/build-on-omnichain/user-flows/builder-staking-programme"
+                  href="https://orderly.network/docs/introduction/trade-on-orderly/trading-basics/trading-fees#builder-staking-programme"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm font-medium leading-[1.2] text-purple-light"
