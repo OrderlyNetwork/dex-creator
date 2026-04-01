@@ -12,6 +12,10 @@ import { hydrateRoot } from "react-dom/client";
 import "virtual:uno.css";
 import "./styles/global.css";
 
+import { initSentryBrowser } from "./sentry.client";
+
+initSentryBrowser();
+
 startTransition(() => {
   hydrateRoot(document, <RemixBrowser />);
 });

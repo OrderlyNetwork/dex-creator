@@ -1,12 +1,18 @@
 import {
+  isRouteErrorResponse,
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
+  useMatches,
+  useRouteError,
 } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/node";
+import { captureRemixErrorBoundaryError, withSentry } from "@sentry/remix";
 import { HelmetProvider } from "react-helmet-async";
+import { useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import "./styles/global.css";
 
@@ -55,7 +61,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export default function App() {
+function App() {
   return (
     <html lang="en" className="h-full">
       <head>
@@ -95,6 +101,50 @@ export default function App() {
             }),
           }}
         />
+      </body>
+    </html>
+  );
+}
+
+export default withSentry(App, useEffect, useLocation, useMatches);
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  captureRemixErrorBoundaryError(error);
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <html lang="en" className="h-full">
+        <head>
+          <meta charSet="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <title>Error</title>
+        </head>
+        <body className="h-full p-6 font-sans">
+          <h1 className="text-xl font-semibold">
+            {error.status} {error.statusText}
+          </h1>
+          {typeof error.data === "string" ? (
+            <p className="mt-2 text-gray-600">{error.data}</p>
+          ) : null}
+        </body>
+      </html>
+    );
+  }
+
+  return (
+    <html lang="en" className="h-full">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Something went wrong</title>
+      </head>
+      <body className="h-full p-6 font-sans">
+        <h1 className="text-xl font-semibold">Something went wrong</h1>
+        <p className="mt-2 text-gray-600">
+          An unexpected error occurred. Please refresh the page or try again
+          later.
+        </p>
       </body>
     </html>
   );

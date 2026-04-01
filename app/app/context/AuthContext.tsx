@@ -5,6 +5,7 @@ import {
   ReactNode,
   useEffect,
 } from "react";
+import * as Sentry from "@sentry/remix";
 import { useAccount, useSignMessage, useDisconnect } from "wagmi";
 import { API_BASE_URL } from "../utils/wagmiConfig";
 import { toast } from "react-toastify";
@@ -46,6 +47,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { signMessageAsync } = useSignMessage();
   const { disconnect } = useDisconnect();
   useGoogleUserId(address);
+
+  useEffect(() => {
+    if (address) {
+      Sentry.setUser({ id: address });
+    } else {
+      Sentry.setUser(null);
+    }
+  }, [address]);
 
   const logout = useCallback(() => {
     setUser(null);
