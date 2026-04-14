@@ -69,6 +69,73 @@ export const distributor = {
   "distributor.heroSubtitle":
     "Refer builders to launch their perpetual DEX in ~10 minutes (no code required) and earn recurring revenue from trading fees.",
   "distributor.heroTitle": "Orderly distributor program",
+  "distributor.programme.heroBadge":
+    "Join our boosted distributor program - limited spots",
+  "distributor.programme.heroTitlePrefix": "Earn USDC by growing",
+  "distributor.programme.heroTitleHighlight": "Orderly",
+  "distributor.programme.heroSubtitleLine1":
+    "Refer builders. Earn from their volume.",
+  "distributor.programme.heroSubtitleLine2": "Every day. Forever.",
+  "distributor.programme.heroPrimaryCta": "Become a distributor",
+  "distributor.programme.heroSecondaryCta": "See the leaderboard",
+  "distributor.programme.howItWorksLabel": "How it works",
+  "distributor.programme.howItWorksHeading": "Three steps to recurring revenue",
+  "distributor.programme.step1Title": "Create your profile",
+  "distributor.programme.step1Desc":
+    "Connect your wallet and sign up as a distributor. Takes 2 minutes.",
+  "distributor.programme.step2Title": "Refer builders",
+  "distributor.programme.step2Desc":
+    "Share your link with projects that want to launch a DEX on Orderly.",
+  "distributor.programme.step3Title": "Earn daily USDC",
+  "distributor.programme.step3Desc":
+    "Every trade your builders generate earns you a fee spread. Paid daily. No cap.",
+  "distributor.programme.liveData": "Live data",
+  "distributor.programme.leaderboardHeading": "Distributor leaderboard",
+  "distributor.programme.leaderboardSubtitle":
+    "Real earnings from real distributors. Updated live.",
+  "distributor.programme.activeDistributors": "Active distributors",
+  "distributor.programme.volumeReferred30d": "30d volume referred",
+  "distributor.programme.revenuePaid30d": "30d revenue paid",
+  "distributor.programme.loadingLeaderboard": "Loading leaderboard...",
+  "distributor.programme.failedLeaderboard": "Could not load leaderboard",
+  "distributor.programme.emptyLeaderboard": "No leaderboard data available",
+  "distributor.programme.rank": "Rank",
+  "distributor.programme.distributor": "Distributor",
+  "distributor.programme.volume30d": "30d volume",
+  "distributor.programme.earnings30d": "30d earnings",
+  "distributor.programme.builders": "Builders",
+  "distributor.programme.leaderboardFootnote":
+    "Names anonymized. Earnings and volume are real, on-chain data.",
+  "distributor.programme.calculatorLabel": "Calculator",
+  "distributor.programme.calculatorHeading": "How much could you earn?",
+  "distributor.programme.totalDailyVolumeLabel":
+    "Total daily volume from your builders",
+  "distributor.programme.perDay": "/ day",
+  "distributor.programme.showAssumptions": "Show assumptions",
+  "distributor.programme.hideAssumptions": "Hide assumptions",
+  "distributor.programme.yourTier": "Your tier",
+  "distributor.programme.builderTier": "Builder tier",
+  "distributor.programme.takerRatio": "Taker ratio: {{ratio}}%",
+  "distributor.programme.estimatedMonthlyEarnings":
+    "Estimated monthly earnings",
+  "distributor.programme.paidDailyInUsdc": "Paid daily in USDC",
+  "distributor.programme.daily": "Daily",
+  "distributor.programme.annual": "Annual",
+  "distributor.programme.spreadNote": "Spread: {{spread}} bps {{suffix}}",
+  "distributor.programme.sameTierSuffix": "(same tier)",
+  "distributor.programme.takerVolumeSuffix": "(on taker vol)",
+  "distributor.programme.finalCtaHeading": "Ready to start earning?",
+  "distributor.programme.finalCtaSubtitle":
+    "Join the distributor network and build a recurring USDC income stream.",
+  "distributor.programme.benefitNoCostTitle": "No upfront cost",
+  "distributor.programme.benefitNoCostDesc": "Free to join and start referring",
+  "distributor.programme.benefitDailyPayoutTitle": "Daily USDC payouts",
+  "distributor.programme.benefitDailyPayoutDesc":
+    "Revenue paid every single day",
+  "distributor.programme.benefitPermanentTitle": "Permanent attribution",
+  "distributor.programme.benefitPermanentDesc":
+    "Your builders, your revenue, forever",
+  "distributor.programme.finalCtaButton": "Apply now",
   "distributor.historicalRevenueShare": "Historical revenue share",
   "distributor.historicalRevenueShareTooltip":
     "Your total revenue share to date from the Orderly Distributor Program.",

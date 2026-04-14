@@ -1,0 +1,119 @@
+@property --border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rotate-border {
+  from {
+    --border-angle: 0deg;
+  }
+  to {
+    --border-angle: 360deg;
+  }
+}
+
+@keyframes light-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  25% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.revenue-table-wrapper {
+  background: conic-gradient(
+    from var(--border-angle),
+    rgba(19, 21, 25, 1) 0%,
+    rgba(37, 23, 54, 1) 1.8507%,
+    rgba(55, 25, 82, 1) 3.6257%,
+    rgba(92, 30, 140, 1) 7.4028%,
+    rgba(128, 34, 197, 1) 11.1042%,
+    rgba(164, 38, 254, 1) 14.806%,
+    rgba(148, 64, 254, 1) 17.386%,
+    rgba(132, 90, 255, 1) 19.966%,
+    rgba(100, 141, 255, 1) 27.516%,
+    rgba(78, 178, 255, 1) 35.066%,
+    rgba(63, 139, 198, 1) 42.3695%,
+    rgba(19, 21, 25, 1) 49.673%,
+    rgba(19, 21, 25, 1) 100%
+  );
+  animation: rotate-border 4s linear infinite;
+}
+
+.tier-icon-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 70%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: translateX(-100%);
+  animation: light-sweep 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Hide scrollbar */
+.revenue-scroll-wrapper {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.revenue-scroll-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .revenue-sticky-col {
+    position: sticky;
+    left: 0;
+    margin-left: -24px;
+    padding-left: 24px;
+    background: #170b29;
+    z-index: 10;
+  }
+
+  .revenue-sticky-col::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -16px;
+    bottom: 0;
+    width: 16px;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.2), transparent);
+    pointer-events: none;
+  }
+
+  .revenue-scroll-container {
+    position: relative;
+  }
+
+  .revenue-scroll-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0px;
+    width: 90px;
+    background: linear-gradient(
+      90deg,
+      rgba(23, 11, 41, 0) 0%,
+      rgba(23, 11, 41, 1) 100%
+    );
+    pointer-events: none;
+    z-index: 3;
+  }
+}

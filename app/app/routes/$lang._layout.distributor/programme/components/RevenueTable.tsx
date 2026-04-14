@@ -1,141 +1,261 @@
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "~/i18n";
+import {
+  PROGRAMME_CONFIG,
+  anonymizeDistributor,
+  formatCompactCurrency,
+  formatCurrency,
+} from "./constants";
+import { useInViewOnce } from "./useInViewOnce";
+
+interface DistributorStatsRecord {
+  distributorName: string;
+  revenueShare30d: number;
+  inviteeVolume30d: number;
+  graduatedInvitees: number;
+}
+
+const parseStatsRecord = (raw: unknown): DistributorStatsRecord | null => {
+  if (!raw || typeof raw !== "object") {
+    return null;
+  }
+
+  const source = raw as Record<string, unknown>;
+  const revenueShare30d = Number(source["30D Revenue Share"]);
+  const inviteeVolume30d = Number(source["30D Invitee Volume"]);
+  const graduatedInvitees = Number(source["Number of Graduated Invitees"]);
+
+  if (
+    Number.isNaN(revenueShare30d) ||
+    Number.isNaN(inviteeVolume30d) ||
+    Number.isNaN(graduatedInvitees)
+  ) {
+    return null;
+  }
+
+  return {
+    distributorName: String(source["Distributor Name"] ?? ""),
+    revenueShare30d,
+    inviteeVolume30d,
+    graduatedInvitees,
+  };
+};
 
 export function RevenueTable() {
   const { t } = useTranslation();
-  const tiers = [
-    {
-      tier: t("distributor.public"),
-      stake: "0 $ORDER",
-      vals: ["$100", "$750", "$4,500", "$100K", "$2M"],
-      icon: "/distributor/tier-public.png",
-    },
-    {
-      tier: t("distributor.silver"),
-      stake: "100K $ORDER",
-      vals: ["$250", "$750", "$4,500", "$100K", "$2M"],
-      icon: "/distributor/tier-silver.png",
-    },
-    {
-      tier: t("distributor.gold"),
-      stake: "250K $ORDER",
-      vals: ["$500", "$1,500", "$4,500", "$100K", "$2M"],
-      icon: "/distributor/tier-gold.png",
-    },
-    {
-      tier: t("distributor.platinum"),
-      stake: "2M $ORDER",
-      vals: ["$1,000", "$3,000", "$9,000", "$100K", "$2M"],
-      icon: "/distributor/tier-platinum.png",
-    },
-    {
-      tier: t("distributor.diamond"),
-      stake: "7M $ORDER",
-      vals: ["$2,000", "$6,000", "$18,000", "$200K", "$2M"],
-      icon: "/distributor/tier-diamond.png",
-    },
-  ];
+  const { ref, isInView } = useInViewOnce<HTMLElement>();
+  const [records, setRecords] = useState<DistributorStatsRecord[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const loadLeaderboard = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(PROGRAMME_CONFIG.API_URL, {
+          headers: {
+            accept: "application/json",
+            "X-API-KEY": PROGRAMME_CONFIG.API_KEY,
+          },
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch distributor leaderboard");
+        }
+
+        const payload = await response.json();
+        if (!Array.isArray(payload)) {
+          throw new Error("Invalid leaderboard payload");
+        }
+
+        const parsed = payload
+          .map(parseStatsRecord)
+          .filter((item): item is DistributorStatsRecord => item !== null)
+          .filter(item => item.revenueShare30d > 0)
+          .sort((left, right) => right.revenueShare30d - left.revenueShare30d);
+
+        if (!controller.signal.aborted) {
+          setRecords(parsed);
+          setHasError(false);
+        }
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.error("Leaderboard request failed:", error);
+          setHasError(true);
+          setRecords(null);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    void loadLeaderboard();
+
+    return () => controller.abort();
+  }, []);
+
+  const stats = useMemo(() => {
+    if (!records || records.length === 0) {
+      return null;
+    }
+
+    const totalVolume = records.reduce(
+      (sum, item) => sum + item.inviteeVolume30d,
+      0
+    );
+    const totalRevenue = records.reduce(
+      (sum, item) => sum + item.revenueShare30d,
+      0
+    );
+
+    return [
+      {
+        label: t("distributor.programme.activeDistributors"),
+        value: String(records.length),
+        iconClass: "i-mdi:account-group-outline",
+      },
+      {
+        label: t("distributor.programme.volumeReferred30d"),
+        value: formatCompactCurrency(totalVolume),
+        iconClass: "i-mdi:trending-up",
+      },
+      {
+        label: t("distributor.programme.revenuePaid30d"),
+        value: formatCompactCurrency(totalRevenue),
+        iconClass: "i-mdi:wallet-outline",
+      },
+    ];
+  }, [records, t]);
 
   return (
-    <section className="py-16">
-      <div className="flex flex-col justify-center items-center gap-11 max-w-[1088px] mx-auto px-5 lg:px-0">
-        <div className="flex flex-col items-center gap-2 text-center">
-          <h2 className="text-[32px] font-semibold leading-[1.2]">
-            {t("distributor.monthlyRevenueByVolumeTier")}
-          </h2>
-        </div>
+    <section
+      id="leaderboard"
+      ref={ref}
+      className="vanguard-section section-pad vanguard-leaderboard-bg"
+    >
+      <div className="vanguard-content-wrap">
+        {isInView && (
+          <>
+            <header className="vanguard-section-header fade-up">
+              <p className="vanguard-section-label vanguard-section-label-green">
+                {t("distributor.programme.liveData")}
+              </p>
+              <h2 className="vanguard-section-heading">
+                {t("distributor.programme.leaderboardHeading")}
+              </h2>
+              <p className="vanguard-section-subheading">
+                {t("distributor.programme.leaderboardSubtitle")}
+              </p>
+            </header>
 
-        <div className="w-full relative rounded-[20px] p-[1px] overflow-hidden revenue-table-wrapper">
-          <div className="bg-purple-dark rounded-[19px] overflow-hidden w-full">
-            <div className="revenue-scroll-container">
-              <div className="overflow-x-auto revenue-scroll-wrapper">
-                <div className="min-w-[800px]">
-                  <div className="border-b border-line-6">
-                    <div className="flex flex-nowrap items-center gap-4 px-6 py-8">
-                      <div className="w-[200px] shrink-0 text-sm font-medium text-base-contrast/54 revenue-sticky-col leading-[1.2]">
-                        {t("distributor.tierStakedOrder")}
-                      </div>
-                      {[
-                        t("distributor.vol.10m"),
-                        t("distributor.vol.30m"),
-                        t("distributor.vol.90m"),
-                        t("distributor.vol.1b"),
-                        t("distributor.vol.10b"),
-                      ].map((label, idx) => (
-                        <div
-                          key={idx}
-                          className="flex-1 text-left text-sm font-medium text-base-contrast/54 leading-[1.2]"
-                        >
-                          {label}
-                        </div>
-                      ))}
-                    </div>
+            {stats && (
+              <div className="vanguard-stats-grid fade-up d2">
+                {stats.map(item => (
+                  <div key={item.label} className="vanguard-stats-card">
+                    <span className={`vanguard-stats-icon ${item.iconClass}`} />
+                    <p className="vanguard-stats-label">{item.label}</p>
+                    <p className="vanguard-stats-value">{item.value}</p>
                   </div>
+                ))}
+              </div>
+            )}
 
-                  <div className="flex flex-col">
-                    {/* Rows */}
-                    {tiers.map((row, idx) => (
-                      <div
-                        key={idx}
-                        className={`flex flex-nowrap items-center gap-4 px-6 py-6 ${
-                          idx < 4 ? "mb-[2px]" : ""
-                        }`}
-                      >
-                        <div className="flex items-center gap-4 w-[200px] shrink-0 revenue-sticky-col">
-                          <div className="w-8 h-8 shrink-0 relative rounded-full overflow-hidden tier-icon-wrapper">
-                            <img
-                              src={row.icon}
-                              alt={row.tier}
-                              className="w-full h-full block opacity-100"
-                            />
-                          </div>
-                          <div className="flex flex-col gap-1">
-                            <span className="text-base text-base-contrast leading-[1.2]">
-                              {row.tier}
-                            </span>
-                            <span className="text-sm text-purple-light leading-[1.2]">
-                              {row.stake}
-                            </span>
-                          </div>
-                        </div>
-                        {row.vals.map((v, i) => (
-                          <div
-                            key={i}
-                            className="flex-1 text-base text-[#1DF6B5]"
-                          >
-                            {v}
-                          </div>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
+            <div className="vanguard-table-shell fade-up d3">
+              {loading && (
+                <div className="vanguard-table-loading">
+                  <div className="vanguard-table-loading-bar" />
+                  <p>{t("distributor.programme.loadingLeaderboard")}</p>
                 </div>
-              </div>
+              )}
+
+              {!loading && hasError && (
+                <div className="vanguard-table-empty">
+                  {t("distributor.programme.failedLeaderboard")}
+                </div>
+              )}
+
+              {!loading && !hasError && records && records.length > 0 && (
+                <div className="vanguard-table-scroll">
+                  <table className="vanguard-lb-table">
+                    <thead>
+                      <tr>
+                        <th className="text-center">
+                          {t("distributor.programme.rank")}
+                        </th>
+                        <th>{t("distributor.programme.distributor")}</th>
+                        <th className="text-right">
+                          {t("distributor.programme.volume30d")}
+                        </th>
+                        <th className="text-right">
+                          {t("distributor.programme.earnings30d")}
+                        </th>
+                        <th className="text-right">
+                          {t("distributor.programme.builders")}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {records
+                        .slice(0, PROGRAMME_CONFIG.LEADERBOARD_LIMIT)
+                        .map((record, index) => {
+                          const rank = index + 1;
+                          const isTopThree = rank <= 3;
+                          const alias = anonymizeDistributor(index);
+
+                          return (
+                            <tr key={`${record.distributorName}-${rank}`}>
+                              <td
+                                className={`text-center vanguard-rank-cell ${isTopThree ? "is-top" : ""}`}
+                              >
+                                {rank}
+                              </td>
+                              <td>
+                                <div className="vanguard-alias-wrap">
+                                  <span
+                                    className={`vanguard-alias-icon ${isTopThree ? "is-top" : ""}`}
+                                  >
+                                    {alias
+                                      .split("-")
+                                      .map(fragment => fragment[0])
+                                      .join("")}
+                                  </span>
+                                  <span>{alias}</span>
+                                </div>
+                              </td>
+                              <td className="text-right vanguard-mono-text">
+                                {formatCompactCurrency(record.inviteeVolume30d)}
+                              </td>
+                              <td className="text-right vanguard-mono-text vanguard-green-text">
+                                {formatCurrency(record.revenueShare30d)}
+                              </td>
+                              <td className="text-right vanguard-mono-text">
+                                {record.graduatedInvitees}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {!loading && !hasError && records?.length === 0 && (
+                <div className="vanguard-table-empty">
+                  {t("distributor.programme.emptyLeaderboard")}
+                </div>
+              )}
             </div>
 
-            <div className="border-t border-line-6 p-6 flex flex-col gap-2">
-              <div className="flex items-center gap-4">
-                <div className="w-2 h-2 rounded-full shrink-0 bg-[linear-gradient(-36deg,#1DF6B5_0%,#86ED92_91%)]"></div>
-                <span className="text-xs text-base-contrast/54">
-                  {t("distributor.revenueTableFootnote1")}
-                </span>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="w-2 h-2 rounded-full shrink-0 bg-purple-light"></div>
-                <span className="text-xs text-base-contrast/54">
-                  {t("distributor.revenueTableFootnote2")}
-                  <a
-                    href="https://orderly.network/docs/introduction/trade-on-orderly/trading-basics/trading-fees#builder-staking-programme"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-purple-light no-underline"
-                  >
-                    {t("distributor.learnMore")}
-                  </a>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+            <p className="vanguard-footnote fade-up d4">
+              {t("distributor.programme.leaderboardFootnote")}
+            </p>
+          </>
+        )}
       </div>
     </section>
   );

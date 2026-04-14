@@ -1,60 +1,64 @@
 import { useTranslation } from "~/i18n";
+import { useInViewOnce } from "./useInViewOnce";
+
+interface StepItem {
+  iconClass: string;
+  title: string;
+  description: string;
+}
 
 export function HowItWorks() {
   const { t } = useTranslation();
-  const steps = [
+  const { ref, isInView } = useInViewOnce<HTMLElement>();
+
+  const steps: StepItem[] = [
     {
-      id: "step1",
-      icon: "/distributor/icon-create.svg",
-      title: t("distributor.step1CreateProfile"),
-      desc: t("distributor.step1Desc"),
+      iconClass: "i-mdi:account-plus-outline",
+      title: t("distributor.programme.step1Title"),
+      description: t("distributor.programme.step1Desc"),
     },
     {
-      id: "step2",
-      icon: "/distributor/icon-refer.svg",
-      title: t("distributor.step2ReferBuilders"),
-      desc: t("distributor.step2Desc"),
+      iconClass: "i-mdi:account-group-outline",
+      title: t("distributor.programme.step2Title"),
+      description: t("distributor.programme.step2Desc"),
     },
     {
-      id: "step3",
-      icon: "/distributor/icon-earn.svg",
-      title: t("distributor.step3EarnRevenueShare"),
-      desc: t("distributor.step3Desc"),
+      iconClass: "i-mdi:cash-multiple",
+      title: t("distributor.programme.step3Title"),
+      description: t("distributor.programme.step3Desc"),
     },
   ];
 
   return (
-    <section className="py-16">
-      <div className="flex flex-col gap-5 max-w-[1088px] mx-auto px-5 lg:px-0">
-        <div className="mb-6 flex flex-col items-center text-center gap-2">
-          <h2 className="text-[32px] font-semibold leading-[1.2]">
-            {t("common.howItWorks")}
-          </h2>
-          <p className="text-base-contrast/54 text-lg">
-            {t("distributor.signUpThreeSteps")}
-          </p>
-        </div>
-
-        <div className="flex gap-6 max-lg:flex-col">
-          {steps.map(step => (
-            <div
-              className="flex-1 flex flex-col gap-5 p-8 bg-purple-dark border border-line-6 rounded-[20px]"
-              key={step.id}
-            >
-              <div className="w-20 h-20">
-                <img src={step.icon} alt="" className="w-full h-full" />
-              </div>
-              <div className="flex flex-col gap-5">
-                <h3 className="text-[32px] font-medium leading-[1.2]">
-                  {step.title}
-                </h3>
-                <p className="text-sm text-base-contrast/54 leading-[1.4]">
-                  {step.desc}
-                </p>
-              </div>
+    <section ref={ref} className="vanguard-section section-pad">
+      <div className="vanguard-content-wrap">
+        {isInView && (
+          <>
+            <div className="vanguard-section-header fade-up">
+              <p className="vanguard-section-label">
+                {t("distributor.programme.howItWorksLabel")}
+              </p>
+              <h2 className="vanguard-section-heading">
+                {t("distributor.programme.howItWorksHeading")}
+              </h2>
             </div>
-          ))}
-        </div>
+            <div className="vanguard-steps-grid">
+              {steps.map((step, index) => (
+                <article
+                  key={step.title}
+                  className={`vanguard-step-card fade-up d${index + 2}`}
+                >
+                  <span className="vanguard-step-number">{`0${index + 1}`}</span>
+                  <div className="vanguard-step-icon-box">
+                    <span className={`vanguard-step-icon ${step.iconClass}`} />
+                  </div>
+                  <h3 className="vanguard-step-title">{step.title}</h3>
+                  <p className="vanguard-step-desc">{step.description}</p>
+                </article>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </section>
   );

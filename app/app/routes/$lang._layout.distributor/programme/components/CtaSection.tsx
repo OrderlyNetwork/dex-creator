@@ -1,57 +1,67 @@
-import { useAccount } from "wagmi";
-import { useAppKit } from "@reown/appkit/react";
-import { useModal } from "../../../../context/ModalContext";
-import { useAuth } from "../../../../context/useAuth";
 import { useTranslation } from "~/i18n";
+import { useDistributorCtaAction } from "./useDistributorCtaAction";
+import { useInViewOnce } from "./useInViewOnce";
 
 export function CtaSection() {
   const { t } = useTranslation();
-  const { isConnected } = useAccount();
-  const appKit = useAppKit();
-  const { openModal, closeModal } = useModal();
-  const { isAuthenticated, login } = useAuth();
-
-  const handleGetStarted = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (!isConnected) {
-      appKit?.open({
-        namespace: "eip155",
-        view: "Connect",
-      });
-    } else if (!isAuthenticated) {
-      openModal("login", {
-        onLogin: async () => {
-          try {
-            await login();
-            closeModal();
-          } catch (error) {
-            console.error("Login failed:", error);
-          }
-        },
-        onClose: () => {
-          closeModal();
-        },
-      });
-    }
-  };
+  const { ref, isInView } = useInViewOnce<HTMLElement>();
+  const { handleCtaClick } = useDistributorCtaAction();
 
   return (
-    <section className="py-16">
-      <div className="flex flex-col items-center gap-5 max-w-[1088px] mx-auto px-5 lg:px-0">
-        <div className="text-center flex flex-col items-center gap-2">
-          <h2 className="text-[32px] font-semibold leading-[1.2]">
-            {t("distributor.buildRecurringRevenueNow")}
-          </h2>
-          <p className="text-base-contrast/54 text-lg max-w-[800px] leading-[1.2]">
-            {t("distributor.ctaParagraph")}
-          </p>
-        </div>
-        <button
-          onClick={handleGetStarted}
-          className="flex justify-center items-center px-5 py-3 h-10 rounded-full border-0 cursor-pointer text-lg font-medium no-underline transition-opacity hover:opacity-90 bg-[linear-gradient(270deg,#48BDFF_0%,#786CFF_48%,#BD00FF_100%)] text-white"
-        >
-          {t("distributor.getStarted")}
-        </button>
+    <section
+      ref={ref}
+      className="vanguard-section section-pad vanguard-final-cta-section"
+    >
+      <div className="vanguard-final-cta-radial" />
+      <div className="vanguard-content-wrap vanguard-final-cta-wrap">
+        {isInView && (
+          <>
+            <header className="vanguard-section-header fade-up">
+              <h2 className="vanguard-section-heading">
+                {t("distributor.programme.finalCtaHeading")}
+              </h2>
+              <p className="vanguard-section-subheading">
+                {t("distributor.programme.finalCtaSubtitle")}
+              </p>
+            </header>
+
+            <div className="vanguard-benefits-grid fade-up d2">
+              <article className="vanguard-benefit-card">
+                <div className="vanguard-benefit-icon-wrap">
+                  <span className="vanguard-benefit-icon i-mdi:cash-remove" />
+                </div>
+                <h3>{t("distributor.programme.benefitNoCostTitle")}</h3>
+                <p>{t("distributor.programme.benefitNoCostDesc")}</p>
+              </article>
+
+              <article className="vanguard-benefit-card">
+                <div className="vanguard-benefit-icon-wrap">
+                  <span className="vanguard-benefit-icon i-mdi:cash-fast" />
+                </div>
+                <h3>{t("distributor.programme.benefitDailyPayoutTitle")}</h3>
+                <p>{t("distributor.programme.benefitDailyPayoutDesc")}</p>
+              </article>
+
+              <article className="vanguard-benefit-card">
+                <div className="vanguard-benefit-icon-wrap">
+                  <span className="vanguard-benefit-icon i-mdi:infinity" />
+                </div>
+                <h3>{t("distributor.programme.benefitPermanentTitle")}</h3>
+                <p>{t("distributor.programme.benefitPermanentDesc")}</p>
+              </article>
+            </div>
+
+            <div className="vanguard-final-cta-button-wrap fade-up d3">
+              <button
+                type="button"
+                onClick={handleCtaClick}
+                className="vanguard-btn vanguard-btn-primary vanguard-btn-lg"
+              >
+                {t("distributor.programme.finalCtaButton")}
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </section>
   );
