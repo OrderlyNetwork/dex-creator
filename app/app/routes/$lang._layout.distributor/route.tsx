@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useAuth } from "../../context/useAuth";
 import { CompleteAmbassadorProfile } from "./CompleteAmbassadorProfile";
-import { VanguardDistributorProgramme } from "./VanguardDistributorProgramme";
+import { VanguardDistributorProgramme } from "./programme/VanguardDistributorProgramme";
 import { CompleteBuilderProfile } from "./CompleteBuilderProfile";
 import { useOrderlyKey } from "../../context/OrderlyKeyContext";
 import { OrderlyKeyCard } from "./components/OrderlyKeyCard";

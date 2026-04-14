@@ -1,9 +1,9 @@
-import { HeroSection } from "./components/vanguard/HeroSection";
-import { RevenueTable } from "./components/vanguard/RevenueTable";
-import { RevenueSimulator } from "./components/vanguard/RevenueSimulator";
-import { CaseStudy } from "./components/vanguard/CaseStudy";
-import { HowItWorks } from "./components/vanguard/HowItWorks";
-import { CtaSection } from "./components/vanguard/CtaSection";
+import { HeroSection } from "./components/HeroSection";
+import { RevenueTable } from "./components/RevenueTable";
+import { RevenueSimulator } from "./components/RevenueSimulator";
+import { CaseStudy } from "./components/CaseStudy";
+import { HowItWorks } from "./components/HowItWorks";
+import { CtaSection } from "./components/CtaSection";
 import "./vanguard.css";
 
 export function VanguardDistributorProgramme() {
