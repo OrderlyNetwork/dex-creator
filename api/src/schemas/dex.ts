@@ -96,6 +96,11 @@ export const DexResponseSchema = z
       description: "Whether the DEX has graduated from demo",
       example: false,
     }),
+    integrationType: z.string().openapi({
+      description:
+        "Integration type: 'low_code' for hosted DEX, 'custom' for custom SDK/API integration",
+      example: "low_code",
+    }),
     showOnBoard: z.boolean().openapi({
       description: "Whether to show on public leaderboard",
       example: true,

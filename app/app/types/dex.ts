@@ -50,6 +50,7 @@ export interface DexData {
   tokenChain?: string | null;
   websiteUrl?: string | null;
   isGraduated?: boolean;
+  integrationType?: "low_code" | "custom";
   createdAt: string;
   updatedAt: string;
 }

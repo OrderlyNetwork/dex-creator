@@ -97,7 +97,8 @@ export async function verifyOrderTransaction(
   txHash: string,
   chain: string,
   userWalletAddress: string,
-  paymentType: "usdc" | "order" | "usdt" = "order"
+  paymentType: "usdc" | "order" | "usdt" = "order",
+  isCustom = false
 ): Promise<{ success: boolean; message: string; amount?: string }> {
   if (!(ACCEPTED_CHAINS as readonly string[]).includes(chain)) {
     return {
@@ -250,7 +251,9 @@ export async function verifyOrderTransaction(
       tokenDecimals
     );
 
-    const graduationFeeAmount = process.env.GRADUATION_USDC_AMOUNT;
+    const graduationFeeAmount = isCustom
+      ? process.env.GRADUATION_USDC_AMOUNT_CUSTOM
+      : process.env.GRADUATION_USDC_AMOUNT;
 
     if (!graduationFeeAmount) {
       return {

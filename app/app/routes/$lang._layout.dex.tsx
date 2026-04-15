@@ -43,6 +43,7 @@ export default function DexRoute() {
     clearDexData,
     isGraduationEligible,
     isGraduated,
+    isCustom,
     deploymentUrl: contextDeploymentUrl,
   } = useDex();
   const { openModal } = useModal();
@@ -554,7 +555,7 @@ export default function DexRoute() {
     </Card>
   );
 
-  const pointSystemCard = dexData && dexData.repoUrl && (
+  const pointSystemCard = dexData && (dexData.repoUrl || isCustom) && (
     <Card
       className={`my-6 ${
         isGraduated
@@ -599,7 +600,7 @@ export default function DexRoute() {
     </Card>
   );
 
-  const referralSettingsCard = dexData && dexData.repoUrl && (
+  const referralSettingsCard = dexData && (dexData.repoUrl || isCustom) && (
     <Card
       className={`my-6 ${
         isGraduated
@@ -676,9 +677,9 @@ export default function DexRoute() {
         </div>
       ) : (
         <div className="space-y-8">
-          <DexUpgrade dexData={dexData} token={token} />
+          {!isCustom && <DexUpgrade dexData={dexData} token={token} />}
 
-          {dexConfigureCard}
+          {!isCustom && dexConfigureCard}
 
           {graduationCard}
 
@@ -690,16 +691,18 @@ export default function DexRoute() {
 
           {referralSettingsCard}
 
-          <DexCreationStatus
-            dexData={dexData}
-            deploymentUrl={deploymentUrl}
-            deploymentConfirmed={deploymentConfirmed}
-            isForking={isForking}
-            handleRetryForking={handleRetryForking}
-            handleSuccessfulDeployment={handleSuccessfulDeployment}
-          />
+          {!isCustom && (
+            <DexCreationStatus
+              dexData={dexData}
+              deploymentUrl={deploymentUrl}
+              deploymentConfirmed={deploymentConfirmed}
+              isForking={isForking}
+              handleRetryForking={handleRetryForking}
+              handleSuccessfulDeployment={handleSuccessfulDeployment}
+            />
+          )}
 
-          {dexData && dexData.repoUrl && (
+          {!isCustom && dexData && dexData.repoUrl && (
             <Card>
               <CustomDomainSection
                 dexData={dexData}

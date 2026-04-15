@@ -64,6 +64,38 @@ export const dex = {
   "dex.via": "Via",
   "dex.viewBenefits": "View Benefits",
 
+  // dex.buildPath.*
+  "dex.buildPath.title": "How do you want to build your DEX?",
+  "dex.buildPath.lowCode.title": "Low Code",
+  "dex.buildPath.lowCode.description": "Choose your path",
+  "dex.buildPath.custom.title": "Custom SDK/API Integration",
+  "dex.buildPath.custom.description":
+    "Build a bespoke trading experience using the Orderly SDK and API. You manage your own deployment.",
+  "dex.buildPath.selectRequired": "Please select a build path to continue.",
+  "dex.custom.title": "Set up your builder profile - step-by-step",
+  "dex.custom.createButton": "Create profile",
+  "dex.custom.readyToCreate":
+    "You're all set! Click the button below to create your broker.",
+  "dex.custom.settingUp": "Creating your broker configuration...",
+  "dex.custom.creating": "Creating your broker...",
+  "dex.custom.quickSetupDesc":
+    "Set up your broker with just a name. You can configure more settings later.",
+  "dex.custom.createNow": "Create profile now",
+  "dex.custom.successMessage":
+    "Broker created successfully! You can now proceed to graduation to activate your Broker ID.",
+
+  // dex.customSetup.* (legacy, remove later)
+  "dex.customSetup.title": "Create Your DEX - step-by-step",
+  "dex.customSetup.quickSetupDesc":
+    "Create your custom integration DEX with just a broker name. You can configure more settings later.",
+  "dex.customSetup.createNow": "Create Your DEX Now",
+  "dex.customSetup.createButton": "Create Your DEX",
+  "dex.customSetup.successMessage":
+    "Custom DEX created successfully! You can now proceed to graduation to create your Broker ID.",
+  "dex.customSetup.settingUp": "Creating your custom DEX configuration...",
+  "dex.customSetup.readyToCreate":
+    "You're all set! Click the button below to create your DEX.",
+
   // dex.config.*
   "dex.config.authRequiredHint":
     "Please connect your wallet and login to access DEX configuration.",
@@ -185,7 +217,7 @@ export const dex = {
   "dex.sectionRenderer.distributorCode.label": "Distributor code",
   "dex.sectionRenderer.distributorCode.description":
     "If you have been referred by a distributor and given a distributor code, please input below for binding.",
-  "dex.sectionRenderer.brokerDetails.title": "Broker Details",
+  "dex.sectionRenderer.brokerDetails.title": "Builder details",
   "dex.sectionRenderer.brokerDetails.description":
     "Configure your DEX's basic information and trading broker details. Broker name can only contain letters, numbers, spaces, dots, hyphens, and underscores.",
   "dex.sectionRenderer.branding.title": "Branding",
@@ -284,4 +316,12 @@ export const dex = {
     "DEX upgraded successfully! New features are being deployed.",
   "dex.upgrade.failedToast": "Failed to upgrade DEX. Please try again.",
   "dex.upgrade.noDexData": "No DEX data available",
+
+  "dex.sectionRenderer.graduationPayment.title": "Graduation Payment",
+  "dex.sectionRenderer.graduationPayment.description":
+    "Choose your broker ID and pay the graduation fee to activate your broker and start earning fees.",
+  "dex.sectionRenderer.adminWalletRegistration.title":
+    "Admin Wallet Registration",
+  "dex.sectionRenderer.adminWalletRegistration.description":
+    "Register your admin wallet with Orderly Network to start receiving fee revenue. You can also complete this later from the dashboard.",
 };

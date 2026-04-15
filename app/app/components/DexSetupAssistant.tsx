@@ -1,4 +1,11 @@
-import { useState, FormEvent, useMemo, useEffect } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  FormEvent,
+  useMemo,
+  useRef,
+} from "react";
 import { useAccount } from "wagmi";
 import { useTranslation } from "~/i18n";
 import { toast } from "react-toastify";
@@ -18,6 +25,12 @@ import { useDistributorCode } from "../hooks/useDistrubutorInfo";
 import { useDistributor } from "../context/DistributorContext";
 import { trackEvent } from "~/analytics/tracking";
 import { useThemeHandlers } from "../hooks/useThemeHandlers";
+import { setBuildPathSelectCallback } from "./BuildPathSection";
+import {
+  setDexCreateCallback,
+  resetPaymentDone,
+} from "./GraduationPaymentSection";
+import type { IntegrationType } from "./BuildPathSection";
 
 interface DexSetupAssistantProps {
   token: string;
@@ -42,22 +55,46 @@ export default function DexSetupAssistant({
     {}
   );
   const [isValidating, setIsValidating] = useState(false);
+  const [selectedBuildPath, setSelectedBuildPath] =
+    useState<IntegrationType | null>(null);
 
   const { address } = useAccount();
 
   const { distributorInfo } = useDistributor();
   const urlDistributorCode = useDistributorCode();
 
-  const dexSections = useMemo(() => {
-    return getDexSections()
-      .filter(section => {
-        return section.key !== DEX_SECTION_KEYS.AnalyticsConfiguration;
-      })
-      .map((section, index) => ({
-        ...section,
-        id: index + 1,
-      }));
+  const isCustomPath = selectedBuildPath === "custom";
+  const dexCreatedRef = useRef(false);
+
+  const allSections = useMemo(() => {
+    return getDexSections().filter(section => {
+      return section.key !== DEX_SECTION_KEYS.AnalyticsConfiguration;
+    });
   }, [t]);
+
+  const effectiveSections = useMemo(() => {
+    if (isCustomPath) {
+      const coreSections = allSections.slice(0, 3);
+      const graduationPaymentSection = allSections.find(
+        s => s.key === DEX_SECTION_KEYS.GraduationPayment
+      );
+      const adminWalletSection = allSections.find(
+        s => s.key === DEX_SECTION_KEYS.AdminWalletRegistration
+      );
+      const customSections = [
+        ...coreSections,
+        ...(graduationPaymentSection ? [graduationPaymentSection] : []),
+        ...(adminWalletSection ? [adminWalletSection] : []),
+      ];
+      return customSections.map((s, i) => ({ ...s, id: i + 1 }));
+    }
+    return allSections.filter(s => {
+      return (
+        s.key !== DEX_SECTION_KEYS.GraduationPayment &&
+        s.key !== DEX_SECTION_KEYS.AdminWalletRegistration
+      );
+    });
+  }, [allSections, isCustomPath]);
 
   useEffect(() => {
     trackEvent("dex_form_start", {
@@ -66,8 +103,8 @@ export default function DexSetupAssistant({
   }, []);
 
   const totalSteps = useMemo(() => {
-    return dexSections.length;
-  }, [dexSections]);
+    return effectiveSections.length;
+  }, [effectiveSections]);
 
   const { handleGenerateTheme, handleResetTheme, handleResetToDefault } =
     useThemeHandlers({
@@ -95,7 +132,7 @@ export default function DexSetupAssistant({
   const allRequiredPreviousStepsCompleted = (stepNumber: number) => {
     if (stepNumber === 1) return true;
     for (let i = 1; i < stepNumber; i++) {
-      const stepConfig = dexSections.find(s => s.id === i);
+      const stepConfig = effectiveSections.find(s => s.id === i);
       if (stepConfig && !stepConfig.isOptional && !completedSteps[i]) {
         return false;
       }
@@ -103,8 +140,103 @@ export default function DexSetupAssistant({
     return true;
   };
 
+  const handleBuildPathSelect = (pathType: IntegrationType) => {
+    setSelectedBuildPath(pathType);
+  };
+
+  const advanceToStep = (targetStep: number) => {
+    setCurrentStep(targetStep);
+    setTimeout(() => {
+      const nextStepElement = document.getElementById(`step-${targetStep}`);
+      if (nextStepElement) {
+        nextStepElement.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "start",
+        });
+      }
+    }, 100);
+  };
+
+  const createDexIfNeeded = useCallback(async (): Promise<boolean> => {
+    if (dexCreatedRef.current) return true;
+
+    const brokerError = form.brokerNameValidator(form.brokerName.trim());
+    if (brokerError !== null) {
+      toast.error(brokerError as string);
+      return false;
+    }
+
+    try {
+      setIsSaving(true);
+
+      if (!distributorInfo?.exist && form.distributorCode.trim()) {
+        const binded = await bindDistributorCode(form.distributorCode.trim());
+        if (!binded) return false;
+      }
+
+      const { formData: formValues } = await form.getFormDataWithBase64Images();
+      const imageBlobs = {
+        primaryLogo: form.primaryLogo,
+        secondaryLogo: form.secondaryLogo,
+        favicon: form.favicon,
+        pnlPosters: form.pnlPosters,
+      };
+
+      const dexDataToSend = buildDexDataToSend(formValues);
+      const formData = createDexFormData(dexDataToSend, imageBlobs);
+      formData.append("integrationType", "custom");
+
+      await postFormData<DexData>("api/dex", formData, token, {
+        showToastOnError: false,
+      });
+
+      trackEvent("create_dex_success");
+      dexCreatedRef.current = true;
+      return true;
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      console.error("Error creating broker:", error);
+      toast.error(errorMessage || t("dex.setupAssistant.failedToCreate"));
+      return false;
+    } finally {
+      setIsSaving(false);
+    }
+  }, [form, distributorInfo, bindDistributorCode, token, t]);
+
+  useEffect(() => {
+    setBuildPathSelectCallback(handleBuildPathSelect);
+    if (isCustomPath) {
+      setDexCreateCallback(createDexIfNeeded);
+    }
+    return () => {
+      setBuildPathSelectCallback(null);
+      resetPaymentDone();
+      if (isCustomPath) {
+        setDexCreateCallback(null);
+      }
+    };
+  }, [handleBuildPathSelect, isCustomPath, createDexIfNeeded]);
+
   const handleNextStep = async (step: number, skip?: boolean) => {
-    const currentStepConfig = dexSections.find(s => s.id === step);
+    const currentStepConfig = effectiveSections.find(s => s.id === step);
+
+    if (currentStepConfig?.key === DEX_SECTION_KEYS.BuildPath) {
+      if (!selectedBuildPath) {
+        toast.error(t("dex.buildPath.selectRequired"));
+        return;
+      }
+
+      if (isCustomPath) {
+        setCompletedSteps(prev => ({ ...prev, [step]: true }));
+        advanceToStep(step + 1);
+      } else {
+        setCompletedSteps(prev => ({ ...prev, [step]: true }));
+        advanceToStep(step + 1);
+      }
+      return;
+    }
 
     if (
       currentStepConfig &&
@@ -114,7 +246,6 @@ export default function DexSetupAssistant({
       if (skip) {
         form.setDistributorCode("");
       } else {
-        // only validate distributor code if it is filled
         const distributorCode = form.distributorCode.trim();
 
         if (!distributorCode) {
@@ -158,7 +289,10 @@ export default function DexSetupAssistant({
       }
     }
 
-    if (step === dexSections.find(s => s.title === "Privy Configuration")?.id) {
+    if (
+      step ===
+      effectiveSections.find(s => s.title === "Privy Configuration")?.id
+    ) {
       const privyTermsOfUseFilled =
         form.privyTermsOfUse && form.privyTermsOfUse.trim() !== "";
 
@@ -182,27 +316,43 @@ export default function DexSetupAssistant({
       broker_name: form.brokerName.trim() || undefined,
     });
 
-    if (step < totalSteps) {
-      setCurrentStep(step + 1);
+    if (isCustomPath) {
+      if (currentStepConfig?.key === DEX_SECTION_KEYS.AdminWalletRegistration) {
+        await refreshDexData();
+        return;
+      }
 
-      setTimeout(() => {
-        const id =
-          currentStepConfig?.key === DEX_SECTION_KEYS.BrokerDetails
-            ? `step-${step}`
-            : `step-${step + 1}`;
-
-        const nextStepElement = document.getElementById(id);
-        if (nextStepElement) {
-          nextStepElement.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-            inline: "start",
-          });
-        }
-      }, 100);
+      if (step < totalSteps) {
+        advanceToStep(step + 1);
+      } else {
+        await refreshDexData();
+      }
     } else {
-      setCurrentStep(totalSteps + 1);
-      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+      if (step < totalSteps) {
+        setCurrentStep(step + 1);
+
+        setTimeout(() => {
+          const id =
+            currentStepConfig?.key === DEX_SECTION_KEYS.BrokerDetails
+              ? `step-${step}`
+              : `step-${step + 1}`;
+
+          const nextStepElement = document.getElementById(id);
+          if (nextStepElement) {
+            nextStepElement.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+              inline: "start",
+            });
+          }
+        }, 100);
+      } else {
+        setCurrentStep(totalSteps + 1);
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth",
+        });
+      }
     }
   };
 
@@ -215,7 +365,7 @@ export default function DexSetupAssistant({
 
     const validationErrors: string[] = [];
 
-    for (const section of dexSections) {
+    for (const section of effectiveSections) {
       if (section.key === DEX_SECTION_KEYS.DistributorCode) {
         const code = form.distributorCode.trim();
         if (code && !distributorInfo?.exist) {
@@ -243,7 +393,7 @@ export default function DexSetupAssistant({
     }
 
     const isSwapEnabled = form.enabledMenus.split(",").includes("Swap");
-    if (isSwapEnabled && form.swapFeeBps === null) {
+    if (!isCustomPath && isSwapEnabled && form.swapFeeBps === null) {
       validationErrors.push(t("dex.setupAssistant.navMenusSwapFeeRequired"));
     }
 
@@ -266,7 +416,6 @@ export default function DexSetupAssistant({
     try {
       setIsSaving(true);
 
-      // only if it is not bound yet
       if (!distributorInfo?.exist && form.distributorCode.trim()) {
         const binded = await bindDistributorCode(form.distributorCode.trim());
         if (!binded) {
@@ -287,6 +436,7 @@ export default function DexSetupAssistant({
 
       const dexDataToSend = buildDexDataToSend(formValues);
       const formData = createDexFormData(dexDataToSend, imageBlobs);
+      formData.append("integrationType", selectedBuildPath || "low_code");
 
       const savedData = await postFormData<DexData>(
         "api/dex",
@@ -299,9 +449,11 @@ export default function DexSetupAssistant({
 
       if (savedData.repoUrl) {
         toast.success(options.successMessageWithRepo);
-      } else {
+      } else if (!isCustomPath) {
         toast.success(options.successMessageWithoutRepo);
         toast.warning(t("dex.setupAssistant.repoCouldNotFork"));
+      } else {
+        toast.success(options.successMessageWithoutRepo);
       }
 
       trackEvent("create_dex_success", {
@@ -346,9 +498,10 @@ export default function DexSetupAssistant({
     await createDex({
       forkingStatus: t("dex.setupAssistant.quickSetupForking"),
       successMessageWithRepo: t("dex.setupAssistant.quickSetupSuccessWithRepo"),
-      successMessageWithoutRepo: t(
-        "dex.setupAssistant.quickSetupSuccessWithoutRepo"
-      ),
+      successMessageWithoutRepo:
+        selectedBuildPath === "custom"
+          ? t("dex.custom.successMessage")
+          : t("dex.setupAssistant.quickSetupSuccessWithoutRepo"),
       isQuickSetup: true,
       onSuccess: savedData => {
         updateDexData(savedData);
@@ -365,14 +518,17 @@ export default function DexSetupAssistant({
             {forkingStatus}
           </div>
           <div className="text-xs md:text-sm text-gray-400 max-w-sm mx-auto">
-            {t("dex.setupAssistant.settingUpDex")}
+            {isCustomPath
+              ? t("dex.custom.settingUp")
+              : t("dex.setupAssistant.settingUpDex")}
           </div>
         </div>
       </div>
     );
   }
 
-  const quickSetup = form.brokerName.trim() &&
+  const quickSetup = !isCustomPath &&
+    form.brokerName.trim() &&
     !(currentStep > totalSteps && completedSteps[totalSteps]) && (
       <div
         id="quick-setup"
@@ -410,15 +566,17 @@ export default function DexSetupAssistant({
     <div className="container mx-auto p-4 max-w-3xl mt-26 pb-52">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <h1 className="text-2xl md:text-3xl font-bold gradient-text">
-          {t("dex.setupAssistant.title")}
+          {isCustomPath ? t("dex.custom.title") : t("dex.setupAssistant.title")}
         </h1>
       </div>
 
       <Form
-        onSubmit={handleSubmit}
+        onSubmit={isCustomPath ? () => {} : handleSubmit}
         className="flex flex-col gap-4"
         submitText={
-          currentStep > totalSteps && completedSteps[totalSteps]
+          !isCustomPath &&
+          currentStep > totalSteps &&
+          completedSteps[totalSteps]
             ? t("dex.setupAssistant.createYourDex")
             : ""
         }
@@ -427,13 +585,17 @@ export default function DexSetupAssistant({
         disabled={
           isForking ||
           isSaving ||
-          !(currentStep > totalSteps && completedSteps[totalSteps])
+          !(
+            !isCustomPath &&
+            currentStep > totalSteps &&
+            completedSteps[totalSteps]
+          )
         }
         enableRateLimit={false}
       >
         <DexSectionRenderer
           mode="accordion"
-          sections={dexSections}
+          sections={effectiveSections}
           sectionProps={form.getSectionProps({
             handleResetTheme: () => handleResetTheme(false),
             handleResetToDefault,
@@ -466,34 +628,39 @@ export default function DexSetupAssistant({
 
               return !hideSkip;
             }
+            if (
+              isCustomPath &&
+              section.key === DEX_SECTION_KEYS.AdminWalletRegistration
+            ) {
+              return true;
+            }
             return false;
           }}
           customDescription={section => {
             if (section.key === DEX_SECTION_KEYS.DistributorCode) {
               return distributorInfo?.exist
                 ? t("dex.setupAssistant.invitedByDistributor")
-                : section.descriptionKey
-                  ? t(section.descriptionKey)
-                  : section.description;
+                : section.description;
             }
-            return section.descriptionKey
-              ? t(section.descriptionKey)
-              : section.description;
+            return section.description;
           }}
           isValidating={isValidating}
         />
       </Form>
 
-      {currentStep > totalSteps && completedSteps[totalSteps] && !isSaving && (
-        <div className="mt-8 p-6 bg-success/10 border border-success/20 rounded-lg text-center slide-fade-in">
-          <h3 className="text-lg font-semibold text-success mb-2">
-            {t("dex.setupAssistant.allStepsCompleted")}
-          </h3>
-          <p className="text-gray-300 mb-4">
-            {t("dex.setupAssistant.readyToCreate")}
-          </p>
-        </div>
-      )}
+      {!isCustomPath &&
+        currentStep > totalSteps &&
+        completedSteps[totalSteps] &&
+        !isSaving && (
+          <div className="mt-8 p-6 bg-success/10 border border-success/20 rounded-lg text-center slide-fade-in">
+            <h3 className="text-lg font-semibold text-success mb-2">
+              {t("dex.setupAssistant.allStepsCompleted")}
+            </h3>
+            <p className="text-gray-300 mb-4">
+              {t("dex.setupAssistant.readyToCreate")}
+            </p>
+          </div>
+        )}
     </div>
   );
 }

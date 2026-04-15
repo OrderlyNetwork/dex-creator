@@ -41,8 +41,14 @@ export default function DexConfigRoute() {
 
   const [isSaving, setIsSaving] = useState(false);
   const [isLoadingDexData, setIsLoadingDexData] = useState(false);
-  const { isGraduated } = useDex();
+  const { isGraduated, isCustom, dexData } = useDex();
   const { distributorInfo } = useDistributor();
+
+  useEffect(() => {
+    if (isCustom && dexData) {
+      navigate(localizedPath("/dex"));
+    }
+  }, [isCustom, dexData, navigate, localizedPath]);
 
   const dexSections = useMemo(() => {
     return getDexSections()
@@ -52,6 +58,19 @@ export default function DexConfigRoute() {
           section.key === DEX_SECTION_KEYS.DistributorCode &&
           isGraduated &&
           !distributorInfo?.exist
+        ) {
+          return false;
+        }
+
+        // build path selection is only for initial setup, not config page
+        if (section.key === DEX_SECTION_KEYS.BuildPath) {
+          return false;
+        }
+
+        // graduation payment and admin wallet registration are inline steps, not config
+        if (
+          section.key === DEX_SECTION_KEYS.GraduationPayment ||
+          section.key === DEX_SECTION_KEYS.AdminWalletRegistration
         ) {
           return false;
         }

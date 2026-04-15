@@ -226,7 +226,6 @@ export default function PnLPostersSection({
                             markPrice: 2518.81,
                             quantity: 0.0794,
                           },
-                          leverage: 10,
                           backgroundImages: posterUrls,
                         }}
                       />

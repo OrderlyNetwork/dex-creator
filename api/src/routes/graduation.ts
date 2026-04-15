@@ -106,7 +106,7 @@ app.openapi(verifyTxRoute, async c => {
     const userId = c.get("userId");
 
     const dex = await getUserDex(userId);
-    if (!dex || !dex.repoUrl) {
+    if (!dex || (!dex.repoUrl && dex.integrationType !== "custom")) {
       return c.json(
         { success: false, message: "You must create a DEX first" },
         { status: 400 }
@@ -140,7 +140,8 @@ app.openapi(verifyTxRoute, async c => {
       txHash,
       chain,
       user.address,
-      paymentType
+      paymentType,
+      dex.integrationType === "custom"
     );
 
     if (!verificationResult.success) {
@@ -229,42 +230,46 @@ app.openapi(verifyTxRoute, async c => {
       throw error;
     }
 
-    try {
-      console.log(
-        `🔄 Updating GitHub repository with new broker ID: ${brokerId}`
-      );
-
-      const repoUrlMatch = dex.repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
-      if (repoUrlMatch) {
-        const [, owner, repo] = repoUrlMatch;
-
-        const dexConfig = convertDexToDexConfig(dex);
-        dexConfig.brokerId = brokerId;
-
-        await setupRepositoryWithSingleCommit(
-          owner,
-          repo,
-          dexConfig,
-          {
-            primaryLogo: dex.primaryLogo,
-            secondaryLogo: dex.secondaryLogo,
-            favicon: dex.favicon,
-            pnlPosters: dex.pnlPosters.length > 0 ? dex.pnlPosters : null,
-          },
-          dex.customDomain,
-          user.address
-        );
-
+    if (dex.integrationType !== "custom") {
+      try {
         console.log(
-          `✅ Successfully updated GitHub repository with broker ID: ${brokerId}`
+          `🔄 Updating GitHub repository with new broker ID: ${brokerId}`
         );
-      } else {
-        console.warn(
-          `⚠️ Could not extract repository info from URL: ${dex.repoUrl}`
+
+        const repoUrlMatch = dex.repoUrl?.match(
+          /github\.com\/([^/]+)\/([^/]+)/
         );
+        if (repoUrlMatch) {
+          const [, owner, repo] = repoUrlMatch;
+
+          const dexConfig = convertDexToDexConfig(dex);
+          dexConfig.brokerId = brokerId;
+
+          await setupRepositoryWithSingleCommit(
+            owner,
+            repo,
+            dexConfig,
+            {
+              primaryLogo: dex.primaryLogo,
+              secondaryLogo: dex.secondaryLogo,
+              favicon: dex.favicon,
+              pnlPosters: dex.pnlPosters.length > 0 ? dex.pnlPosters : null,
+            },
+            dex.customDomain,
+            user.address
+          );
+
+          console.log(
+            `✅ Successfully updated GitHub repository with broker ID: ${brokerId}`
+          );
+        } else {
+          console.warn(
+            `⚠️ Could not extract repository info from URL: ${dex.repoUrl}`
+          );
+        }
+      } catch (repoError) {
+        console.error("❌ Error updating GitHub repository:", repoError);
       }
-    } catch (repoError) {
-      console.error("❌ Error updating GitHub repository:", repoError);
     }
 
     return c.json({
@@ -807,7 +812,15 @@ const getFeeOptionsRoute = createRoute({
 
 app.openapi(getFeeOptionsRoute, async c => {
   try {
-    const graduationFeeAmount = process.env.GRADUATION_USDC_AMOUNT;
+    const userId = c.get("userId");
+    const dex = await getUserDex(userId);
+    const isCustom =
+      c.req.query("isCustom") === "true" || dex?.integrationType === "custom";
+
+    const graduationFeeAmount = isCustom
+      ? process.env.GRADUATION_USDC_AMOUNT_CUSTOM
+      : process.env.GRADUATION_USDC_AMOUNT;
+
     if (!graduationFeeAmount) {
       return c.json(
         {

@@ -346,7 +346,10 @@ export const dexSchema = z.object({
     .string()
     .max(2000, "Whitelisted IPs list cannot exceed 2000 characters")
     .nullish(),
+  integrationType: z.enum(["low_code", "custom"]).default("low_code"),
 });
+
+export const integrationTypeEnum = z.enum(["low_code", "custom"]);
 
 export const dexFormSchema = dexSchema
   .extend({
@@ -426,6 +429,15 @@ export const dexFormSchema = dexSchema
         z.null(),
       ])
       .optional(),
+    integrationType: z
+      .union([
+        z.enum(["low_code", "custom"]),
+        z.string().transform(val => {
+          if (val === "custom") return "custom" as const;
+          return "low_code" as const;
+        }),
+      ])
+      .optional(),
   })
   .catchall(z.union([z.instanceof(File), z.string()]).optional()); // Allow pnlPoster0, pnlPoster1, etc.
 
@@ -475,104 +487,107 @@ export async function createDex(
   }
 
   const brokerName = validatedData.brokerName || "Orderly DEX";
+  const integrationType = validatedData.integrationType || "low_code";
 
-  const repoName = generateRepositoryName(brokerName);
+  let repoUrl: string | null = null;
 
-  let repoUrl: string;
+  if (integrationType === "low_code") {
+    const repoName = generateRepositoryName(brokerName);
 
-  try {
-    console.log(
-      "Creating repository in OrderlyNetworkDexCreator organization..."
-    );
-    const forkResult = await forkTemplateRepository(repoName);
-    if (!forkResult.success) {
-      switch (forkResult.error.type) {
-        case GitHubErrorType.REPOSITORY_NAME_EMPTY:
-        case GitHubErrorType.REPOSITORY_NAME_INVALID:
-        case GitHubErrorType.REPOSITORY_NAME_TOO_LONG:
-          return {
-            success: false,
-            error: {
-              type: DexErrorType.VALIDATION_ERROR,
-              message: forkResult.error.message,
-            },
-          };
-        case GitHubErrorType.FORK_PERMISSION_DENIED:
-          return {
-            success: false,
-            error: {
-              type: DexErrorType.REPOSITORY_PERMISSION_DENIED,
-              message: forkResult.error.message,
-            },
-          };
-        case GitHubErrorType.FORK_REPOSITORY_NOT_FOUND:
-          return {
-            success: false,
-            error: {
-              type: DexErrorType.REPOSITORY_NOT_FOUND,
-              message: forkResult.error.message,
-            },
-          };
-        case GitHubErrorType.FORK_REPOSITORY_ALREADY_EXISTS:
-          return {
-            success: false,
-            error: {
-              type: DexErrorType.REPOSITORY_ALREADY_EXISTS,
-              message: forkResult.error.message,
-            },
-          };
-        default:
-          return {
-            success: false,
-            error: {
-              type: DexErrorType.REPOSITORY_CREATION_FAILED,
-              message: forkResult.error.message,
-            },
-          };
+    try {
+      console.log(
+        "Creating repository in OrderlyNetworkDexCreator organization..."
+      );
+      const forkResult = await forkTemplateRepository(repoName);
+      if (!forkResult.success) {
+        switch (forkResult.error.type) {
+          case GitHubErrorType.REPOSITORY_NAME_EMPTY:
+          case GitHubErrorType.REPOSITORY_NAME_INVALID:
+          case GitHubErrorType.REPOSITORY_NAME_TOO_LONG:
+            return {
+              success: false,
+              error: {
+                type: DexErrorType.VALIDATION_ERROR,
+                message: forkResult.error.message,
+              },
+            };
+          case GitHubErrorType.FORK_PERMISSION_DENIED:
+            return {
+              success: false,
+              error: {
+                type: DexErrorType.REPOSITORY_PERMISSION_DENIED,
+                message: forkResult.error.message,
+              },
+            };
+          case GitHubErrorType.FORK_REPOSITORY_NOT_FOUND:
+            return {
+              success: false,
+              error: {
+                type: DexErrorType.REPOSITORY_NOT_FOUND,
+                message: forkResult.error.message,
+              },
+            };
+          case GitHubErrorType.FORK_REPOSITORY_ALREADY_EXISTS:
+            return {
+              success: false,
+              error: {
+                type: DexErrorType.REPOSITORY_ALREADY_EXISTS,
+                message: forkResult.error.message,
+              },
+            };
+          default:
+            return {
+              success: false,
+              error: {
+                type: DexErrorType.REPOSITORY_CREATION_FAILED,
+                message: forkResult.error.message,
+              },
+            };
+        }
       }
-    }
 
-    repoUrl = forkResult.data;
-    console.log(`Successfully forked repository: ${repoUrl}`);
+      repoUrl = forkResult.data;
+      console.log(`Successfully forked repository: ${repoUrl}`);
 
-    const repoInfo = extractRepoInfoFromUrl(repoUrl);
-    if (!repoInfo) {
+      const repoInfo = extractRepoInfoFromUrl(repoUrl);
+      if (!repoInfo) {
+        return {
+          success: false,
+          error: {
+            type: DexErrorType.REPOSITORY_INFO_EXTRACTION_FAILED,
+            message: `Failed to extract repository information from URL: ${repoUrl}`,
+          },
+        };
+      }
+
+      const brokerId = "demo";
+
+      await setupRepositoryWithSingleCommit(
+        repoInfo.owner,
+        repoInfo.repo,
+        convertValidatedDataToDexConfig(validatedData, brokerId, brokerName),
+        {
+          primaryLogo: validatedData.primaryLogo ?? null,
+          secondaryLogo: validatedData.secondaryLogo ?? null,
+          favicon: validatedData.favicon ?? null,
+          pnlPosters: validatedData.pnlPosters ?? null,
+        },
+        null,
+        user.address
+      );
+      console.log(`Successfully set up repository for ${brokerName}`);
+    } catch (error) {
+      console.error("Error setting up repository:", error);
       return {
         success: false,
         error: {
-          type: DexErrorType.REPOSITORY_INFO_EXTRACTION_FAILED,
-          message: `Failed to extract repository information from URL: ${repoUrl}`,
+          type: DexErrorType.REPOSITORY_CREATION_FAILED,
+          message: `Repository setup failed: ${
+            error instanceof Error ? error.message : String(error)
+          }`,
         },
       };
     }
-
-    const brokerId = "demo";
-
-    await setupRepositoryWithSingleCommit(
-      repoInfo.owner,
-      repoInfo.repo,
-      convertValidatedDataToDexConfig(validatedData, brokerId, brokerName),
-      {
-        primaryLogo: validatedData.primaryLogo ?? null,
-        secondaryLogo: validatedData.secondaryLogo ?? null,
-        favicon: validatedData.favicon ?? null,
-        pnlPosters: validatedData.pnlPosters ?? null,
-      },
-      null,
-      user.address
-    );
-    console.log(`Successfully set up repository for ${brokerName}`);
-  } catch (error) {
-    console.error("Error setting up repository:", error);
-    return {
-      success: false,
-      error: {
-        type: DexErrorType.REPOSITORY_CREATION_FAILED,
-        message: `Repository setup failed: ${
-          error instanceof Error ? error.message : String(error)
-        }`,
-      },
-    };
   }
 
   try {
@@ -623,6 +638,7 @@ export async function createDex(
         restrictedRegions: validatedData.restrictedRegions,
         whitelistedIps: validatedData.whitelistedIps,
         repoUrl: repoUrl,
+        integrationType: integrationType,
         user: {
           connect: {
             id: userId,
@@ -639,7 +655,7 @@ export async function createDex(
     console.error("Error creating DEX in database:", dbError);
 
     try {
-      const repoInfo = extractRepoInfoFromUrl(repoUrl);
+      const repoInfo = repoUrl ? extractRepoInfoFromUrl(repoUrl) : null;
       if (repoInfo) {
         await deleteRepository(repoInfo.owner, repoInfo.repo);
         console.log(`Cleaned up repository after database creation failure`);

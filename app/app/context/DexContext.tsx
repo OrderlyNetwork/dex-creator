@@ -19,6 +19,7 @@ interface DexContextType {
   hasDex: boolean;
   isGraduationEligible: boolean;
   isGraduated: boolean;
+  isCustom: boolean;
   deploymentUrl: string | null;
   refreshDexData: () => Promise<void>;
   updateDexData: (newData: Partial<DexData>) => void;
@@ -101,6 +102,7 @@ export function DexProvider({ children }: { children: ReactNode }) {
   const isGraduated = Boolean(
     dexData && dexData.brokerId !== "demo" && dexData.isGraduated === true
   );
+  const isCustom = dexData?.integrationType === "custom";
   const deploymentUrl = dexData?.repoUrl
     ? `https://dex.orderly.network/${dexData.repoUrl.split("/").pop()}/`
     : null;
@@ -115,6 +117,7 @@ export function DexProvider({ children }: { children: ReactNode }) {
         hasDex,
         isGraduationEligible,
         isGraduated,
+        isCustom,
         deploymentUrl,
         refreshDexData,
         updateDexData,
