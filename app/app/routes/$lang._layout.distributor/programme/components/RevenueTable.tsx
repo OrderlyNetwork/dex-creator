@@ -132,6 +132,16 @@ export function RevenueTable() {
     ];
   }, [records, t]);
 
+  const leaderboardRows = useMemo(() => {
+    if (!records?.length) {
+      return [];
+    }
+    return records.filter(
+      item =>
+        item.revenueShare30d >= PROGRAMME_CONFIG.LEADERBOARD_MIN_EARNINGS_USD
+    );
+  }, [records]);
+
   return (
     <section
       id="leaderboard"
@@ -142,9 +152,6 @@ export function RevenueTable() {
         {isInView && (
           <>
             <header className="vanguard-section-header fade-up">
-              <p className="vanguard-section-label vanguard-section-label-green">
-                {t("distributor.programme.liveData")}
-              </p>
               <h2 className="vanguard-section-heading">
                 {t("distributor.programme.leaderboardHeading")}
               </h2>
@@ -179,70 +186,86 @@ export function RevenueTable() {
                 </div>
               )}
 
-              {!loading && !hasError && records && records.length > 0 && (
-                <div className="vanguard-table-scroll">
-                  <table className="vanguard-lb-table">
-                    <thead>
-                      <tr>
-                        <th className="text-center">
-                          {t("distributor.programme.rank")}
-                        </th>
-                        <th>{t("distributor.programme.distributor")}</th>
-                        <th className="text-right">
-                          {t("distributor.programme.volume30d")}
-                        </th>
-                        <th className="text-right">
-                          {t("distributor.programme.earnings30d")}
-                        </th>
-                        <th className="text-right">
-                          {t("distributor.programme.builders")}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {records
-                        .slice(0, PROGRAMME_CONFIG.LEADERBOARD_LIMIT)
-                        .map((record, index) => {
-                          const rank = index + 1;
-                          const isTopThree = rank <= 3;
-                          const alias = anonymizeDistributor(index);
+              {!loading &&
+                !hasError &&
+                records &&
+                records.length > 0 &&
+                leaderboardRows.length > 0 && (
+                  <div className="vanguard-table-scroll">
+                    <table className="vanguard-lb-table">
+                      <thead>
+                        <tr>
+                          <th className="text-center">
+                            {t("distributor.programme.rank")}
+                          </th>
+                          <th>{t("distributor.programme.distributor")}</th>
+                          <th className="text-right">
+                            {t("distributor.programme.volume30d")}
+                          </th>
+                          <th className="text-right">
+                            {t("distributor.programme.earnings30d")}
+                          </th>
+                          <th className="text-right">
+                            {t("distributor.programme.builders")}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {leaderboardRows
+                          .slice(0, PROGRAMME_CONFIG.LEADERBOARD_LIMIT)
+                          .map((record, index) => {
+                            const rank = index + 1;
+                            const isTopThree = rank <= 3;
+                            const alias = anonymizeDistributor(index);
 
-                          return (
-                            <tr key={`${record.distributorName}-${rank}`}>
-                              <td
-                                className={`text-center vanguard-rank-cell ${isTopThree ? "is-top" : ""}`}
-                              >
-                                {rank}
-                              </td>
-                              <td>
-                                <div className="vanguard-alias-wrap">
-                                  <span
-                                    className={`vanguard-alias-icon ${isTopThree ? "is-top" : ""}`}
-                                  >
-                                    {alias
-                                      .split("-")
-                                      .map(fragment => fragment[0])
-                                      .join("")}
-                                  </span>
-                                  <span>{alias}</span>
-                                </div>
-                              </td>
-                              <td className="text-right vanguard-mono-text">
-                                {formatCompactCurrency(record.inviteeVolume30d)}
-                              </td>
-                              <td className="text-right vanguard-mono-text vanguard-green-text">
-                                {formatCurrency(record.revenueShare30d)}
-                              </td>
-                              <td className="text-right vanguard-mono-text">
-                                {record.graduatedInvitees}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                    </tbody>
-                  </table>
-                </div>
-              )}
+                            return (
+                              <tr key={`${record.distributorName}-${rank}`}>
+                                <td
+                                  className={`text-center vanguard-rank-cell ${isTopThree ? "is-top" : ""}`}
+                                >
+                                  {rank}
+                                </td>
+                                <td>
+                                  <div className="vanguard-alias-wrap">
+                                    <span
+                                      className={`vanguard-alias-icon ${isTopThree ? "is-top" : ""}`}
+                                    >
+                                      {alias
+                                        .split("-")
+                                        .map(fragment => fragment[0])
+                                        .join("")}
+                                    </span>
+                                    <span>{alias}</span>
+                                  </div>
+                                </td>
+                                <td className="text-right vanguard-mono-text">
+                                  {formatCompactCurrency(
+                                    record.inviteeVolume30d
+                                  )}
+                                </td>
+                                <td className="text-right vanguard-mono-text vanguard-green-text">
+                                  {formatCurrency(record.revenueShare30d)}
+                                </td>
+                                <td className="text-right vanguard-mono-text">
+                                  {record.graduatedInvitees}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+              {!loading &&
+                !hasError &&
+                records &&
+                records.length > 0 &&
+                leaderboardRows.length === 0 && (
+                  <div className="vanguard-table-empty">
+                    {t("distributor.programme.emptyLeaderboard")}
+                  </div>
+                )}
 
               {!loading && !hasError && records?.length === 0 && (
                 <div className="vanguard-table-empty">
@@ -251,9 +274,11 @@ export function RevenueTable() {
               )}
             </div>
 
-            <p className="vanguard-footnote fade-up d4">
-              {t("distributor.programme.leaderboardFootnote")}
-            </p>
+            <div className="vanguard-footnote fade-up d4 vanguard-footnote-lines">
+              <p>{t("distributor.programme.leaderboardFootnoteLine1")}</p>
+              <p>{t("distributor.programme.leaderboardFootnoteLine2")}</p>
+              <p>{t("distributor.programme.leaderboardFootnoteLine3")}</p>
+            </div>
           </>
         )}
       </div>

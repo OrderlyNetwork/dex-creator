@@ -1,5 +1,5 @@
 import type { MouseEvent } from "react";
-import { useTranslation } from "~/i18n";
+import { useTranslation, Trans } from "~/i18n";
 import { useInViewOnce } from "./useInViewOnce";
 import { useDistributorCtaAction } from "./useDistributorCtaAction";
 
@@ -30,11 +30,20 @@ export function HeroSection() {
           <>
             <div className="vanguard-chip fade-up d1">
               <span className="vanguard-chip-dot" />
-              {t("distributor.programme.heroBadge")}
+              <a
+                href="https://forms.gle/qARKWqC7X66TJAKy9"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-inherit no-underline hover:underline underline-offset-2"
+              >
+                {t("distributor.programme.heroBadge")}
+              </a>
             </div>
             <h1 className="vanguard-hero-title fade-up d2">
-              {t("distributor.programme.heroTitlePrefix")}{" "}
-              <span>{t("distributor.programme.heroTitleHighlight")}</span>
+              <Trans
+                i18nKey="distributor.programme.heroTitle"
+                components={[<span key="0" />]}
+              />
             </h1>
             <p className="vanguard-hero-subtitle fade-up d3">
               {t("distributor.programme.heroSubtitleLine1")}

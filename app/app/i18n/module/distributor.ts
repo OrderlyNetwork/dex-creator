@@ -67,14 +67,13 @@ export const distributor = {
   "distributor.getStarted": "Get started",
   "distributor.graduateNow": "Graduate now",
   "distributor.heroSubtitle":
-    "Refer builders to launch their perpetual DEX in ~10 minutes (no code required) and earn recurring revenue from trading fees.",
+    "Refer DEXs to launch their perpetual DEX in ~10 minutes (no code required) and earn recurring revenue from trading fees.",
   "distributor.heroTitle": "Orderly distributor program",
   "distributor.programme.heroBadge":
     "Join our boosted distributor program - limited spots",
-  "distributor.programme.heroTitlePrefix": "Earn USDC by growing",
-  "distributor.programme.heroTitleHighlight": "Orderly",
+  "distributor.programme.heroTitle": "Earn USDC by growing <0>Orderly</0>",
   "distributor.programme.heroSubtitleLine1":
-    "Refer builders. Earn from their volume.",
+    "Refer DEXs. Earn from their volume.",
   "distributor.programme.heroSubtitleLine2": "Every day. Forever.",
   "distributor.programme.heroPrimaryCta": "Become a distributor",
   "distributor.programme.heroSecondaryCta": "See the leaderboard",
@@ -83,16 +82,15 @@ export const distributor = {
   "distributor.programme.step1Title": "Create your profile",
   "distributor.programme.step1Desc":
     "Connect your wallet and sign up as a distributor. Takes 2 minutes.",
-  "distributor.programme.step2Title": "Refer builders",
+  "distributor.programme.step2Title": "Refer DEXs",
   "distributor.programme.step2Desc":
     "Share your link with projects that want to launch a DEX on Orderly.",
   "distributor.programme.step3Title": "Earn daily USDC",
   "distributor.programme.step3Desc":
     "Every trade your builders generate earns you a fee spread. Paid daily. No cap.",
-  "distributor.programme.liveData": "Live data",
   "distributor.programme.leaderboardHeading": "Distributor leaderboard",
   "distributor.programme.leaderboardSubtitle":
-    "Real earnings from real distributors. Updated live.",
+    "Real earnings from real distributors. Updated daily.",
   "distributor.programme.activeDistributors": "Active distributors",
   "distributor.programme.volumeReferred30d": "30d volume referred",
   "distributor.programme.revenuePaid30d": "30d revenue paid",
@@ -104,8 +102,12 @@ export const distributor = {
   "distributor.programme.volume30d": "30d volume",
   "distributor.programme.earnings30d": "30d earnings",
   "distributor.programme.builders": "Builders",
-  "distributor.programme.leaderboardFootnote":
-    "Names anonymized. Earnings and volume are real, on-chain data.",
+  "distributor.programme.leaderboardFootnoteLine1":
+    "Only distributors with $100+ in 30d earnings are displayed.",
+  "distributor.programme.leaderboardFootnoteLine2":
+    "Leaderboard refreshes once daily (not real-time).",
+  "distributor.programme.leaderboardFootnoteLine3":
+    "Names anonymized. Earnings and volume are real, onchain data.",
   "distributor.programme.calculatorLabel": "Calculator",
   "distributor.programme.calculatorHeading": "How much could you earn?",
   "distributor.programme.totalDailyVolumeLabel":
@@ -196,7 +198,7 @@ export const distributor = {
   "distributor.step1CreateProfile": "1. Create profile",
   "distributor.step1Desc":
     "Create your distributor profile directly on Orderly One. Not a builder? No problem! You can register as an ambassador.",
-  "distributor.step2ReferBuilders": "2. Refer builders",
+  "distributor.step2ReferBuilders": "2. Refer DEXs",
   "distributor.step2Desc":
     "Share your distributor link or code with your network. Builders in your network can use it to setup their DEXes.",
   "distributor.step3EarnRevenueShare": "3. Earn revenue share",

@@ -482,6 +482,14 @@
   text-align: center;
 }
 
+.vanguard-footnote-lines > p {
+  margin: 0;
+}
+
+.vanguard-footnote-lines > p + p {
+  margin-top: 6px;
+}
+
 .vanguard-calculator-wrap {
   max-width: 880px;
 }

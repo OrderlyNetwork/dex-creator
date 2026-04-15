@@ -9,6 +9,7 @@ export const PROGRAMME_CONFIG = {
   DEFAULT_BUILDER_TIER_INDEX: 0,
   DEFAULT_TAKER_RATIO: 60,
   LEADERBOARD_LIMIT: 15,
+  LEADERBOARD_MIN_EARNINGS_USD: 100,
 } as const;
 
 export type TierName = "Public" | "Silver" | "Gold" | "Platinum" | "Diamond";
