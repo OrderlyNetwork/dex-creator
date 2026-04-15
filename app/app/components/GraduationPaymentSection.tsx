@@ -101,6 +101,7 @@ interface FeeOptionsResponse {
 
 let globalOnDexCreate: (() => Promise<boolean>) | null = null;
 let isPaymentDone = false;
+let onPaymentDoneChange: ((done: boolean) => void) | null = null;
 
 export function setDexCreateCallback(cb: (() => Promise<boolean>) | null) {
   globalOnDexCreate = cb;
@@ -112,6 +113,11 @@ export function getIsPaymentDone() {
 
 export function resetPaymentDone() {
   isPaymentDone = false;
+  onPaymentDoneChange = null;
+}
+
+export function setOnPaymentDoneChange(cb: ((done: boolean) => void) | null) {
+  onPaymentDoneChange = cb;
 }
 
 export default function GraduationPaymentSection() {
@@ -271,6 +277,7 @@ export default function GraduationPaymentSection() {
   const markComplete = useCallback(() => {
     setIsPaymentComplete(true);
     isPaymentDone = true;
+    onPaymentDoneChange?.(true);
   }, []);
 
   const handleTransferOrder = async () => {

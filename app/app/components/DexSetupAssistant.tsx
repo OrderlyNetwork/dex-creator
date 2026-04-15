@@ -2,6 +2,7 @@ import {
   useState,
   useEffect,
   useCallback,
+  useReducer,
   FormEvent,
   useMemo,
   useRef,
@@ -29,6 +30,7 @@ import { setBuildPathSelectCallback } from "./BuildPathSection";
 import {
   setDexCreateCallback,
   resetPaymentDone,
+  setOnPaymentDoneChange,
 } from "./GraduationPaymentSection";
 import type { IntegrationType } from "./BuildPathSection";
 
@@ -57,6 +59,7 @@ export default function DexSetupAssistant({
   const [isValidating, setIsValidating] = useState(false);
   const [selectedBuildPath, setSelectedBuildPath] =
     useState<IntegrationType | null>(null);
+  const [, forceUpdate] = useReducer(c => c + 1, 0);
 
   const { address } = useAccount();
 
@@ -140,9 +143,9 @@ export default function DexSetupAssistant({
     return true;
   };
 
-  const handleBuildPathSelect = (pathType: IntegrationType) => {
+  const handleBuildPathSelect = useCallback((pathType: IntegrationType) => {
     setSelectedBuildPath(pathType);
-  };
+  }, []);
 
   const advanceToStep = (targetStep: number) => {
     setCurrentStep(targetStep);
@@ -210,6 +213,7 @@ export default function DexSetupAssistant({
     if (isCustomPath) {
       setDexCreateCallback(createDexIfNeeded);
     }
+    setOnPaymentDoneChange(() => forceUpdate());
     return () => {
       setBuildPathSelectCallback(null);
       resetPaymentDone();
@@ -217,7 +221,7 @@ export default function DexSetupAssistant({
         setDexCreateCallback(null);
       }
     };
-  }, [handleBuildPathSelect, isCustomPath, createDexIfNeeded]);
+  }, [handleBuildPathSelect, isCustomPath, createDexIfNeeded, forceUpdate]);
 
   const handleNextStep = async (step: number, skip?: boolean) => {
     const currentStepConfig = effectiveSections.find(s => s.id === step);
