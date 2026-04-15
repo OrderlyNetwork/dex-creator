@@ -98,7 +98,6 @@ export function getAvailableMenus(): NavigationMenuItem[] {
         </svg>
       ),
       isDefault: false,
-      editable: false,
     },
   ];
 }
