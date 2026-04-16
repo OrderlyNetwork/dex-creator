@@ -390,6 +390,7 @@ interface DexSectionRendererProps {
   shouldShowSkip?: (section: DexSectionConfig) => boolean;
   customDescription?: (section: DexSectionConfig) => ReactNode;
   isValidating?: boolean;
+  getFooterNote?: (section: DexSectionConfig) => ReactNode | undefined;
 }
 
 const DexSectionRenderer: React.FC<DexSectionRendererProps> = ({
@@ -409,6 +410,7 @@ const DexSectionRenderer: React.FC<DexSectionRendererProps> = ({
   shouldShowSkip,
   customDescription,
   isValidating,
+  getFooterNote,
 }) => {
   const [currentSection, setCurrentSection] = useState(1);
   const sectionRefsRef = useRef<Record<number, HTMLElement | null>>({});
@@ -514,6 +516,7 @@ const DexSectionRenderer: React.FC<DexSectionRendererProps> = ({
           allRequiredPreviousStepsCompleted={allRequiredPreviousStepsCompleted}
           value={section.getValue ? section.getValue(sectionProps) : undefined}
           isValidating={isValidating}
+          footerNote={getFooterNote?.(section)}
         >
           <p className="text-xs text-gray-400 mb-4">
             {customDescription?.(section) ?? section.description}

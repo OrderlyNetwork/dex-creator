@@ -59,6 +59,7 @@ export default function DexSetupAssistant({
   const [isValidating, setIsValidating] = useState(false);
   const [selectedBuildPath, setSelectedBuildPath] =
     useState<IntegrationType | null>(null);
+  const [hasBoundDistributorCode, setHasBoundDistributorCode] = useState(false);
   const [, forceUpdate] = useReducer(c => c + 1, 0);
 
   const { address } = useAccount();
@@ -67,6 +68,11 @@ export default function DexSetupAssistant({
   const urlDistributorCode = useDistributorCode();
 
   const isCustomPath = selectedBuildPath === "custom";
+  const shouldRequireDistributorBindingForCustomBuildPath =
+    selectedBuildPath === "custom" &&
+    !!form.distributorCode.trim() &&
+    !distributorInfo?.exist &&
+    !hasBoundDistributorCode;
   const dexCreatedRef = useRef(false);
 
   const allSections = useMemo(() => {
@@ -104,6 +110,12 @@ export default function DexSetupAssistant({
       wallet_address: address ? `addr_${address}` : "",
     });
   }, []);
+
+  useEffect(() => {
+    if (distributorInfo?.exist) {
+      setHasBoundDistributorCode(true);
+    }
+  }, [distributorInfo?.exist]);
 
   const totalSteps = useMemo(() => {
     return effectiveSections.length;
@@ -173,9 +185,14 @@ export default function DexSetupAssistant({
     try {
       setIsSaving(true);
 
-      if (!distributorInfo?.exist && form.distributorCode.trim()) {
+      if (
+        !distributorInfo?.exist &&
+        !hasBoundDistributorCode &&
+        form.distributorCode.trim()
+      ) {
         const binded = await bindDistributorCode(form.distributorCode.trim());
         if (!binded) return false;
+        setHasBoundDistributorCode(true);
       }
 
       const { formData: formValues } = await form.getFormDataWithBase64Images();
@@ -206,7 +223,14 @@ export default function DexSetupAssistant({
     } finally {
       setIsSaving(false);
     }
-  }, [form, distributorInfo, bindDistributorCode, token, t]);
+  }, [
+    form,
+    distributorInfo,
+    hasBoundDistributorCode,
+    bindDistributorCode,
+    token,
+    t,
+  ]);
 
   useEffect(() => {
     setBuildPathSelectCallback(handleBuildPathSelect);
@@ -232,13 +256,19 @@ export default function DexSetupAssistant({
         return;
       }
 
-      if (isCustomPath) {
-        setCompletedSteps(prev => ({ ...prev, [step]: true }));
-        advanceToStep(step + 1);
-      } else {
-        setCompletedSteps(prev => ({ ...prev, [step]: true }));
-        advanceToStep(step + 1);
+      if (shouldRequireDistributorBindingForCustomBuildPath) {
+        setIsValidating(true);
+        try {
+          const binded = await bindDistributorCode(form.distributorCode.trim());
+          if (!binded) return;
+          setHasBoundDistributorCode(true);
+        } finally {
+          setIsValidating(false);
+        }
       }
+
+      setCompletedSteps(prev => ({ ...prev, [step]: true }));
+      advanceToStep(step + 1);
       return;
     }
 
@@ -420,12 +450,17 @@ export default function DexSetupAssistant({
     try {
       setIsSaving(true);
 
-      if (!distributorInfo?.exist && form.distributorCode.trim()) {
+      if (
+        !distributorInfo?.exist &&
+        !hasBoundDistributorCode &&
+        form.distributorCode.trim()
+      ) {
         const binded = await bindDistributorCode(form.distributorCode.trim());
         if (!binded) {
           setIsSaving(false);
           return;
         }
+        setHasBoundDistributorCode(true);
       }
 
       setForkingStatus(options.forkingStatus);
@@ -647,6 +682,15 @@ export default function DexSetupAssistant({
                 : section.description;
             }
             return section.description;
+          }}
+          getFooterNote={section => {
+            if (
+              section.key === DEX_SECTION_KEYS.BuildPath &&
+              shouldRequireDistributorBindingForCustomBuildPath
+            ) {
+              return t("dex.buildPath.custom.signatureHint");
+            }
+            return undefined;
           }}
           isValidating={isValidating}
         />

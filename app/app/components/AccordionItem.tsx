@@ -20,6 +20,7 @@ export interface AccordionItemProps {
   allRequiredPreviousStepsCompleted: (stepNumber: number) => boolean;
   value?: string;
   isValidating?: boolean;
+  footerNote?: React.ReactNode;
 }
 
 const AccordionItem: React.FC<AccordionItemProps> = ({
@@ -37,6 +38,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
   allRequiredPreviousStepsCompleted,
   value,
   isValidating,
+  footerNote,
 }) => {
   const { t } = useTranslation();
   return (
@@ -99,27 +101,32 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
           )}
         >
           {children}
-          <div className="mt-6 flex justify-end space-x-3">
-            {showSkip && (
+          <div className="mt-6 flex flex-col items-end gap-5">
+            <div className="flex justify-end space-x-3">
+              {showSkip && (
+                <Button
+                  variant="secondary"
+                  onClick={() => onNextInternal(true)}
+                  type="button"
+                  size="sm"
+                >
+                  {t("accordionItem.skip")}
+                </Button>
+              )}
               <Button
-                variant="secondary"
-                onClick={() => onNextInternal(true)}
+                variant="primary"
+                onClick={() => onNextInternal(false)}
                 type="button"
                 size="sm"
+                disabled={!isOptional && !isStepContentValidTest}
+                isLoading={isValidating}
               >
-                {t("accordionItem.skip")}
+                {t("common.next")}
               </Button>
+            </div>
+            {footerNote && (
+              <p className="text-xs text-gray-400">{footerNote}</p>
             )}
-            <Button
-              variant="primary"
-              onClick={() => onNextInternal(false)}
-              type="button"
-              size="sm"
-              disabled={!isOptional && !isStepContentValidTest}
-              isLoading={isValidating}
-            >
-              {t("common.next")}
-            </Button>
           </div>
         </div>
       )}
