@@ -329,6 +329,7 @@
   "dex.viewBenefits": "Ver beneficios",
   "dex.buildPath.title": "¿Cómo quieres crear tu DEX?",
   "dex.buildPath.lowCode.title": "Low Code",
+  "dex.buildPath.chooseYourPath": "Elige tu ruta",
   "dex.buildPath.lowCode.description": "La vía más rápida para salir al mercado. Una solución \"DEX-in-a-box\" que te permite lanzar en minutos una interfaz de trading totalmente personalizada con tu marca.",
   "dex.buildPath.custom.title": "Integración SDK/API Personalizada",
   "dex.buildPath.custom.description": "Construye una experiencia de trading personalizada usando el SDK y API de Orderly. Tú gestionas tu propio despliegue.",

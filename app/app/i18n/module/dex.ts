@@ -67,6 +67,7 @@ export const dex = {
   // dex.buildPath.*
   "dex.buildPath.title": "How do you want to build your DEX?",
   "dex.buildPath.lowCode.title": "Low Code",
+  "dex.buildPath.chooseYourPath": "Choose your path",
   "dex.buildPath.lowCode.description":
     'The fastest path to market. "DEX-in-a-box" solution that lets you launch a fully branded trading interface in minutes.',
   "dex.buildPath.custom.title": "Custom SDK/API Integration",

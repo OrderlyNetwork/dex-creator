@@ -106,7 +106,7 @@ export function getDexSections(): DexSectionConfig[] {
       id: 3,
       key: DEX_SECTION_KEYS.BuildPath,
       title: i18n.t("dex.buildPath.title"),
-      description: i18n.t("dex.buildPath.lowCode.description"),
+      description: i18n.t("dex.buildPath.chooseYourPath"),
       isOptional: false,
       component: BuildPathSection,
       getProps: (_props: any) => ({}),

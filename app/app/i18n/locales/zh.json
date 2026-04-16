@@ -329,6 +329,7 @@
   "dex.viewBenefits": "查看权益",
   "dex.buildPath.title": "你想如何构建你的 DEX？",
   "dex.buildPath.lowCode.title": "低代码",
+  "dex.buildPath.chooseYourPath": "选择你的方案",
   "dex.buildPath.lowCode.description": "最快的上线路径。“开箱即用”的 DEX 方案，让你在几分钟内上线一个完全品牌化的交易界面。",
   "dex.buildPath.custom.title": "自定义 SDK/API 集成",
   "dex.buildPath.custom.description": "使用 Orderly SDK 和 API 构建自定义交易体验。你自行管理部署。",
