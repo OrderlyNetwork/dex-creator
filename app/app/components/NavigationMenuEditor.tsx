@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { cn } from "~/utils/css";
 import { i18n, useTranslation } from "~/i18n";
+import { useModal } from "~/context/ModalContext";
 
 interface NavigationMenuItem {
   id: string;
@@ -17,6 +18,7 @@ interface NavigationMenuEditorProps {
   className?: string;
   swapFeeBps: number | null;
   onOpenSwapFeeConfig: () => void;
+  hasActivePointsCampaign?: boolean;
 }
 
 export function getAvailableMenus(): NavigationMenuItem[] {
@@ -108,8 +110,10 @@ const NavigationMenuEditor: React.FC<NavigationMenuEditorProps> = ({
   className = "",
   swapFeeBps,
   onOpenSwapFeeConfig,
+  hasActivePointsCampaign = false,
 }) => {
   const { t } = useTranslation();
+  const { openModal } = useModal();
   const parseMenus = useCallback((menuString: string): string[] => {
     if (!menuString) return [];
     return menuString
@@ -169,13 +173,7 @@ const NavigationMenuEditor: React.FC<NavigationMenuEditorProps> = ({
     }
   }, [value, parseMenus]);
 
-  const toggleMenu = (menuId: string) => {
-    const menu = AVAILABLE_MENUS.find(m => m.id === menuId);
-    // If the menu item is not editable and is in the initial value, editing is prohibited
-    if (menu?.editable === false && initialMenus.includes(menuId)) {
-      return;
-    }
-
+  const doToggle = (menuId: string) => {
     setIsInternalUpdate(true);
     setEnabledMenus(current => {
       if (current.includes(menuId)) {
@@ -184,6 +182,35 @@ const NavigationMenuEditor: React.FC<NavigationMenuEditorProps> = ({
         return [...current, menuId];
       }
     });
+  };
+
+  const toggleMenu = (menuId: string) => {
+    const menu = AVAILABLE_MENUS.find(m => m.id === menuId);
+    // If the menu item is not editable and is in the initial value, editing is prohibited
+    if (menu?.editable === false && initialMenus.includes(menuId)) {
+      return;
+    }
+
+    if (
+      menuId === "Points" &&
+      enabledMenus.includes(menuId) &&
+      hasActivePointsCampaign
+    ) {
+      openModal("confirmation", {
+        title: t("navigationMenuEditor.activePointsCampaignWarning.title"),
+        message: t("navigationMenuEditor.activePointsCampaignWarning.message"),
+        confirmButtonVariant: "warning",
+        confirmButtonText: t(
+          "navigationMenuEditor.activePointsCampaignWarning.confirmButton"
+        ),
+        onConfirm: async () => {
+          doToggle(menuId);
+        },
+      });
+      return;
+    }
+
+    doToggle(menuId);
   };
 
   const handleDragStart = (e: React.DragEvent, menuId: string) => {

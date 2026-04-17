@@ -8,6 +8,13 @@ import { toast } from "react-toastify";
 import { modal } from "@orderly.network/ui";
 import { formatDate } from "~/utils/date";
 import { useTranslation } from "~/i18n";
+import { DexData } from "~/types/dex";
+import { createDexFormData, putFormData } from "~/utils/apiClient";
+import { useAuth } from "~/context/useAuth";
+import { useDex } from "~/context/DexContext";
+import { getAvailableMenus } from "~/components/NavigationMenuEditor";
+
+const PointsMenuId = "Points";
 
 type UseOperatePointsProps = {
   type: PointCampaignFormType;
@@ -18,6 +25,8 @@ type UseOperatePointsProps = {
 export function useOperatePoints(props: UseOperatePointsProps) {
   const { type, pointDetail } = props;
   const { t } = useTranslation();
+  const { token } = useAuth();
+  const { dexData, updateDexData } = useDex();
 
   const [updatePointCampaign, { isMutating }] = useOperatePointsStage();
 
@@ -39,6 +48,37 @@ export function useOperatePoints(props: UseOperatePointsProps) {
     l2_referral_boost: Number(values.l2_referral_boost ?? 5),
   });
 
+  const ensurePointsNavEnabled = async () => {
+    const currentMenus = dexData?.enabledMenus || "";
+    if (
+      currentMenus
+        .split(",")
+        .map(m => m.trim())
+        .includes(PointsMenuId)
+    ) {
+      return;
+    }
+
+    const defaultMenus = getAvailableMenus()
+      .filter(m => m.isDefault)
+      .map(m => m.id);
+    const baseMenus = currentMenus
+      ? currentMenus
+          .split(",")
+          .map(m => m.trim())
+          .filter(Boolean)
+      : defaultMenus;
+    const newEnabledMenus = [...baseMenus, PointsMenuId].join(",");
+
+    try {
+      const formData = createDexFormData({ enabledMenus: newEnabledMenus });
+      await putFormData<DexData>(`api/dex/${dexData?.id}`, formData, token, {
+        showToastOnError: false,
+      });
+      updateDexData({ enabledMenus: newEnabledMenus });
+    } catch {}
+  };
+
   const operateCampaign = async (values: PointCampaignFormValues) => {
     try {
       const formData = getFormData(values);
@@ -48,6 +88,7 @@ export function useOperatePoints(props: UseOperatePointsProps) {
 
       if (res.success) {
         if (type === PointCampaignFormType.Create) {
+          await ensurePointsNavEnabled();
           toast.success(
             <div>
               {t("points.operate.create.toast.title")}

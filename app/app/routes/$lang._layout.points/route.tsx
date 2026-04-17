@@ -3,12 +3,10 @@ import type { MetaFunction } from "@remix-run/node";
 import { BackDexDashboard } from "../../components/BackDexDashboard";
 import { PointCampaignForm } from "./components/form";
 import { PointCampaignList } from "./components/PointCampaignList";
-import { EnablePointsCard, PointsMenuId } from "./components/EnablePointsCard";
 import { OrderlyKeyAuthGrard } from "~/components/authGrard/OrderlyKeyAuthGuard";
 import { GraduationAuthGuard } from "~/components/authGrard/GraduationAuthGuard";
 import { PointCampaign, PointCampaignFormType } from "~/types/points";
 import { usePointsStages } from "./hooks/usePointsService";
-import { useDex } from "~/context/DexContext";
 import { useDeleteStages } from "./hooks/useDeleteStages";
 import { useTranslation } from "~/i18n";
 
@@ -26,13 +24,6 @@ export default function PointsRoute() {
   const [type, setType] = useState<PointCampaignFormType | null>(null);
   const [currentPoints, setCurrentPoints] = useState<PointCampaign | null>(
     null
-  );
-
-  const { dexData } = useDex();
-
-  const enabledMenus = useMemo(
-    () => parseMenus(dexData?.enabledMenus!),
-    [dexData?.enabledMenus]
   );
 
   const { data, mutate: mutatePointsStages } = usePointsStages();
@@ -74,10 +65,6 @@ export default function PointsRoute() {
     return data?.[0];
   }, [data]);
 
-  const disabledCreate = useMemo(() => {
-    return !enabledMenus.includes(PointsMenuId);
-  }, [enabledMenus]);
-
   const renderContent = () => {
     if (type) {
       return (
@@ -101,14 +88,12 @@ export default function PointsRoute() {
 
         <OrderlyKeyAuthGrard className="mt-10">
           <GraduationAuthGuard className="mt-10">
-            <EnablePointsCard enabledMenus={enabledMenus} />
             <PointCampaignList
               data={data}
               onView={handleView}
               onEdit={handleEdit}
               onDelete={handleDelete}
               onCreate={handleCreate}
-              disabledCreate={disabledCreate}
             />
           </GraduationAuthGuard>
         </OrderlyKeyAuthGrard>
@@ -121,12 +106,4 @@ export default function PointsRoute() {
       {renderContent()}
     </div>
   );
-}
-
-function parseMenus(menuString?: string): string[] {
-  if (!menuString) return [];
-  return menuString
-    .split(",")
-    .map(item => item.trim())
-    .filter(Boolean);
 }

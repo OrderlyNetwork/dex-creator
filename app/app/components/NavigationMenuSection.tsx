@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "~/i18n";
 import NavigationMenuEditor from "./NavigationMenuEditor";
 import CustomMenuEditor from "./CustomMenuEditor";
 import { useModal } from "../context/ModalContext";
+import { usePointsStages } from "../routes/$lang._layout.points/hooks/usePointsService";
+import { PointCampaignStatus } from "~/types/points";
 
 export interface NavigationMenuProps {
   enabledMenus: string;
@@ -27,6 +29,16 @@ const NavigationMenuSection: React.FC<NavigationMenuProps> = ({
 }) => {
   const { t } = useTranslation();
   const { openModal } = useModal();
+  const { data: pointsStages } = usePointsStages();
+
+  const hasActivePointsCampaign = useMemo(() => {
+    if (!pointsStages) return false;
+    return pointsStages.some(
+      stage =>
+        stage.status === PointCampaignStatus.Active ||
+        stage.status === PointCampaignStatus.Pending
+    );
+  }, [pointsStages]);
 
   const handleOpenSwapFeeConfig = () => {
     openModal("swapFeeConfig", {
@@ -45,6 +57,7 @@ const NavigationMenuSection: React.FC<NavigationMenuProps> = ({
         className="slide-fade-in"
         swapFeeBps={swapFeeBps}
         onOpenSwapFeeConfig={handleOpenSwapFeeConfig}
+        hasActivePointsCampaign={hasActivePointsCampaign}
       />
 
       <CustomMenuEditor

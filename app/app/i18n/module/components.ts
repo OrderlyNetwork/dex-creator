@@ -1028,6 +1028,12 @@ export const components = {
   "navigationMenuEditor.menuVaults": "Vaults",
   "navigationMenuEditor.menuPoints": "Points",
   "navigationMenuEditor.menuCampaigns": "Campaigns",
+  "navigationMenuEditor.activePointsCampaignWarning.title":
+    "Active Points Campaign Detected",
+  "navigationMenuEditor.activePointsCampaignWarning.message":
+    "You have an active or pending points campaign. Disabling the Points page will hide it from your DEX navigation, but your campaigns will continue running on the backend.",
+  "navigationMenuEditor.activePointsCampaignWarning.confirmButton":
+    "Disable Points",
 
   // ReownConfigSection
   "reownConfigSection.enhancedWalletConnectivity":

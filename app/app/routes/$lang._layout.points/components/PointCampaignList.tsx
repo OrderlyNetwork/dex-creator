@@ -17,11 +17,10 @@ type PointCampaignListProps = {
   onEdit: (campaign: PointCampaign) => void;
   onCreate: () => void;
   onDelete: (campaign: PointCampaign) => void;
-  disabledCreate: boolean;
 };
 
 export function PointCampaignList(props: PointCampaignListProps) {
-  const { data, disabledCreate } = props;
+  const { data } = props;
   const { t } = useTranslation();
   const { page, pageSize, parsePagination } = usePagination();
 
@@ -146,21 +145,17 @@ export function PointCampaignList(props: PointCampaignListProps) {
         variant="primary"
         size="sm"
         onClick={props.onCreate}
-        disabled={disabledCreate || hasRecurring}
+        disabled={hasRecurring}
       >
         {t("points.list.button.create")}
       </Button>
     );
 
-    if (disabledCreate || hasRecurring) {
+    if (hasRecurring) {
       return (
         <Tooltip
           delayDuration={100}
-          content={
-            hasRecurring
-              ? t("points.list.tooltip.recurring")
-              : t("points.list.tooltip.enable")
-          }
+          content={t("points.list.tooltip.recurring")}
         >
           {button}
         </Tooltip>
