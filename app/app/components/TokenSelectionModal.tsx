@@ -25,6 +25,8 @@ interface TokenSelectionModalProps {
   ) => void;
   currentChain: OrderTokenChainName;
   currentPaymentType: "usdc" | "order" | "usdt";
+  /** When true, fetch the same graduation fee tier as SDK/custom DEX (matches GraduationPaymentSection). */
+  useCustomGraduationFee?: boolean;
 }
 
 interface TokenOption {
@@ -92,6 +94,7 @@ export function TokenSelectionModal({
   onSelect,
   currentChain,
   currentPaymentType,
+  useCustomGraduationFee = false,
 }: TokenSelectionModalProps) {
   const { t } = useTranslation();
   const { address } = useAccount();
@@ -133,22 +136,30 @@ export function TokenSelectionModal({
   }, [orderTokenPrice]);
 
   useEffect(() => {
-    const fetchFeeOptions = async () => {
-      if (!token || feeOptions) return;
+    let cancelled = false;
 
+    const fetchFeeOptions = async () => {
+      if (!token) return;
+
+      setFeeOptions(null);
       try {
+        const qs = useCustomGraduationFee ? "?isCustom=true" : "";
         const response = await get<FeeOptionsResponse>(
-          "api/graduation/fee-options",
+          `api/graduation/fee-options${qs}`,
           token
         );
-        setFeeOptions(response);
+        if (!cancelled) setFeeOptions(response);
       } catch (error) {
         console.error("Failed to fetch fee options:", error);
+        if (!cancelled) setFeeOptions(null);
       }
     };
 
     fetchFeeOptions();
-  }, [token, feeOptions]);
+    return () => {
+      cancelled = true;
+    };
+  }, [token, useCustomGraduationFee]);
 
   const getChainName = (chain: OrderTokenChainName) => {
     const preferredChain = getPreferredChain(chain);

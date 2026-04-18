@@ -265,6 +265,7 @@ function ModalManager() {
           onSelect={currentModalProps.onSelect}
           currentChain={currentModalProps.currentChain}
           currentPaymentType={currentModalProps.currentPaymentType}
+          useCustomGraduationFee={currentModalProps.useCustomGraduationFee}
         />
       );
     case "safeInstructions":

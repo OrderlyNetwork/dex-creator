@@ -527,6 +527,7 @@ export default function GraduationPaymentSection() {
                   onSelect: handleTokenSelection,
                   currentChain: chain,
                   currentPaymentType: paymentType,
+                  useCustomGraduationFee: true,
                 })
               }
               className="w-full p-4 border border-light/10 bg-background-card hover:border-light/20 rounded-xl transition-colors text-left"
