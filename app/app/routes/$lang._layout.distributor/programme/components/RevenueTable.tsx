@@ -10,7 +10,7 @@ import { useInViewOnce } from "./useInViewOnce";
 
 interface DistributorStatsRecord {
   distributorName: string;
-  revenueShare30d: number;
+  totalRevenueShare: number;
   inviteeVolume30d: number;
   graduatedInvitees: number;
 }
@@ -21,12 +21,12 @@ const parseStatsRecord = (raw: unknown): DistributorStatsRecord | null => {
   }
 
   const source = raw as Record<string, unknown>;
-  const revenueShare30d = Number(source["30D Revenue Share"]);
+  const totalRevenueShare = Number(source["Total Revenue Share"]);
   const inviteeVolume30d = Number(source["30D Invitee Volume"]);
   const graduatedInvitees = Number(source["Number of Graduated Invitees"]);
 
   if (
-    Number.isNaN(revenueShare30d) ||
+    Number.isNaN(totalRevenueShare) ||
     Number.isNaN(inviteeVolume30d) ||
     Number.isNaN(graduatedInvitees)
   ) {
@@ -35,7 +35,7 @@ const parseStatsRecord = (raw: unknown): DistributorStatsRecord | null => {
 
   return {
     distributorName: String(source["Distributor Name"] ?? ""),
-    revenueShare30d,
+    totalRevenueShare,
     inviteeVolume30d,
     graduatedInvitees,
   };
@@ -74,8 +74,10 @@ export function RevenueTable() {
         const parsed = payload
           .map(parseStatsRecord)
           .filter((item): item is DistributorStatsRecord => item !== null)
-          .filter(item => item.revenueShare30d > 0)
-          .sort((left, right) => right.revenueShare30d - left.revenueShare30d);
+          .filter(item => item.totalRevenueShare > 0)
+          .sort(
+            (left, right) => right.totalRevenueShare - left.totalRevenueShare
+          );
 
         if (!controller.signal.aborted) {
           setRecords(parsed);
@@ -109,7 +111,7 @@ export function RevenueTable() {
       0
     );
     const totalRevenue = records.reduce(
-      (sum, item) => sum + item.revenueShare30d,
+      (sum, item) => sum + item.totalRevenueShare,
       0
     );
 
@@ -125,7 +127,7 @@ export function RevenueTable() {
         iconClass: "i-mdi:trending-up",
       },
       {
-        label: t("distributor.programme.revenuePaid30d"),
+        label: t("distributor.programme.revenuePaidHistorical"),
         value: formatCompactCurrency(totalRevenue),
         iconClass: "i-mdi:wallet-outline",
       },
@@ -138,7 +140,7 @@ export function RevenueTable() {
     }
     return records.filter(
       item =>
-        item.revenueShare30d >= PROGRAMME_CONFIG.LEADERBOARD_MIN_EARNINGS_USD
+        item.totalRevenueShare >= PROGRAMME_CONFIG.LEADERBOARD_MIN_EARNINGS_USD
     );
   }, [records]);
 
@@ -203,7 +205,7 @@ export function RevenueTable() {
                             {t("distributor.programme.volume30d")}
                           </th>
                           <th className="text-right">
-                            {t("distributor.programme.earnings30d")}
+                            {t("distributor.programme.earningsHistorical")}
                           </th>
                           <th className="text-right">
                             {t("distributor.programme.builders")}
@@ -244,7 +246,7 @@ export function RevenueTable() {
                                   )}
                                 </td>
                                 <td className="text-right vanguard-mono-text vanguard-green-text">
-                                  {formatCurrency(record.revenueShare30d)}
+                                  {formatCurrency(record.totalRevenueShare)}
                                 </td>
                                 <td className="text-right vanguard-mono-text">
                                   {record.graduatedInvitees}
