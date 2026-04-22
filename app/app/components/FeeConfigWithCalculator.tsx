@@ -15,11 +15,11 @@ import {
 } from "./select";
 import { Trans, useTranslation } from "~/i18n";
 
-const MIN_MAKER_FEE = -0.5;
-const MIN_TAKER_FEE = 1;
+const MIN_MAKER_FEE = 0;
+const MIN_TAKER_FEE = 3;
 const MAX_FEE = 15;
-const MIN_RWA_MAKER_FEE = -0.5;
-const MIN_RWA_TAKER_FEE = 3;
+const MIN_RWA_MAKER_FEE = 0;
+const MIN_RWA_TAKER_FEE = 5;
 const MAX_RWA_FEE = 15;
 
 interface FeeConfigWithCalculatorProps {
@@ -41,6 +41,10 @@ interface FeeConfigWithCalculatorProps {
   alwaysShowConfig?: boolean;
   useOrderlyApi?: boolean;
   brokerId?: string;
+  minMakerFee?: number;
+  minTakerFee?: number;
+  minRwaMakerFee?: number;
+  minRwaTakerFee?: number;
 }
 
 const formatNumber = (value: number, maxDecimals: number = 1) => {
@@ -65,6 +69,10 @@ export const FeeConfigWithCalculator: React.FC<
   alwaysShowConfig = false,
   useOrderlyApi = false,
   brokerId,
+  minMakerFee,
+  minTakerFee,
+  minRwaMakerFee,
+  minRwaTakerFee,
 }) => {
   const { t } = useTranslation();
   const { orderlyKey, accountId, hasValidKey, setOrderlyKey } = useOrderlyKey();
@@ -100,14 +108,19 @@ export const FeeConfigWithCalculator: React.FC<
     initialRwaTakerFee,
   ]);
 
+  const effectiveMinMaker = minMakerFee ?? MIN_MAKER_FEE;
+  const effectiveMinTaker = minTakerFee ?? MIN_TAKER_FEE;
+  const effectiveMinRwaMaker = minRwaMakerFee ?? MIN_RWA_MAKER_FEE;
+  const effectiveMinRwaTaker = minRwaTakerFee ?? MIN_RWA_TAKER_FEE;
+
   const validateFees = (
     type: "maker" | "taker" | "rwaMaker" | "rwaTaker",
     value: number
   ) => {
     if (type === "maker") {
-      if (value < MIN_MAKER_FEE) {
+      if (value < effectiveMinMaker) {
         setMakerFeeError(
-          `${t("feeConfigWithCalculator.makerFeeMin", { min: MIN_MAKER_FEE })} bps`
+          `${t("feeConfigWithCalculator.makerFeeMin", { min: effectiveMinMaker })} bps`
         );
         return false;
       } else if (value > MAX_FEE) {
@@ -120,9 +133,9 @@ export const FeeConfigWithCalculator: React.FC<
         return true;
       }
     } else if (type === "taker") {
-      if (value < MIN_TAKER_FEE) {
+      if (value < effectiveMinTaker) {
         setTakerFeeError(
-          `${t("feeConfigWithCalculator.takerFeeMin", { min: MIN_TAKER_FEE })} bps`
+          `${t("feeConfigWithCalculator.takerFeeMin", { min: effectiveMinTaker })} bps`
         );
         return false;
       } else if (value > MAX_FEE) {
@@ -135,10 +148,10 @@ export const FeeConfigWithCalculator: React.FC<
         return true;
       }
     } else if (type === "rwaMaker") {
-      if (value < MIN_RWA_MAKER_FEE) {
+      if (value < effectiveMinRwaMaker) {
         setRwaMakerFeeError(
           `${t("feeConfigWithCalculator.rwaMakerFeeMin", {
-            min: MIN_RWA_MAKER_FEE,
+            min: effectiveMinRwaMaker,
           })} bps`
         );
         return false;
@@ -154,10 +167,10 @@ export const FeeConfigWithCalculator: React.FC<
         return true;
       }
     } else {
-      if (value < MIN_RWA_TAKER_FEE) {
+      if (value < effectiveMinRwaTaker) {
         setRwaTakerFeeError(
           `${t("feeConfigWithCalculator.rwaTakerFeeMin", {
-            min: MIN_RWA_TAKER_FEE,
+            min: effectiveMinRwaTaker,
           })} bps`
         );
         return false;
@@ -588,19 +601,19 @@ export const FeeConfigWithCalculator: React.FC<
                       onChange={handleMakerFeeChange}
                       onBlur={handleMakerFeeBlur}
                       step="0.1"
-                      min="-1"
-                      max="50"
+                      step="0.1"
+                      min={effectiveMinMaker}
+                      max={MAX_FEE}
                       className={`w-full px-3 py-2 bg-background-dark border ${makerFeeError ? "border-error" : "border-light/10"} rounded-lg`}
-                      placeholder="0.0"
-                    />
+                      placeholder="0.0" />
                     <span className="ml-2 text-gray-400 text-sm">
                       bps (0.01%)
                     </span>
                   </div>
                   <p className="text-xs text-gray-400 mt-1">
                     {t("feeConfigWithCalculator.feeRange", {
-                      min: MIN_MAKER_FEE,
-                      minPercent: (MIN_MAKER_FEE * 0.01).toFixed(2),
+                      min: effectiveMinMaker,
+                      minPercent: (effectiveMinMaker * 0.01).toFixed(2),
                       max: MAX_FEE,
                       maxPercent: (MAX_FEE * 0.01).toFixed(2),
                       unit: "bps",
@@ -626,8 +639,9 @@ export const FeeConfigWithCalculator: React.FC<
                       onChange={handleTakerFeeChange}
                       onBlur={handleTakerFeeBlur}
                       step="0.1"
-                      min="0"
-                      max="50"
+                      step="0.1"
+                      min={effectiveMinTaker}
+                      max={MAX_FEE}
                       className={`w-full px-3 py-2 bg-background-dark border ${takerFeeError ? "border-error" : "border-light/10"} rounded-lg`}
                       placeholder="0.0"
                     />
@@ -637,8 +651,8 @@ export const FeeConfigWithCalculator: React.FC<
                   </div>
                   <p className="text-xs text-gray-400 mt-1">
                     {t("feeConfigWithCalculator.feeRange", {
-                      min: MIN_TAKER_FEE,
-                      minPercent: (MIN_TAKER_FEE * 0.01).toFixed(2),
+                      min: effectiveMinTaker,
+                      minPercent: (effectiveMinTaker * 0.01).toFixed(2),
                       max: MAX_FEE,
                       maxPercent: (MAX_FEE * 0.01).toFixed(2),
                       unit: "bps",
@@ -673,8 +687,8 @@ export const FeeConfigWithCalculator: React.FC<
                         onChange={handleRwaMakerFeeChange}
                         onBlur={handleRwaMakerFeeBlur}
                         step="0.1"
-                        min="-1"
-                        max="50"
+                        min={effectiveMinRwaMaker}
+                        max={MAX_RWA_FEE}
                         className={`w-full px-3 py-2 bg-background-dark border ${rwaMakerFeeError ? "border-error" : "border-light/10"} rounded-lg`}
                         placeholder="0.0"
                       />
@@ -684,8 +698,8 @@ export const FeeConfigWithCalculator: React.FC<
                     </div>
                     <p className="text-xs text-gray-400 mt-1">
                       {t("feeConfigWithCalculator.feeRange", {
-                        min: MIN_RWA_MAKER_FEE,
-                        minPercent: (MIN_RWA_MAKER_FEE * 0.01).toFixed(2),
+                        min: effectiveMinRwaMaker,
+                        minPercent: (effectiveMinRwaMaker * 0.01).toFixed(2),
                         max: MAX_RWA_FEE,
                         maxPercent: (MAX_RWA_FEE * 0.01).toFixed(2),
                         unit: "bps",
@@ -713,8 +727,8 @@ export const FeeConfigWithCalculator: React.FC<
                         onChange={handleRwaTakerFeeChange}
                         onBlur={handleRwaTakerFeeBlur}
                         step="0.1"
-                        min="0"
-                        max="50"
+                        min={effectiveMinRwaTaker}
+                        max={MAX_RWA_FEE}
                         className={`w-full px-3 py-2 bg-background-dark border ${rwaTakerFeeError ? "border-error" : "border-light/10"} rounded-lg`}
                         placeholder="0.0"
                       />
@@ -724,8 +738,8 @@ export const FeeConfigWithCalculator: React.FC<
                     </div>
                     <p className="text-xs text-gray-400 mt-1">
                       {t("feeConfigWithCalculator.feeRange", {
-                        min: MIN_RWA_TAKER_FEE,
-                        minPercent: (MIN_RWA_TAKER_FEE * 0.01).toFixed(2),
+                        min: effectiveMinRwaTaker,
+                        minPercent: (effectiveMinRwaTaker * 0.01).toFixed(2),
                         max: MAX_RWA_FEE,
                         maxPercent: (MAX_RWA_FEE * 0.01).toFixed(2),
                         unit: "bps",

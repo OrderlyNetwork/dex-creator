@@ -166,6 +166,8 @@ interface BrokerTierResponse {
   tradingVolume: string;
   makerFeeRate: string;
   takerFeeRate: string;
+  rwaMakerFeeRate?: string;
+  rwaTakerFeeRate?: string;
   logDate: string;
 }
 
@@ -195,8 +197,8 @@ export function GraduationForm({
   const [showManualInput, setShowManualInput] = useState(false);
   const [existingBrokerIds, setExistingBrokerIds] = useState<string[]>([]);
 
-  const [makerFee, setMakerFee] = useState<number>(3);
-  const [takerFee, setTakerFee] = useState<number>(6);
+  const [makerFee, setMakerFee] = useState<number>(0);
+  const [takerFee, setTakerFee] = useState<number>(3);
   const [rwaMakerFee, setRwaMakerFee] = useState<number>(0);
   const [rwaTakerFee, setRwaTakerFee] = useState<number>(5);
 
@@ -1442,6 +1444,10 @@ export function GraduationForm({
             showSaveButton={true}
             useOrderlyApi={true}
             brokerId={graduationStatus?.brokerId}
+            minMakerFee={brokerTier ? parseFloat(brokerTier.makerFeeRate) : undefined}
+            minTakerFee={brokerTier ? parseFloat(brokerTier.takerFeeRate) : undefined}
+            minRwaMakerFee={brokerTier?.rwaMakerFeeRate ? parseFloat(brokerTier.rwaMakerFeeRate) : undefined}
+            minRwaTakerFee={brokerTier?.rwaTakerFeeRate ? parseFloat(brokerTier.rwaTakerFeeRate) : undefined}
             onFeesChange={(
               newMakerFee,
               newTakerFee,
@@ -1510,6 +1516,10 @@ export function GraduationForm({
             rwaMakerFee={rwaMakerFee}
             rwaTakerFee={rwaTakerFee}
             readOnly={false}
+            minMakerFee={brokerTier ? parseFloat(brokerTier.makerFeeRate) : undefined}
+            minTakerFee={brokerTier ? parseFloat(brokerTier.takerFeeRate) : undefined}
+            minRwaMakerFee={brokerTier?.rwaMakerFeeRate ? parseFloat(brokerTier.rwaMakerFeeRate) : undefined}
+            minRwaTakerFee={brokerTier?.rwaTakerFeeRate ? parseFloat(brokerTier.rwaTakerFeeRate) : undefined}
             onFeesChange={(
               newMakerFee,
               newTakerFee,

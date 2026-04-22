@@ -88,8 +88,10 @@ export default function GraduationRoute() {
             <BaseFeeExplanation />
 
             <FeeConfigWithCalculator
-              makerFee={3}
-              takerFee={6}
+              makerFee={0}
+              takerFee={3}
+              rwaMakerFee={0}
+              rwaTakerFee={5}
               readOnly={true}
               defaultOpenCalculator={true}
             />
