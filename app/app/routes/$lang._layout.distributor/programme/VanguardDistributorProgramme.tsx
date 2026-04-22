@@ -2,6 +2,7 @@ import { HeroSection } from "./components/HeroSection";
 import { HowItWorks } from "./components/HowItWorks";
 import { RevenueTable } from "./components/RevenueTable";
 import { RevenueSimulator } from "./components/RevenueSimulator";
+import { BoostedDistributorSection } from "./components/BoostedDistributorSection";
 import { CtaSection } from "./components/CtaSection";
 import "./vanguard.css";
 
@@ -12,6 +13,7 @@ export function VanguardDistributorProgramme() {
       <HowItWorks />
       <RevenueTable />
       <RevenueSimulator />
+      <BoostedDistributorSection />
       <CtaSection />
     </div>
   );

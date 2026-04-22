@@ -704,6 +704,35 @@
   font-family: var(--font-mono);
 }
 
+.vanguard-boosted-section {
+  padding: 100px 40px;
+  background: var(--bg-secondary);
+}
+
+.vanguard-boosted-radial {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 600px;
+  height: 400px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    ellipse,
+    rgba(0, 255, 163, 0.06),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.vanguard-boosted-wrap {
+  position: relative;
+  max-width: 700px;
+}
+
+.vanguard-boosted-cta-wrap {
+  text-align: center;
+}
+
 .vanguard-final-cta-section {
   padding-bottom: 120px;
 }
@@ -883,6 +912,10 @@
   .vanguard-stats-grid,
   .vanguard-benefits-grid {
     grid-template-columns: 1fr;
+  }
+
+  .vanguard-boosted-section {
+    padding: 60px 20px;
   }
 
   .vanguard-calculator-layout {
