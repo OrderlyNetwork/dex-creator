@@ -37,21 +37,21 @@ export const VerifyTxSchema = z.object({
       description: "Desired broker ID",
       example: "my-broker",
     }),
-  makerFee: z.number().min(0).max(15).openapi({
-    description: "Maker fee in basis points (0-15)",
-    example: 5,
+  makerFee: z.number().min(-0.5).max(15).openapi({
+    description: "Maker fee in basis points (-0.5 to 15). Negative values indicate rebates.",
+    example: -0.1,
   }),
-  takerFee: z.number().min(3).max(15).openapi({
-    description: "Taker fee in basis points (3-15)",
-    example: 10,
+  takerFee: z.number().min(1).max(15).openapi({
+    description: "Taker fee in basis points (1-15)",
+    example: 2.5,
   }),
-  rwaMakerFee: z.number().min(0).max(15).openapi({
-    description: "RWA maker fee in basis points (0-15)",
-    example: 5,
+  rwaMakerFee: z.number().min(-0.5).max(15).openapi({
+    description: "RWA maker fee in basis points (-0.5 to 15). Negative values indicate rebates.",
+    example: -0.25,
   }),
-  rwaTakerFee: z.number().min(0).max(15).openapi({
-    description: "RWA taker fee in basis points (0-15)",
-    example: 10,
+  rwaTakerFee: z.number().min(3).max(15).openapi({
+    description: "RWA taker fee in basis points (3-15)",
+    example: 4.5,
   }),
   paymentType: z.enum(["usdc", "order", "usdt"]).default("order").openapi({
     description: "Payment token type",

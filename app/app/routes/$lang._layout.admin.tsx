@@ -1401,11 +1401,12 @@ export default function AdminRoute() {
                     type="number"
                     value={manualMakerFee.toString()}
                     onChange={e =>
-                      setManualMakerFee(parseInt(e.target.value) || 0)
+                      setManualMakerFee(parseFloat(e.target.value) || 0)
                     }
-                    placeholder="3"
+                    placeholder="0"
+                    step="0.1"
                     // i18n-ignore
-                    helpText="0-15 bps"
+                    helpText="-0.5 to 15 bps"
                     required
                   />
 
@@ -1415,11 +1416,12 @@ export default function AdminRoute() {
                     type="number"
                     value={manualTakerFee.toString()}
                     onChange={e =>
-                      setManualTakerFee(parseInt(e.target.value) || 0)
+                      setManualTakerFee(parseFloat(e.target.value) || 0)
                     }
-                    placeholder="6"
+                    placeholder="3"
+                    step="0.1"
                     // i18n-ignore
-                    helpText="3-15 bps"
+                    helpText="1-15 bps"
                     required
                   />
                 </div>
@@ -1439,11 +1441,12 @@ export default function AdminRoute() {
                     type="number"
                     value={manualRwaMakerFee.toString()}
                     onChange={e =>
-                      setManualRwaMakerFee(parseInt(e.target.value) || 0)
+                      setManualRwaMakerFee(parseFloat(e.target.value) || 0)
                     }
                     placeholder="0"
+                    step="0.1"
                     // i18n-ignore
-                    helpText="0-15 bps"
+                    helpText="-0.5 to 15 bps"
                   />
 
                   <FormInput
@@ -1452,11 +1455,12 @@ export default function AdminRoute() {
                     type="number"
                     value={manualRwaTakerFee.toString()}
                     onChange={e =>
-                      setManualRwaTakerFee(parseInt(e.target.value) || 0)
+                      setManualRwaTakerFee(parseFloat(e.target.value) || 0)
                     }
                     placeholder="5"
+                    step="0.1"
                     // i18n-ignore
-                    helpText="0-15 bps"
+                    helpText="3-15 bps"
                   />
                 </div>
               </div>

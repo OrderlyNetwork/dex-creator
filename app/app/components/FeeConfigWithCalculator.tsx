@@ -15,11 +15,11 @@ import {
 } from "./select";
 import { Trans, useTranslation } from "~/i18n";
 
-const MIN_MAKER_FEE = 0;
-const MIN_TAKER_FEE = 3;
+const MIN_MAKER_FEE = -0.5;
+const MIN_TAKER_FEE = 1;
 const MAX_FEE = 15;
-const MIN_RWA_MAKER_FEE = 0;
-const MIN_RWA_TAKER_FEE = 5;
+const MIN_RWA_MAKER_FEE = -0.5;
+const MIN_RWA_TAKER_FEE = 3;
 const MAX_RWA_FEE = 15;
 
 interface FeeConfigWithCalculatorProps {
@@ -435,11 +435,11 @@ export const FeeConfigWithCalculator: React.FC<
   };
 
   const tierBaseFees = {
-    public: { maker: 0, taker: 3.0 },
-    silver: { maker: 0, taker: 2.75 },
-    gold: { maker: 0, taker: 2.5 },
-    platinum: { maker: 0, taker: 2.0 },
-    diamond: { maker: 0, taker: 1.0 },
+    public: { maker: 0, taker: 3.0, rwaMaker: 0, rwaTaker: 5.0 },
+    silver: { maker: -0.05, taker: 2.75, rwaMaker: -0.15, rwaTaker: 4.75 },
+    gold: { maker: -0.1, taker: 2.5, rwaMaker: -0.25, rwaTaker: 4.5 },
+    platinum: { maker: -0.15, taker: 2.0, rwaMaker: -0.35, rwaTaker: 4.0 },
+    diamond: { maker: -0.2, taker: 1.0, rwaMaker: -0.5, rwaTaker: 3.0 },
   };
 
   const tierInfo = {
@@ -588,7 +588,7 @@ export const FeeConfigWithCalculator: React.FC<
                       onChange={handleMakerFeeChange}
                       onBlur={handleMakerFeeBlur}
                       step="0.1"
-                      min="0"
+                      min="-1"
                       max="50"
                       className={`w-full px-3 py-2 bg-background-dark border ${makerFeeError ? "border-error" : "border-light/10"} rounded-lg`}
                       placeholder="0.0"
@@ -673,7 +673,7 @@ export const FeeConfigWithCalculator: React.FC<
                         onChange={handleRwaMakerFeeChange}
                         onBlur={handleRwaMakerFeeBlur}
                         step="0.1"
-                        min="0"
+                        min="-1"
                         max="50"
                         className={`w-full px-3 py-2 bg-background-dark border ${rwaMakerFeeError ? "border-error" : "border-light/10"} rounded-lg`}
                         placeholder="0.0"
