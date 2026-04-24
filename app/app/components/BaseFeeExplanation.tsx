@@ -19,7 +19,7 @@ export const BaseFeeExplanation: FC = () => {
         </p>
 
         <div className="bg-background-dark/50 rounded-lg overflow-hidden mb-4">
-          <div className="grid grid-cols-5 text-center border-b border-light/10 text-xs md:text-sm">
+          <div className="grid grid-cols-6 text-center border-b border-light/10 text-xs md:text-sm">
             <div className="p-2 font-medium bg-background-dark/70">
               {t("baseFeeExplanation.tier")}
             </div>
@@ -30,14 +30,17 @@ export const BaseFeeExplanation: FC = () => {
               {t("baseFeeExplanation.stakingRequirement")}
             </div>
             <div className="p-2 font-medium bg-background-dark/70">
-              {t("baseFeeExplanation.orderlyBaseMakerFee")}
+              {t("baseFeeExplanation.cryptoMakerFee")}
             </div>
             <div className="p-2 font-medium bg-background-dark/70">
-              {t("baseFeeExplanation.orderlyBaseTakerFee")}
+              {t("baseFeeExplanation.cryptoTakerFee")}
+            </div>
+            <div className="p-2 font-medium bg-background-dark/70">
+              {t("baseFeeExplanation.rwaTakerFee")}
             </div>
           </div>
 
-          <div className="grid grid-cols-5 text-center border-b border-light/10 text-xs md:text-sm">
+          <div className="grid grid-cols-6 text-center border-b border-light/10 text-xs md:text-sm">
             <div className="p-2 flex flex-col justify-center">
               <span className="font-medium">{t("distributor.public")}</span>
             </div>
@@ -46,9 +49,10 @@ export const BaseFeeExplanation: FC = () => {
             <div className="p-2">-</div>
             <div className="p-2">0.00</div>
             <div className="p-2">3.00</div>
+            <div className="p-2">5.00</div>
           </div>
 
-          <div className="grid grid-cols-5 text-center border-b border-light/10 text-xs md:text-sm">
+          <div className="grid grid-cols-6 text-center border-b border-light/10 text-xs md:text-sm">
             <div className="p-2 flex flex-col justify-center">
               <span className="font-medium text-gray-100">
                 {t("distributor.silver")}
@@ -66,9 +70,10 @@ export const BaseFeeExplanation: FC = () => {
             <div className="p-2">100K $ORDER</div>
             <div className="p-2 text-green-400">-0.05</div>
             <div className="p-2">2.75</div>
+            <div className="p-2">4.75</div>
           </div>
 
-          <div className="grid grid-cols-5 text-center border-b border-light/10 text-xs md:text-sm">
+          <div className="grid grid-cols-6 text-center border-b border-light/10 text-xs md:text-sm">
             <div className="p-2 flex flex-col justify-center">
               <span className="font-medium text-warning">
                 {t("distributor.gold")}
@@ -86,9 +91,10 @@ export const BaseFeeExplanation: FC = () => {
             <div className="p-2">250K $ORDER</div>
             <div className="p-2 text-green-400">-0.10</div>
             <div className="p-2">2.50</div>
+            <div className="p-2">4.50</div>
           </div>
 
-          <div className="grid grid-cols-5 text-center border-b border-light/10 text-xs md:text-sm">
+          <div className="grid grid-cols-6 text-center border-b border-light/10 text-xs md:text-sm">
             <div className="p-2 flex flex-col justify-center">
               <span className="font-medium text-blue-300">
                 {t("distributor.platinum")}
@@ -106,9 +112,10 @@ export const BaseFeeExplanation: FC = () => {
             <div className="p-2">2M $ORDER</div>
             <div className="p-2 text-green-400">-0.15</div>
             <div className="p-2">2.00</div>
+            <div className="p-2">4.00</div>
           </div>
 
-          <div className="grid grid-cols-5 text-center text-xs md:text-sm">
+          <div className="grid grid-cols-6 text-center text-xs md:text-sm">
             <div className="p-2 flex flex-col justify-center">
               <span className="font-medium text-cyan-300">
                 {t("distributor.diamond")}
@@ -126,6 +133,7 @@ export const BaseFeeExplanation: FC = () => {
             <div className="p-2">7M $ORDER</div>
             <div className="p-2 text-green-400">-0.20</div>
             <div className="p-2">1.00</div>
+            <div className="p-2">3.00</div>
           </div>
         </div>
 

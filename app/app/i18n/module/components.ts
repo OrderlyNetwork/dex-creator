@@ -257,8 +257,9 @@ export const components = {
   "baseFeeExplanation.tier": "Tier",
   "baseFeeExplanation.volumeRequirement": "Volume Requirement (30d)",
   "baseFeeExplanation.stakingRequirement": "Staking Requirement",
-  "baseFeeExplanation.orderlyBaseMakerFee": "Orderly Base Maker Fee (bps)",
-  "baseFeeExplanation.orderlyBaseTakerFee": "Orderly Base Taker Fee (bps)",
+  "baseFeeExplanation.cryptoMakerFee": "Crypto Maker (bps)",
+  "baseFeeExplanation.cryptoTakerFee": "Crypto Taker (bps)",
+  "baseFeeExplanation.rwaTakerFee": "RWA Taker (bps)",
   "baseFeeExplanation.noRequirement": "No Requirement",
   "baseFeeExplanation.or": "OR",
   "baseFeeExplanation.whatDoesThisMean": "What does this mean for you?",
@@ -266,7 +267,7 @@ export const components = {
   "baseFeeExplanation.customFeeDesc":
     "Your custom fee settings represent the total fees that traders pay. Your revenue is calculated by subtracting the base fee from your custom fees:",
   "baseFeeExplanation.baseFeeRetainedDesc":
-    "Base Fee (retained by Orderly): Taker fees range from 3.00 bps (Public tier) to 1.00 bps (Diamond tier). Maker rebates range from 0 bps (Public) to -0.20 bps (Diamond) - this is deducted from your custom fees",
+    "Base Fee (retained by Orderly): Crypto taker fees range from 3.00 bps (Public) to 1.00 bps (Diamond). RWA taker fees range from 5.00 bps (Public) to 3.00 bps (Diamond). Maker rebates range from 0 bps (Public) to -0.20 bps (Diamond) - this is deducted from your custom fees",
   "baseFeeExplanation.yourRevenue": "Your Revenue: Your Custom Fee - Base Fee",
   "baseFeeExplanation.stakingTip":
     "By staking more ORDER tokens or achieving higher trading volume, you can reduce the base fee charged by Orderly, maximizing your DEX's competitiveness.",
