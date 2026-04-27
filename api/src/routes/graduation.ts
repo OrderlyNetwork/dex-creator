@@ -17,7 +17,10 @@ import { getAdminAccountIdFromOrderlyDb } from "../lib/orderlyDb.js";
 import { getOrderlyApiBaseUrl, getAccountId } from "../utils/orderly.js";
 import { getSecret } from "../lib/secretManager.js";
 import { ALL_CHAINS, ChainName } from "../../../config";
-import { createAutomatedBrokerId } from "../lib/brokerCreation";
+import {
+  createAutomatedBrokerId,
+  setBrokerAccountId,
+} from "../lib/brokerCreation";
 import { updateAdminAccount } from "../lib/adminAccount";
 import {
   ErrorResponseSchema,
@@ -617,35 +620,62 @@ app.openapi(finalizeAdminWalletRoute, async c => {
       );
     }
 
-    try {
-      const adminAccountId = orderlyData.data.account_id;
-      console.log(
-        `🔄 Updating admin account ID for broker ${dex.brokerId} to ${adminAccountId}`
+    const adminAccountId = orderlyData.data.account_id as string | undefined;
+    if (!adminAccountId) {
+      return c.json(
+        {
+          success: false,
+          message: "Failed to retrieve account ID from Orderly API",
+        },
+        { status: 400 }
       );
+    }
 
-      const updateResult = await updateAdminAccount({
-        broker_id: dex.brokerId,
-        admin_account_id: adminAccountId,
-      });
-
-      if (updateResult.success) {
-        console.log(
-          `✅ Successfully updated admin account ID for broker ${dex.brokerId}`
-        );
-      } else {
-        console.warn(
-          `⚠️ Failed to update admin account ID for broker ${dex.brokerId}: ${updateResult.message}`
-        );
-      }
-
-      if (!updateResult.success) {
-        return c.json(updateResult, { status: 400 });
-      }
-    } catch (error) {
+    console.log(
+      `🔗 Setting broker account ID on FeeManager for broker ${dex.brokerId}: ${adminAccountId}`
+    );
+    const onchainResult = await setBrokerAccountId(
+      dex.brokerId,
+      adminAccountId
+    );
+    if (!onchainResult.success) {
       console.error(
-        `❌ Error updating admin account ID for broker ${dex.brokerId}:`,
-        error
+        `❌ Failed to set broker account ID on FeeManager for broker ${dex.brokerId}: ${onchainResult.errors?.join("; ") || "Unknown error"}`
       );
+      return c.json(
+        {
+          success: false,
+          message:
+            onchainResult.errors?.join("; ") ||
+            "Failed to set broker account ID on FeeManager",
+        },
+        { status: 400 }
+      );
+    }
+
+    console.log(
+      `✅ FeeManager broker account ID set successfully for broker ${dex.brokerId}. Transaction hashes: ${JSON.stringify(onchainResult.transactionHashes || {})}`
+    );
+
+    console.log(
+      `🔄 Updating admin account ID for broker ${dex.brokerId} to ${adminAccountId}`
+    );
+    const updateResult = await updateAdminAccount({
+      broker_id: dex.brokerId,
+      admin_account_id: adminAccountId,
+    });
+
+    if (updateResult.success) {
+      console.log(
+        `✅ Successfully updated admin account ID for broker ${dex.brokerId}`
+      );
+    }
+
+    if (!updateResult.success) {
+      console.error(
+        `❌ Failed to update admin account ID for broker ${dex.brokerId}: ${updateResult.message || "Unknown error"}`
+      );
+      return c.json(updateResult, { status: 400 });
     }
 
     await prismaClient.dex.update({
