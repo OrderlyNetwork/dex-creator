@@ -400,6 +400,8 @@ export async function getDexBrokerTier(
           tradingVolume: "0",
           makerFeeRate: "0",
           takerFeeRate: "3",
+          rwaMakerFeeRate: "0",
+          rwaTakerFeeRate: "5",
           logDate: new Date().toISOString().split("T")[0],
         },
       };

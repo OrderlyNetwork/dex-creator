@@ -166,8 +166,8 @@ interface BrokerTierResponse {
   tradingVolume: string;
   makerFeeRate: string;
   takerFeeRate: string;
-  rwaMakerFeeRate?: string;
-  rwaTakerFeeRate?: string;
+  rwaMakerFeeRate: string;
+  rwaTakerFeeRate: string;
   logDate: string;
 }
 
@@ -1339,7 +1339,7 @@ export function GraduationForm({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="bg-success/10 rounded-lg p-3">
                   <div className="text-xs text-gray-400 mb-1">
                     {t("graduation.form.orderlyMakerFee")}
@@ -1361,6 +1361,33 @@ export function GraduationForm({
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 4,
                     }).format(parseFloat(brokerTier.takerFeeRate) / 100)}
+                    %
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-success/10 rounded-lg p-3">
+                  <div className="text-xs text-gray-400 mb-1">
+                    {t("graduation.form.orderlyRwaMakerFee")}
+                  </div>
+                  <div className="font-medium text-success">
+                    {new Intl.NumberFormat("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 4,
+                    }).format(parseFloat(brokerTier.rwaMakerFeeRate) / 100)}
+                    %
+                  </div>
+                </div>
+                <div className="bg-info/10 rounded-lg p-3">
+                  <div className="text-xs text-gray-400 mb-1">
+                    {t("graduation.form.orderlyRwaTakerFee")}
+                  </div>
+                  <div className="font-medium text-info">
+                    {new Intl.NumberFormat("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 4,
+                    }).format(parseFloat(brokerTier.rwaTakerFeeRate) / 100)}
                     %
                   </div>
                 </div>

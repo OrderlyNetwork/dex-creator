@@ -19,105 +19,96 @@ export const BaseFeeExplanation: FC = () => {
         </p>
 
         <div className="bg-background-dark/50 rounded-lg overflow-hidden mb-4">
-          <div className="grid grid-cols-4 text-center border-b border-light/10 text-xs md:text-sm">
+          <div className="grid grid-cols-7 text-center border-b border-light/10 text-xs md:text-sm">
             <div className="p-2 font-medium bg-background-dark/70">
               {t("baseFeeExplanation.tier")}
-            </div>
-            <div className="p-2 font-medium bg-background-dark/70">
-              {t("baseFeeExplanation.volumeRequirement")}
             </div>
             <div className="p-2 font-medium bg-background-dark/70">
               {t("baseFeeExplanation.stakingRequirement")}
             </div>
             <div className="p-2 font-medium bg-background-dark/70">
-              {t("baseFeeExplanation.orderlyBaseTakerFee")}
+              {t("baseFeeExplanation.volumeRequirement")}
+            </div>
+            <div className="p-2 font-medium bg-background-dark/70">
+              {t("baseFeeExplanation.cryptoMakerRebate")}
+            </div>
+            <div className="p-2 font-medium bg-background-dark/70">
+              {t("baseFeeExplanation.rwaMakerRebate")}
+            </div>
+            <div className="p-2 font-medium bg-background-dark/70">
+              {t("baseFeeExplanation.cryptoTakerFee")}
+            </div>
+            <div className="p-2 font-medium bg-background-dark/70">
+              {t("baseFeeExplanation.rwaTakerFee")}
             </div>
           </div>
 
-          <div className="grid grid-cols-4 text-center border-b border-light/10 text-xs md:text-sm">
+          <div className="grid grid-cols-7 text-center border-b border-light/10 text-xs md:text-sm">
             <div className="p-2 flex flex-col justify-center">
               <span className="font-medium">{t("distributor.public")}</span>
             </div>
-            <div className="p-2">{t("baseFeeExplanation.noRequirement")}</div>
-            {/* i18n-ignore: symbol */}
-            <div className="p-2">-</div>
+            <div className="p-2">&lt; 100K $ORDER</div>
+            <div className="p-2">&lt; $30M</div>
+            <div className="p-2">0</div>
+            <div className="p-2">0</div>
             <div className="p-2">3.00</div>
+            <div className="p-2">5.00</div>
           </div>
 
-          <div className="grid grid-cols-4 text-center border-b border-light/10 text-xs md:text-sm">
+          <div className="grid grid-cols-7 text-center border-b border-light/10 text-xs md:text-sm">
             <div className="p-2 flex flex-col justify-center">
               <span className="font-medium text-gray-100">
                 {t("distributor.silver")}
               </span>
             </div>
-            <div className="p-2">
-              {/* i18n-ignore */}
-              ≥ $30M
-              <br />
-              <span className="text-gray-400">
-                {t("baseFeeExplanation.or")}
-              </span>
-            </div>
-            {/* i18n-ignore */}
             <div className="p-2">100K $ORDER</div>
+            <div className="p-2">≥ $30M</div>
+            <div className="p-2">-0.05</div>
+            <div className="p-2">-0.15</div>
             <div className="p-2">2.75</div>
+            <div className="p-2">4.75</div>
           </div>
 
-          <div className="grid grid-cols-4 text-center border-b border-light/10 text-xs md:text-sm">
+          <div className="grid grid-cols-7 text-center border-b border-light/10 text-xs md:text-sm">
             <div className="p-2 flex flex-col justify-center">
               <span className="font-medium text-warning">
                 {t("distributor.gold")}
               </span>
             </div>
-            <div className="p-2">
-              {/* i18n-ignore */}
-              ≥ $90M
-              <br />
-              <span className="text-gray-400">
-                {t("baseFeeExplanation.or")}
-              </span>
-            </div>
-            {/* i18n-ignore */}
             <div className="p-2">250K $ORDER</div>
+            <div className="p-2">≥ $90M</div>
+            <div className="p-2">-0.10</div>
+            <div className="p-2">-0.25</div>
             <div className="p-2">2.50</div>
+            <div className="p-2">4.50</div>
           </div>
 
-          <div className="grid grid-cols-4 text-center border-b border-light/10 text-xs md:text-sm">
+          <div className="grid grid-cols-7 text-center border-b border-light/10 text-xs md:text-sm">
             <div className="p-2 flex flex-col justify-center">
               <span className="font-medium text-blue-300">
                 {t("distributor.platinum")}
               </span>
             </div>
-            <div className="p-2">
-              {/* i18n-ignore */}
-              ≥ $1B
-              <br />
-              <span className="text-gray-400">
-                {t("baseFeeExplanation.or")}
-              </span>
-            </div>
-            {/* i18n-ignore */}
             <div className="p-2">2M $ORDER</div>
+            <div className="p-2">≥ $1B</div>
+            <div className="p-2">-0.15</div>
+            <div className="p-2">-0.35</div>
             <div className="p-2">2.00</div>
+            <div className="p-2">4.00</div>
           </div>
 
-          <div className="grid grid-cols-4 text-center text-xs md:text-sm">
+          <div className="grid grid-cols-7 text-center text-xs md:text-sm">
             <div className="p-2 flex flex-col justify-center">
               <span className="font-medium text-cyan-300">
                 {t("distributor.diamond")}
               </span>
             </div>
-            <div className="p-2">
-              {/* i18n-ignore */}
-              ≥ $10B
-              <br />
-              <span className="text-gray-400">
-                {t("baseFeeExplanation.or")}
-              </span>
-            </div>
-            {/* i18n-ignore */}
             <div className="p-2">7M $ORDER</div>
+            <div className="p-2">≥ $10B</div>
+            <div className="p-2">-0.20</div>
+            <div className="p-2">-0.50</div>
             <div className="p-2">1.00</div>
+            <div className="p-2">3.00</div>
           </div>
         </div>
 

@@ -41,6 +41,8 @@ export interface BrokerTier {
   tradingVolume: string;
   makerFeeRate: string;
   takerFeeRate: string;
+  rwaMakerFeeRate: string;
+  rwaTakerFeeRate: string;
   logDate: string;
 }
 
@@ -837,6 +839,8 @@ export async function getBrokerTierFromOrderlyDb(
         tradingVolume: cached.tradingVolume,
         makerFeeRate: cached.makerFeeRate,
         takerFeeRate: cached.takerFeeRate,
+        rwaMakerFeeRate: cached.rwaMakerFeeRate,
+        rwaTakerFeeRate: cached.rwaTakerFeeRate,
         logDate: cached.logDate,
       },
     };
@@ -861,6 +865,8 @@ export async function getBrokerTierFromOrderlyDb(
         tradingVolumeThreshold: true,
         makerFeeRate: true,
         takerFeeRate: true,
+        rwaMakerFeeRate: true,
+        rwaTakerFeeRate: true,
         logDate: true,
       },
     });
@@ -879,6 +885,8 @@ export async function getBrokerTierFromOrderlyDb(
       tradingVolume: tierLog.tradingVolume.toString(),
       makerFeeRate: tierLog.makerFeeRate.toString(),
       takerFeeRate: tierLog.takerFeeRate.toString(),
+      rwaMakerFeeRate: tierLog.rwaMakerFeeRate.toString(),
+      rwaTakerFeeRate: tierLog.rwaTakerFeeRate.toString(),
       logDate: tierLog.logDate.toISOString().split("T")[0],
     };
 

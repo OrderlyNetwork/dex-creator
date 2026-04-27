@@ -164,17 +164,37 @@ export const DexFeesSchema = z
 
 export const BrokerTierSchema = z
   .object({
-    brokerId: z.string().openapi({
-      description: "Broker ID",
-      example: "my-broker",
-    }),
     tier: z.string().openapi({
       description: "Broker tier level",
-      example: "standard",
+      example: "GOLD",
     }),
-    volume: z.number().openapi({
+    stakingVolume: z.string().openapi({
+      description: "Staking volume",
+      example: "250000.00",
+    }),
+    tradingVolume: z.string().openapi({
       description: "Trading volume",
-      example: 1000000,
+      example: "1500000.00",
+    }),
+    makerFeeRate: z.string().openapi({
+      description: "Maker fee rate in decimal",
+      example: "0.0000",
+    }),
+    takerFeeRate: z.string().openapi({
+      description: "Taker fee rate in decimal",
+      example: "0.0003",
+    }),
+    rwaMakerFeeRate: z.string().openapi({
+      description: "RWA maker fee rate in decimal",
+      example: "0.0000",
+    }),
+    rwaTakerFeeRate: z.string().openapi({
+      description: "RWA taker fee rate in decimal",
+      example: "0.0005",
+    }),
+    logDate: z.string().openapi({
+      description: "Log date",
+      example: "2026-04-26",
     }),
   })
   .openapi("BrokerTier");
