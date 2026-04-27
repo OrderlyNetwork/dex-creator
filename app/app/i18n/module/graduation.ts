@@ -185,6 +185,8 @@ export const graduation = {
   "graduation.form.tradingVolume": "Trading Volume",
   "graduation.form.orderlyMakerFee": "Orderly Maker Fee",
   "graduation.form.orderlyTakerFee": "Orderly Taker Fee",
+  "graduation.form.orderlyRwaMakerFee": "Orderly RWA Maker Fee",
+  "graduation.form.orderlyRwaTakerFee": "Orderly RWA Taker Fee",
   "graduation.form.lastUpdated": "Last updated",
   "graduation.form.tierBenefitsDescription":
     "<0>Tier Benefits:</0> Higher tiers reduce the fees Orderly charges you, allowing you to earn higher fees yourself. Stake more ORDER tokens or increase trading volume to upgrade your tier.",

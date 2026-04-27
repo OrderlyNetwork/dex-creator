@@ -255,8 +255,12 @@ export const components = {
   "baseFeeExplanation.baseFeeIntro":
     "Orderly retains 100% of a base taker fee while offering 0 bps maker fee. This fee varies by tier in our Builder Staking Programme:",
   "baseFeeExplanation.tier": "Tier",
-  "baseFeeExplanation.volumeRequirement": "Volume Requirement (30d)",
   "baseFeeExplanation.stakingRequirement": "Staking Requirement",
+  "baseFeeExplanation.volumeRequirement": "Volume Requirement",
+  "baseFeeExplanation.cryptoMakerRebate": "Crypto Maker Rebate",
+  "baseFeeExplanation.rwaMakerRebate": "RWA Maker Rebate",
+  "baseFeeExplanation.cryptoTakerFee": "Crypto Taker Fee",
+  "baseFeeExplanation.rwaTakerFee": "RWA Taker Fee",
   "baseFeeExplanation.orderlyBaseTakerFee": "Orderly Base Taker Fee (bps)",
   "baseFeeExplanation.noRequirement": "No Requirement",
   "baseFeeExplanation.or": "OR",
