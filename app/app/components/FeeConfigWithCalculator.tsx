@@ -606,9 +606,7 @@ export const FeeConfigWithCalculator: React.FC<
                       className={`w-full px-3 py-2 bg-background-dark border ${makerFeeError ? "border-error" : "border-light/10"} rounded-lg`}
                       placeholder="0.0"
                     />
-                    <span className="ml-2 text-gray-400 text-sm">
-                      bps (0.01%)
-                    </span>
+                    <span className="ml-2 text-gray-400 text-sm">bps</span>
                   </div>
                   <p className="text-xs text-gray-400 mt-1">
                     {t("feeConfigWithCalculator.feeRange", {
@@ -644,9 +642,7 @@ export const FeeConfigWithCalculator: React.FC<
                       className={`w-full px-3 py-2 bg-background-dark border ${takerFeeError ? "border-error" : "border-light/10"} rounded-lg`}
                       placeholder="0.0"
                     />
-                    <span className="ml-2 text-gray-400 text-sm">
-                      bps (0.01%)
-                    </span>
+                    <span className="ml-2 text-gray-400 text-sm">bps</span>
                   </div>
                   <p className="text-xs text-gray-400 mt-1">
                     {t("feeConfigWithCalculator.feeRange", {
@@ -691,9 +687,7 @@ export const FeeConfigWithCalculator: React.FC<
                         className={`w-full px-3 py-2 bg-background-dark border ${rwaMakerFeeError ? "border-error" : "border-light/10"} rounded-lg`}
                         placeholder="0.0"
                       />
-                      <span className="ml-2 text-gray-400 text-sm">
-                        bps (0.01%)
-                      </span>
+                      <span className="ml-2 text-gray-400 text-sm">bps</span>
                     </div>
                     <p className="text-xs text-gray-400 mt-1">
                       {t("feeConfigWithCalculator.feeRange", {
@@ -731,9 +725,7 @@ export const FeeConfigWithCalculator: React.FC<
                         className={`w-full px-3 py-2 bg-background-dark border ${rwaTakerFeeError ? "border-error" : "border-light/10"} rounded-lg`}
                         placeholder="0.0"
                       />
-                      <span className="ml-2 text-gray-400 text-sm">
-                        bps (0.01%)
-                      </span>
+                      <span className="ml-2 text-gray-400 text-sm">bps</span>
                     </div>
                     <p className="text-xs text-gray-400 mt-1">
                       {t("feeConfigWithCalculator.feeRange", {
