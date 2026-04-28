@@ -601,11 +601,11 @@ export const FeeConfigWithCalculator: React.FC<
                       onChange={handleMakerFeeChange}
                       onBlur={handleMakerFeeBlur}
                       step="0.1"
-                      step="0.1"
                       min={effectiveMinMaker}
                       max={MAX_FEE}
                       className={`w-full px-3 py-2 bg-background-dark border ${makerFeeError ? "border-error" : "border-light/10"} rounded-lg`}
-                      placeholder="0.0" />
+                      placeholder="0.0"
+                    />
                     <span className="ml-2 text-gray-400 text-sm">
                       bps (0.01%)
                     </span>
@@ -638,7 +638,6 @@ export const FeeConfigWithCalculator: React.FC<
                       value={takerFee}
                       onChange={handleTakerFeeChange}
                       onBlur={handleTakerFeeBlur}
-                      step="0.1"
                       step="0.1"
                       min={effectiveMinTaker}
                       max={MAX_FEE}

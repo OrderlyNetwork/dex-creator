@@ -1471,10 +1471,22 @@ export function GraduationForm({
             showSaveButton={true}
             useOrderlyApi={true}
             brokerId={graduationStatus?.brokerId}
-            minMakerFee={brokerTier ? parseFloat(brokerTier.makerFeeRate) : undefined}
-            minTakerFee={brokerTier ? parseFloat(brokerTier.takerFeeRate) : undefined}
-            minRwaMakerFee={brokerTier?.rwaMakerFeeRate ? parseFloat(brokerTier.rwaMakerFeeRate) : undefined}
-            minRwaTakerFee={brokerTier?.rwaTakerFeeRate ? parseFloat(brokerTier.rwaTakerFeeRate) : undefined}
+            minMakerFee={
+              brokerTier ? parseFloat(brokerTier.makerFeeRate) : undefined
+            }
+            minTakerFee={
+              brokerTier ? parseFloat(brokerTier.takerFeeRate) : undefined
+            }
+            minRwaMakerFee={
+              brokerTier?.rwaMakerFeeRate
+                ? parseFloat(brokerTier.rwaMakerFeeRate)
+                : undefined
+            }
+            minRwaTakerFee={
+              brokerTier?.rwaTakerFeeRate
+                ? parseFloat(brokerTier.rwaTakerFeeRate)
+                : undefined
+            }
             onFeesChange={(
               newMakerFee,
               newTakerFee,
@@ -1543,10 +1555,22 @@ export function GraduationForm({
             rwaMakerFee={rwaMakerFee}
             rwaTakerFee={rwaTakerFee}
             readOnly={false}
-            minMakerFee={brokerTier ? parseFloat(brokerTier.makerFeeRate) : undefined}
-            minTakerFee={brokerTier ? parseFloat(brokerTier.takerFeeRate) : undefined}
-            minRwaMakerFee={brokerTier?.rwaMakerFeeRate ? parseFloat(brokerTier.rwaMakerFeeRate) : undefined}
-            minRwaTakerFee={brokerTier?.rwaTakerFeeRate ? parseFloat(brokerTier.rwaTakerFeeRate) : undefined}
+            minMakerFee={
+              brokerTier ? parseFloat(brokerTier.makerFeeRate) : undefined
+            }
+            minTakerFee={
+              brokerTier ? parseFloat(brokerTier.takerFeeRate) : undefined
+            }
+            minRwaMakerFee={
+              brokerTier?.rwaMakerFeeRate
+                ? parseFloat(brokerTier.rwaMakerFeeRate)
+                : undefined
+            }
+            minRwaTakerFee={
+              brokerTier?.rwaTakerFeeRate
+                ? parseFloat(brokerTier.rwaTakerFeeRate)
+                : undefined
+            }
             onFeesChange={(
               newMakerFee,
               newTakerFee,

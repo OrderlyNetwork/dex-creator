@@ -38,7 +38,8 @@ export const VerifyTxSchema = z.object({
       example: "my-broker",
     }),
   makerFee: z.number().min(-0.5).max(15).openapi({
-    description: "Maker fee in basis points (-0.5 to 15). Negative values indicate rebates.",
+    description:
+      "Maker fee in basis points (-0.5 to 15). Negative values indicate rebates.",
     example: -0.1,
   }),
   takerFee: z.number().min(1).max(15).openapi({
@@ -46,7 +47,8 @@ export const VerifyTxSchema = z.object({
     example: 2.5,
   }),
   rwaMakerFee: z.number().min(-0.5).max(15).openapi({
-    description: "RWA maker fee in basis points (-0.5 to 15). Negative values indicate rebates.",
+    description:
+      "RWA maker fee in basis points (-0.5 to 15). Negative values indicate rebates.",
     example: -0.25,
   }),
   rwaTakerFee: z.number().min(3).max(15).openapi({
