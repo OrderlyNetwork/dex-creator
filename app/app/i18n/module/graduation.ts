@@ -179,25 +179,32 @@ export const graduation = {
   "graduation.form.createOrderlyKeyButton": "Create Orderly Key",
   "graduation.form.unableToRetrieveMultisigConfig":
     "Unable to retrieve multisig configuration. Please ensure you have completed the multisig registration.",
-  "graduation.form.yourBrokerTier": "Your Broker Tier",
+  "graduation.form.yourBrokerTier": "Your Builder Tier",
+  "graduation.form.viewAllTiers": "View all tiers",
   "graduation.form.currentTierLevel": "Current Tier Level",
   "graduation.form.stakingVolume": "Staking Volume",
   "graduation.form.tradingVolume": "Trading Volume",
-  "graduation.form.orderlyMakerFee": "Orderly Maker Fee",
-  "graduation.form.orderlyTakerFee": "Orderly Taker Fee",
-  "graduation.form.orderlyRwaMakerFee": "Orderly RWA Maker Fee",
-  "graduation.form.orderlyRwaTakerFee": "Orderly RWA Taker Fee",
+  "graduation.form.orderlyMakerFee": "Base Maker Fee",
+  "graduation.form.orderlyTakerFee": "Base Taker Fee",
+  "graduation.form.orderlyRwaMakerFee": "RWA Base Maker Fee",
+  "graduation.form.orderlyRwaTakerFee": "RWA Base Taker Fee",
+  "graduation.form.perpetualTradingFeesTab": "Perpetual trading fees",
+  "graduation.form.swapFeesTab": "Swap fees",
   "graduation.form.lastUpdated": "Last updated",
+  "graduation.form.tierBenefitsTitle": "Tier benefits",
   "graduation.form.tierBenefitsDescription":
-    "<0>Tier Benefits:</0> Higher tiers reduce the fees Orderly charges you, allowing you to earn higher fees yourself. Stake more ORDER tokens or increase trading volume to upgrade your tier.",
+    "Higher tiers reduce the base fees charged to your Builder, which increases your fee margin. Stake more ORDER or grow trading volume to move up tiers.",
   "graduation.form.adminWalletStakingTitle": "Important: Admin Wallet Staking",
   "graduation.form.adminWalletStakingDescriptionEoa":
-    "ORDER tokens must be staked on your admin wallet (your connected EOA wallet) to count towards your broker tier. Staking on other addresses will not improve your tier.",
+    "ORDER tokens must be staked on your admin wallet (your connected EOA wallet) to count towards your Builder tier. Staking on other addresses will not improve your tier.",
   "graduation.form.adminWalletStakingDescriptionMultisig":
-    "ORDER tokens must be staked on your admin wallet (your multisig: <0>{{address}}</0>) to count towards your broker tier. Staking on other addresses will not improve your tier.",
+    "ORDER tokens must be staked on your admin wallet (your multisig: <0>{{address}}</0>) to count towards your Builder tier. Staking on other addresses will not improve your tier.",
   "graduation.form.dailyTierUpdatesTitle": "Daily Tier Updates",
   "graduation.form.dailyTierUpdatesDescription":
-    "Tier information is updated once per day, so changes to your staking or trading volume may take up to 24 hours to reflect in your tier level.",
+    "Tier information is updated once per day, so changes to your staking and trading volume will take effect on the fee tier at next 1:00 UTC.",
+  "graduation.form.checkingGraduationStatus": "Checking graduation status",
+  "graduation.form.checkingGraduationStatusDescription":
+    "We are checking whether your Builder is already graduated before showing the next step.",
   "graduation.form.graduationIntro":
     "Graduating your DEX enables revenue sharing and additional features:",
   "graduation.form.graduationBenefitRevenue":

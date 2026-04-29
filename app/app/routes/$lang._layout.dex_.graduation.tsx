@@ -26,6 +26,7 @@ export default function GraduationRoute() {
   const { isAuthenticated, isLoading } = useAuth();
   const { refreshDexData } = useDex();
   const [noDexSetup, setNoDexSetup] = useState(false);
+  const [isGraduated, setIsGraduated] = useState<boolean | null>(null);
 
   if (isLoading) {
     return (
@@ -121,9 +122,11 @@ export default function GraduationRoute() {
           <GraduationForm
             onNoDexSetup={() => setNoDexSetup(true)}
             onGraduationSuccess={refreshDexData}
+            onGraduationStatusChange={setIsGraduated}
           />
 
-          <div className="mt-16 max-w-2xl mx-auto bg-light/5 rounded-xl p-6">
+          {isGraduated === false && (
+            <div className="mt-16 max-w-2xl mx-auto bg-light/5 rounded-xl p-6">
             <h2 className="text-xl font-bold mb-4">
               {t("graduation.benefits.title")}
             </h2>
@@ -226,7 +229,8 @@ export default function GraduationRoute() {
                 </p>
               </div>
             </div>
-          </div>
+            </div>
+          )}
         </>
       )}
     </div>

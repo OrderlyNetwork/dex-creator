@@ -28,6 +28,18 @@ interface OverviewUIProps {
   isAmbassador: boolean;
 }
 
+const tierBadgeByTier: Record<string, string> = {
+  public: "/distributor/tier-public.png",
+  silver: "/distributor/tier-silver.png",
+  gold: "/distributor/tier-gold.png",
+  platinum: "/distributor/tier-platinum.png",
+  diamond: "/distributor/tier-diamond.png",
+};
+
+const getTierBadge = (tier: string) => {
+  return tierBadgeByTier[tier.toLowerCase()] ?? tierBadgeByTier.public;
+};
+
 const ActionList = ({
   code,
   url,
@@ -119,7 +131,16 @@ const OverviewUI: React.FC<OverviewUIProps> = ({
         />
         <Card
           title={t("distributor.myBrokerTier")}
-          content={formatTier(data.brokerTier)}
+          content={
+            <div className="flex items-center gap-2">
+              <img
+                src={getTierBadge(data.brokerTier)}
+                alt=""
+                className="h-7 w-7 object-contain"
+              />
+              <span>{formatTier(data.brokerTier)}</span>
+            </div>
+          }
           showInfoIcon={true}
           infoTooltip={t("distributor.myBrokerTierTooltip")}
         />

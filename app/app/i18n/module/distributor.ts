@@ -169,10 +169,10 @@ export const distributor = {
     "Minimum tier guarantees your invitee the assigned tier or a higher one if they meet the requirements. Once you change the assigned tier, it will take effect at the next {{time}}.",
   "distributor.minimumTier": "Minimum tier",
   "distributor.monthlyRevenueByVolumeTier": "Monthly revenue by volume & tier",
-  "distributor.myBrokerTier": "My broker tier",
+  "distributor.myBrokerTier": "My Builder tier",
   "distributor.myBrokerTierRefTooltip":
-    "Your latest broker tier for the day. This serves as a reference, as certain tier updates may occur asynchronously under exceptional circumstances.",
-  "distributor.myBrokerTierTooltip": "Your latest broker tier.",
+    "Your latest Builder tier for the day. This serves as a reference, as certain tier updates may occur asynchronously under exceptional circumstances.",
+  "distributor.myBrokerTierTooltip": "Your latest Builder tier.",
   "distributor.myDistributorProfile": "My distributor profile",
   "distributor.myInvitees": "My invitees",
   "distributor.myRevenueShare": "My revenue share",

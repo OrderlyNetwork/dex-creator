@@ -1,4 +1,10 @@
-import { useEffect, useState, FormEvent, ChangeEvent } from "react";
+import {
+  useEffect,
+  useState,
+  FormEvent,
+  ChangeEvent,
+  ReactNode,
+} from "react";
 import { Button } from "./Button";
 import { toast } from "react-toastify";
 import { useOrderlyKey } from "../context/OrderlyKeyContext";
@@ -21,6 +27,7 @@ const MAX_FEE = 15;
 const MIN_RWA_MAKER_FEE = 0;
 const MIN_RWA_TAKER_FEE = 5;
 const MAX_RWA_FEE = 15;
+const FEE_STEP_BPS = 0.1;
 
 interface FeeConfigWithCalculatorProps {
   makerFee: number;
@@ -37,6 +44,7 @@ interface FeeConfigWithCalculatorProps {
   ) => void;
   feeError?: string | null;
   defaultOpenCalculator?: boolean;
+  showRevenueCalculator?: boolean;
   showSaveButton?: boolean;
   alwaysShowConfig?: boolean;
   useOrderlyApi?: boolean;
@@ -45,6 +53,8 @@ interface FeeConfigWithCalculatorProps {
   minTakerFee?: number;
   minRwaMakerFee?: number;
   minRwaTakerFee?: number;
+  onSaveSuccess?: () => void;
+  headerAction?: ReactNode;
 }
 
 const formatNumber = (value: number, maxDecimals: number = 1) => {
@@ -53,6 +63,13 @@ const formatNumber = (value: number, maxDecimals: number = 1) => {
     maximumFractionDigits: maxDecimals,
   }).format(value);
 };
+
+const roundFeeMinUp = (value: number) => {
+  return Math.ceil(value / FEE_STEP_BPS - 1e-8) * FEE_STEP_BPS;
+};
+
+const formatFeeBps = (value: number) => formatNumber(value, 2);
+const formatFeePercent = (value: number) => formatNumber(value * 0.01, 4);
 
 export const FeeConfigWithCalculator: React.FC<
   FeeConfigWithCalculatorProps
@@ -65,6 +82,7 @@ export const FeeConfigWithCalculator: React.FC<
   isSavingFees = false,
   onFeesChange,
   defaultOpenCalculator = false,
+  showRevenueCalculator = false,
   showSaveButton = true,
   alwaysShowConfig = false,
   useOrderlyApi = false,
@@ -73,6 +91,8 @@ export const FeeConfigWithCalculator: React.FC<
   minTakerFee,
   minRwaMakerFee,
   minRwaTakerFee,
+  onSaveSuccess,
+  headerAction,
 }) => {
   const { t } = useTranslation();
   const { orderlyKey, accountId, hasValidKey, setOrderlyKey } = useOrderlyKey();
@@ -84,6 +104,17 @@ export const FeeConfigWithCalculator: React.FC<
   const [takerFee, setTakerFee] = useState<number>(initialTakerFee);
   const [rwaMakerFee, setRwaMakerFee] = useState<number>(initialRwaMakerFee);
   const [rwaTakerFee, setRwaTakerFee] = useState<number>(initialRwaTakerFee);
+  const [makerFeeInput, setMakerFeeInput] = useState(String(initialMakerFee));
+  const [takerFeeInput, setTakerFeeInput] = useState(String(initialTakerFee));
+  const [rwaMakerFeeInput, setRwaMakerFeeInput] = useState(
+    String(initialRwaMakerFee)
+  );
+  const [rwaTakerFeeInput, setRwaTakerFeeInput] = useState(
+    String(initialRwaTakerFee)
+  );
+  const [focusedFeeInput, setFocusedFeeInput] = useState<
+    "maker" | "taker" | "rwaMaker" | "rwaTaker" | null
+  >(null);
   const [makerFeeError, setMakerFeeError] = useState<string | null>(null);
   const [takerFeeError, setTakerFeeError] = useState<string | null>(null);
   const [rwaMakerFeeError, setRwaMakerFeeError] = useState<string | null>(null);
@@ -101,17 +132,48 @@ export const FeeConfigWithCalculator: React.FC<
     setTakerFee(initialTakerFee);
     setRwaMakerFee(initialRwaMakerFee);
     setRwaTakerFee(initialRwaTakerFee);
+    if (focusedFeeInput !== "maker") {
+      setMakerFeeInput(String(initialMakerFee));
+    }
+    if (focusedFeeInput !== "taker") {
+      setTakerFeeInput(String(initialTakerFee));
+    }
+    if (focusedFeeInput !== "rwaMaker") {
+      setRwaMakerFeeInput(String(initialRwaMakerFee));
+    }
+    if (focusedFeeInput !== "rwaTaker") {
+      setRwaTakerFeeInput(String(initialRwaTakerFee));
+    }
   }, [
     initialMakerFee,
     initialTakerFee,
     initialRwaMakerFee,
     initialRwaTakerFee,
+    focusedFeeInput,
   ]);
 
-  const effectiveMinMaker = minMakerFee ?? MIN_MAKER_FEE;
-  const effectiveMinTaker = minTakerFee ?? MIN_TAKER_FEE;
-  const effectiveMinRwaMaker = minRwaMakerFee ?? MIN_RWA_MAKER_FEE;
-  const effectiveMinRwaTaker = minRwaTakerFee ?? MIN_RWA_TAKER_FEE;
+  const effectiveMinMaker = roundFeeMinUp(minMakerFee ?? MIN_MAKER_FEE);
+  const effectiveMinTaker = roundFeeMinUp(minTakerFee ?? MIN_TAKER_FEE);
+  const effectiveMinRwaMaker = roundFeeMinUp(
+    minRwaMakerFee ?? MIN_RWA_MAKER_FEE
+  );
+  const effectiveMinRwaTaker = roundFeeMinUp(
+    minRwaTakerFee ?? MIN_RWA_TAKER_FEE
+  );
+  const baseMakerFee = minMakerFee ?? MIN_MAKER_FEE;
+  const baseTakerFee = minTakerFee ?? MIN_TAKER_FEE;
+  const baseRwaMakerFee = minRwaMakerFee ?? MIN_RWA_MAKER_FEE;
+  const baseRwaTakerFee = minRwaTakerFee ?? MIN_RWA_TAKER_FEE;
+  const builderMakerRevenue = makerFee - baseMakerFee;
+  const builderTakerRevenue = takerFee - baseTakerFee;
+  const builderRwaMakerRevenue = rwaMakerFee - baseRwaMakerFee;
+  const builderRwaTakerRevenue = rwaTakerFee - baseRwaTakerFee;
+
+  const renderRevenueValue = (value: number) => (
+    <span className={value >= 0 ? "text-success" : "text-warning"}>
+      {formatFeeBps(value)} bps
+    </span>
+  );
 
   const validateFees = (
     type: "maker" | "taker" | "rwaMaker" | "rwaTaker",
@@ -120,12 +182,12 @@ export const FeeConfigWithCalculator: React.FC<
     if (type === "maker") {
       if (value < effectiveMinMaker) {
         setMakerFeeError(
-          `${t("feeConfigWithCalculator.makerFeeMin", { min: effectiveMinMaker })} bps`
+          `${t("feeConfigWithCalculator.makerFeeMin", { min: formatFeeBps(effectiveMinMaker) })} bps`
         );
         return false;
       } else if (value > MAX_FEE) {
         setMakerFeeError(
-          `${t("feeConfigWithCalculator.makerFeeMax", { max: MAX_FEE })} bps`
+          `${t("feeConfigWithCalculator.makerFeeMax", { max: formatFeeBps(MAX_FEE) })} bps`
         );
         return false;
       } else {
@@ -135,12 +197,12 @@ export const FeeConfigWithCalculator: React.FC<
     } else if (type === "taker") {
       if (value < effectiveMinTaker) {
         setTakerFeeError(
-          `${t("feeConfigWithCalculator.takerFeeMin", { min: effectiveMinTaker })} bps`
+          `${t("feeConfigWithCalculator.takerFeeMin", { min: formatFeeBps(effectiveMinTaker) })} bps`
         );
         return false;
       } else if (value > MAX_FEE) {
         setTakerFeeError(
-          `${t("feeConfigWithCalculator.takerFeeMax", { max: MAX_FEE })} bps`
+          `${t("feeConfigWithCalculator.takerFeeMax", { max: formatFeeBps(MAX_FEE) })} bps`
         );
         return false;
       } else {
@@ -151,14 +213,14 @@ export const FeeConfigWithCalculator: React.FC<
       if (value < effectiveMinRwaMaker) {
         setRwaMakerFeeError(
           `${t("feeConfigWithCalculator.rwaMakerFeeMin", {
-            min: effectiveMinRwaMaker,
+            min: formatFeeBps(effectiveMinRwaMaker),
           })} bps`
         );
         return false;
       } else if (value > MAX_RWA_FEE) {
         setRwaMakerFeeError(
           `${t("feeConfigWithCalculator.rwaMakerFeeMax", {
-            max: MAX_RWA_FEE,
+            max: formatFeeBps(MAX_RWA_FEE),
           })} bps`
         );
         return false;
@@ -170,14 +232,14 @@ export const FeeConfigWithCalculator: React.FC<
       if (value < effectiveMinRwaTaker) {
         setRwaTakerFeeError(
           `${t("feeConfigWithCalculator.rwaTakerFeeMin", {
-            min: effectiveMinRwaTaker,
+            min: formatFeeBps(effectiveMinRwaTaker),
           })} bps`
         );
         return false;
       } else if (value > MAX_RWA_FEE) {
         setRwaTakerFeeError(
           `${t("feeConfigWithCalculator.rwaTakerFeeMax", {
-            max: MAX_RWA_FEE,
+            max: formatFeeBps(MAX_RWA_FEE),
           })} bps`
         );
         return false;
@@ -188,11 +250,21 @@ export const FeeConfigWithCalculator: React.FC<
     }
   };
 
+  const resetEmptyFeeInput = (
+    setFee: React.Dispatch<React.SetStateAction<number>>,
+    setFeeInput: React.Dispatch<React.SetStateAction<string>>,
+    setFeeError: React.Dispatch<React.SetStateAction<string | null>>
+  ) => {
+    setFee(0);
+    setFeeInput("0");
+    setFeeError(null);
+  };
+
   const handleMakerFeeChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
     if (value === "") {
-      setMakerFee(0);
+      setMakerFeeInput("");
       setMakerFeeError(null);
       return;
     }
@@ -207,6 +279,7 @@ export const FeeConfigWithCalculator: React.FC<
       return;
     }
 
+    setMakerFeeInput(value);
     setMakerFee(bpsValue);
     validateFees("maker", bpsValue);
 
@@ -219,7 +292,7 @@ export const FeeConfigWithCalculator: React.FC<
     const value = e.target.value;
 
     if (value === "") {
-      setTakerFee(0);
+      setTakerFeeInput("");
       setTakerFeeError(null);
       return;
     }
@@ -234,6 +307,7 @@ export const FeeConfigWithCalculator: React.FC<
       return;
     }
 
+    setTakerFeeInput(value);
     setTakerFee(bpsValue);
     validateFees("taker", bpsValue);
 
@@ -243,10 +317,10 @@ export const FeeConfigWithCalculator: React.FC<
   };
 
   const handleMakerFeeBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setFocusedFeeInput(null);
     const value = e.target.value;
     if (value === "") {
-      setMakerFee(0);
-      setMakerFeeError(null);
+      resetEmptyFeeInput(setMakerFee, setMakerFeeInput, setMakerFeeError);
       return;
     }
 
@@ -256,16 +330,17 @@ export const FeeConfigWithCalculator: React.FC<
     }
 
     if (!(value.includes(".") && value.split(".")[1].length > 1)) {
+      setMakerFeeInput(value);
       setMakerFee(bpsValue);
       validateFees("maker", bpsValue);
     }
   };
 
   const handleTakerFeeBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setFocusedFeeInput(null);
     const value = e.target.value;
     if (value === "") {
-      setTakerFee(0);
-      setTakerFeeError(null);
+      resetEmptyFeeInput(setTakerFee, setTakerFeeInput, setTakerFeeError);
       return;
     }
 
@@ -275,6 +350,7 @@ export const FeeConfigWithCalculator: React.FC<
     }
 
     if (!(value.includes(".") && value.split(".")[1].length > 1)) {
+      setTakerFeeInput(value);
       setTakerFee(bpsValue);
       validateFees("taker", bpsValue);
     }
@@ -284,7 +360,7 @@ export const FeeConfigWithCalculator: React.FC<
     const value = e.target.value;
 
     if (value === "") {
-      setRwaMakerFee(0);
+      setRwaMakerFeeInput("");
       setRwaMakerFeeError(null);
       return;
     }
@@ -299,6 +375,7 @@ export const FeeConfigWithCalculator: React.FC<
       return;
     }
 
+    setRwaMakerFeeInput(value);
     setRwaMakerFee(bpsValue);
     validateFees("rwaMaker", bpsValue);
 
@@ -311,7 +388,7 @@ export const FeeConfigWithCalculator: React.FC<
     const value = e.target.value;
 
     if (value === "") {
-      setRwaTakerFee(0);
+      setRwaTakerFeeInput("");
       setRwaTakerFeeError(null);
       return;
     }
@@ -326,6 +403,7 @@ export const FeeConfigWithCalculator: React.FC<
       return;
     }
 
+    setRwaTakerFeeInput(value);
     setRwaTakerFee(bpsValue);
     validateFees("rwaTaker", bpsValue);
 
@@ -335,10 +413,14 @@ export const FeeConfigWithCalculator: React.FC<
   };
 
   const handleRwaMakerFeeBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setFocusedFeeInput(null);
     const value = e.target.value;
     if (value === "") {
-      setRwaMakerFee(0);
-      setRwaMakerFeeError(null);
+      resetEmptyFeeInput(
+        setRwaMakerFee,
+        setRwaMakerFeeInput,
+        setRwaMakerFeeError
+      );
       return;
     }
 
@@ -348,16 +430,21 @@ export const FeeConfigWithCalculator: React.FC<
     }
 
     if (!(value.includes(".") && value.split(".")[1].length > 1)) {
+      setRwaMakerFeeInput(value);
       setRwaMakerFee(bpsValue);
       validateFees("rwaMaker", bpsValue);
     }
   };
 
   const handleRwaTakerFeeBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setFocusedFeeInput(null);
     const value = e.target.value;
     if (value === "") {
-      setRwaTakerFee(0);
-      setRwaTakerFeeError(null);
+      resetEmptyFeeInput(
+        setRwaTakerFee,
+        setRwaTakerFeeInput,
+        setRwaTakerFeeError
+      );
       return;
     }
 
@@ -367,6 +454,7 @@ export const FeeConfigWithCalculator: React.FC<
     }
 
     if (!(value.includes(".") && value.split(".")[1].length > 1)) {
+      setRwaTakerFeeInput(value);
       setRwaTakerFee(bpsValue);
       validateFees("rwaTaker", bpsValue);
     }
@@ -434,6 +522,7 @@ export const FeeConfigWithCalculator: React.FC<
         if (onFeesChange) {
           onFeesChange(makerFee, takerFee, rwaMakerFee, rwaTakerFee);
         }
+        onSaveSuccess?.();
       } catch (error) {
         console.error("Error updating fees:", error);
         toast.error(
@@ -538,6 +627,27 @@ export const FeeConfigWithCalculator: React.FC<
     setSelectedTier(value);
   };
 
+  const shouldShowRevenueCalculator = showRevenueCalculator && !alwaysShowConfig;
+
+  const renderFeeRangeHint = (min: number, max: number) => (
+    <span className="block space-y-0.5">
+      <span className="block">
+        {t("feeConfigWithCalculator.feeRangeMinimum", {
+          min: formatFeeBps(min),
+          minPercent: formatFeePercent(min),
+          unit: "bps",
+        })}
+      </span>
+      <span className="block">
+        {t("feeConfigWithCalculator.feeRangeMaximum", {
+          max: formatFeeBps(max),
+          maxPercent: formatFeePercent(max),
+          unit: "bps",
+        })}
+      </span>
+    </span>
+  );
+
   return (
     <div className="space-y-6">
       {/* Fee Configuration Section */}
@@ -546,7 +656,8 @@ export const FeeConfigWithCalculator: React.FC<
           <h3 className="text-lg font-semibold">
             {t("feeConfigWithCalculator.feeConfiguration")}
           </h3>
-          {!readOnly && !alwaysShowConfig && (
+          {headerAction}
+          {!headerAction && !readOnly && !alwaysShowConfig && (
             <button
               type="button"
               onClick={() => setShowFeeConfig(!showFeeConfig)}
@@ -594,12 +705,13 @@ export const FeeConfigWithCalculator: React.FC<
                     {t("feeConfigWithCalculator.makerFeeLabel")} (bps)
                   </label>
                   <div className="flex items-center">
-                    <input
-                      type="number"
-                      id="makerFee"
-                      value={makerFee}
-                      onChange={handleMakerFeeChange}
-                      onBlur={handleMakerFeeBlur}
+                      <input
+                        type="number"
+                        id="makerFee"
+                        value={makerFeeInput}
+                        onChange={handleMakerFeeChange}
+                        onFocus={() => setFocusedFeeInput("maker")}
+                        onBlur={handleMakerFeeBlur}
                       step="0.1"
                       min={effectiveMinMaker}
                       max={MAX_FEE}
@@ -609,13 +721,7 @@ export const FeeConfigWithCalculator: React.FC<
                     <span className="ml-2 text-gray-400 text-sm">bps</span>
                   </div>
                   <p className="text-xs text-gray-400 mt-1">
-                    {t("feeConfigWithCalculator.feeRange", {
-                      min: effectiveMinMaker,
-                      minPercent: (effectiveMinMaker * 0.01).toFixed(2),
-                      max: MAX_FEE,
-                      maxPercent: (MAX_FEE * 0.01).toFixed(2),
-                      unit: "bps",
-                    })}
+                    {renderFeeRangeHint(effectiveMinMaker, MAX_FEE)}
                   </p>
                   {makerFeeError && (
                     <p className="text-xs text-error mt-1">{makerFeeError}</p>
@@ -630,12 +736,13 @@ export const FeeConfigWithCalculator: React.FC<
                     {t("feeConfigWithCalculator.takerFeeLabel")} (bps)
                   </label>
                   <div className="flex items-center">
-                    <input
-                      type="number"
-                      id="takerFee"
-                      value={takerFee}
-                      onChange={handleTakerFeeChange}
-                      onBlur={handleTakerFeeBlur}
+                      <input
+                        type="number"
+                        id="takerFee"
+                        value={takerFeeInput}
+                        onChange={handleTakerFeeChange}
+                        onFocus={() => setFocusedFeeInput("taker")}
+                        onBlur={handleTakerFeeBlur}
                       step="0.1"
                       min={effectiveMinTaker}
                       max={MAX_FEE}
@@ -645,13 +752,7 @@ export const FeeConfigWithCalculator: React.FC<
                     <span className="ml-2 text-gray-400 text-sm">bps</span>
                   </div>
                   <p className="text-xs text-gray-400 mt-1">
-                    {t("feeConfigWithCalculator.feeRange", {
-                      min: effectiveMinTaker,
-                      minPercent: (effectiveMinTaker * 0.01).toFixed(2),
-                      max: MAX_FEE,
-                      maxPercent: (MAX_FEE * 0.01).toFixed(2),
-                      unit: "bps",
-                    })}
+                    {renderFeeRangeHint(effectiveMinTaker, MAX_FEE)}
                   </p>
                   {takerFeeError && (
                     <p className="text-xs text-error mt-1">{takerFeeError}</p>
@@ -660,12 +761,6 @@ export const FeeConfigWithCalculator: React.FC<
               </div>
 
               <div className="mb-4">
-                <h4 className="text-sm font-semibold mb-2 text-gray-200">
-                  {t("feeConfigWithCalculator.rwaAssetFees")}
-                </h4>
-                <p className="text-xs text-gray-400 mb-3">
-                  {t("feeConfigWithCalculator.rwaAssetFeesDesc")}
-                </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label
@@ -678,8 +773,9 @@ export const FeeConfigWithCalculator: React.FC<
                       <input
                         type="number"
                         id="rwaMakerFee"
-                        value={rwaMakerFee}
+                        value={rwaMakerFeeInput}
                         onChange={handleRwaMakerFeeChange}
+                        onFocus={() => setFocusedFeeInput("rwaMaker")}
                         onBlur={handleRwaMakerFeeBlur}
                         step="0.1"
                         min={effectiveMinRwaMaker}
@@ -690,13 +786,7 @@ export const FeeConfigWithCalculator: React.FC<
                       <span className="ml-2 text-gray-400 text-sm">bps</span>
                     </div>
                     <p className="text-xs text-gray-400 mt-1">
-                      {t("feeConfigWithCalculator.feeRange", {
-                        min: effectiveMinRwaMaker,
-                        minPercent: (effectiveMinRwaMaker * 0.01).toFixed(2),
-                        max: MAX_RWA_FEE,
-                        maxPercent: (MAX_RWA_FEE * 0.01).toFixed(2),
-                        unit: "bps",
-                      })}
+                      {renderFeeRangeHint(effectiveMinRwaMaker, MAX_RWA_FEE)}
                     </p>
                     {rwaMakerFeeError && (
                       <p className="text-xs text-error mt-1">
@@ -716,8 +806,9 @@ export const FeeConfigWithCalculator: React.FC<
                       <input
                         type="number"
                         id="rwaTakerFee"
-                        value={rwaTakerFee}
+                        value={rwaTakerFeeInput}
                         onChange={handleRwaTakerFeeChange}
+                        onFocus={() => setFocusedFeeInput("rwaTaker")}
                         onBlur={handleRwaTakerFeeBlur}
                         step="0.1"
                         min={effectiveMinRwaTaker}
@@ -728,13 +819,7 @@ export const FeeConfigWithCalculator: React.FC<
                       <span className="ml-2 text-gray-400 text-sm">bps</span>
                     </div>
                     <p className="text-xs text-gray-400 mt-1">
-                      {t("feeConfigWithCalculator.feeRange", {
-                        min: effectiveMinRwaTaker,
-                        minPercent: (effectiveMinRwaTaker * 0.01).toFixed(2),
-                        max: MAX_RWA_FEE,
-                        maxPercent: (MAX_RWA_FEE * 0.01).toFixed(2),
-                        unit: "bps",
-                      })}
+                      {renderFeeRangeHint(effectiveMinRwaTaker, MAX_RWA_FEE)}
                     </p>
                     {rwaTakerFeeError && (
                       <p className="text-xs text-error mt-1">
@@ -846,6 +931,9 @@ export const FeeConfigWithCalculator: React.FC<
                   <div className="text-xs text-gray-400">
                     ({formatNumber(makerFee * 0.01, 3)}%)
                   </div>
+                  <div className="mt-2 border-t border-light/10 pt-2 text-xs text-gray-400">
+                    Revenue margin: {renderRevenueValue(builderMakerRevenue)}
+                  </div>
                 </div>
                 <div className="bg-background-dark/50 p-3 rounded">
                   <div className="text-sm text-gray-400">
@@ -859,6 +947,9 @@ export const FeeConfigWithCalculator: React.FC<
                   </div>
                   <div className="text-xs text-gray-400">
                     ({formatNumber(takerFee * 0.01, 3)}%)
+                  </div>
+                  <div className="mt-2 border-t border-light/10 pt-2 text-xs text-gray-400">
+                    Revenue margin: {renderRevenueValue(builderTakerRevenue)}
                   </div>
                 </div>
               </div>
@@ -882,6 +973,9 @@ export const FeeConfigWithCalculator: React.FC<
                   <div className="text-xs text-gray-400">
                     ({formatNumber(rwaMakerFee * 0.01, 3)}%)
                   </div>
+                  <div className="mt-2 border-t border-light/10 pt-2 text-xs text-gray-400">
+                    Revenue margin: {renderRevenueValue(builderRwaMakerRevenue)}
+                  </div>
                 </div>
                 <div className="bg-background-dark/50 p-3 rounded">
                   <div className="text-sm text-gray-400">
@@ -895,6 +989,9 @@ export const FeeConfigWithCalculator: React.FC<
                   </div>
                   <div className="text-xs text-gray-400">
                     ({formatNumber(rwaTakerFee * 0.01, 3)}%)
+                  </div>
+                  <div className="mt-2 border-t border-light/10 pt-2 text-xs text-gray-400">
+                    Revenue margin: {renderRevenueValue(builderRwaTakerRevenue)}
                   </div>
                 </div>
               </div>
@@ -922,7 +1019,7 @@ export const FeeConfigWithCalculator: React.FC<
         )}
       </div>
 
-      {/* Revenue Calculator */}
+      {shouldShowRevenueCalculator && (
       <div className="border-t border-light/10 pt-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold flex items-center">
@@ -1086,6 +1183,7 @@ export const FeeConfigWithCalculator: React.FC<
           </div>
         )}
       </div>
+      )}
     </div>
   );
 };
