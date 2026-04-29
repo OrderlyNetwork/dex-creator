@@ -79,10 +79,10 @@ function getOrderReceiverAddress(): Promise<string> {
   return getSecret("orderReceiverAddress");
 }
 
-const DEFAULT_MAKER_FEE = 3; // Default maker fee
-const DEFAULT_TAKER_FEE = 6; // Default taker fee
-const DEFAULT_RWA_MAKER_FEE = 0; // Default RWA maker fee
-const DEFAULT_RWA_TAKER_FEE = 5; // Default RWA taker fee
+const DEFAULT_MAKER_FEE = 0;
+const DEFAULT_TAKER_FEE = 3;
+const DEFAULT_RWA_MAKER_FEE = 0;
+const DEFAULT_RWA_TAKER_FEE = 5;
 
 const ACCEPTED_CHAINS = [
   ...GRADUATION_SUPPORTED_CHAINS.mainnet,
@@ -400,6 +400,8 @@ export async function getDexBrokerTier(
           tradingVolume: "0",
           makerFeeRate: "0",
           takerFeeRate: "3",
+          rwaMakerFeeRate: "0",
+          rwaTakerFeeRate: "5",
           logDate: new Date().toISOString().split("T")[0],
         },
       };

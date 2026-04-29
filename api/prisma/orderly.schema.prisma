@@ -48,6 +48,8 @@ model BrokerTieredFeeDailyLog {
   tradingVolumeThreshold    Decimal  @db.Decimal(23, 8) @map("trading_volume_threshold")
   makerFeeRate              Decimal  @db.Decimal(23, 8) @map("maker_fee_rate")
   takerFeeRate              Decimal  @db.Decimal(23, 8) @map("taker_fee_rate")
+  rwaMakerFeeRate           Decimal  @db.Decimal(23, 8) @map("rwa_maker_fee_rate")
+  rwaTakerFeeRate           Decimal  @db.Decimal(23, 8) @map("rwa_taker_fee_rate")
   createdTime               DateTime @default(now()) @db.Timestamp(3) @map("created_time")
   updatedTime               DateTime @default(now()) @updatedAt @db.Timestamp(3) @map("updated_time")
   typeOverriding            String?  @db.VarChar(128) @map("type_overriding")

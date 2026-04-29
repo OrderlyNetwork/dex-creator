@@ -253,10 +253,14 @@ export const components = {
   "baseFeeExplanation.title": "Understanding Base Fees & Staking Tiers",
   "baseFeeExplanation.baseFee": "Base Fee",
   "baseFeeExplanation.baseFeeIntro":
-    "Orderly retains 100% of a base taker fee while offering 0 bps maker fee. This fee varies by tier in our Builder Staking Programme:",
+    "Orderly charges base fees according to your tier in the <0>Builder Staking Programme</0>. Negative fees are rebates and are settled daily:",
   "baseFeeExplanation.tier": "Tier",
-  "baseFeeExplanation.volumeRequirement": "Volume Requirement (30d)",
   "baseFeeExplanation.stakingRequirement": "Staking Requirement",
+  "baseFeeExplanation.volumeRequirement": "Volume Requirement",
+  "baseFeeExplanation.cryptoMakerRebate": "Crypto Maker Rebate",
+  "baseFeeExplanation.rwaMakerRebate": "RWA Maker Rebate",
+  "baseFeeExplanation.cryptoTakerFee": "Crypto Taker Fee",
+  "baseFeeExplanation.rwaTakerFee": "RWA Taker Fee",
   "baseFeeExplanation.orderlyBaseTakerFee": "Orderly Base Taker Fee (bps)",
   "baseFeeExplanation.noRequirement": "No Requirement",
   "baseFeeExplanation.or": "OR",
@@ -269,7 +273,8 @@ export const components = {
   "baseFeeExplanation.yourRevenue": "Your Revenue: Your Custom Fee - Base Fee",
   "baseFeeExplanation.stakingTip":
     "By staking more ORDER tokens or achieving higher trading volume, you can reduce the base fee charged by Orderly, maximizing your DEX's competitiveness.",
-  "baseFeeExplanation.stakeOrderCta": "Stake ORDER for Better Rates",
+  "baseFeeExplanation.stakeOrderCta": "Stake ORDER now",
+  "baseFeeExplanation.currentTierTag": "Current",
   "baseFeeExplanation.importantWalletNote":
     "<0>Important</0>: You must use the <1>exact same wallet</1> for staking ORDER tokens that you used to set up this DEX. This ensures proper tier attribution and benefits.",
 
@@ -691,6 +696,10 @@ export const components = {
   "feeConfigWithCalculator.rwaTakerFeeLabel": "RWA Taker Fee",
   "feeConfigWithCalculator.feeRange":
     "Minimum: {{min}} {{unit}} ({{minPercent}}%), Maximum: {{max}} {{unit}} ({{maxPercent}}%)",
+  "feeConfigWithCalculator.feeRangeMinimum":
+    "Minimum: {{min}} {{unit}} ({{minPercent}}%)",
+  "feeConfigWithCalculator.feeRangeMaximum":
+    "Maximum: {{max}} {{unit}} ({{maxPercent}}%)",
   "feeConfigWithCalculator.correctErrors":
     "Please correct the errors before saving",
   "feeConfigWithCalculator.feeValuesOutsideRange":
@@ -764,6 +773,7 @@ export const components = {
   "feeConfigWithCalculator.tier.diamond": "Diamond",
   "feeConfigWithCalculator.tier.diamondRequirement":
     "7M $ORDER or ≥$10B volume",
+  "feeConfigWithCalculator.revenueMarginLabel": "Revenue margin",
 
   // FeeWithdrawalModal
   "feeWithdrawalModal.title": "Withdraw Fees",

@@ -4,6 +4,8 @@ import { ErrorResponseSchema } from "./common.js";
 // Re-export common ErrorResponseSchema for graduation routes
 export { ErrorResponseSchema };
 
+const FEE_PRECISION_BPS = 0.1;
+
 export const VerifyTxSchema = z.object({
   txHash: z.string().min(10).max(100).openapi({
     description: "Transaction hash to verify",
@@ -37,21 +39,28 @@ export const VerifyTxSchema = z.object({
       description: "Desired broker ID",
       example: "my-broker",
     }),
-  makerFee: z.number().min(0).max(15).openapi({
-    description: "Maker fee in basis points (0-15)",
-    example: 5,
+  makerFee: z.number().min(-0.5).max(15).multipleOf(FEE_PRECISION_BPS).openapi({
+    description:
+      "Maker fee in basis points (-0.5 to 15), in 0.1 bps increments. Negative values indicate rebates.",
+    example: -0.1,
   }),
-  takerFee: z.number().min(3).max(15).openapi({
-    description: "Taker fee in basis points (3-15)",
-    example: 10,
+  takerFee: z.number().min(1).max(15).multipleOf(FEE_PRECISION_BPS).openapi({
+    description: "Taker fee in basis points (1-15), in 0.1 bps increments",
+    example: 2.5,
   }),
-  rwaMakerFee: z.number().min(0).max(15).openapi({
-    description: "RWA maker fee in basis points (0-15)",
-    example: 5,
-  }),
-  rwaTakerFee: z.number().min(0).max(15).openapi({
-    description: "RWA taker fee in basis points (0-15)",
-    example: 10,
+  rwaMakerFee: z
+    .number()
+    .min(-0.5)
+    .max(15)
+    .multipleOf(FEE_PRECISION_BPS)
+    .openapi({
+      description:
+        "RWA maker fee in basis points (-0.5 to 15), in 0.1 bps increments. Negative values indicate rebates.",
+      example: -0.2,
+    }),
+  rwaTakerFee: z.number().min(3).max(15).multipleOf(FEE_PRECISION_BPS).openapi({
+    description: "RWA taker fee in basis points (3-15), in 0.1 bps increments",
+    example: 4.5,
   }),
   paymentType: z.enum(["usdc", "order", "usdt"]).default("order").openapi({
     description: "Payment token type",
@@ -164,17 +173,37 @@ export const DexFeesSchema = z
 
 export const BrokerTierSchema = z
   .object({
-    brokerId: z.string().openapi({
-      description: "Broker ID",
-      example: "my-broker",
-    }),
     tier: z.string().openapi({
       description: "Broker tier level",
-      example: "standard",
+      example: "GOLD",
     }),
-    volume: z.number().openapi({
+    stakingVolume: z.string().openapi({
+      description: "Staking volume",
+      example: "250000.00",
+    }),
+    tradingVolume: z.string().openapi({
       description: "Trading volume",
-      example: 1000000,
+      example: "1500000.00",
+    }),
+    makerFeeRate: z.string().openapi({
+      description: "Maker fee rate in decimal",
+      example: "0.0000",
+    }),
+    takerFeeRate: z.string().openapi({
+      description: "Taker fee rate in decimal",
+      example: "0.0003",
+    }),
+    rwaMakerFeeRate: z.string().openapi({
+      description: "RWA maker fee rate in decimal",
+      example: "0.0000",
+    }),
+    rwaTakerFeeRate: z.string().openapi({
+      description: "RWA taker fee rate in decimal",
+      example: "0.0005",
+    }),
+    logDate: z.string().openapi({
+      description: "Log date",
+      example: "2026-04-26",
     }),
   })
   .openapi("BrokerTier");

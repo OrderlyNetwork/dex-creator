@@ -16,15 +16,48 @@ export type TierName = "Public" | "Silver" | "Gold" | "Platinum" | "Diamond";
 
 export interface TierConfig {
   name: TierName;
+  makerBps: number;
   takerBps: number;
+  rwaMakerBps: number;
+  rwaTakerBps: number;
 }
 
 export const TIERS: TierConfig[] = [
-  { name: "Public", takerBps: 3.0 },
-  { name: "Silver", takerBps: 2.75 },
-  { name: "Gold", takerBps: 2.5 },
-  { name: "Platinum", takerBps: 2.0 },
-  { name: "Diamond", takerBps: 1.0 },
+  {
+    name: "Public",
+    makerBps: 0,
+    takerBps: 3.0,
+    rwaMakerBps: 0,
+    rwaTakerBps: 5.0,
+  },
+  {
+    name: "Silver",
+    makerBps: -0.05,
+    takerBps: 2.75,
+    rwaMakerBps: -0.15,
+    rwaTakerBps: 4.75,
+  },
+  {
+    name: "Gold",
+    makerBps: -0.1,
+    takerBps: 2.5,
+    rwaMakerBps: -0.25,
+    rwaTakerBps: 4.5,
+  },
+  {
+    name: "Platinum",
+    makerBps: -0.15,
+    takerBps: 2.0,
+    rwaMakerBps: -0.35,
+    rwaTakerBps: 4.0,
+  },
+  {
+    name: "Diamond",
+    makerBps: -0.2,
+    takerBps: 1.0,
+    rwaMakerBps: -0.5,
+    rwaTakerBps: 3.0,
+  },
 ];
 
 const ADJECTIVES = [

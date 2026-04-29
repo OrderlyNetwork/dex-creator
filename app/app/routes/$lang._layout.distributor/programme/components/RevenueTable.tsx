@@ -13,7 +13,24 @@ interface DistributorStatsRecord {
   totalRevenueShare: number;
   inviteeVolume30d: number;
   graduatedInvitees: number;
+  feeTier: string | null;
 }
+
+const tierBadgeByTier: Record<string, string> = {
+  public: "/distributor/tier-public.png",
+  silver: "/distributor/tier-silver.png",
+  gold: "/distributor/tier-gold.png",
+  platinum: "/distributor/tier-platinum.png",
+  diamond: "/distributor/tier-diamond.png",
+};
+
+const getTierBadge = (feeTier: string | null) => {
+  if (!feeTier) {
+    return tierBadgeByTier.public;
+  }
+
+  return tierBadgeByTier[feeTier.toLowerCase()] ?? tierBadgeByTier.public;
+};
 
 const parseStatsRecord = (raw: unknown): DistributorStatsRecord | null => {
   if (!raw || typeof raw !== "object") {
@@ -38,6 +55,7 @@ const parseStatsRecord = (raw: unknown): DistributorStatsRecord | null => {
     totalRevenueShare,
     inviteeVolume30d,
     graduatedInvitees,
+    feeTier: typeof source["Fee Tier"] === "string" ? source["Fee Tier"] : null,
   };
 };
 
@@ -232,10 +250,11 @@ export function RevenueTable() {
                                     <span
                                       className={`vanguard-alias-icon ${isTopThree ? "is-top" : ""}`}
                                     >
-                                      {alias
-                                        .split("-")
-                                        .map(fragment => fragment[0])
-                                        .join("")}
+                                      <img
+                                        src={getTierBadge(record.feeTier)}
+                                        alt=""
+                                        className="h-full w-full object-contain"
+                                      />
                                     </span>
                                     <span>{alias}</span>
                                   </div>

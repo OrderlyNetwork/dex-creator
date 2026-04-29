@@ -1,4 +1,4 @@
-import { useEffect, useState, FormEvent, ChangeEvent } from "react";
+import { useEffect, useState, FormEvent, ChangeEvent, ReactNode } from "react";
 import { Button } from "./Button";
 import { toast } from "react-toastify";
 import { useOrderlyKey } from "../context/OrderlyKeyContext";
@@ -21,6 +21,7 @@ const MAX_FEE = 15;
 const MIN_RWA_MAKER_FEE = 0;
 const MIN_RWA_TAKER_FEE = 5;
 const MAX_RWA_FEE = 15;
+const FEE_STEP_BPS = 0.1;
 
 interface FeeConfigWithCalculatorProps {
   makerFee: number;
@@ -37,10 +38,17 @@ interface FeeConfigWithCalculatorProps {
   ) => void;
   feeError?: string | null;
   defaultOpenCalculator?: boolean;
+  showRevenueCalculator?: boolean;
   showSaveButton?: boolean;
   alwaysShowConfig?: boolean;
   useOrderlyApi?: boolean;
   brokerId?: string;
+  minMakerFee?: number;
+  minTakerFee?: number;
+  minRwaMakerFee?: number;
+  minRwaTakerFee?: number;
+  onSaveSuccess?: () => void;
+  headerAction?: ReactNode;
 }
 
 const formatNumber = (value: number, maxDecimals: number = 1) => {
@@ -49,6 +57,13 @@ const formatNumber = (value: number, maxDecimals: number = 1) => {
     maximumFractionDigits: maxDecimals,
   }).format(value);
 };
+
+const roundFeeMinUp = (value: number) => {
+  return Math.ceil(value / FEE_STEP_BPS - 1e-8) * FEE_STEP_BPS;
+};
+
+const formatFeeBps = (value: number) => formatNumber(value, 2);
+const formatFeePercent = (value: number) => formatNumber(value * 0.01, 4);
 
 export const FeeConfigWithCalculator: React.FC<
   FeeConfigWithCalculatorProps
@@ -61,10 +76,17 @@ export const FeeConfigWithCalculator: React.FC<
   isSavingFees = false,
   onFeesChange,
   defaultOpenCalculator = false,
+  showRevenueCalculator = false,
   showSaveButton = true,
   alwaysShowConfig = false,
   useOrderlyApi = false,
   brokerId,
+  minMakerFee,
+  minTakerFee,
+  minRwaMakerFee,
+  minRwaTakerFee,
+  onSaveSuccess,
+  headerAction,
 }) => {
   const { t } = useTranslation();
   const { orderlyKey, accountId, hasValidKey, setOrderlyKey } = useOrderlyKey();
@@ -76,6 +98,17 @@ export const FeeConfigWithCalculator: React.FC<
   const [takerFee, setTakerFee] = useState<number>(initialTakerFee);
   const [rwaMakerFee, setRwaMakerFee] = useState<number>(initialRwaMakerFee);
   const [rwaTakerFee, setRwaTakerFee] = useState<number>(initialRwaTakerFee);
+  const [makerFeeInput, setMakerFeeInput] = useState(String(initialMakerFee));
+  const [takerFeeInput, setTakerFeeInput] = useState(String(initialTakerFee));
+  const [rwaMakerFeeInput, setRwaMakerFeeInput] = useState(
+    String(initialRwaMakerFee)
+  );
+  const [rwaTakerFeeInput, setRwaTakerFeeInput] = useState(
+    String(initialRwaTakerFee)
+  );
+  const [focusedFeeInput, setFocusedFeeInput] = useState<
+    "maker" | "taker" | "rwaMaker" | "rwaTaker" | null
+  >(null);
   const [makerFeeError, setMakerFeeError] = useState<string | null>(null);
   const [takerFeeError, setTakerFeeError] = useState<string | null>(null);
   const [rwaMakerFeeError, setRwaMakerFeeError] = useState<string | null>(null);
@@ -93,26 +126,62 @@ export const FeeConfigWithCalculator: React.FC<
     setTakerFee(initialTakerFee);
     setRwaMakerFee(initialRwaMakerFee);
     setRwaTakerFee(initialRwaTakerFee);
+    if (focusedFeeInput !== "maker") {
+      setMakerFeeInput(String(initialMakerFee));
+    }
+    if (focusedFeeInput !== "taker") {
+      setTakerFeeInput(String(initialTakerFee));
+    }
+    if (focusedFeeInput !== "rwaMaker") {
+      setRwaMakerFeeInput(String(initialRwaMakerFee));
+    }
+    if (focusedFeeInput !== "rwaTaker") {
+      setRwaTakerFeeInput(String(initialRwaTakerFee));
+    }
   }, [
     initialMakerFee,
     initialTakerFee,
     initialRwaMakerFee,
     initialRwaTakerFee,
+    focusedFeeInput,
   ]);
+
+  const effectiveMinMaker = roundFeeMinUp(minMakerFee ?? MIN_MAKER_FEE);
+  const effectiveMinTaker = roundFeeMinUp(minTakerFee ?? MIN_TAKER_FEE);
+  const effectiveMinRwaMaker = roundFeeMinUp(
+    minRwaMakerFee ?? MIN_RWA_MAKER_FEE
+  );
+  const effectiveMinRwaTaker = roundFeeMinUp(
+    minRwaTakerFee ?? MIN_RWA_TAKER_FEE
+  );
+  const baseMakerFee = minMakerFee ?? MIN_MAKER_FEE;
+  const baseTakerFee = minTakerFee ?? MIN_TAKER_FEE;
+  const baseRwaMakerFee = minRwaMakerFee ?? MIN_RWA_MAKER_FEE;
+  const baseRwaTakerFee = minRwaTakerFee ?? MIN_RWA_TAKER_FEE;
+  const builderMakerRevenue = makerFee - baseMakerFee;
+  const builderTakerRevenue = takerFee - baseTakerFee;
+  const builderRwaMakerRevenue = rwaMakerFee - baseRwaMakerFee;
+  const builderRwaTakerRevenue = rwaTakerFee - baseRwaTakerFee;
+
+  const renderRevenueValue = (value: number) => (
+    <span className={value >= 0 ? "text-success" : "text-warning"}>
+      {formatFeeBps(value)} bps
+    </span>
+  );
 
   const validateFees = (
     type: "maker" | "taker" | "rwaMaker" | "rwaTaker",
     value: number
   ) => {
     if (type === "maker") {
-      if (value < MIN_MAKER_FEE) {
+      if (value < effectiveMinMaker) {
         setMakerFeeError(
-          `${t("feeConfigWithCalculator.makerFeeMin", { min: MIN_MAKER_FEE })} bps`
+          `${t("feeConfigWithCalculator.makerFeeMin", { min: formatFeeBps(effectiveMinMaker) })} bps`
         );
         return false;
       } else if (value > MAX_FEE) {
         setMakerFeeError(
-          `${t("feeConfigWithCalculator.makerFeeMax", { max: MAX_FEE })} bps`
+          `${t("feeConfigWithCalculator.makerFeeMax", { max: formatFeeBps(MAX_FEE) })} bps`
         );
         return false;
       } else {
@@ -120,14 +189,14 @@ export const FeeConfigWithCalculator: React.FC<
         return true;
       }
     } else if (type === "taker") {
-      if (value < MIN_TAKER_FEE) {
+      if (value < effectiveMinTaker) {
         setTakerFeeError(
-          `${t("feeConfigWithCalculator.takerFeeMin", { min: MIN_TAKER_FEE })} bps`
+          `${t("feeConfigWithCalculator.takerFeeMin", { min: formatFeeBps(effectiveMinTaker) })} bps`
         );
         return false;
       } else if (value > MAX_FEE) {
         setTakerFeeError(
-          `${t("feeConfigWithCalculator.takerFeeMax", { max: MAX_FEE })} bps`
+          `${t("feeConfigWithCalculator.takerFeeMax", { max: formatFeeBps(MAX_FEE) })} bps`
         );
         return false;
       } else {
@@ -135,17 +204,17 @@ export const FeeConfigWithCalculator: React.FC<
         return true;
       }
     } else if (type === "rwaMaker") {
-      if (value < MIN_RWA_MAKER_FEE) {
+      if (value < effectiveMinRwaMaker) {
         setRwaMakerFeeError(
           `${t("feeConfigWithCalculator.rwaMakerFeeMin", {
-            min: MIN_RWA_MAKER_FEE,
+            min: formatFeeBps(effectiveMinRwaMaker),
           })} bps`
         );
         return false;
       } else if (value > MAX_RWA_FEE) {
         setRwaMakerFeeError(
           `${t("feeConfigWithCalculator.rwaMakerFeeMax", {
-            max: MAX_RWA_FEE,
+            max: formatFeeBps(MAX_RWA_FEE),
           })} bps`
         );
         return false;
@@ -154,17 +223,17 @@ export const FeeConfigWithCalculator: React.FC<
         return true;
       }
     } else {
-      if (value < MIN_RWA_TAKER_FEE) {
+      if (value < effectiveMinRwaTaker) {
         setRwaTakerFeeError(
           `${t("feeConfigWithCalculator.rwaTakerFeeMin", {
-            min: MIN_RWA_TAKER_FEE,
+            min: formatFeeBps(effectiveMinRwaTaker),
           })} bps`
         );
         return false;
       } else if (value > MAX_RWA_FEE) {
         setRwaTakerFeeError(
           `${t("feeConfigWithCalculator.rwaTakerFeeMax", {
-            max: MAX_RWA_FEE,
+            max: formatFeeBps(MAX_RWA_FEE),
           })} bps`
         );
         return false;
@@ -175,11 +244,21 @@ export const FeeConfigWithCalculator: React.FC<
     }
   };
 
+  const resetEmptyFeeInput = (
+    setFee: React.Dispatch<React.SetStateAction<number>>,
+    setFeeInput: React.Dispatch<React.SetStateAction<string>>,
+    setFeeError: React.Dispatch<React.SetStateAction<string | null>>
+  ) => {
+    setFee(0);
+    setFeeInput("0");
+    setFeeError(null);
+  };
+
   const handleMakerFeeChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
     if (value === "") {
-      setMakerFee(0);
+      setMakerFeeInput("");
       setMakerFeeError(null);
       return;
     }
@@ -194,6 +273,7 @@ export const FeeConfigWithCalculator: React.FC<
       return;
     }
 
+    setMakerFeeInput(value);
     setMakerFee(bpsValue);
     validateFees("maker", bpsValue);
 
@@ -206,7 +286,7 @@ export const FeeConfigWithCalculator: React.FC<
     const value = e.target.value;
 
     if (value === "") {
-      setTakerFee(0);
+      setTakerFeeInput("");
       setTakerFeeError(null);
       return;
     }
@@ -221,6 +301,7 @@ export const FeeConfigWithCalculator: React.FC<
       return;
     }
 
+    setTakerFeeInput(value);
     setTakerFee(bpsValue);
     validateFees("taker", bpsValue);
 
@@ -230,10 +311,10 @@ export const FeeConfigWithCalculator: React.FC<
   };
 
   const handleMakerFeeBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setFocusedFeeInput(null);
     const value = e.target.value;
     if (value === "") {
-      setMakerFee(0);
-      setMakerFeeError(null);
+      resetEmptyFeeInput(setMakerFee, setMakerFeeInput, setMakerFeeError);
       return;
     }
 
@@ -243,16 +324,17 @@ export const FeeConfigWithCalculator: React.FC<
     }
 
     if (!(value.includes(".") && value.split(".")[1].length > 1)) {
+      setMakerFeeInput(value);
       setMakerFee(bpsValue);
       validateFees("maker", bpsValue);
     }
   };
 
   const handleTakerFeeBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setFocusedFeeInput(null);
     const value = e.target.value;
     if (value === "") {
-      setTakerFee(0);
-      setTakerFeeError(null);
+      resetEmptyFeeInput(setTakerFee, setTakerFeeInput, setTakerFeeError);
       return;
     }
 
@@ -262,6 +344,7 @@ export const FeeConfigWithCalculator: React.FC<
     }
 
     if (!(value.includes(".") && value.split(".")[1].length > 1)) {
+      setTakerFeeInput(value);
       setTakerFee(bpsValue);
       validateFees("taker", bpsValue);
     }
@@ -271,7 +354,7 @@ export const FeeConfigWithCalculator: React.FC<
     const value = e.target.value;
 
     if (value === "") {
-      setRwaMakerFee(0);
+      setRwaMakerFeeInput("");
       setRwaMakerFeeError(null);
       return;
     }
@@ -286,6 +369,7 @@ export const FeeConfigWithCalculator: React.FC<
       return;
     }
 
+    setRwaMakerFeeInput(value);
     setRwaMakerFee(bpsValue);
     validateFees("rwaMaker", bpsValue);
 
@@ -298,7 +382,7 @@ export const FeeConfigWithCalculator: React.FC<
     const value = e.target.value;
 
     if (value === "") {
-      setRwaTakerFee(0);
+      setRwaTakerFeeInput("");
       setRwaTakerFeeError(null);
       return;
     }
@@ -313,6 +397,7 @@ export const FeeConfigWithCalculator: React.FC<
       return;
     }
 
+    setRwaTakerFeeInput(value);
     setRwaTakerFee(bpsValue);
     validateFees("rwaTaker", bpsValue);
 
@@ -322,10 +407,14 @@ export const FeeConfigWithCalculator: React.FC<
   };
 
   const handleRwaMakerFeeBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setFocusedFeeInput(null);
     const value = e.target.value;
     if (value === "") {
-      setRwaMakerFee(0);
-      setRwaMakerFeeError(null);
+      resetEmptyFeeInput(
+        setRwaMakerFee,
+        setRwaMakerFeeInput,
+        setRwaMakerFeeError
+      );
       return;
     }
 
@@ -335,16 +424,21 @@ export const FeeConfigWithCalculator: React.FC<
     }
 
     if (!(value.includes(".") && value.split(".")[1].length > 1)) {
+      setRwaMakerFeeInput(value);
       setRwaMakerFee(bpsValue);
       validateFees("rwaMaker", bpsValue);
     }
   };
 
   const handleRwaTakerFeeBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setFocusedFeeInput(null);
     const value = e.target.value;
     if (value === "") {
-      setRwaTakerFee(0);
-      setRwaTakerFeeError(null);
+      resetEmptyFeeInput(
+        setRwaTakerFee,
+        setRwaTakerFeeInput,
+        setRwaTakerFeeError
+      );
       return;
     }
 
@@ -354,6 +448,7 @@ export const FeeConfigWithCalculator: React.FC<
     }
 
     if (!(value.includes(".") && value.split(".")[1].length > 1)) {
+      setRwaTakerFeeInput(value);
       setRwaTakerFee(bpsValue);
       validateFees("rwaTaker", bpsValue);
     }
@@ -421,6 +516,7 @@ export const FeeConfigWithCalculator: React.FC<
         if (onFeesChange) {
           onFeesChange(makerFee, takerFee, rwaMakerFee, rwaTakerFee);
         }
+        onSaveSuccess?.();
       } catch (error) {
         console.error("Error updating fees:", error);
         toast.error(
@@ -435,11 +531,11 @@ export const FeeConfigWithCalculator: React.FC<
   };
 
   const tierBaseFees = {
-    public: { maker: 0, taker: 3.0 },
-    silver: { maker: 0, taker: 2.75 },
-    gold: { maker: 0, taker: 2.5 },
-    platinum: { maker: 0, taker: 2.0 },
-    diamond: { maker: 0, taker: 1.0 },
+    public: { maker: 0, taker: 3.0, rwaMaker: 0, rwaTaker: 5.0 },
+    silver: { maker: -0.05, taker: 2.75, rwaMaker: -0.15, rwaTaker: 4.75 },
+    gold: { maker: -0.1, taker: 2.5, rwaMaker: -0.25, rwaTaker: 4.5 },
+    platinum: { maker: -0.15, taker: 2.0, rwaMaker: -0.35, rwaTaker: 4.0 },
+    diamond: { maker: -0.2, taker: 1.0, rwaMaker: -0.5, rwaTaker: 3.0 },
   };
 
   const tierInfo = {
@@ -525,6 +621,28 @@ export const FeeConfigWithCalculator: React.FC<
     setSelectedTier(value);
   };
 
+  const shouldShowRevenueCalculator =
+    showRevenueCalculator && !alwaysShowConfig;
+
+  const renderFeeRangeHint = (min: number, max: number) => (
+    <span className="block space-y-0.5">
+      <span className="block">
+        {t("feeConfigWithCalculator.feeRangeMinimum", {
+          min: formatFeeBps(min),
+          minPercent: formatFeePercent(min),
+          unit: "bps",
+        })}
+      </span>
+      <span className="block">
+        {t("feeConfigWithCalculator.feeRangeMaximum", {
+          max: formatFeeBps(max),
+          maxPercent: formatFeePercent(max),
+          unit: "bps",
+        })}
+      </span>
+    </span>
+  );
+
   return (
     <div className="space-y-6">
       {/* Fee Configuration Section */}
@@ -533,7 +651,8 @@ export const FeeConfigWithCalculator: React.FC<
           <h3 className="text-lg font-semibold">
             {t("feeConfigWithCalculator.feeConfiguration")}
           </h3>
-          {!readOnly && !alwaysShowConfig && (
+          {headerAction}
+          {!headerAction && !readOnly && !alwaysShowConfig && (
             <button
               type="button"
               onClick={() => setShowFeeConfig(!showFeeConfig)}
@@ -584,27 +703,20 @@ export const FeeConfigWithCalculator: React.FC<
                     <input
                       type="number"
                       id="makerFee"
-                      value={makerFee}
+                      value={makerFeeInput}
                       onChange={handleMakerFeeChange}
+                      onFocus={() => setFocusedFeeInput("maker")}
                       onBlur={handleMakerFeeBlur}
                       step="0.1"
-                      min="0"
-                      max="50"
+                      min={effectiveMinMaker}
+                      max={MAX_FEE}
                       className={`w-full px-3 py-2 bg-background-dark border ${makerFeeError ? "border-error" : "border-light/10"} rounded-lg`}
                       placeholder="0.0"
                     />
-                    <span className="ml-2 text-gray-400 text-sm">
-                      bps (0.01%)
-                    </span>
+                    <span className="ml-2 text-gray-400 text-sm">bps</span>
                   </div>
                   <p className="text-xs text-gray-400 mt-1">
-                    {t("feeConfigWithCalculator.feeRange", {
-                      min: MIN_MAKER_FEE,
-                      minPercent: (MIN_MAKER_FEE * 0.01).toFixed(2),
-                      max: MAX_FEE,
-                      maxPercent: (MAX_FEE * 0.01).toFixed(2),
-                      unit: "bps",
-                    })}
+                    {renderFeeRangeHint(effectiveMinMaker, MAX_FEE)}
                   </p>
                   {makerFeeError && (
                     <p className="text-xs text-error mt-1">{makerFeeError}</p>
@@ -622,27 +734,20 @@ export const FeeConfigWithCalculator: React.FC<
                     <input
                       type="number"
                       id="takerFee"
-                      value={takerFee}
+                      value={takerFeeInput}
                       onChange={handleTakerFeeChange}
+                      onFocus={() => setFocusedFeeInput("taker")}
                       onBlur={handleTakerFeeBlur}
                       step="0.1"
-                      min="0"
-                      max="50"
+                      min={effectiveMinTaker}
+                      max={MAX_FEE}
                       className={`w-full px-3 py-2 bg-background-dark border ${takerFeeError ? "border-error" : "border-light/10"} rounded-lg`}
                       placeholder="0.0"
                     />
-                    <span className="ml-2 text-gray-400 text-sm">
-                      bps (0.01%)
-                    </span>
+                    <span className="ml-2 text-gray-400 text-sm">bps</span>
                   </div>
                   <p className="text-xs text-gray-400 mt-1">
-                    {t("feeConfigWithCalculator.feeRange", {
-                      min: MIN_TAKER_FEE,
-                      minPercent: (MIN_TAKER_FEE * 0.01).toFixed(2),
-                      max: MAX_FEE,
-                      maxPercent: (MAX_FEE * 0.01).toFixed(2),
-                      unit: "bps",
-                    })}
+                    {renderFeeRangeHint(effectiveMinTaker, MAX_FEE)}
                   </p>
                   {takerFeeError && (
                     <p className="text-xs text-error mt-1">{takerFeeError}</p>
@@ -651,12 +756,6 @@ export const FeeConfigWithCalculator: React.FC<
               </div>
 
               <div className="mb-4">
-                <h4 className="text-sm font-semibold mb-2 text-gray-200">
-                  {t("feeConfigWithCalculator.rwaAssetFees")}
-                </h4>
-                <p className="text-xs text-gray-400 mb-3">
-                  {t("feeConfigWithCalculator.rwaAssetFeesDesc")}
-                </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label
@@ -669,27 +768,20 @@ export const FeeConfigWithCalculator: React.FC<
                       <input
                         type="number"
                         id="rwaMakerFee"
-                        value={rwaMakerFee}
+                        value={rwaMakerFeeInput}
                         onChange={handleRwaMakerFeeChange}
+                        onFocus={() => setFocusedFeeInput("rwaMaker")}
                         onBlur={handleRwaMakerFeeBlur}
                         step="0.1"
-                        min="0"
-                        max="50"
+                        min={effectiveMinRwaMaker}
+                        max={MAX_RWA_FEE}
                         className={`w-full px-3 py-2 bg-background-dark border ${rwaMakerFeeError ? "border-error" : "border-light/10"} rounded-lg`}
                         placeholder="0.0"
                       />
-                      <span className="ml-2 text-gray-400 text-sm">
-                        bps (0.01%)
-                      </span>
+                      <span className="ml-2 text-gray-400 text-sm">bps</span>
                     </div>
                     <p className="text-xs text-gray-400 mt-1">
-                      {t("feeConfigWithCalculator.feeRange", {
-                        min: MIN_RWA_MAKER_FEE,
-                        minPercent: (MIN_RWA_MAKER_FEE * 0.01).toFixed(2),
-                        max: MAX_RWA_FEE,
-                        maxPercent: (MAX_RWA_FEE * 0.01).toFixed(2),
-                        unit: "bps",
-                      })}
+                      {renderFeeRangeHint(effectiveMinRwaMaker, MAX_RWA_FEE)}
                     </p>
                     {rwaMakerFeeError && (
                       <p className="text-xs text-error mt-1">
@@ -709,27 +801,20 @@ export const FeeConfigWithCalculator: React.FC<
                       <input
                         type="number"
                         id="rwaTakerFee"
-                        value={rwaTakerFee}
+                        value={rwaTakerFeeInput}
                         onChange={handleRwaTakerFeeChange}
+                        onFocus={() => setFocusedFeeInput("rwaTaker")}
                         onBlur={handleRwaTakerFeeBlur}
                         step="0.1"
-                        min="0"
-                        max="50"
+                        min={effectiveMinRwaTaker}
+                        max={MAX_RWA_FEE}
                         className={`w-full px-3 py-2 bg-background-dark border ${rwaTakerFeeError ? "border-error" : "border-light/10"} rounded-lg`}
                         placeholder="0.0"
                       />
-                      <span className="ml-2 text-gray-400 text-sm">
-                        bps (0.01%)
-                      </span>
+                      <span className="ml-2 text-gray-400 text-sm">bps</span>
                     </div>
                     <p className="text-xs text-gray-400 mt-1">
-                      {t("feeConfigWithCalculator.feeRange", {
-                        min: MIN_RWA_TAKER_FEE,
-                        minPercent: (MIN_RWA_TAKER_FEE * 0.01).toFixed(2),
-                        max: MAX_RWA_FEE,
-                        maxPercent: (MAX_RWA_FEE * 0.01).toFixed(2),
-                        unit: "bps",
-                      })}
+                      {renderFeeRangeHint(effectiveMinRwaTaker, MAX_RWA_FEE)}
                     </p>
                     {rwaTakerFeeError && (
                       <p className="text-xs text-error mt-1">
@@ -841,6 +926,10 @@ export const FeeConfigWithCalculator: React.FC<
                   <div className="text-xs text-gray-400">
                     ({formatNumber(makerFee * 0.01, 3)}%)
                   </div>
+                  <div className="mt-2 border-t border-light/10 pt-2 text-xs text-gray-400">
+                    {t("feeConfigWithCalculator.revenueMarginLabel")}:{" "}
+                    {renderRevenueValue(builderMakerRevenue)}
+                  </div>
                 </div>
                 <div className="bg-background-dark/50 p-3 rounded">
                   <div className="text-sm text-gray-400">
@@ -854,6 +943,10 @@ export const FeeConfigWithCalculator: React.FC<
                   </div>
                   <div className="text-xs text-gray-400">
                     ({formatNumber(takerFee * 0.01, 3)}%)
+                  </div>
+                  <div className="mt-2 border-t border-light/10 pt-2 text-xs text-gray-400">
+                    {t("feeConfigWithCalculator.revenueMarginLabel")}:{" "}
+                    {renderRevenueValue(builderTakerRevenue)}
                   </div>
                 </div>
               </div>
@@ -877,6 +970,10 @@ export const FeeConfigWithCalculator: React.FC<
                   <div className="text-xs text-gray-400">
                     ({formatNumber(rwaMakerFee * 0.01, 3)}%)
                   </div>
+                  <div className="mt-2 border-t border-light/10 pt-2 text-xs text-gray-400">
+                    {t("feeConfigWithCalculator.revenueMarginLabel")}:{" "}
+                    {renderRevenueValue(builderRwaMakerRevenue)}
+                  </div>
                 </div>
                 <div className="bg-background-dark/50 p-3 rounded">
                   <div className="text-sm text-gray-400">
@@ -890,6 +987,10 @@ export const FeeConfigWithCalculator: React.FC<
                   </div>
                   <div className="text-xs text-gray-400">
                     ({formatNumber(rwaTakerFee * 0.01, 3)}%)
+                  </div>
+                  <div className="mt-2 border-t border-light/10 pt-2 text-xs text-gray-400">
+                    {t("feeConfigWithCalculator.revenueMarginLabel")}:{" "}
+                    {renderRevenueValue(builderRwaTakerRevenue)}
                   </div>
                 </div>
               </div>
@@ -917,68 +1018,68 @@ export const FeeConfigWithCalculator: React.FC<
         )}
       </div>
 
-      {/* Revenue Calculator */}
-      <div className="border-t border-light/10 pt-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold flex items-center">
-            <span className="i-mdi:calculator mr-2 h-5 w-5 text-success"></span>
-            {t("feeConfigWithCalculator.revenueCalculator")}
-          </h3>
-          <button
-            type="button"
-            onClick={() => setShowCalculator(!showCalculator)}
-            className="text-primary-light hover:text-primary flex items-center gap-1 text-sm"
-          >
-            {showCalculator
-              ? t("feeConfigWithCalculator.hideCalculator")
-              : t("feeConfigWithCalculator.showCalculator")}
-            <span
-              className={`i-mdi:chevron-right w-4 h-4 transition-transform ${showCalculator ? "rotate-90" : ""}`}
-            ></span>
-          </button>
-        </div>
+      {shouldShowRevenueCalculator && (
+        <div className="border-t border-light/10 pt-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold flex items-center">
+              <span className="i-mdi:calculator mr-2 h-5 w-5 text-success"></span>
+              {t("feeConfigWithCalculator.revenueCalculator")}
+            </h3>
+            <button
+              type="button"
+              onClick={() => setShowCalculator(!showCalculator)}
+              className="text-primary-light hover:text-primary flex items-center gap-1 text-sm"
+            >
+              {showCalculator
+                ? t("feeConfigWithCalculator.hideCalculator")
+                : t("feeConfigWithCalculator.showCalculator")}
+              <span
+                className={`i-mdi:chevron-right w-4 h-4 transition-transform ${showCalculator ? "rotate-90" : ""}`}
+              ></span>
+            </button>
+          </div>
 
-        {showCalculator && (
-          <div className="bg-light/5 rounded-lg p-4 mb-4 slide-fade-in">
-            <p className="text-sm text-gray-300 mb-4">
-              {t("feeConfigWithCalculator.estimateRevenueDesc")}
-            </p>
+          {showCalculator && (
+            <div className="bg-light/5 rounded-lg p-4 mb-4 slide-fade-in">
+              <p className="text-sm text-gray-300 mb-4">
+                {t("feeConfigWithCalculator.estimateRevenueDesc")}
+              </p>
 
-            <div className="grid grid-cols-1 gap-4 mb-4">
-              <div>
-                <label
-                  htmlFor="tradingVolume"
-                  className="block text-sm font-bold mb-1"
-                >
-                  {t("feeConfigWithCalculator.monthlyVolume")}
-                </label>
-                <div className="flex items-center">
-                  <span className="bg-background-dark border-r border-light/10 px-3 py-2 rounded-l-lg text-gray-400">
-                    $
-                  </span>
-                  <input
-                    type="number"
-                    id="tradingVolume"
-                    min="0"
-                    step="1000"
-                    value={tradingVolume}
-                    onChange={handleVolumeChange}
-                    className="w-full px-3 py-2 bg-background-dark border border-light/10 rounded-r-lg"
-                  />
+              <div className="grid grid-cols-1 gap-4 mb-4">
+                <div>
+                  <label
+                    htmlFor="tradingVolume"
+                    className="block text-sm font-bold mb-1"
+                  >
+                    {t("feeConfigWithCalculator.monthlyVolume")}
+                  </label>
+                  <div className="flex items-center">
+                    <span className="bg-background-dark border-r border-light/10 px-3 py-2 rounded-l-lg text-gray-400">
+                      $
+                    </span>
+                    <input
+                      type="number"
+                      id="tradingVolume"
+                      min="0"
+                      step="1000"
+                      value={tradingVolume}
+                      onChange={handleVolumeChange}
+                      className="w-full px-3 py-2 bg-background-dark border border-light/10 rounded-r-lg"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {t("feeConfigWithCalculator.enterVolume")}
+                  </p>
                 </div>
-                <p className="text-xs text-gray-400 mt-1">
-                  {t("feeConfigWithCalculator.enterVolume")}
-                </p>
-              </div>
 
-              <div>
-                <label
-                  htmlFor="tierSelect"
-                  className="block text-sm font-bold mb-1"
-                >
-                  {t("feeConfigWithCalculator.builderStakingTier")}
-                </label>
-                {/* <select
+                <div>
+                  <label
+                    htmlFor="tierSelect"
+                    className="block text-sm font-bold mb-1"
+                  >
+                    {t("feeConfigWithCalculator.builderStakingTier")}
+                  </label>
+                  {/* <select
                   id="tierSelect"
                   value={selectedTier}
                   onChange={e =>
@@ -994,93 +1095,94 @@ export const FeeConfigWithCalculator: React.FC<
                     </option>
                   ))}
                 </select> */}
-                <Select value={selectedTier} onValueChange={handleTierChange}>
-                  <SelectTrigger className="w-full h-[42px] px-3 py-5 bg-background-dark border border-light/10 rounded-lg">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(tierInfo).map(([key, info]) => (
-                      <SelectItem
-                        key={key}
-                        value={key}
-                        // className={selectedTier === key ? "bg-primary/10" : ""}
-                      >
-                        {info.name} ({info.fee})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-gray-400 mt-1">
-                  {tierInfo[selectedTier].requirement}
-                </p>
+                  <Select value={selectedTier} onValueChange={handleTierChange}>
+                    <SelectTrigger className="w-full h-[42px] px-3 py-5 bg-background-dark border border-light/10 rounded-lg">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(tierInfo).map(([key, info]) => (
+                        <SelectItem
+                          key={key}
+                          value={key}
+                          // className={selectedTier === key ? "bg-primary/10" : ""}
+                        >
+                          {info.name} ({info.fee})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {tierInfo[selectedTier].requirement}
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-success/5 rounded-lg p-4 mb-4">
+                <h4 className="text-sm font-semibold mb-3 text-gray-200">
+                  {t("feeConfigWithCalculator.estimatedRevenue")}
+                </h4>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-background-dark/50 p-3 rounded">
+                    <div className="text-sm text-gray-400">
+                      {t("feeConfigWithCalculator.makerRevenue")}
+                    </div>
+                    <div className="text-xl font-semibold text-success">
+                      {formatCurrency(makerRevenue)}
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      (
+                      {formatNumber(
+                        Math.max(0, makerFee - tierBaseFees[selectedTier].maker)
+                      )}{" "}
+                      bps {t("feeConfigWithCalculator.afterBaseFee")})
+                    </div>
+                  </div>
+
+                  <div className="bg-background-dark/50 p-3 rounded">
+                    <div className="text-sm text-gray-400">
+                      {t("feeConfigWithCalculator.takerRevenue")}
+                    </div>
+                    <div className="text-xl font-semibold text-success">
+                      {formatCurrency(takerRevenue)}
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      (
+                      {formatNumber(
+                        Math.max(0, takerFee - tierBaseFees[selectedTier].taker)
+                      )}{" "}
+                      bps {t("feeConfigWithCalculator.afterBaseFee")})
+                    </div>
+                  </div>
+
+                  <div className="bg-success/10 p-3 rounded">
+                    <div className="text-sm text-gray-300">
+                      {t("feeConfigWithCalculator.totalRevenue")}
+                    </div>
+                    <div className="text-xl font-semibold text-success">
+                      {formatCurrency(totalRevenue)}
+                    </div>
+                    <div className="text-xs text-gray-300">
+                      {t("feeConfigWithCalculator.perMonth")}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex items-start gap-2 text-xs">
+                  <span className="i-mdi:information-outline text-info w-4 h-4 flex-shrink-0 mt-0.5"></span>
+                  <span className="text-gray-300">
+                    {t("feeConfigWithCalculator.calculationNote", {
+                      makerBps: tierBaseFees[selectedTier].maker,
+                      takerBps: tierBaseFees[selectedTier].taker,
+                      tierName: tierInfo[selectedTier].name,
+                    })}
+                  </span>
+                </div>
               </div>
             </div>
-
-            <div className="bg-success/5 rounded-lg p-4 mb-4">
-              <h4 className="text-sm font-semibold mb-3 text-gray-200">
-                {t("feeConfigWithCalculator.estimatedRevenue")}
-              </h4>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-background-dark/50 p-3 rounded">
-                  <div className="text-sm text-gray-400">
-                    {t("feeConfigWithCalculator.makerRevenue")}
-                  </div>
-                  <div className="text-xl font-semibold text-success">
-                    {formatCurrency(makerRevenue)}
-                  </div>
-                  <div className="text-xs text-gray-400">
-                    (
-                    {formatNumber(
-                      Math.max(0, makerFee - tierBaseFees[selectedTier].maker)
-                    )}{" "}
-                    bps {t("feeConfigWithCalculator.afterBaseFee")})
-                  </div>
-                </div>
-
-                <div className="bg-background-dark/50 p-3 rounded">
-                  <div className="text-sm text-gray-400">
-                    {t("feeConfigWithCalculator.takerRevenue")}
-                  </div>
-                  <div className="text-xl font-semibold text-success">
-                    {formatCurrency(takerRevenue)}
-                  </div>
-                  <div className="text-xs text-gray-400">
-                    (
-                    {formatNumber(
-                      Math.max(0, takerFee - tierBaseFees[selectedTier].taker)
-                    )}{" "}
-                    bps {t("feeConfigWithCalculator.afterBaseFee")})
-                  </div>
-                </div>
-
-                <div className="bg-success/10 p-3 rounded">
-                  <div className="text-sm text-gray-300">
-                    {t("feeConfigWithCalculator.totalRevenue")}
-                  </div>
-                  <div className="text-xl font-semibold text-success">
-                    {formatCurrency(totalRevenue)}
-                  </div>
-                  <div className="text-xs text-gray-300">
-                    {t("feeConfigWithCalculator.perMonth")}
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 flex items-start gap-2 text-xs">
-                <span className="i-mdi:information-outline text-info w-4 h-4 flex-shrink-0 mt-0.5"></span>
-                <span className="text-gray-300">
-                  {t("feeConfigWithCalculator.calculationNote", {
-                    makerBps: tierBaseFees[selectedTier].maker,
-                    takerBps: tierBaseFees[selectedTier].taker,
-                    tierName: tierInfo[selectedTier].name,
-                  })}
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
