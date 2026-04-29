@@ -233,6 +233,7 @@ export const graduation = {
     "Send {{token}} tokens and verify in one step directly from your wallet.",
   "graduation.form.insufficientForGraduation": "Insufficient for graduation",
   "graduation.form.loading": "Loading...",
+  "graduation.form.loadingMultisigAddress": "loading...",
   "graduation.form.confirmInWallet": "Confirm in wallet...",
   "graduation.form.confirming": "Confirming...",
   "graduation.form.verifyingTransactionLoading":

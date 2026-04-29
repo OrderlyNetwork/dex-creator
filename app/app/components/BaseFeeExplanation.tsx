@@ -177,38 +177,40 @@ export const BaseFeeExplanation: FC<BaseFeeExplanationProps> = ({
                   const isCurrentTier = row.tier === normalizedCurrentTier;
 
                   return (
-                  <tr
-                    key={row.tierKey}
-                    className={clsx(
-                      "border-b border-light/10 last:border-b-0",
-                      isCurrentTier &&
-                        "bg-primary/10 outline outline-1 -outline-offset-1 outline-primary-light/40"
-                    )}
-                  >
-                    <td className="px-4 py-3 font-semibold">
-                      <span className="flex items-center gap-2">
-                        <img
-                          src={row.badge}
-                          alt=""
-                          className="h-7 w-7 flex-shrink-0 object-contain"
-                        />
-                        <span className={row.tierClass}>
-                          {t(row.tierKey as never)}
-                        </span>
-                        {isCurrentTier && (
-                          <span className="rounded-full bg-primary/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-light">
-                            Current
+                    <tr
+                      key={row.tierKey}
+                      className={clsx(
+                        "border-b border-light/10 last:border-b-0",
+                        isCurrentTier &&
+                          "bg-primary/10 outline outline-1 -outline-offset-1 outline-primary-light/40"
+                      )}
+                    >
+                      <td className="px-4 py-3 font-semibold">
+                        <span className="flex items-center gap-2">
+                          <img
+                            src={row.badge}
+                            alt=""
+                            className="h-7 w-7 flex-shrink-0 object-contain"
+                          />
+                          <span className={row.tierClass}>
+                            {t(row.tierKey as never)}
                           </span>
-                        )}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-gray-300">{row.staking}</td>
-                    <td className="px-4 py-3 text-gray-300">{row.volume}</td>
-                    <td className="px-4 py-3 text-success">{row.cryptoMaker}</td>
-                    <td className="px-4 py-3 text-success">{row.rwaMaker}</td>
-                    <td className="px-4 py-3 text-info">{row.cryptoTaker}</td>
-                    <td className="px-4 py-3 text-info">{row.rwaTaker}</td>
-                  </tr>
+                          {isCurrentTier && (
+                            <span className="rounded-full bg-primary/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-light">
+                              {t("baseFeeExplanation.currentTierTag")}
+                            </span>
+                          )}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-gray-300">{row.staking}</td>
+                      <td className="px-4 py-3 text-gray-300">{row.volume}</td>
+                      <td className="px-4 py-3 text-success">
+                        {row.cryptoMaker}
+                      </td>
+                      <td className="px-4 py-3 text-success">{row.rwaMaker}</td>
+                      <td className="px-4 py-3 text-info">{row.cryptoTaker}</td>
+                      <td className="px-4 py-3 text-info">{row.rwaTaker}</td>
+                    </tr>
                   );
                 })}
               </tbody>
@@ -249,7 +251,6 @@ export const BaseFeeExplanation: FC<BaseFeeExplanationProps> = ({
             </li>
           </ul>
         </div>
-
       </div>
     </div>
   ) : null;
@@ -266,41 +267,41 @@ export const BaseFeeExplanation: FC<BaseFeeExplanationProps> = ({
           {buttonLabel ?? t("distributor.learnMore")}
         </button>
       ) : (
-      <div className="bg-primary/10 rounded-lg p-4 border border-primary/20 text-left">
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-start gap-3">
-            <div className="i-mdi:finance text-primary w-5 h-5 mt-0.5 flex-shrink-0" />
-            <div>
-              <h3 className="text-md font-medium text-white">
-                {t("baseFeeExplanation.title")}
-              </h3>
-              <p className="mt-1 text-sm text-gray-300">
-                <Trans
-                  i18nKey="baseFeeExplanation.baseFeeIntro"
-                  components={[
-                    <a
-                      key="0"
-                      href="https://orderly.network/docs/introduction/trade-on-orderly/trading-basics/trading-fees#builder-staking-programme"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary-light hover:underline"
-                    />,
-                  ]}
-                />
-              </p>
+        <div className="bg-primary/10 rounded-lg p-4 border border-primary/20 text-left">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="i-mdi:finance text-primary w-5 h-5 mt-0.5 flex-shrink-0" />
+              <div>
+                <h3 className="text-md font-medium text-white">
+                  {t("baseFeeExplanation.title")}
+                </h3>
+                <p className="mt-1 text-sm text-gray-300">
+                  <Trans
+                    i18nKey="baseFeeExplanation.baseFeeIntro"
+                    components={[
+                      <a
+                        key="0"
+                        href="https://orderly.network/docs/introduction/trade-on-orderly/trading-basics/trading-fees#builder-staking-programme"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary-light hover:underline"
+                      />,
+                    ]}
+                  />
+                </p>
+              </div>
             </div>
-          </div>
 
-          <button
-            type="button"
-            onClick={() => setIsOpen(true)}
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-light md:flex-shrink-0"
-          >
-            <span className="i-mdi:table-eye w-4 h-4" />
-            {t("distributor.learnMore")}
-          </button>
+            <button
+              type="button"
+              onClick={() => setIsOpen(true)}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-light md:flex-shrink-0"
+            >
+              <span className="i-mdi:table-eye w-4 h-4" />
+              {t("distributor.learnMore")}
+            </button>
+          </div>
         </div>
-      </div>
       )}
 
       {isMounted && modal ? createPortal(modal, document.body) : null}

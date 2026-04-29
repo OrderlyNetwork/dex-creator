@@ -55,8 +55,7 @@ const parseStatsRecord = (raw: unknown): DistributorStatsRecord | null => {
     totalRevenueShare,
     inviteeVolume30d,
     graduatedInvitees,
-    feeTier:
-      typeof source["Fee Tier"] === "string" ? source["Fee Tier"] : null,
+    feeTier: typeof source["Fee Tier"] === "string" ? source["Fee Tier"] : null,
   };
 };
 

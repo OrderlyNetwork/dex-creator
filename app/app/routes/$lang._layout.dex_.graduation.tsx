@@ -127,108 +127,108 @@ export default function GraduationRoute() {
 
           {isGraduated === false && (
             <div className="mt-16 max-w-2xl mx-auto bg-light/5 rounded-xl p-6">
-            <h2 className="text-xl font-bold mb-4">
-              {t("graduation.benefits.title")}
-            </h2>
-            <div className="space-y-4">
-              <div className="flex gap-4 items-start">
-                <div className="bg-primary/20 p-2 rounded-full">
-                  <div className="i-mdi:cash-multiple text-primary w-6 h-6"></div>
+              <h2 className="text-xl font-bold mb-4">
+                {t("graduation.benefits.title")}
+              </h2>
+              <div className="space-y-4">
+                <div className="flex gap-4 items-start">
+                  <div className="bg-primary/20 p-2 rounded-full">
+                    <div className="i-mdi:cash-multiple text-primary w-6 h-6"></div>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium">
+                      {t("graduation.benefits.feeRevenue.title")}
+                    </h3>
+                    <p className="text-gray-300">
+                      {t("graduation.benefits.feeRevenue.description")}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-lg font-medium">
-                    {t("graduation.benefits.feeRevenue.title")}
-                  </h3>
-                  <p className="text-gray-300">
-                    {t("graduation.benefits.feeRevenue.description")}
-                  </p>
-                </div>
-              </div>
 
-              <div className="flex gap-4 items-start">
-                <div className="bg-primary/20 p-2 rounded-full">
-                  <div className="i-mdi:card-account-details text-primary w-6 h-6"></div>
+                <div className="flex gap-4 items-start">
+                  <div className="bg-primary/20 p-2 rounded-full">
+                    <div className="i-mdi:card-account-details text-primary w-6 h-6"></div>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium">
+                      {t("graduation.benefits.uniqueBrokerId.title")}
+                    </h3>
+                    <p className="text-gray-300">
+                      {t("graduation.benefits.uniqueBrokerId.description")}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-lg font-medium">
-                    {t("graduation.benefits.uniqueBrokerId.title")}
-                  </h3>
-                  <p className="text-gray-300">
-                    {t("graduation.benefits.uniqueBrokerId.description")}
-                  </p>
-                </div>
-              </div>
 
-              {/* New benefit about staking tiers */}
-              <div className="flex gap-4 items-start">
-                <div className="bg-warning/20 p-2 rounded-full">
-                  <div className="i-mdi:finance text-warning w-6 h-6"></div>
-                </div>
-                <div>
-                  <h3 className="text-lg font-medium">
-                    {t("graduation.benefits.builderStaking.title")}
-                  </h3>
-                  <p className="text-gray-300">
-                    {t("graduation.benefits.builderStaking.description")}
-                  </p>
-                  <a
-                    href="https://app.orderly.network/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-2 text-primary-light hover:text-primary inline-flex items-center text-sm"
-                  >
-                    {t("graduation.benefits.builderStaking.stakeLink")}
-                    <div className="i-mdi:arrow-right ml-1 w-4 h-4"></div>
-                  </a>
-                  <div className="flex gap-2 mt-1">
+                {/* New benefit about staking tiers */}
+                <div className="flex gap-4 items-start">
+                  <div className="bg-warning/20 p-2 rounded-full">
+                    <div className="i-mdi:finance text-warning w-6 h-6"></div>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium">
+                      {t("graduation.benefits.builderStaking.title")}
+                    </h3>
+                    <p className="text-gray-300">
+                      {t("graduation.benefits.builderStaking.description")}
+                    </p>
                     <a
-                      href="https://orderly.network/docs/introduction/trade-on-orderly/trading-basics/trading-fees#builder-staking-programme"
+                      href="https://app.orderly.network/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-primary-light hover:text-primary inline-flex items-center text-sm"
+                      className="mt-2 text-primary-light hover:text-primary inline-flex items-center text-sm"
                     >
-                      <div className="i-mdi:file-document-outline w-4 h-4 mr-1"></div>
-                      {t("graduation.benefits.builderStaking.viewDetails")}
+                      {t("graduation.benefits.builderStaking.stakeLink")}
+                      <div className="i-mdi:arrow-right ml-1 w-4 h-4"></div>
                     </a>
+                    <div className="flex gap-2 mt-1">
+                      <a
+                        href="https://orderly.network/docs/introduction/trade-on-orderly/trading-basics/trading-fees#builder-staking-programme"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary-light hover:text-primary inline-flex items-center text-sm"
+                      >
+                        <div className="i-mdi:file-document-outline w-4 h-4 mr-1"></div>
+                        {t("graduation.benefits.builderStaking.viewDetails")}
+                      </a>
+                    </div>
+                    <div className="mt-2 bg-warning/10 p-2 rounded text-xs flex items-start gap-1.5">
+                      <div className="i-mdi:alert-circle-outline text-warning w-4 h-4 flex-shrink-0 mt-0.5"></div>
+                      <p className="text-gray-300">
+                        <Trans
+                          i18nKey="graduation.benefits.builderStaking.sameWalletNote"
+                          components={{ 0: <span className="font-medium" /> }}
+                        />
+                      </p>
+                    </div>
                   </div>
-                  <div className="mt-2 bg-warning/10 p-2 rounded text-xs flex items-start gap-1.5">
-                    <div className="i-mdi:alert-circle-outline text-warning w-4 h-4 flex-shrink-0 mt-0.5"></div>
+                </div>
+
+                <div className="flex gap-4 items-start">
+                  <div className="bg-success/20 p-2 rounded-full">
+                    <div className="i-mdi:shield-check text-success w-6 h-6"></div>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium">
+                      {t("graduation.benefits.enhancedSupport.title")}
+                    </h3>
                     <p className="text-gray-300">
-                      <Trans
-                        i18nKey="graduation.benefits.builderStaking.sameWalletNote"
-                        components={{ 0: <span className="font-medium" /> }}
-                      />
+                      {t("graduation.benefits.enhancedSupport.description")}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="flex gap-4 items-start">
-                <div className="bg-success/20 p-2 rounded-full">
-                  <div className="i-mdi:shield-check text-success w-6 h-6"></div>
-                </div>
-                <div>
-                  <h3 className="text-lg font-medium">
-                    {t("graduation.benefits.enhancedSupport.title")}
-                  </h3>
-                  <p className="text-gray-300">
-                    {t("graduation.benefits.enhancedSupport.description")}
+              <div className="mt-6 pt-6 border-t border-light/10">
+                <div className="flex items-start gap-3 text-sm">
+                  <div className="i-mdi:information-outline text-info w-5 h-5 flex-shrink-0 mt-0.5"></div>
+                  <p className="text-gray-400">
+                    <span className="text-white font-medium">
+                      {t("graduation.feeStructure.title")}:
+                    </span>{" "}
+                    {t("graduation.feeStructure.description")}
                   </p>
                 </div>
               </div>
-            </div>
-
-            <div className="mt-6 pt-6 border-t border-light/10">
-              <div className="flex items-start gap-3 text-sm">
-                <div className="i-mdi:information-outline text-info w-5 h-5 flex-shrink-0 mt-0.5"></div>
-                <p className="text-gray-400">
-                  <span className="text-white font-medium">
-                    {t("graduation.feeStructure.title")}:
-                  </span>{" "}
-                  {t("graduation.feeStructure.description")}
-                </p>
-              </div>
-            </div>
             </div>
           )}
         </>

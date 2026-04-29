@@ -1308,401 +1308,421 @@ export function GraduationForm({
   if (graduationStatus?.isGraduated) {
     return (
       <>
-      <Card className="w-full max-w-5xl mx-auto slide-fade-in">
-        <div className="text-center">
-          <div className="i-mdi:check-circle text-6xl text-success mx-auto mb-2"></div>
-          <div className="bg-success/10 rounded-full text-success px-4 py-2 inline-block text-sm font-medium mb-4">
-            {t("graduation.form.graduatedSuccessfully")}
-          </div>
-          <h2 className="text-2xl font-bold">
-            {t("graduation.form.congratulations")}
-          </h2>
-          <p className="text-gray-300 mt-2 mb-6">
-            {t("graduation.form.graduationSuccessDescription", {
-              brokerId: graduationStatus.brokerId,
-            })}
-          </p>
-
-          {dexData?.repoUrl && (
-            <div className="bg-success/10 rounded-lg p-4 mb-6 text-left">
-              <h3 className="font-medium flex items-center mb-2">
-                <div className="i-mdi:check-circle text-success mr-2 h-5 w-5"></div>
-                {t("graduation.form.yourDexIsReady")}
-              </h3>
-              <p className="text-sm text-gray-400 mb-3">
-                {t("graduation.form.dexReadyDescription")}
-              </p>
-              <a
-                href={generateDeploymentUrl(dexData.repoUrl)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-success hover:underline font-medium"
-              >
-                {t("graduation.form.viewYourLiveDex")}
-              </a>
+        <Card className="w-full max-w-5xl mx-auto slide-fade-in">
+          <div className="text-center">
+            <div className="i-mdi:check-circle text-6xl text-success mx-auto mb-2"></div>
+            <div className="bg-success/10 rounded-full text-success px-4 py-2 inline-block text-sm font-medium mb-4">
+              {t("graduation.form.graduatedSuccessfully")}
             </div>
-          )}
+            <h2 className="text-2xl font-bold">
+              {t("graduation.form.congratulations")}
+            </h2>
+            <p className="text-gray-300 mt-2 mb-6">
+              {t("graduation.form.graduationSuccessDescription", {
+                brokerId: graduationStatus.brokerId,
+              })}
+            </p>
 
-          {graduationStatus?.isMultisig && (
-            <div className="bg-warning/10 rounded-lg p-5 mb-6 border border-warning/20 text-left">
-              <h3 className="text-lg font-semibold mb-3 flex items-center">
-                <div className="i-mdi:wallet text-warning mr-2 h-5 w-5"></div>
-                {t("graduation.form.multisigFeeWithdrawalTitle")}
-              </h3>
-              <p className="text-sm text-gray-300 mb-4">
-                {t("graduation.form.multisigFeeWithdrawalDescription")}
-              </p>
-              <div className="bg-background-card rounded-lg p-4">
-                <h4 className="font-medium mb-2 flex items-center">
-                  <div className="i-mdi:shield-check text-primary mr-2 h-4 w-4"></div>
-                  {t("graduation.form.howToWithdrawFees")}
-                </h4>
-                <ol className="text-sm text-gray-300 space-y-2 list-decimal list-inside">
-                  <li>{t("graduation.form.withdrawStep1")}</li>
-                  <li>{t("graduation.form.withdrawStep2")}</li>
-                  <li>{t("graduation.form.withdrawStep3")}</li>
-                  <li>{t("graduation.form.withdrawStep4")}</li>
-                </ol>
-                <div className="mt-3 p-3 bg-info/10 rounded-lg">
-                  <div className="flex items-start gap-2">
-                    <div className="i-mdi:information-outline text-info w-4 h-4 mt-0.5 flex-shrink-0"></div>
-                    <div>
-                      <p className="text-xs text-info font-medium mb-1">
-                        {t("graduation.form.importantNote")}
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        {t("graduation.form.multisigWithdrawalsNote")}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-4">
-                  {multisigHasKey ? (
-                    <Button
-                      onClick={() =>
-                        openModal("feeWithdrawal", {
-                          brokerId: graduationStatus.brokerId,
-                          multisigAddress: graduationStatus.multisigAddress!,
-                          multisigChainId: graduationStatus.multisigChainId!,
-                        })
-                      }
-                      variant="primary"
-                      className="w-full"
-                      disabled={
-                        !graduationStatus.multisigAddress ||
-                        !graduationStatus.multisigChainId
-                      }
-                    >
-                      <span className="flex items-center justify-center w-full gap-2">
-                        <div className="i-mdi:cash-multiple h-4 w-4"></div>
-                        {t("graduation.form.withdrawFeesButton")}
-                      </span>
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={() =>
-                        openModal("orderlyKeyLogin", {
-                          brokerId: graduationStatus.brokerId,
-                          onSuccess: () => {
-                            setMultisigHasKey(true);
-                          },
-                          onCancel: () => {},
-                        })
-                      }
-                      variant="primary"
-                      className="w-full"
-                      disabled={!graduationStatus.multisigAddress}
-                    >
-                      <span className="flex items-center justify-center w-full gap-2">
-                        <div className="i-mdi:key-plus h-4 w-4"></div>
-                        {t("graduation.form.createOrderlyKeyButton")}
-                      </span>
-                    </Button>
-                  )}
-
-                  {(!graduationStatus.multisigAddress ||
-                    !graduationStatus.multisigChainId) && (
-                    <p className="text-xs text-warning text-center mt-2">
-                      {t("graduation.form.unableToRetrieveMultisigConfig")}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="mb-6">
-            <div className="flex rounded-lg bg-light/5 p-1 mb-4">
-              <button
-                type="button"
-                onClick={() => setActiveFeeTab("perpetual")}
-                className={clsx(
-                  "flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                  activeFeeTab === "perpetual"
-                    ? "bg-primary text-white"
-                    : "text-gray-400 hover:text-white"
-                )}
-              >
-                {t("graduation.form.perpetualTradingFeesTab")}
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveFeeTab("swap")}
-                className={clsx(
-                  "flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                  activeFeeTab === "swap"
-                    ? "bg-primary text-white"
-                    : "text-gray-400 hover:text-white"
-                )}
-              >
-                {t("graduation.form.swapFeesTab")}
-              </button>
-            </div>
-
-            {activeFeeTab === "swap" ? (
-              <>
-                {/* TODO: Add swap fee configuration here next time. */}
-                <SwapFeeWithdrawal isGraduated={graduationStatus.isGraduated} />
-              </>
-            ) : (
-              <>
-                {brokerTier && (
-                  <div className="bg-light/5 rounded-lg p-5 mb-6">
-              <div className="mb-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <h3 className="text-lg font-semibold flex items-center">
-                  <div className="i-mdi:trophy text-warning mr-2 h-5 w-5"></div>
-                  {t("graduation.form.yourBrokerTier")}
+            {dexData?.repoUrl && (
+              <div className="bg-success/10 rounded-lg p-4 mb-6 text-left">
+                <h3 className="font-medium flex items-center mb-2">
+                  <div className="i-mdi:check-circle text-success mr-2 h-5 w-5"></div>
+                  {t("graduation.form.yourDexIsReady")}
                 </h3>
-                <BaseFeeExplanation
-                  currentTier={brokerTier?.tier}
-                  variant="button"
-                  buttonLabel={t("graduation.form.viewAllTiers")}
-                />
+                <p className="text-sm text-gray-400 mb-3">
+                  {t("graduation.form.dexReadyDescription")}
+                </p>
+                <a
+                  href={generateDeploymentUrl(dexData.repoUrl)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-success hover:underline font-medium"
+                >
+                  {t("graduation.form.viewYourLiveDex")}
+                </a>
               </div>
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={
-                        tierBadgeByTier[brokerTier.tier.toLowerCase()] ??
-                        tierBadgeByTier.public
-                      }
-                      alt=""
-                      className="h-10 w-10 object-contain"
-                    />
-                    <div className="text-2xl font-bold text-primary-light">
-                      {formatTier(brokerTier.tier)}
+            )}
+
+            {graduationStatus?.isMultisig && (
+              <div className="bg-warning/10 rounded-lg p-5 mb-6 border border-warning/20 text-left">
+                <h3 className="text-lg font-semibold mb-3 flex items-center">
+                  <div className="i-mdi:wallet text-warning mr-2 h-5 w-5"></div>
+                  {t("graduation.form.multisigFeeWithdrawalTitle")}
+                </h3>
+                <p className="text-sm text-gray-300 mb-4">
+                  {t("graduation.form.multisigFeeWithdrawalDescription")}
+                </p>
+                <div className="bg-background-card rounded-lg p-4">
+                  <h4 className="font-medium mb-2 flex items-center">
+                    <div className="i-mdi:shield-check text-primary mr-2 h-4 w-4"></div>
+                    {t("graduation.form.howToWithdrawFees")}
+                  </h4>
+                  <ol className="text-sm text-gray-300 space-y-2 list-decimal list-inside">
+                    <li>{t("graduation.form.withdrawStep1")}</li>
+                    <li>{t("graduation.form.withdrawStep2")}</li>
+                    <li>{t("graduation.form.withdrawStep3")}</li>
+                    <li>{t("graduation.form.withdrawStep4")}</li>
+                  </ol>
+                  <div className="mt-3 p-3 bg-info/10 rounded-lg">
+                    <div className="flex items-start gap-2">
+                      <div className="i-mdi:information-outline text-info w-4 h-4 mt-0.5 flex-shrink-0"></div>
+                      <div>
+                        <p className="text-xs text-info font-medium mb-1">
+                          {t("graduation.form.importantNote")}
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          {t("graduation.form.multisigWithdrawalsNote")}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  <div className="text-xs text-gray-400 mt-1">
-                    {t("graduation.form.currentTierLevel")}
+
+                  <div className="mt-4">
+                    {multisigHasKey ? (
+                      <Button
+                        onClick={() =>
+                          openModal("feeWithdrawal", {
+                            brokerId: graduationStatus.brokerId,
+                            multisigAddress: graduationStatus.multisigAddress!,
+                            multisigChainId: graduationStatus.multisigChainId!,
+                          })
+                        }
+                        variant="primary"
+                        className="w-full"
+                        disabled={
+                          !graduationStatus.multisigAddress ||
+                          !graduationStatus.multisigChainId
+                        }
+                      >
+                        <span className="flex items-center justify-center w-full gap-2">
+                          <div className="i-mdi:cash-multiple h-4 w-4"></div>
+                          {t("graduation.form.withdrawFeesButton")}
+                        </span>
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() =>
+                          openModal("orderlyKeyLogin", {
+                            brokerId: graduationStatus.brokerId,
+                            onSuccess: () => {
+                              setMultisigHasKey(true);
+                            },
+                            onCancel: () => {},
+                          })
+                        }
+                        variant="primary"
+                        className="w-full"
+                        disabled={!graduationStatus.multisigAddress}
+                      >
+                        <span className="flex items-center justify-center w-full gap-2">
+                          <div className="i-mdi:key-plus h-4 w-4"></div>
+                          {t("graduation.form.createOrderlyKeyButton")}
+                        </span>
+                      </Button>
+                    )}
+
+                    {(!graduationStatus.multisigAddress ||
+                      !graduationStatus.multisigChainId) && (
+                      <p className="text-xs text-warning text-center mt-2">
+                        {t("graduation.form.unableToRetrieveMultisigConfig")}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
-
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div className="bg-background-card rounded-lg p-3">
-                  <div className="text-xs text-gray-400 mb-1">
-                    {t("graduation.form.stakingVolume")}
-                  </div>
-                  <div className="font-medium">
-                    $
-                    {new Intl.NumberFormat("en-US", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    }).format(parseFloat(brokerTier.stakingVolume))}
-                  </div>
-                </div>
-                <div className="bg-background-card rounded-lg p-3">
-                  <div className="text-xs text-gray-400 mb-1">
-                    {t("graduation.form.tradingVolume")}
-                  </div>
-                  <div className="font-medium">
-                    $
-                    {new Intl.NumberFormat("en-US", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    }).format(parseFloat(brokerTier.tradingVolume))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div className="bg-success/10 rounded-lg p-3">
-                  <div className="text-xs text-gray-400 mb-1">
-                    {t("graduation.form.orderlyMakerFee")}
-                  </div>
-                  <div className="font-medium text-success">
-                    {new Intl.NumberFormat("en-US", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 4,
-                    }).format(parseFloat(brokerTier.makerFeeRate) / 100)}
-                    %
-                  </div>
-                </div>
-                <div className="bg-info/10 rounded-lg p-3">
-                  <div className="text-xs text-gray-400 mb-1">
-                    {t("graduation.form.orderlyTakerFee")}
-                  </div>
-                  <div className="font-medium text-info">
-                    {new Intl.NumberFormat("en-US", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 4,
-                    }).format(parseFloat(brokerTier.takerFeeRate) / 100)}
-                    %
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-success/10 rounded-lg p-3">
-                  <div className="text-xs text-gray-400 mb-1">
-                    {t("graduation.form.orderlyRwaMakerFee")}
-                  </div>
-                  <div className="font-medium text-success">
-                    {new Intl.NumberFormat("en-US", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 4,
-                    }).format(parseFloat(brokerTier.rwaMakerFeeRate) / 100)}
-                    %
-                  </div>
-                </div>
-                <div className="bg-info/10 rounded-lg p-3">
-                  <div className="text-xs text-gray-400 mb-1">
-                    {t("graduation.form.orderlyRwaTakerFee")}
-                  </div>
-                  <div className="font-medium text-info">
-                    {new Intl.NumberFormat("en-US", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 4,
-                    }).format(parseFloat(brokerTier.rwaTakerFeeRate) / 100)}
-                    %
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 text-xs text-gray-400">
-                {t("graduation.form.lastUpdated")}:{" "}
-                {new Date(brokerTier.logDate).toLocaleDateString()}
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-light/10">
-                <ul className="space-y-3 rounded-lg border border-light/10 bg-background-card/50 p-3 text-left text-xs leading-5 text-gray-300">
-                  <li className="flex items-start gap-3 text-left">
-                    <span className="i-mdi:trending-up text-primary-light w-4 h-4 mt-0.5 flex-shrink-0"></span>
-                    <span className="text-left">
-                      <span className="font-semibold text-primary-light">
-                        {t("graduation.form.tierBenefitsTitle")}:
-                      </span>{" "}
-                      {t("graduation.form.tierBenefitsDescription")}
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3 text-left">
-                    <span className="i-mdi:wallet-outline text-warning w-4 h-4 mt-0.5 flex-shrink-0"></span>
-                    <span className="text-left">
-                      <span className="font-semibold text-warning">
-                        {t("graduation.form.adminWalletStakingTitle")}:
-                      </span>{" "}
-                      {graduationStatus?.isMultisig ? (
-                        <Trans
-                          i18nKey={
-                            "graduation.form.adminWalletStakingDescriptionMultisig"
-                          }
-                          values={{
-                            address: graduationStatus.multisigAddress
-                              ? `${graduationStatus.multisigAddress.slice(0, 6)}...${graduationStatus.multisigAddress.slice(-4)}`
-                              : "loading...",
-                          }}
-                          components={[
-                            <span
-                              key="0"
-                              className="font-mono text-primary-light"
-                            />,
-                          ]}
-                        />
-                      ) : (
-                        t("graduation.form.adminWalletStakingDescriptionEoa")
-                      )}
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3 text-left">
-                    <span className="i-mdi:clock-outline text-info w-4 h-4 mt-0.5 flex-shrink-0"></span>
-                    <span className="text-left">
-                      <span className="font-semibold text-info">
-                        {t("graduation.form.dailyTierUpdatesTitle")}:
-                      </span>{" "}
-                      {t("graduation.form.dailyTierUpdatesDescription")}
-                    </span>
-                  </li>
-                </ul>
-              </div>
-                  </div>
-                )}
-
-                {isAdminAccountRegistered === false && (
-                  <div className="mb-4 rounded-lg border border-warning/20 bg-warning/10 p-4 text-left">
-                    <h3 className="mb-2 flex items-center text-sm font-semibold text-warning">
-                      <span className="i-mdi:alert-circle text-warning mr-2 h-5 w-5" />
-                      {t("graduation.form.finalStepRequired")}
-                    </h3>
-                    <p className="text-sm text-gray-300">
-                      {t("graduation.form.completeAdminWalletSetup")}
-                    </p>
-                  </div>
-                )}
-
-                <FeeConfigWithCalculator
-                  makerFee={makerFee}
-                  takerFee={takerFee}
-                  rwaMakerFee={rwaMakerFee}
-                  rwaTakerFee={rwaTakerFee}
-                  readOnly={true}
-                  showRevenueCalculator={false}
-                  minMakerFee={
-                    brokerTier ? parseFloat(brokerTier.makerFeeRate) : undefined
-                  }
-                  minTakerFee={
-                    brokerTier ? parseFloat(brokerTier.takerFeeRate) : undefined
-                  }
-                  minRwaMakerFee={
-                    brokerTier?.rwaMakerFeeRate
-                      ? parseFloat(brokerTier.rwaMakerFeeRate)
-                      : undefined
-                  }
-                  minRwaTakerFee={
-                    brokerTier?.rwaTakerFeeRate
-                      ? parseFloat(brokerTier.rwaTakerFeeRate)
-                      : undefined
-                  }
-                  headerAction={
-                    <Button
-                      type="button"
-                      variant="primary"
-                      size="sm"
-                      onClick={handleOpenGraduatedFeeConfig}
-                      isLoading={isCheckingAdminAccount || isFinalizingAdminWallet}
-                      loadingText={
-                        isCheckingAdminAccount
-                          ? t("orderlyKeyLoginModal.checkingAdminWallet")
-                          : t("graduation.form.registeringWithOrderly")
-                      }
-                    >
-                      {isAdminAccountRegistered === false
-                        ? t("graduation.form.registerWithOrderly")
-                        : hasValidKey
-                          ? t("feeConfigWithCalculator.configure")
-                          : t("feeConfigWithCalculator.createOrderlyKey")}
-                    </Button>
-                  }
-                />
-
-              </>
             )}
+
+            <div className="mb-6">
+              <div className="flex rounded-lg bg-light/5 p-1 mb-4">
+                <button
+                  type="button"
+                  onClick={() => setActiveFeeTab("perpetual")}
+                  className={clsx(
+                    "flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                    activeFeeTab === "perpetual"
+                      ? "bg-primary text-white"
+                      : "text-gray-400 hover:text-white"
+                  )}
+                >
+                  {t("graduation.form.perpetualTradingFeesTab")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveFeeTab("swap")}
+                  className={clsx(
+                    "flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                    activeFeeTab === "swap"
+                      ? "bg-primary text-white"
+                      : "text-gray-400 hover:text-white"
+                  )}
+                >
+                  {t("graduation.form.swapFeesTab")}
+                </button>
+              </div>
+
+              {activeFeeTab === "swap" ? (
+                <>
+                  {/* TODO: Add swap fee configuration here next time. */}
+                  <SwapFeeWithdrawal
+                    isGraduated={graduationStatus.isGraduated}
+                  />
+                </>
+              ) : (
+                <>
+                  {brokerTier && (
+                    <div className="bg-light/5 rounded-lg p-5 mb-6">
+                      <div className="mb-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                        <h3 className="text-lg font-semibold flex items-center">
+                          <div className="i-mdi:trophy text-warning mr-2 h-5 w-5"></div>
+                          {t("graduation.form.yourBrokerTier")}
+                        </h3>
+                        <BaseFeeExplanation
+                          currentTier={brokerTier?.tier}
+                          variant="button"
+                          buttonLabel={t("graduation.form.viewAllTiers")}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <div className="flex items-center gap-3">
+                            <img
+                              src={
+                                tierBadgeByTier[
+                                  brokerTier.tier.toLowerCase()
+                                ] ?? tierBadgeByTier.public
+                              }
+                              alt=""
+                              className="h-10 w-10 object-contain"
+                            />
+                            <div className="text-2xl font-bold text-primary-light">
+                              {formatTier(brokerTier.tier)}
+                            </div>
+                          </div>
+                          <div className="text-xs text-gray-400 mt-1">
+                            {t("graduation.form.currentTierLevel")}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4 mb-4">
+                        <div className="bg-background-card rounded-lg p-3">
+                          <div className="text-xs text-gray-400 mb-1">
+                            {t("graduation.form.stakingVolume")}
+                          </div>
+                          <div className="font-medium">
+                            $
+                            {new Intl.NumberFormat("en-US", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            }).format(parseFloat(brokerTier.stakingVolume))}
+                          </div>
+                        </div>
+                        <div className="bg-background-card rounded-lg p-3">
+                          <div className="text-xs text-gray-400 mb-1">
+                            {t("graduation.form.tradingVolume")}
+                          </div>
+                          <div className="font-medium">
+                            $
+                            {new Intl.NumberFormat("en-US", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            }).format(parseFloat(brokerTier.tradingVolume))}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4 mb-4">
+                        <div className="bg-success/10 rounded-lg p-3">
+                          <div className="text-xs text-gray-400 mb-1">
+                            {t("graduation.form.orderlyMakerFee")}
+                          </div>
+                          <div className="font-medium text-success">
+                            {new Intl.NumberFormat("en-US", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 4,
+                            }).format(
+                              parseFloat(brokerTier.makerFeeRate) / 100
+                            )}
+                            %
+                          </div>
+                        </div>
+                        <div className="bg-info/10 rounded-lg p-3">
+                          <div className="text-xs text-gray-400 mb-1">
+                            {t("graduation.form.orderlyTakerFee")}
+                          </div>
+                          <div className="font-medium text-info">
+                            {new Intl.NumberFormat("en-US", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 4,
+                            }).format(
+                              parseFloat(brokerTier.takerFeeRate) / 100
+                            )}
+                            %
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-success/10 rounded-lg p-3">
+                          <div className="text-xs text-gray-400 mb-1">
+                            {t("graduation.form.orderlyRwaMakerFee")}
+                          </div>
+                          <div className="font-medium text-success">
+                            {new Intl.NumberFormat("en-US", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 4,
+                            }).format(
+                              parseFloat(brokerTier.rwaMakerFeeRate) / 100
+                            )}
+                            %
+                          </div>
+                        </div>
+                        <div className="bg-info/10 rounded-lg p-3">
+                          <div className="text-xs text-gray-400 mb-1">
+                            {t("graduation.form.orderlyRwaTakerFee")}
+                          </div>
+                          <div className="font-medium text-info">
+                            {new Intl.NumberFormat("en-US", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 4,
+                            }).format(
+                              parseFloat(brokerTier.rwaTakerFeeRate) / 100
+                            )}
+                            %
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 text-xs text-gray-400">
+                        {t("graduation.form.lastUpdated")}:{" "}
+                        {new Date(brokerTier.logDate).toLocaleDateString()}
+                      </div>
+
+                      <div className="mt-4 pt-4 border-t border-light/10">
+                        <ul className="space-y-3 rounded-lg border border-light/10 bg-background-card/50 p-3 text-left text-xs leading-5 text-gray-300">
+                          <li className="flex items-start gap-3 text-left">
+                            <span className="i-mdi:trending-up text-primary-light w-4 h-4 mt-0.5 flex-shrink-0"></span>
+                            <span className="text-left">
+                              <span className="font-semibold text-primary-light">
+                                {t("graduation.form.tierBenefitsTitle")}:
+                              </span>{" "}
+                              {t("graduation.form.tierBenefitsDescription")}
+                            </span>
+                          </li>
+                          <li className="flex items-start gap-3 text-left">
+                            <span className="i-mdi:wallet-outline text-warning w-4 h-4 mt-0.5 flex-shrink-0"></span>
+                            <span className="text-left">
+                              <span className="font-semibold text-warning">
+                                {t("graduation.form.adminWalletStakingTitle")}:
+                              </span>{" "}
+                              {graduationStatus?.isMultisig ? (
+                                <Trans
+                                  i18nKey={
+                                    "graduation.form.adminWalletStakingDescriptionMultisig"
+                                  }
+                                  values={{
+                                    address: graduationStatus.multisigAddress
+                                      ? `${graduationStatus.multisigAddress.slice(0, 6)}...${graduationStatus.multisigAddress.slice(-4)}`
+                                      : t(
+                                          "graduation.form.loadingMultisigAddress"
+                                        ),
+                                  }}
+                                  components={[
+                                    <span
+                                      key="0"
+                                      className="font-mono text-primary-light"
+                                    />,
+                                  ]}
+                                />
+                              ) : (
+                                t(
+                                  "graduation.form.adminWalletStakingDescriptionEoa"
+                                )
+                              )}
+                            </span>
+                          </li>
+                          <li className="flex items-start gap-3 text-left">
+                            <span className="i-mdi:clock-outline text-info w-4 h-4 mt-0.5 flex-shrink-0"></span>
+                            <span className="text-left">
+                              <span className="font-semibold text-info">
+                                {t("graduation.form.dailyTierUpdatesTitle")}:
+                              </span>{" "}
+                              {t("graduation.form.dailyTierUpdatesDescription")}
+                            </span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  )}
+
+                  {isAdminAccountRegistered === false && (
+                    <div className="mb-4 rounded-lg border border-warning/20 bg-warning/10 p-4 text-left">
+                      <h3 className="mb-2 flex items-center text-sm font-semibold text-warning">
+                        <span className="i-mdi:alert-circle text-warning mr-2 h-5 w-5" />
+                        {t("graduation.form.finalStepRequired")}
+                      </h3>
+                      <p className="text-sm text-gray-300">
+                        {t("graduation.form.completeAdminWalletSetup")}
+                      </p>
+                    </div>
+                  )}
+
+                  <FeeConfigWithCalculator
+                    makerFee={makerFee}
+                    takerFee={takerFee}
+                    rwaMakerFee={rwaMakerFee}
+                    rwaTakerFee={rwaTakerFee}
+                    readOnly={true}
+                    showRevenueCalculator={false}
+                    minMakerFee={
+                      brokerTier
+                        ? parseFloat(brokerTier.makerFeeRate)
+                        : undefined
+                    }
+                    minTakerFee={
+                      brokerTier
+                        ? parseFloat(brokerTier.takerFeeRate)
+                        : undefined
+                    }
+                    minRwaMakerFee={
+                      brokerTier?.rwaMakerFeeRate
+                        ? parseFloat(brokerTier.rwaMakerFeeRate)
+                        : undefined
+                    }
+                    minRwaTakerFee={
+                      brokerTier?.rwaTakerFeeRate
+                        ? parseFloat(brokerTier.rwaTakerFeeRate)
+                        : undefined
+                    }
+                    headerAction={
+                      <Button
+                        type="button"
+                        variant="primary"
+                        size="sm"
+                        onClick={handleOpenGraduatedFeeConfig}
+                        isLoading={
+                          isCheckingAdminAccount || isFinalizingAdminWallet
+                        }
+                        loadingText={
+                          isCheckingAdminAccount
+                            ? t("orderlyKeyLoginModal.checkingAdminWallet")
+                            : t("graduation.form.registeringWithOrderly")
+                        }
+                      >
+                        {isAdminAccountRegistered === false
+                          ? t("graduation.form.registerWithOrderly")
+                          : hasValidKey
+                            ? t("feeConfigWithCalculator.configure")
+                            : t("feeConfigWithCalculator.createOrderlyKey")}
+                      </Button>
+                    }
+                  />
+                </>
+              )}
+            </div>
           </div>
-        </div>
-      </Card>
-      {graduatedFeeConfigModal}
+        </Card>
+        {graduatedFeeConfigModal}
       </>
     );
   }

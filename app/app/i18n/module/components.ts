@@ -274,6 +274,7 @@ export const components = {
   "baseFeeExplanation.stakingTip":
     "By staking more ORDER tokens or achieving higher trading volume, you can reduce the base fee charged by Orderly, maximizing your DEX's competitiveness.",
   "baseFeeExplanation.stakeOrderCta": "Stake ORDER now",
+  "baseFeeExplanation.currentTierTag": "Current",
   "baseFeeExplanation.importantWalletNote":
     "<0>Important</0>: You must use the <1>exact same wallet</1> for staking ORDER tokens that you used to set up this DEX. This ensures proper tier attribution and benefits.",
 
@@ -772,6 +773,7 @@ export const components = {
   "feeConfigWithCalculator.tier.diamond": "Diamond",
   "feeConfigWithCalculator.tier.diamondRequirement":
     "7M $ORDER or ≥$10B volume",
+  "feeConfigWithCalculator.revenueMarginLabel": "Revenue margin",
 
   // FeeWithdrawalModal
   "feeWithdrawalModal.title": "Withdraw Fees",

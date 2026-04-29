@@ -1,10 +1,4 @@
-import {
-  useEffect,
-  useState,
-  FormEvent,
-  ChangeEvent,
-  ReactNode,
-} from "react";
+import { useEffect, useState, FormEvent, ChangeEvent, ReactNode } from "react";
 import { Button } from "./Button";
 import { toast } from "react-toastify";
 import { useOrderlyKey } from "../context/OrderlyKeyContext";
@@ -627,7 +621,8 @@ export const FeeConfigWithCalculator: React.FC<
     setSelectedTier(value);
   };
 
-  const shouldShowRevenueCalculator = showRevenueCalculator && !alwaysShowConfig;
+  const shouldShowRevenueCalculator =
+    showRevenueCalculator && !alwaysShowConfig;
 
   const renderFeeRangeHint = (min: number, max: number) => (
     <span className="block space-y-0.5">
@@ -705,13 +700,13 @@ export const FeeConfigWithCalculator: React.FC<
                     {t("feeConfigWithCalculator.makerFeeLabel")} (bps)
                   </label>
                   <div className="flex items-center">
-                      <input
-                        type="number"
-                        id="makerFee"
-                        value={makerFeeInput}
-                        onChange={handleMakerFeeChange}
-                        onFocus={() => setFocusedFeeInput("maker")}
-                        onBlur={handleMakerFeeBlur}
+                    <input
+                      type="number"
+                      id="makerFee"
+                      value={makerFeeInput}
+                      onChange={handleMakerFeeChange}
+                      onFocus={() => setFocusedFeeInput("maker")}
+                      onBlur={handleMakerFeeBlur}
                       step="0.1"
                       min={effectiveMinMaker}
                       max={MAX_FEE}
@@ -736,13 +731,13 @@ export const FeeConfigWithCalculator: React.FC<
                     {t("feeConfigWithCalculator.takerFeeLabel")} (bps)
                   </label>
                   <div className="flex items-center">
-                      <input
-                        type="number"
-                        id="takerFee"
-                        value={takerFeeInput}
-                        onChange={handleTakerFeeChange}
-                        onFocus={() => setFocusedFeeInput("taker")}
-                        onBlur={handleTakerFeeBlur}
+                    <input
+                      type="number"
+                      id="takerFee"
+                      value={takerFeeInput}
+                      onChange={handleTakerFeeChange}
+                      onFocus={() => setFocusedFeeInput("taker")}
+                      onBlur={handleTakerFeeBlur}
                       step="0.1"
                       min={effectiveMinTaker}
                       max={MAX_FEE}
@@ -932,7 +927,8 @@ export const FeeConfigWithCalculator: React.FC<
                     ({formatNumber(makerFee * 0.01, 3)}%)
                   </div>
                   <div className="mt-2 border-t border-light/10 pt-2 text-xs text-gray-400">
-                    Revenue margin: {renderRevenueValue(builderMakerRevenue)}
+                    {t("feeConfigWithCalculator.revenueMarginLabel")}:{" "}
+                    {renderRevenueValue(builderMakerRevenue)}
                   </div>
                 </div>
                 <div className="bg-background-dark/50 p-3 rounded">
@@ -949,7 +945,8 @@ export const FeeConfigWithCalculator: React.FC<
                     ({formatNumber(takerFee * 0.01, 3)}%)
                   </div>
                   <div className="mt-2 border-t border-light/10 pt-2 text-xs text-gray-400">
-                    Revenue margin: {renderRevenueValue(builderTakerRevenue)}
+                    {t("feeConfigWithCalculator.revenueMarginLabel")}:{" "}
+                    {renderRevenueValue(builderTakerRevenue)}
                   </div>
                 </div>
               </div>
@@ -974,7 +971,8 @@ export const FeeConfigWithCalculator: React.FC<
                     ({formatNumber(rwaMakerFee * 0.01, 3)}%)
                   </div>
                   <div className="mt-2 border-t border-light/10 pt-2 text-xs text-gray-400">
-                    Revenue margin: {renderRevenueValue(builderRwaMakerRevenue)}
+                    {t("feeConfigWithCalculator.revenueMarginLabel")}:{" "}
+                    {renderRevenueValue(builderRwaMakerRevenue)}
                   </div>
                 </div>
                 <div className="bg-background-dark/50 p-3 rounded">
@@ -991,7 +989,8 @@ export const FeeConfigWithCalculator: React.FC<
                     ({formatNumber(rwaTakerFee * 0.01, 3)}%)
                   </div>
                   <div className="mt-2 border-t border-light/10 pt-2 text-xs text-gray-400">
-                    Revenue margin: {renderRevenueValue(builderRwaTakerRevenue)}
+                    {t("feeConfigWithCalculator.revenueMarginLabel")}:{" "}
+                    {renderRevenueValue(builderRwaTakerRevenue)}
                   </div>
                 </div>
               </div>
@@ -1020,67 +1019,67 @@ export const FeeConfigWithCalculator: React.FC<
       </div>
 
       {shouldShowRevenueCalculator && (
-      <div className="border-t border-light/10 pt-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold flex items-center">
-            <span className="i-mdi:calculator mr-2 h-5 w-5 text-success"></span>
-            {t("feeConfigWithCalculator.revenueCalculator")}
-          </h3>
-          <button
-            type="button"
-            onClick={() => setShowCalculator(!showCalculator)}
-            className="text-primary-light hover:text-primary flex items-center gap-1 text-sm"
-          >
-            {showCalculator
-              ? t("feeConfigWithCalculator.hideCalculator")
-              : t("feeConfigWithCalculator.showCalculator")}
-            <span
-              className={`i-mdi:chevron-right w-4 h-4 transition-transform ${showCalculator ? "rotate-90" : ""}`}
-            ></span>
-          </button>
-        </div>
+        <div className="border-t border-light/10 pt-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold flex items-center">
+              <span className="i-mdi:calculator mr-2 h-5 w-5 text-success"></span>
+              {t("feeConfigWithCalculator.revenueCalculator")}
+            </h3>
+            <button
+              type="button"
+              onClick={() => setShowCalculator(!showCalculator)}
+              className="text-primary-light hover:text-primary flex items-center gap-1 text-sm"
+            >
+              {showCalculator
+                ? t("feeConfigWithCalculator.hideCalculator")
+                : t("feeConfigWithCalculator.showCalculator")}
+              <span
+                className={`i-mdi:chevron-right w-4 h-4 transition-transform ${showCalculator ? "rotate-90" : ""}`}
+              ></span>
+            </button>
+          </div>
 
-        {showCalculator && (
-          <div className="bg-light/5 rounded-lg p-4 mb-4 slide-fade-in">
-            <p className="text-sm text-gray-300 mb-4">
-              {t("feeConfigWithCalculator.estimateRevenueDesc")}
-            </p>
+          {showCalculator && (
+            <div className="bg-light/5 rounded-lg p-4 mb-4 slide-fade-in">
+              <p className="text-sm text-gray-300 mb-4">
+                {t("feeConfigWithCalculator.estimateRevenueDesc")}
+              </p>
 
-            <div className="grid grid-cols-1 gap-4 mb-4">
-              <div>
-                <label
-                  htmlFor="tradingVolume"
-                  className="block text-sm font-bold mb-1"
-                >
-                  {t("feeConfigWithCalculator.monthlyVolume")}
-                </label>
-                <div className="flex items-center">
-                  <span className="bg-background-dark border-r border-light/10 px-3 py-2 rounded-l-lg text-gray-400">
-                    $
-                  </span>
-                  <input
-                    type="number"
-                    id="tradingVolume"
-                    min="0"
-                    step="1000"
-                    value={tradingVolume}
-                    onChange={handleVolumeChange}
-                    className="w-full px-3 py-2 bg-background-dark border border-light/10 rounded-r-lg"
-                  />
+              <div className="grid grid-cols-1 gap-4 mb-4">
+                <div>
+                  <label
+                    htmlFor="tradingVolume"
+                    className="block text-sm font-bold mb-1"
+                  >
+                    {t("feeConfigWithCalculator.monthlyVolume")}
+                  </label>
+                  <div className="flex items-center">
+                    <span className="bg-background-dark border-r border-light/10 px-3 py-2 rounded-l-lg text-gray-400">
+                      $
+                    </span>
+                    <input
+                      type="number"
+                      id="tradingVolume"
+                      min="0"
+                      step="1000"
+                      value={tradingVolume}
+                      onChange={handleVolumeChange}
+                      className="w-full px-3 py-2 bg-background-dark border border-light/10 rounded-r-lg"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {t("feeConfigWithCalculator.enterVolume")}
+                  </p>
                 </div>
-                <p className="text-xs text-gray-400 mt-1">
-                  {t("feeConfigWithCalculator.enterVolume")}
-                </p>
-              </div>
 
-              <div>
-                <label
-                  htmlFor="tierSelect"
-                  className="block text-sm font-bold mb-1"
-                >
-                  {t("feeConfigWithCalculator.builderStakingTier")}
-                </label>
-                {/* <select
+                <div>
+                  <label
+                    htmlFor="tierSelect"
+                    className="block text-sm font-bold mb-1"
+                  >
+                    {t("feeConfigWithCalculator.builderStakingTier")}
+                  </label>
+                  {/* <select
                   id="tierSelect"
                   value={selectedTier}
                   onChange={e =>
@@ -1096,93 +1095,93 @@ export const FeeConfigWithCalculator: React.FC<
                     </option>
                   ))}
                 </select> */}
-                <Select value={selectedTier} onValueChange={handleTierChange}>
-                  <SelectTrigger className="w-full h-[42px] px-3 py-5 bg-background-dark border border-light/10 rounded-lg">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(tierInfo).map(([key, info]) => (
-                      <SelectItem
-                        key={key}
-                        value={key}
-                        // className={selectedTier === key ? "bg-primary/10" : ""}
-                      >
-                        {info.name} ({info.fee})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-gray-400 mt-1">
-                  {tierInfo[selectedTier].requirement}
-                </p>
+                  <Select value={selectedTier} onValueChange={handleTierChange}>
+                    <SelectTrigger className="w-full h-[42px] px-3 py-5 bg-background-dark border border-light/10 rounded-lg">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(tierInfo).map(([key, info]) => (
+                        <SelectItem
+                          key={key}
+                          value={key}
+                          // className={selectedTier === key ? "bg-primary/10" : ""}
+                        >
+                          {info.name} ({info.fee})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {tierInfo[selectedTier].requirement}
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-success/5 rounded-lg p-4 mb-4">
+                <h4 className="text-sm font-semibold mb-3 text-gray-200">
+                  {t("feeConfigWithCalculator.estimatedRevenue")}
+                </h4>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-background-dark/50 p-3 rounded">
+                    <div className="text-sm text-gray-400">
+                      {t("feeConfigWithCalculator.makerRevenue")}
+                    </div>
+                    <div className="text-xl font-semibold text-success">
+                      {formatCurrency(makerRevenue)}
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      (
+                      {formatNumber(
+                        Math.max(0, makerFee - tierBaseFees[selectedTier].maker)
+                      )}{" "}
+                      bps {t("feeConfigWithCalculator.afterBaseFee")})
+                    </div>
+                  </div>
+
+                  <div className="bg-background-dark/50 p-3 rounded">
+                    <div className="text-sm text-gray-400">
+                      {t("feeConfigWithCalculator.takerRevenue")}
+                    </div>
+                    <div className="text-xl font-semibold text-success">
+                      {formatCurrency(takerRevenue)}
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      (
+                      {formatNumber(
+                        Math.max(0, takerFee - tierBaseFees[selectedTier].taker)
+                      )}{" "}
+                      bps {t("feeConfigWithCalculator.afterBaseFee")})
+                    </div>
+                  </div>
+
+                  <div className="bg-success/10 p-3 rounded">
+                    <div className="text-sm text-gray-300">
+                      {t("feeConfigWithCalculator.totalRevenue")}
+                    </div>
+                    <div className="text-xl font-semibold text-success">
+                      {formatCurrency(totalRevenue)}
+                    </div>
+                    <div className="text-xs text-gray-300">
+                      {t("feeConfigWithCalculator.perMonth")}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex items-start gap-2 text-xs">
+                  <span className="i-mdi:information-outline text-info w-4 h-4 flex-shrink-0 mt-0.5"></span>
+                  <span className="text-gray-300">
+                    {t("feeConfigWithCalculator.calculationNote", {
+                      makerBps: tierBaseFees[selectedTier].maker,
+                      takerBps: tierBaseFees[selectedTier].taker,
+                      tierName: tierInfo[selectedTier].name,
+                    })}
+                  </span>
+                </div>
               </div>
             </div>
-
-            <div className="bg-success/5 rounded-lg p-4 mb-4">
-              <h4 className="text-sm font-semibold mb-3 text-gray-200">
-                {t("feeConfigWithCalculator.estimatedRevenue")}
-              </h4>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-background-dark/50 p-3 rounded">
-                  <div className="text-sm text-gray-400">
-                    {t("feeConfigWithCalculator.makerRevenue")}
-                  </div>
-                  <div className="text-xl font-semibold text-success">
-                    {formatCurrency(makerRevenue)}
-                  </div>
-                  <div className="text-xs text-gray-400">
-                    (
-                    {formatNumber(
-                      Math.max(0, makerFee - tierBaseFees[selectedTier].maker)
-                    )}{" "}
-                    bps {t("feeConfigWithCalculator.afterBaseFee")})
-                  </div>
-                </div>
-
-                <div className="bg-background-dark/50 p-3 rounded">
-                  <div className="text-sm text-gray-400">
-                    {t("feeConfigWithCalculator.takerRevenue")}
-                  </div>
-                  <div className="text-xl font-semibold text-success">
-                    {formatCurrency(takerRevenue)}
-                  </div>
-                  <div className="text-xs text-gray-400">
-                    (
-                    {formatNumber(
-                      Math.max(0, takerFee - tierBaseFees[selectedTier].taker)
-                    )}{" "}
-                    bps {t("feeConfigWithCalculator.afterBaseFee")})
-                  </div>
-                </div>
-
-                <div className="bg-success/10 p-3 rounded">
-                  <div className="text-sm text-gray-300">
-                    {t("feeConfigWithCalculator.totalRevenue")}
-                  </div>
-                  <div className="text-xl font-semibold text-success">
-                    {formatCurrency(totalRevenue)}
-                  </div>
-                  <div className="text-xs text-gray-300">
-                    {t("feeConfigWithCalculator.perMonth")}
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 flex items-start gap-2 text-xs">
-                <span className="i-mdi:information-outline text-info w-4 h-4 flex-shrink-0 mt-0.5"></span>
-                <span className="text-gray-300">
-                  {t("feeConfigWithCalculator.calculationNote", {
-                    makerBps: tierBaseFees[selectedTier].maker,
-                    takerBps: tierBaseFees[selectedTier].taker,
-                    tierName: tierInfo[selectedTier].name,
-                  })}
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
       )}
     </div>
   );
