@@ -33,6 +33,12 @@ export const app = new OpenAPIHono();
 
 let globalPrisma: import("@prisma/client").PrismaClient | null = null;
 
+function getDefaultApiUrl(): string {
+  return getCurrentEnvironment() === "mainnet"
+    ? "https://dex-api.orderly.network"
+    : "https://testnet-dex-api.orderly.network";
+}
+
 app.use("*", logger());
 app.use("*", cors());
 app.use("*", errorLoggerMiddleware);
@@ -70,7 +76,7 @@ app.get(
         },
         servers: [
           {
-            url: process.env.API_BASE_URL || "http://localhost:3001",
+            url: getDefaultApiUrl(),
             description: "API Server",
           },
         ],
@@ -111,7 +117,7 @@ app.get("/openapi.json", c => {
     },
     servers: [
       {
-        url: process.env.API_BASE_URL || "http://localhost:3001",
+        url: getDefaultApiUrl(),
         description: "API Server",
       },
     ],
