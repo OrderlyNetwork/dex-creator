@@ -290,4 +290,111 @@ describe("DEX Routes", () => {
       });
     });
   });
+
+  describe("PUT /api/dex/:id/swap-fee", () => {
+    let dex: { id: string };
+
+    beforeEach(async () => {
+      dex = await testDataFactory.createTestDex(testUser.id);
+    });
+
+    it("should update swap fee successfully", async () => {
+      const request = createAuthenticatedRequest(app, testUser.id);
+
+      const response = await request.put(`/api/dex/${dex.id}/swap-fee`, {
+        swapFeeBps: 30,
+      });
+
+      expect(response.status).toBe(200);
+      const body = await response.json();
+      expect(body).toHaveProperty("message", "Swap fee updated successfully");
+      expect(body).toHaveProperty("dex");
+      expect(body.dex).toHaveProperty("swapFeeBps", 30);
+    });
+
+    it("should set swap fee to null", async () => {
+      const request = createAuthenticatedRequest(app, testUser.id);
+
+      await request.put(`/api/dex/${dex.id}/swap-fee`, {
+        swapFeeBps: 50,
+      });
+
+      const response = await request.put(`/api/dex/${dex.id}/swap-fee`, {
+        swapFeeBps: null,
+      });
+
+      expect(response.status).toBe(200);
+      const body = await response.json();
+      expect(body.dex).toHaveProperty("swapFeeBps", null);
+    });
+
+    it("should allow zero swap fee", async () => {
+      const request = createAuthenticatedRequest(app, testUser.id);
+
+      const response = await request.put(`/api/dex/${dex.id}/swap-fee`, {
+        swapFeeBps: 0,
+      });
+
+      expect(response.status).toBe(200);
+      const body = await response.json();
+      expect(body.dex).toHaveProperty("swapFeeBps", 0);
+    });
+
+    it("should return 400 for swap fee above 100", async () => {
+      const request = createAuthenticatedRequest(app, testUser.id);
+
+      const response = await request.put(`/api/dex/${dex.id}/swap-fee`, {
+        swapFeeBps: 101,
+      });
+
+      expect(response.status).toBe(400);
+    });
+
+    it("should return 400 for negative swap fee", async () => {
+      const request = createAuthenticatedRequest(app, testUser.id);
+
+      const response = await request.put(`/api/dex/${dex.id}/swap-fee`, {
+        swapFeeBps: -1,
+      });
+
+      expect(response.status).toBe(400);
+    });
+
+    it("should return 400 for non-integer swap fee", async () => {
+      const request = createAuthenticatedRequest(app, testUser.id);
+
+      const response = await request.put(`/api/dex/${dex.id}/swap-fee`, {
+        swapFeeBps: 1.5,
+      });
+
+      expect(response.status).toBe(400);
+    });
+
+    it("should return 404 if DEX not found", async () => {
+      const request = createAuthenticatedRequest(app, testUser.id);
+
+      const response = await request.put("/api/dex/non-existent-id/swap-fee", {
+        swapFeeBps: 30,
+      });
+
+      expect(response.status).toBe(404);
+      const body = await response.json();
+      expect(body).toHaveProperty("message");
+    });
+
+    it("should return 403 if user doesn't own the DEX", async () => {
+      const otherUser = await testDataFactory.createTestUser();
+      const otherDex = await testDataFactory.createTestDex(otherUser.id);
+
+      const request = createAuthenticatedRequest(app, testUser.id);
+
+      const response = await request.put(`/api/dex/${otherDex.id}/swap-fee`, {
+        swapFeeBps: 30,
+      });
+
+      expect(response.status).toBe(403);
+      const body = await response.json();
+      expect(body).toHaveProperty("message");
+    });
+  });
 });

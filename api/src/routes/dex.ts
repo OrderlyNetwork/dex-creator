@@ -49,6 +49,8 @@ import {
   CustomDomainSuccessSchema,
   BoardVisibilitySchema,
   BoardVisibilitySuccessSchema,
+  SwapFeeSchema,
+  SwapFeeSuccessSchema,
   NetworksResponseSchema,
   DexNotFoundResponseSchema,
 } from "../schemas/dex.js";
@@ -1485,6 +1487,109 @@ app.openapi(updateBoardVisibilityRoute, async c => {
       {
         message: "Failed to update board visibility",
         error: error instanceof Error ? error.message : String(error),
+      },
+      500
+    );
+  }
+});
+
+const updateSwapFeeRoute = createRoute({
+  method: "put",
+  path: "/{id}/swap-fee",
+  tags: ["DEX"],
+  summary: "Update swap fee",
+  description:
+    "Update the swap fee for a DEX. Accepts JSON body for programmatic/SDK usage.",
+  security: [{ bearerAuth: [] }],
+  request: {
+    params: DexIdParamSchema,
+    body: {
+      content: {
+        "application/json": {
+          schema: SwapFeeSchema,
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: "Swap fee updated successfully",
+      content: {
+        "application/json": {
+          schema: SwapFeeSuccessSchema,
+        },
+      },
+    },
+    400: {
+      description: "Invalid request body",
+      content: {
+        "application/json": {
+          schema: ErrorResponseSchema,
+        },
+      },
+    },
+    403: {
+      description: "Unauthorized to update this DEX",
+      content: {
+        "application/json": {
+          schema: UnauthorizedErrorSchema,
+        },
+      },
+    },
+    404: {
+      description: "DEX not found",
+      content: {
+        "application/json": {
+          schema: NotFoundErrorSchema,
+        },
+      },
+    },
+    500: {
+      description: "Server error",
+      content: {
+        "application/json": {
+          schema: ErrorResponseSchema,
+        },
+      },
+    },
+  },
+});
+
+app.openapi(updateSwapFeeRoute, async c => {
+  const { id } = c.req.valid("param");
+  const userId = c.get("userId");
+  const { swapFeeBps } = c.req.valid("json");
+
+  try {
+    const dex = await getDexById(id);
+
+    if (!dex) {
+      return c.json({ message: "DEX not found" }, 404);
+    }
+
+    if (dex.userId !== userId) {
+      return c.json({ message: "Unauthorized to update this DEX" }, 403);
+    }
+
+    const prisma = await getPrisma();
+    const updatedDex = await prisma.dex.update({
+      where: { id },
+      data: { swapFeeBps },
+    });
+
+    return c.json(
+      {
+        message: "Swap fee updated successfully",
+        dex: updatedDex,
+      },
+      200
+    );
+  } catch (error) {
+    console.error("Error updating swap fee:", error);
+    return c.json(
+      {
+        error:
+          error instanceof Error ? error.message : "Failed to update swap fee",
       },
       500
     );

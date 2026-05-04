@@ -2093,5 +2093,15 @@
   "swapFeeWithdrawal.title": "Swap Fee Revenue (WOOFi)",
   "swapFeeWithdrawal.description": "Claim your accumulated swap fees from the WOOFi integration. Fees are earned from users swapping tokens on your DEX's swap page.",
   "swapFeeWithdrawal.viewAndClaim": "View & Claim Swap Fees",
-  "swapFeeWithdrawal.connectWalletHint": "Please connect your wallet to view and claim fees"
+  "swapFeeWithdrawal.connectWalletHint": "Please connect your wallet to view and claim fees",
+  "swapFeeConfig.title": "Swap Fee Configuration",
+  "swapFeeConfig.description": "Set the fee applied to token swaps on your DEX's swap page. The fee is split 70% (you) / 30% (WOOFi).",
+  "swapFeeConfig.currentFee": "Current Fee",
+  "swapFeeConfig.notSet": "Not configured",
+  "swapFeeConfig.yourEarnings": "Your earnings (70%)",
+  "swapFeeConfig.setFee": "Set Swap Fee",
+  "swapFeeConfig.editFee": "Edit Swap Fee",
+  "swapFeeConfig.saving": "Saving...",
+  "swapFeeConfig.updateSuccess": "Swap fee updated successfully",
+  "swapFeeConfig.updateFailed": "Failed to update swap fee"
 }

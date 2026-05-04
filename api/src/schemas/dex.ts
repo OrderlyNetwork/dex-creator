@@ -384,6 +384,24 @@ export const BoardVisibilitySuccessSchema = z
   })
   .openapi("BoardVisibilitySuccess");
 
+// Swap Fee Schemas
+export const SwapFeeSchema = z.object({
+  swapFeeBps: z.number().int().min(0).max(100).nullable().openapi({
+    description: "Swap fee in basis points (0-100). Set to null to remove.",
+    example: 30,
+  }),
+});
+
+export const SwapFeeSuccessSchema = z
+  .object({
+    message: z.string().openapi({
+      description: "Success message",
+      example: "Swap fee updated successfully",
+    }),
+    dex: DexResponseSchema,
+  })
+  .openapi("SwapFeeSuccess");
+
 // Social Card Schemas
 export const SocialCardUpdateSchema = z
   .object({

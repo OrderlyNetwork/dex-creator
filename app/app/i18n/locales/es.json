@@ -2093,5 +2093,15 @@
   "swapFeeWithdrawal.title": "Ingresos por comisión de swap (WOOFi)",
   "swapFeeWithdrawal.description": "Reclama las comisiones de swap acumuladas de la integración WOOFi. Las comisiones se generan cuando los usuarios intercambian tokens en la página de swap de tu DEX.",
   "swapFeeWithdrawal.viewAndClaim": "Ver y reclamar comisiones de swap",
-  "swapFeeWithdrawal.connectWalletHint": "Conecta tu wallet para ver y reclamar comisiones"
+  "swapFeeWithdrawal.connectWalletHint": "Conecta tu wallet para ver y reclamar comisiones",
+  "swapFeeConfig.title": "Configuración de comisión de swap",
+  "swapFeeConfig.description": "Establece la comisión aplicada a los swaps de tokens en la página de swap de tu DEX. La comisión se reparte 70% (tú) / 30% (WOOFi).",
+  "swapFeeConfig.currentFee": "Comisión actual",
+  "swapFeeConfig.notSet": "Sin configurar",
+  "swapFeeConfig.yourEarnings": "Tus ingresos (70%)",
+  "swapFeeConfig.setFee": "Establecer comisión de swap",
+  "swapFeeConfig.editFee": "Editar comisión de swap",
+  "swapFeeConfig.saving": "Guardando...",
+  "swapFeeConfig.updateSuccess": "Comisión de swap actualizada correctamente",
+  "swapFeeConfig.updateFailed": "Error al actualizar la comisión de swap"
 }

@@ -58,6 +58,7 @@ import {
   getChainIcon,
 } from "../../../config";
 import { SwapFeeWithdrawal } from "./SwapFeeWithdrawal";
+import { SwapFeeConfig } from "./SwapFeeConfig";
 import { parseWalletError } from "../utils/wallet";
 import { Trans, useTranslation } from "~/i18n";
 import { formatTier } from "~/utils/format";
@@ -1462,7 +1463,7 @@ export function GraduationForm({
 
               {activeFeeTab === "swap" ? (
                 <>
-                  {/* TODO: Add swap fee configuration here next time. */}
+                  <SwapFeeConfig />
                   <SwapFeeWithdrawal
                     isGraduated={graduationStatus.isGraduated}
                   />

@@ -2093,5 +2093,15 @@
   "swapFeeWithdrawal.title": "兑换手续费收益 (WOOFi)",
   "swapFeeWithdrawal.description": "领取您通过 WOOFi 集成累积的兑换手续费。当用户在您 DEX 的兑换页面进行代币兑换时即可获得手续费。",
   "swapFeeWithdrawal.viewAndClaim": "查看并领取兑换手续费",
-  "swapFeeWithdrawal.connectWalletHint": "请连接钱包以查看并领取手续费"
+  "swapFeeWithdrawal.connectWalletHint": "请连接钱包以查看并领取手续费",
+  "swapFeeConfig.title": "兑换费用配置",
+  "swapFeeConfig.description": "设置 DEX 兑换页面上代币兑换的费用。费用按 70%（您）/ 30%（WOOFi）分配。",
+  "swapFeeConfig.currentFee": "当前费用",
+  "swapFeeConfig.notSet": "未配置",
+  "swapFeeConfig.yourEarnings": "您的收入 (70%)",
+  "swapFeeConfig.setFee": "设置兑换费用",
+  "swapFeeConfig.editFee": "编辑兑换费用",
+  "swapFeeConfig.saving": "保存中...",
+  "swapFeeConfig.updateSuccess": "兑换费用更新成功",
+  "swapFeeConfig.updateFailed": "兑换费用更新失败"
 }

@@ -2093,5 +2093,15 @@
   "swapFeeWithdrawal.title": "스왑 수수료 수익 (WOOFi)",
   "swapFeeWithdrawal.description": "WOOFi 연동을 통해 누적된 스왑 수수료를 청구하세요. 사용자가 DEX 스왑 페이지에서 토큰을 스왑할 때 수수료가 적립됩니다.",
   "swapFeeWithdrawal.viewAndClaim": "스왑 수수료 보기 및 청구",
-  "swapFeeWithdrawal.connectWalletHint": "수수료를 보려면 지갑을 연결해 주세요"
+  "swapFeeWithdrawal.connectWalletHint": "수수료를 보려면 지갑을 연결해 주세요",
+  "swapFeeConfig.title": "스왑 수수료 구성",
+  "swapFeeConfig.description": "DEX 스왑 페이지에서 토큰 스왑에 적용되는 수수료를 설정합니다. 수수료는 70%(귀하) / 30%(WOOFi)로 분배됩니다.",
+  "swapFeeConfig.currentFee": "현재 수수료",
+  "swapFeeConfig.notSet": "미설정",
+  "swapFeeConfig.yourEarnings": "귀하의 수익 (70%)",
+  "swapFeeConfig.setFee": "스왑 수수료 설정",
+  "swapFeeConfig.editFee": "스왑 수수료 수정",
+  "swapFeeConfig.saving": "저장 중...",
+  "swapFeeConfig.updateSuccess": "스왑 수수료가 성공적으로 업데이트되었습니다",
+  "swapFeeConfig.updateFailed": "스왑 수수료 업데이트에 실패했습니다"
 }
