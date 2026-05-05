@@ -2,10 +2,8 @@ import { z } from "zod";
 import { getPrisma } from "../lib/prisma";
 import type { Prisma, Dex, PrismaClient } from "@prisma/client";
 import type { DexResult, Result } from "../lib/types";
-import { DexErrorType, GitHubErrorType } from "../lib/types";
+import { DexErrorType } from "../lib/types";
 import {
-  forkTemplateRepository,
-  setupRepositoryWithSingleCommit,
   deleteRepository,
   setCustomDomain,
   removeCustomDomain,
@@ -13,7 +11,6 @@ import {
 } from "../lib/github";
 import { CAMPAIGNS_INTRO_COMMIT_PREFIXES } from "../../../config";
 import type { DexConfig } from "../lib/types";
-import { generateRepositoryName } from "../lib/nameGenerator";
 import { validateTradingViewColorConfig } from "./tradingViewConfig.js";
 import { validateCSS } from "../lib/cssValidator.js";
 
@@ -59,54 +56,6 @@ export function convertDexToDexConfig(dex: Dex): DexConfig {
     symbolList: dex.symbolList,
     restrictedRegions: dex.restrictedRegions,
     whitelistedIps: dex.whitelistedIps,
-  };
-}
-
-function convertValidatedDataToDexConfig(
-  validatedData: z.infer<typeof dexSchema>,
-  brokerId: string,
-  brokerName: string
-): DexConfig {
-  const decodedAnalyticsScript = validatedData.analyticsScript
-    ? decodeBase64(validatedData.analyticsScript)
-    : null;
-
-  return {
-    brokerId,
-    brokerName,
-    chainIds: validatedData.chainIds ?? null,
-    defaultChain: validatedData.defaultChain ?? null,
-    themeCSS: validatedData.themeCSS ?? null,
-    telegramLink: validatedData.telegramLink ?? null,
-    discordLink: validatedData.discordLink ?? null,
-    xLink: validatedData.xLink ?? null,
-    walletConnectProjectId: validatedData.walletConnectProjectId ?? null,
-    privyAppId: validatedData.privyAppId ?? null,
-    privyTermsOfUse: validatedData.privyTermsOfUse ?? null,
-    privyLoginMethods: validatedData.privyLoginMethods ?? null,
-    enabledMenus: validatedData.enabledMenus ?? null,
-    customMenus: validatedData.customMenus ?? null,
-    enableAbstractWallet: validatedData.enableAbstractWallet ?? null,
-    disableMainnet: validatedData.disableMainnet ?? null,
-    disableTestnet: validatedData.disableTestnet ?? null,
-    disableEvmWallets: validatedData.disableEvmWallets ?? null,
-    disableSolanaWallets: validatedData.disableSolanaWallets ?? null,
-    enableServiceDisclaimerDialog:
-      validatedData.enableServiceDisclaimerDialog ?? null,
-    enableCampaigns: validatedData.enableCampaigns ?? null,
-    tradingViewColorConfig: validatedData.tradingViewColorConfig ?? null,
-    availableLanguages: validatedData.availableLanguages ?? null,
-    seoSiteName: validatedData.seoSiteName ?? null,
-    seoSiteDescription: validatedData.seoSiteDescription ?? null,
-    seoSiteLanguage: validatedData.seoSiteLanguage ?? null,
-    seoSiteLocale: validatedData.seoSiteLocale ?? null,
-    seoTwitterHandle: validatedData.seoTwitterHandle ?? null,
-    seoThemeColor: validatedData.seoThemeColor ?? null,
-    seoKeywords: validatedData.seoKeywords ?? null,
-    analyticsScript: decodedAnalyticsScript,
-    symbolList: validatedData.symbolList ?? null,
-    restrictedRegions: validatedData.restrictedRegions ?? null,
-    whitelistedIps: validatedData.whitelistedIps ?? null,
   };
 }
 
@@ -486,109 +435,9 @@ export async function createDex(
     };
   }
 
-  const brokerName = validatedData.brokerName || "Orderly DEX";
   const integrationType = validatedData.integrationType || "low_code";
 
-  let repoUrl: string | null = null;
-
-  if (integrationType === "low_code") {
-    const repoName = generateRepositoryName(brokerName);
-
-    try {
-      console.log(
-        "Creating repository in OrderlyNetworkDexCreator organization..."
-      );
-      const forkResult = await forkTemplateRepository(repoName);
-      if (!forkResult.success) {
-        switch (forkResult.error.type) {
-          case GitHubErrorType.REPOSITORY_NAME_EMPTY:
-          case GitHubErrorType.REPOSITORY_NAME_INVALID:
-          case GitHubErrorType.REPOSITORY_NAME_TOO_LONG:
-            return {
-              success: false,
-              error: {
-                type: DexErrorType.VALIDATION_ERROR,
-                message: forkResult.error.message,
-              },
-            };
-          case GitHubErrorType.FORK_PERMISSION_DENIED:
-            return {
-              success: false,
-              error: {
-                type: DexErrorType.REPOSITORY_PERMISSION_DENIED,
-                message: forkResult.error.message,
-              },
-            };
-          case GitHubErrorType.FORK_REPOSITORY_NOT_FOUND:
-            return {
-              success: false,
-              error: {
-                type: DexErrorType.REPOSITORY_NOT_FOUND,
-                message: forkResult.error.message,
-              },
-            };
-          case GitHubErrorType.FORK_REPOSITORY_ALREADY_EXISTS:
-            return {
-              success: false,
-              error: {
-                type: DexErrorType.REPOSITORY_ALREADY_EXISTS,
-                message: forkResult.error.message,
-              },
-            };
-          default:
-            return {
-              success: false,
-              error: {
-                type: DexErrorType.REPOSITORY_CREATION_FAILED,
-                message: forkResult.error.message,
-              },
-            };
-        }
-      }
-
-      repoUrl = forkResult.data;
-      console.log(`Successfully forked repository: ${repoUrl}`);
-
-      const repoInfo = extractRepoInfoFromUrl(repoUrl);
-      if (!repoInfo) {
-        return {
-          success: false,
-          error: {
-            type: DexErrorType.REPOSITORY_INFO_EXTRACTION_FAILED,
-            message: `Failed to extract repository information from URL: ${repoUrl}`,
-          },
-        };
-      }
-
-      const brokerId = "demo";
-
-      await setupRepositoryWithSingleCommit(
-        repoInfo.owner,
-        repoInfo.repo,
-        convertValidatedDataToDexConfig(validatedData, brokerId, brokerName),
-        {
-          primaryLogo: validatedData.primaryLogo ?? null,
-          secondaryLogo: validatedData.secondaryLogo ?? null,
-          favicon: validatedData.favicon ?? null,
-          pnlPosters: validatedData.pnlPosters ?? null,
-        },
-        null,
-        user.address
-      );
-      console.log(`Successfully set up repository for ${brokerName}`);
-    } catch (error) {
-      console.error("Error setting up repository:", error);
-      return {
-        success: false,
-        error: {
-          type: DexErrorType.REPOSITORY_CREATION_FAILED,
-          message: `Repository setup failed: ${
-            error instanceof Error ? error.message : String(error)
-          }`,
-        },
-      };
-    }
-  }
+  const repoUrl: string | null = null;
 
   try {
     const brokerId = "demo";
